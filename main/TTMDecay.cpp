@@ -1,0 +1,50 @@
+// Author: Spencer Wheaton 14 July 2004 //
+// Adapted for Qt by Yves Schutz: Octobre 2016
+
+//__________________________________________________________________________
+// Stores parent & daughter id's as well as the branching ratio as a
+// fraction
+//
+
+#include <QDebug>
+
+#include "TTMDecay.h"
+
+//__________________________________________________________________________
+TTMDecay::TTMDecay(QObject* parent) : QObject(parent),
+    mParentID(0), mDaughterID(0), mBRatio(0.0)
+{
+    // ctor
+}
+
+//__________________________________________________________________________
+TTMDecay::TTMDecay(qint32 mother, qint32 daughter, double fraction, QObject* parent) :
+   QObject(parent),
+   mParentID(mother), mDaughterID(daughter), mBRatio(fraction)
+{
+    //ctor
+}
+
+//__________________________________________________________________________
+void TTMDecay::list()
+{
+    // list data members
+
+    qDebug() << Q_FUNC_INFO << " INFO:";
+    qDebug() << "          BRatio   =   " << mBRatio;
+    qDebug() << "          Parent   =   " << mParentID;
+    qDebug() << "          Daughter = " << mDaughterID;
+}
+
+//__________________________________________________________________________
+TTMDecay &TTMDecay::operator=(const TTMDecay &obj)
+{
+    // assignation operator
+
+    if (this != &obj) {
+         mParentID = obj.getParentID();
+         mDaughterID = obj.getDaughterID();
+        mBRatio = obj.getBRatio();
+    }
+    return *this;
+}
