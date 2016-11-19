@@ -1,12 +1,14 @@
 #ifndef SUMMARY_H
 #define SUMMARY_H
 
-#include <QObject>
+#include <QWizardPage>
 
 class Summary : public QWizardPage
 {
+    Q_OBJECT
+
 public:
-    Summary();
+    Summary(QWidget *parent = 0);
 };
 
 #endif // SUMMARY_H

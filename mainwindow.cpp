@@ -102,16 +102,18 @@ void MainWindow::runPrediction()
     QDate date = start.date();
     QTime time = start.time();
 
+    QString info = QString(" *** Start at Date : %1 Time : %2").arg(date.toString("dd MMMM yyyy")).arg(time.toString());
     if (mDebug)
-        qDebug() << " *** Start" << objectName() << "at Date : " << date.toString("dd MMMM yyyy") << " Time : " << time.toString();
+        qDebug() << info;
+
     Prediction& myMacro = Prediction::instance();
     myMacro.setDebug(mDebug);
     myMacro.objectName() + ": test";
+
     QString message = mPredictionAction->statusTip() + ": macro " + myMacro.objectName();
     statusBar()->showMessage(message);
 
-   new ThermusWiz(this);
-
+    new ThermusWiz(info, this);
 
     // **************************************************
     // Definition the particle list

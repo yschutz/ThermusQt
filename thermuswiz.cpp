@@ -3,12 +3,10 @@
 // The wizard to setp up various things
 
 #include "macros/prediction.h"
-#include "filedialog.h"
-#include "parasel.h"
 #include "thermuswiz.h"
 
 //__________________________________________________________________________
-ThermusWiz::ThermusWiz(QWidget *parent) : QWizard(parent)
+ThermusWiz::ThermusWiz(QString summaryTitle, QWidget *parent) : QWizard(parent)
 {
     // ctor
 
@@ -23,20 +21,30 @@ ThermusWiz::ThermusWiz(QWidget *parent) : QWizard(parent)
 
     Prediction& myMacro = Prediction::instance();
 
-    QWizard *predictionWiz = new QWizard(this);
+    // page to select the particles list file
+
+    QWizard *myWiz = new QWizard(this);
     mDialog = new FileDialog(this);
-    predictionWiz->addPage(mDialog);
+    myWiz->addPage(mDialog);
     myMacro.setDialog(mDialog);
 
+    // page for the parameters setting
 
     mParasel = new ParaSel(this);
-    predictionWiz->addPage(mParasel);
+    myWiz->addPage(mParasel);
     myMacro.setParaSel(mParasel);
     myMacro.selectDefaultParameters();
 
-    predictionWiz->show();
+    // page summarizing evrything
 
-    QAbstractButton *donebutton = predictionWiz->button(QWizard::FinishButton);
+    mSummary = new Summary(this);
+    mSummary->setSubTitle(summaryTitle);
+    mSummaryId = myWiz->addPage(mSummary);
+    myMacro.setSummary(mSummary);
+
+    myWiz->show();
+
+    QAbstractButton *donebutton = myWiz->button(QWizard::FinishButton);
     mLoop.connect(donebutton, SIGNAL(clicked(bool)), this, SLOT(accept()));
     mLoop.exec();
 

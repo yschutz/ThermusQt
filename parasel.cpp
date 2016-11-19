@@ -351,9 +351,6 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     gridLayout->addWidget(mMuFitBox, 1, 1, 1, 1, Qt::AlignTop);
     gridLayout->addWidget(mMuConBox, 1, 2, 1, 1,  Qt::AlignTop);
 
-    qDebug() << Q_FUNC_INFO << "mu Box" << muBox->size();
-    qDebug() << Q_FUNC_INFO << "mu Con Box" << mMuConBox->size();
-
     gridLayout->addWidget(gammaBox,     2, 0, 1, 1, Qt::AlignTop);
     gridLayout->addWidget(mGammaFitBox, 2, 1, 1, 1, Qt::AlignTop);
 
