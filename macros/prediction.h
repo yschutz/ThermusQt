@@ -11,6 +11,7 @@
 
 #include "filedialog.h"
 #include "parasel.h"
+#include "summary.h"
 
 #include "main/TTMParticleSet.h"
 #include "main/TTMParameterSetBSQ.h"
@@ -33,6 +34,7 @@ public:
     void        setParameters();
     void        setParaSel(ParaSel* val) {mParaSel = val;}
     void        setParticlesListFile();
+    void        setSummary(Summary * val) {mSummary = val;}
 
 private:
     Prediction();
@@ -47,6 +49,7 @@ private:
     TTMParameterSetBSQ* mParaInfo;         // holds the information on parameters
     ParaSel*            mParaSel;          // window for parameters selection
     TTMParticleSet*     mPartInfo;         // holds the information on particles
+    Summary*            mSummary;          // summary wizard page
 };
 
 #endif // PREDICTION_H
