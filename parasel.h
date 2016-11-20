@@ -33,6 +33,7 @@ public:
            bool    isConstrained(ParameterType type) const;
            bool    isFixed(QCheckBox* box)                      { if (box->isChecked()) return true; else return false;}
            bool    isFixed(ParameterType type)                  { return isFixed(mParameterFix[type]); }
+           void    setFitValues(ParameterType type, double min, double max, double step);
            void    setParaValue(ParameterType type, double val) { mParameterValue[type]->setText(QString("%1").arg(val)); }
 
 public slots:

@@ -105,6 +105,7 @@ void Prediction::selectDefaultParameters()
     mParaSel->setParaValue(ParaSel::kRadius, radiusDefault);
     mParaSel->setParaValue(ParaSel::kMuBeauty, muBeautyDefault);
     mParaSel->setParaValue(ParaSel::kGammaBeauty, gammaBeautyDefault);
+
 }
 
 //__________________________________________________________________________

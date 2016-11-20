@@ -195,12 +195,8 @@ void MainWindow::createMenus()
     mDebugMenu->addAction(mDebugOnAction);
     mDebugMenu->addAction(mDebugOffAction);
 
-    // select the macro to run
+    // select the macro to run or quit
     mRunMenu = menuBar()->addMenu(tr("&Run"));
     mRunMenu->addAction(mPredictionAction);
-
-    // quit
-    mQuitMenu = menuBar()->addMenu(tr("&Quit"));
-    mQuitMenu->addAction(mQuitAction);
-
+    mRunMenu->addAction(mQuitAction);
 }

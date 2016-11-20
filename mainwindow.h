@@ -40,7 +40,6 @@ private:
     QAction* mDebugOffAction;    // Action for debug mode off
     QAction* mDebugOnAction;     // Action for debug mode on
     QMenu*   mRunMenu;           // Menu Tab to select the macro to run
-    QMenu*   mQuitMenu;          // Menu Tab to quit the application
     QAction* mPredictionAction;  // Action for the Prediction macro
     QAction* mQuitAction;        // Action for quitting the application
     QWidget* mCentralwidget;     // The window so far inactive

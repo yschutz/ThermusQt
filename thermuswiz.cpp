@@ -10,7 +10,7 @@ ThermusWiz::ThermusWiz(QString summaryTitle, QWidget *parent) : QWizard(parent)
 {
     // ctor
 
-    setGeometry(1000, 500, 1000, 100);
+    setGeometry(200, 400, 1000, 100);
     setWindowTitle("THERMUS setting wizard");
     setWizardStyle(QWizard::ModernStyle);
 
