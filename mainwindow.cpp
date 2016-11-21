@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QPalette palette;
     palette.setBrush(QPalette::Background, bkgnd);
     this->setPalette(palette);
+
     // central widget
 
     mCentralwidget = new QWidget;

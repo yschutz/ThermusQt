@@ -19,16 +19,18 @@ class ThermusWiz : public QWizard
 public:
     ThermusWiz(QString Title = " ", QWidget *parent = 0);
 
+    qint32 getDialogId()  const { return mDialogId; }
     qint32 getSummaryId() const { return mSummaryId; }
 
 public slots:
     void accept();
 
 private:
-    FileDialog* mDialog;    // the file dialog window
+    FileDialog* mDialog;    // the file dialog page
+    qint32      mDialogId;  // Id of the Particles list file selection page
     QEventLoop  mLoop;      // waiting for done button to be pushed
-    ParaSel*    mParasel;   // the parameters settings window
-    Summary*    mSummary;   // the summary of settings
+    ParaSel*    mParasel;   // the parameters settings page
+    Summary*    mSummary;   // the summary of settings page
     qint32      mSummaryId; // Id of the summary page
 };
 

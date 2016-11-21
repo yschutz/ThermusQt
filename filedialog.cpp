@@ -8,6 +8,8 @@
 #include <QGroupBox>
 
 #include "filedialog.h"
+#include "summary.h"
+#include "thermuswiz.h"
 
 //__________________________________________________________________________
 FileDialog::FileDialog(QWidget *parent) : QWizardPage(parent)
@@ -20,8 +22,10 @@ FileDialog::FileDialog(QWidget *parent) : QWizardPage(parent)
     QVBoxLayout *vbox = new QVBoxLayout;
     for (qint32 index = 0; index < dir.entryList().size(); index++) {
         if (dir.entryList().at(index).contains("PartList_")) {
-            mRadioButtons.append(new QRadioButton(dir.entryList().at(index), this));
+            QRadioButton *button = new QRadioButton(dir.entryList().at(index), groupBox);
+            mRadioButtons.append(button);
             vbox->addWidget(mRadioButtons.last());
+            connect(button, SIGNAL(clicked(bool)), this, SLOT(selectFile()));
         }
     }
     mRadioButtons.at(0)->setChecked(true);
@@ -31,4 +35,22 @@ FileDialog::FileDialog(QWidget *parent) : QWizardPage(parent)
     layout->addWidget(groupBox, Qt::AlignVCenter);
 
     setLayout(layout);
+}
+
+//__________________________________________________________________________
+void FileDialog::selectFile()
+{
+    // set the file name ocorresponding to the checked file name
+
+    qDebug() << Q_FUNC_INFO;
+
+    for (qint32 index = 0; index < mRadioButtons.size(); index++) {
+        QRadioButton *button = mRadioButtons.at(index);
+        if( button->isChecked() )
+            setFileName(mRadioButtons.at(index)->text());
+    }
+    qDebug() << Q_FUNC_INFO << getFileName() << parent();
+
+    Summary *fd = (Summary*)(((ThermusWiz*)parentWidget())->page(((ThermusWiz*)parentWidget())->getSummaryId()));
+    fd->uppdate();
 }

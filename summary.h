@@ -9,6 +9,8 @@ class Summary : public QWizardPage
 
 public:
     Summary(QWidget *parent = 0);
+
+    void uppdate();
 };
 
 #endif // SUMMARY_H

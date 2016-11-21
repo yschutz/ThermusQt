@@ -436,7 +436,6 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     gridLayout->addWidget(infoLabel, 5, 0, 1, 3, Qt::AlignVCenter | Qt::AlignHCenter);
 
     setLayout(gridLayout);
-
 }
 
 //__________________________________________________________________________

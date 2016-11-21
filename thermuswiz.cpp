@@ -23,31 +23,28 @@ ThermusWiz::ThermusWiz(QString summaryTitle, QWidget *parent) : QWizard(parent)
 
     // page to select the particles list file
 
-    QWizard *myWiz = new QWizard(this);
     mDialog = new FileDialog(this);
-    myWiz->addPage(mDialog);
+    mDialogId = addPage(mDialog);
     myMacro.setDialog(mDialog);
 
     // page for the parameters setting
 
     mParasel = new ParaSel(this);
-    myWiz->addPage(mParasel);
+    addPage(mParasel);
     myMacro.setParaSel(mParasel);
 
     // page summarizing evrything
 
     mSummary = new Summary(this);
     mSummary->setSubTitle(summaryTitle);
-    mSummaryId = myWiz->addPage(mSummary);
+    mSummaryId = addPage(mSummary);
     myMacro.setSummary(mSummary);
 
-    myWiz->show();
+    show();
 
-    QAbstractButton *donebutton = myWiz->button(QWizard::FinishButton);
+    QAbstractButton *donebutton = button(QWizard::FinishButton);
     mLoop.connect(donebutton, SIGNAL(clicked(bool)), this, SLOT(accept()));
     mLoop.exec();
-
-
 }
 
 //__________________________________________________________________________
