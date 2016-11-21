@@ -35,6 +35,7 @@ public:
            bool    isFixed(ParameterType type)                  { return isFixed(mParameterFix[type]); }
            void    setFitValues(ParameterType type, double min, double max, double step);
            void    setParaValue(ParameterType type, double val) { mParameterValue[type]->setText(QString("%1").arg(val)); }
+           void    updateDisplay();
 
 public slots:
     void fixParanmeter(ParameterType type);
@@ -46,8 +47,11 @@ private:
     bool           mConstrain[kParTypes];        // if true parameter is constrained
     QLineEdit*     mDensity[kParTypes];          // value of the density to constrain for BQ, S, C, and Beauty
     QLineEdit*     mFitMax[kParTypes];           // max value of the parameters for the fit
+    double         mFitMaxD[kParTypes];          // default value;
     QLineEdit*     mFitMin[kParTypes];           // min value of the parameters for the fit
+    double         mFitMinD[kParTypes];          // default value;
     QLineEdit*     mFitSte[kParTypes];           // step value of the parameters for the fit
+    double         mFitSteD[kParTypes];          // default value;
     QGroupBox*     mGammaFitBox;                 // the fit box parameters for gammas
     QGridLayout*   mGammaFitBoxLayout;           // and its layout
     QGroupBox*     mMuConBox;                    // the constrain box parameters for the mus

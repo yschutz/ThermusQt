@@ -437,7 +437,6 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
 
     setLayout(gridLayout);
 
-//    resize( QSize(1000, 500));
 }
 
 //__________________________________________________________________________
@@ -561,6 +560,20 @@ void ParaSel::setFitValues(ParaSel::ParameterType type, double min, double max, 
     mFitMin[type]->setText(QString("%1").arg(min));
     mFitMax[type]->setText(QString("%1").arg(max));
     mFitSte[type]->setText(QString("%1").arg(step));
+}
+
+//__________________________________________________________________________
+void ParaSel::updateDisplay()
+{
+   // update the display after the default parameters have been set
+
+    for (qint32 type = 0; type < ParaSel::kParTypes; type++) {
+        if (mParameterFix[type]) {
+            mFitMin[type]->setText("Fixed");
+            mFitMax[type]->setText("Fixed");
+            mFitSte[type]->setText("Fixed");
+        }
+    }
 }
 
 //__________________________________________________________________________

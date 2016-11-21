@@ -70,7 +70,7 @@ void Prediction::setFitFix()
 }
 
 //__________________________________________________________________________
-void Prediction::selectDefaultParameters()
+void Prediction::setDefaultParameters()
 {
     // Select parameters from an interactive window
 
@@ -106,6 +106,13 @@ void Prediction::selectDefaultParameters()
     mParaSel->setParaValue(ParaSel::kMuBeauty, muBeautyDefault);
     mParaSel->setParaValue(ParaSel::kGammaBeauty, gammaBeautyDefault);
 
+    double fitMin = 0.05;
+    double fitMax = 0.180;
+    double fitSte = 0.001;
+
+    for (qint32 type = 0; type < ParaSel::kParTypes; type++)
+        mParaSel->setFitValues((ParaSel::ParameterType)type, fitMin, fitMax, fitSte);
+   mParaSel->updateDisplay();
 }
 
 //__________________________________________________________________________
@@ -125,6 +132,14 @@ void Prediction::setParameters()
                            );
     mParaInfo->setParent(this);
     mParaInfo->setB2Q(mParaSel->getB2Q());
+}
+
+//__________________________________________________________________________
+void Prediction::setParaSel(ParaSel *val)
+{
+    // set the Parasel wizard page and set default parameters
+    mParaSel = val;
+    setDefaultParameters();
 }
 
 //__________________________________________________________________________

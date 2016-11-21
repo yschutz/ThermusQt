@@ -25,14 +25,14 @@ public:
 
     bool        isDebug() const { return mDebug; }
     void        listParameters() const { mParaInfo->list(); }
-    void        selectDefaultParameters();
     void        selectParticlesListFile();
     void        setConstrain();
     void        setDebug(bool val) {mDebug = val; }
+    void        setDefaultParameters();
     void        setDialog(FileDialog* val) {mFileDialog = val;}
     void        setFitFix() ;
     void        setParameters();
-    void        setParaSel(ParaSel* val) {mParaSel = val;}
+    void        setParaSel(ParaSel* val);
     void        setParticlesListFile();
     void        setSummary(Summary * val) {mSummary = val;}
 

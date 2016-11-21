@@ -33,7 +33,6 @@ ThermusWiz::ThermusWiz(QString summaryTitle, QWidget *parent) : QWizard(parent)
     mParasel = new ParaSel(this);
     myWiz->addPage(mParasel);
     myMacro.setParaSel(mParasel);
-    myMacro.selectDefaultParameters();
 
     // page summarizing evrything
 
