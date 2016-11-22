@@ -8,9 +8,6 @@
 #include <QEventLoop>
 #include <QWizard>
 
-#include "filedialog.h"
-#include "parasel.h"
-#include "summary.h"
 
 class ThermusWiz : public QWizard
 {
@@ -24,12 +21,12 @@ public:
 
 public slots:
     void accept();
+    void next();
 
 private:
     qint32      mDialogId;  // Id of the Particles list file selection page
     QEventLoop  mLoop;      // waiting for done button to be pushed
-    ParaSel*    mParasel;   // the parameters settings page
-    Summary*    mSummary;   // the summary of settings page
+    qint32      mParaSelId; // Id of the parameter selection page
     qint32      mSummaryId; // Id of the summary page
 };
 

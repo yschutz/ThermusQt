@@ -43,6 +43,9 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     QLabel *tfix       = new QLabel(tr("Fix"), tBox);
     QLabel *tempLabel = new QLabel(tr("T:"), tBox);
     mParameterValue[kTemp] = new QLineEdit(tBox);
+
+    registerField("temp", mParameterValue[kTemp]);
+
     tempLabel->setBuddy(mParameterValue[kTemp]);
     QLabel *tempUnitLabel = new QLabel(tr("GeV"));
     mParameterFix[kTemp] = new QCheckBox(" ", tBox);
@@ -661,5 +664,4 @@ void ParaSel::fixParanmeter(ParaSel::ParameterType type)
     mFitMin[type]->setPalette(mPalette);
     mFitMax[type]->setPalette(mPalette);
     mFitSte[type]->setPalette(mPalette);
-
 }

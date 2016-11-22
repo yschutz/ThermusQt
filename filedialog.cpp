@@ -24,7 +24,6 @@ FileDialog::FileDialog(QWidget *parent) : QWizardPage(parent)
             QRadioButton *button = new QRadioButton(dir.entryList().at(index), groupBox);
             mRadioButtons.append(button);
             vbox->addWidget(mRadioButtons.last());
-            connect(button, SIGNAL(clicked(bool)), this, SLOT(selectFile()));
         }
     }
     groupBox->setLayout(vbox);
@@ -33,16 +32,4 @@ FileDialog::FileDialog(QWidget *parent) : QWizardPage(parent)
     layout->addWidget(groupBox, Qt::AlignVCenter);
 
     setLayout(layout);
-}
-
-//__________________________________________________________________________
-void FileDialog::selectFile()
-{
-    // set the file name ocorresponding to the checked file name
-
-    for (qint32 index = 0; index < mRadioButtons.size(); index++) {
-        if ( mRadioButtons.at(index)->isChecked() )
-            setFileName(mRadioButtons.at(index)->text());
-    }
-    RunMacro::instance().setParticlesListFileName(getFileName());
 }

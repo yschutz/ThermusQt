@@ -10,7 +10,7 @@
 #include <QObject>
 
 #include "filedialog.h"
-#include "parasel.h"
+//#include "parasel.h"
 #include "summary.h"
 
 #include "main/TTMParticleSet.h"
@@ -28,12 +28,11 @@ public:
     void        setConstrain();
     void        setDebug(bool val) {mDebug = val; }
     void        setDefaultParameters();
-//    void        setDialog(FileDialog* val) {mFileDialog = val;}
+    void        setDialog(FileDialog* val) {mFileDialog = val;}
     void        setFitFix() ;
     void        setParameters();
     void        setParaSel(ParaSel* val);
     void        setParticlesListFile();
-    void        setParticlesListFileName(QString name);
     void        setSummary(Summary * val) {mSummary = val;}
 
 private:
@@ -45,7 +44,7 @@ private:
     bool                mDebug;            // true if debug mode on
     static RunMacro     mInstance;         // unique instance of the object
     QString             mParticlesList;    // txt file listing the particles
-//    FileDialog*         mFileDialog;       // dialog window to select a file
+    FileDialog*         mFileDialog;       // dialog window to select a file
     TTMParameterSetBSQ* mParaInfo;         // holds the information on parameters
     ParaSel*            mParaSel;          // window for parameters selection
     TTMParticleSet*     mPartInfo;         // holds the information on particles

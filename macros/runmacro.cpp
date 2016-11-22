@@ -19,7 +19,7 @@ RunMacro::RunMacro() ://mFileDialog(NULL),
     mParaSel(NULL), mPartInfo(NULL)
 {
     // ctor
-    setObjectName("Prediction");
+    setObjectName("Run Macro");
 
 }
 
@@ -135,20 +135,14 @@ void RunMacro::setParticlesListFile()
 {
     // setting the particles list and particles properties
 
+    mParticlesList = mFileDialog->getFileName();
+    mParticlesList.prepend(":/particles/");
     QString tempo(QString("The selected particles lis file is: %1").arg(mParticlesList));
     if (mDebug)
         qDebug() << Q_FUNC_INFO << tempo;
 
     mPartInfo = new  TTMParticleSet(mParticlesList, true);  // here true means the decays are scaled to sum(BR) = 100%
     mPartInfo->inputDecays(":/particles/");
-}
-
-//__________________________________________________________________________
-void RunMacro::setParticlesListFileName(QString name)
-{
-    // set the particles list name (called by FileDialog)
-
-    mParticlesList = name.prepend(":/particles/");
 }
 
 //__________________________________________________________________________

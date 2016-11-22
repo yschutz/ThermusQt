@@ -18,9 +18,8 @@ public:
     QString              getFileName() const { return mFileName; }
     QList<QRadioButton*> getRadioButtons() const  { return mRadioButtons; }
 
-public slots:
-    void                 selectFile();
 
+public slots:
 
 private:
     QEventLoop            mLoop;           // loo for waiting the validate button to be pressed
