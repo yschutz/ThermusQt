@@ -1,11 +1,9 @@
 #include <QDebug>
-#include <QGroupBox>
 #include <QLabel>
 #include <QVariant>
 
-#include "filedialog.h"
+#include "parasel.h"
 #include "summary.h"
-#include "thermuswiz.h"
 
 //__________________________________________________________________________
 Summary::Summary(QWidget *parent) : QWizardPage(parent)
@@ -13,32 +11,51 @@ Summary::Summary(QWidget *parent) : QWizardPage(parent)
     // Create the summary of inputs selected to run a macro
     setTitle("Summary of settings");
 
+    mFileGB    = new QGroupBox("Particles", this);
+    mFileGBlay = new QGridLayout(mFileGB);
+    mParaGB    = new QGroupBox("Parameters", this);
+    mParaGBlay = new QGridLayout(mParaGB);
 
-//    // final layout
+   // final layout
     mMainLayout = new QGridLayout(this);
-
+    mMainLayout->addWidget(mFileGB, 0, 0, 1, 1);
+    mMainLayout->addWidget(mParaGB, 1, 0, 1, 1);
     setLayout(mMainLayout);
 
-
+    resize(100, 100);
 }
 
 //__________________________________________________________________________
 void Summary::updateFileName(QString name)
 {
-    QGroupBox *gb = new QGroupBox("Particles", this);
+    // display particles file name
 
-    // the particles list file name
     QString tempo = QString("The selected particles list file is: %1").arg(name);
-    QLabel *label = new QLabel(tempo, gb);
 
-    QGridLayout *ly = new QGridLayout(gb);
-    ly->addWidget(label, 0, 0, 1, 1);
-    gb->setLayout(ly);
+    static QLabel *label = new QLabel(tempo, mFileGB);
 
-    // final layout
-    mMainLayout->addWidget(gb);
+    if ( !mFileGBlay->itemAtPosition(0, 0)) {
+        mFileGBlay->addWidget(label, 0, 0, 1, 1);
+    }
+    else
+        label->setText(tempo);
+    mFileGB->setLayout(mFileGBlay);
 
-    double t = field("temp").toDouble();
+}
 
+//__________________________________________________________________________
+void Summary::updateParameters()
+{
+    // displays the parameters
+
+    for (qint32 type = 0; type < ParaSel::kParTypes; type++) {
+        static QLabel *labelN = new QLabel(name, mParaGB);
+        static QLabel *labelV = new QLabel(QString("%1").arg(value);
+        QString name = ParaSel::getParaName((ParaSel::ParameterType)type);
+        double value = field(name).toDouble();
+        mParaGBlay->addWidget(labelN, type, 0, 1, 1);
+        mParaGBlay->addWidget(labelV, mParaGB), type, 1);
+    }
+    mParaGB->setLayout(mParaGBlay);
 }
 

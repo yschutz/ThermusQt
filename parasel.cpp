@@ -33,6 +33,16 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     collSysNames[kpp]    = "pp";
     collSysNames[kpPb]   = "pPb";
 
+//    mParameterNames[kGammaS]      = "gammaS";
+//    mParameterNames[kGammaC]      = "gammaC";
+//    mParameterNames[kGammaBeauty] = "gammaBeauty";
+//    mParameterNames[kMuQ]         = "muQ";
+//    mParameterNames[kMuB]         = "muB";
+//    mParameterNames[kMuS]         = "muS";
+//    mParameterNames[kMuC]         = "muC";
+//    mParameterNames[kMuBeauty]    = "muBeauty";
+//    mParameterNames[kRadius]      = "radius";
+//    mParameterNames[kTemp]        = "temperature";
 
     mPalette.setColor(QPalette::Base,Qt::white);
     mPalette.setColor(QPalette::Text,Qt::red);
@@ -43,8 +53,6 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     QLabel *tfix       = new QLabel(tr("Fix"), tBox);
     QLabel *tempLabel = new QLabel(tr("T:"), tBox);
     mParameterValue[kTemp] = new QLineEdit(tBox);
-
-    registerField("temp", mParameterValue[kTemp]);
 
     tempLabel->setBuddy(mParameterValue[kTemp]);
     QLabel *tempUnitLabel = new QLabel(tr("GeV"));
@@ -439,6 +447,11 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     gridLayout->addWidget(infoLabel, 5, 0, 1, 3, Qt::AlignVCenter | Qt::AlignHCenter);
 
     setLayout(gridLayout);
+
+    // register the fields
+    for (qint32 type = 0; type < kParTypes; type++) {
+        registerField(getParaName((ParameterType)type), mParameterValue[type]);
+    }
 }
 
 //__________________________________________________________________________

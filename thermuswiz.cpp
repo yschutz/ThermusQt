@@ -39,6 +39,7 @@ ThermusWiz::ThermusWiz(QString summaryTitle, QWidget *parent) : QWizard(parent)
 //    mSummary->setSubTitle(summaryTitle);
     mSummaryId = addPage(new Summary(this));
     myMacro.setSummary((Summary*)page(mSummaryId));
+    ((Summary*)page(mSummaryId))->setSubTitle(summaryTitle);
 
     show();
 
@@ -65,7 +66,9 @@ void ThermusWiz::next()
 {
     // fills the summary page each time a page is filled (next button pressed)
 
-    if (currentId() -1 == mDialogId) {
+    Summary * summary = (Summary*)page(mSummaryId);
+
+    if (currentId() - 1 == mDialogId) {
         FileDialog * file = (FileDialog*)page(mDialogId);
         for (qint32 index = 0; index < file->getRadioButtons().size(); index++) {
             QRadioButton * but = file->getRadioButtons().at(index);
@@ -73,6 +76,8 @@ void ThermusWiz::next()
               file->setFileName(but->text());
         }
 
-        ((Summary*)page(mSummaryId))->updateFileName(file->getFileName());
+        summary->updateFileName(file->getFileName());
+    } else if (currentId() - 1 == mParaSelId) {
+        summary->updateParameters();
     }
 }

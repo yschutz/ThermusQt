@@ -15,6 +15,7 @@ class ParaSel : public QWizardPage
     Q_OBJECT
     Q_ENUMS (CollSysType)
     Q_ENUMS (ParameterType)
+    Q_ENUMS (ParameterName)
 public:
     enum CollSysType {kPbPb, kAuAu, kpp, kpPb, kCollTypes };
     enum ParameterType {kGammaS, kGammaC, kGammaBeauty,
@@ -58,6 +59,7 @@ private:
     QGridLayout*   mMuConBoxLayout;              // and its layout
     QGroupBox*     mMuFitBox;                    // the fit box parameters for the mus
     QGridLayout*   mMuFitBoxLayout;              // and its layout
+    QString        mParameterNames[kParTypes];   // given names of the parameters
     QCheckBox*     mParameterCon[kParTypes];     // checkbox list to constrain or not the parameters
     QCheckBox*     mParameterFix[kParTypes];     // checkbox list to fix or not the parameters
     QLineEdit*     mParameterValue[kParTypes];   // checkbox list to fix or not the parameters
