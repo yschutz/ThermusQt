@@ -26,7 +26,6 @@ public slots:
     void accept();
 
 private:
-    FileDialog* mDialog;    // the file dialog page
     qint32      mDialogId;  // Id of the Particles list file selection page
     QEventLoop  mLoop;      // waiting for done button to be pushed
     ParaSel*    mParasel;   // the parameters settings page

@@ -2,7 +2,7 @@
 //
 // The wizard to setp up various things
 
-#include "macros/prediction.h"
+#include "macros/runmacro.h"
 #include "thermuswiz.h"
 
 //__________________________________________________________________________
@@ -19,13 +19,11 @@ ThermusWiz::ThermusWiz(QString summaryTitle, QWidget *parent) : QWizard(parent)
 //    //setPixmap(QWizard::BannerPixmap, QPixmap(":/Icons/Icons/NegativeSmile.png"));
 //    setPixmap(QWizard::BackgroundPixmap, QPixmap(":/Icons/Icons/RC30Controller.JPG"));
 
-    Prediction& myMacro = Prediction::instance();
+    RunMacro& myMacro = RunMacro::instance();
 
     // page to select the particles list file
 
-    mDialog = new FileDialog(this);
-    mDialogId = addPage(mDialog);
-    myMacro.setDialog(mDialog);
+    mDialogId = addPage(new FileDialog(this));
 
     // page for the parameters setting
 
@@ -52,11 +50,4 @@ void ThermusWiz::accept()
 {
     mLoop.exit(0);
 
-    for (qint32 index = 0; index < mDialog->getRadioButtons().size(); index++) {
-        if (mDialog->getRadioButtons().at(index)->isChecked()) {
-            mDialog->setFileName(mDialog->getRadioButtons().at(index)->text());
-            break;
-        }
-    }
-    Prediction::instance().selectParticlesListFile();
 }

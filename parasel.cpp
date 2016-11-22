@@ -599,48 +599,37 @@ void ParaSel::conParanmeter(ParameterType type)
 void ParaSel::fixParanmeter(ParaSel::ParameterType type)
 {
    // fix/free parameters and request fitting constrains
-    qint32 subRow  = 0.;
     QGroupBox *temp = NULL;
 
     switch (type) {
     case kTemp:
-        subRow  = 1;
         temp = mTFitBox;
         break;
     case kMuQ:
-        subRow  = 1;
         temp = mMuFitBox;
         break;
     case kMuB:
-        subRow  = 2;
         temp = mMuFitBox;
         break;
     case kMuS:
-        subRow  = 3;
         temp = mMuFitBox;
         break;
     case kMuC:
-        subRow  = 4;
         temp = mMuFitBox;
         break;
     case kMuBeauty:
-        subRow  = 5;
         temp = mMuFitBox;
         break;
     case kGammaS:
-        subRow  = 1;
         temp = mGammaFitBox;
         break;
     case kGammaC:
-        subRow  = 2;
         temp = mGammaFitBox;
         break;
     case kGammaBeauty:
-        subRow  = 3;
         temp = mGammaFitBox;
         break;
     case kRadius:
-        subRow  = 1;
         temp = mRFitBox;
         break;
     default:

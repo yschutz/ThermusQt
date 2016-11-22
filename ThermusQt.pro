@@ -22,14 +22,14 @@ SOURCES += main.cpp\
     main/TTMIDObj.cpp \
     parasel.cpp \
     main/TTMParameter.cpp \
-    macros/prediction.cpp \
     thermuswiz.cpp \
     main/TTMParameterSet.cpp \
     main/TTMParameterSetBSQ.cpp \
     main/TTMThermalFit.cpp \
     main/TTMYield.cpp \
     external/QMinuit.cpp \
-    summary.cpp
+    summary.cpp \
+    macros/runmacro.cpp
 
 HEADERS  += mainwindow.h \
     filedialog.h \
@@ -40,14 +40,14 @@ HEADERS  += mainwindow.h \
     main/TTMIDObj.h \
     parasel.h \
     main/TTMParameter.h \
-    macros/prediction.h \
     thermuswiz.h \
     main/TTMParameterSet.h \
     main/TTMParameterSetBSQ.h \
     main/TTMThermalFit.h \
     main/TTMYield.h \
     external/QMinuit.h \
-    summary.h
+    summary.h \
+    macros/runmacro.h
 
 FORMS    += mainwindow.ui
 

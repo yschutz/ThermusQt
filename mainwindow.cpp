@@ -10,7 +10,7 @@
 #include <QDebug>
 #include <QVBoxLayout>
 
-#include "macros/prediction.h"
+#include "macros/runmacro.h"
 #include "thermuswiz.h"
 
 //__________________________________________________________________________
@@ -107,7 +107,7 @@ void MainWindow::runPrediction()
     if (mDebug)
         qDebug() << info;
 
-    Prediction& myMacro = Prediction::instance();
+    RunMacro& myMacro = RunMacro::instance();
     myMacro.setDebug(mDebug);
     myMacro.objectName() + ": test";
 

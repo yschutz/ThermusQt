@@ -199,7 +199,6 @@ void TTMParticle::setDecayChannels(QString file, bool scaleBRatios)
 
     QFile data(file);
     if (!data.open(QFile::ReadOnly)) {
-
         qInfo() << Q_FUNC_INFO << "INFO: Cannot open file: " << file;
         qInfo()   << "              Setting Particle " << mID << "to stable!";
         mStable = true;

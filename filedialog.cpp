@@ -8,8 +8,7 @@
 #include <QGroupBox>
 
 #include "filedialog.h"
-#include "summary.h"
-#include "thermuswiz.h"
+#include "macros/runmacro.h"
 
 //__________________________________________________________________________
 FileDialog::FileDialog(QWidget *parent) : QWizardPage(parent)
@@ -28,7 +27,6 @@ FileDialog::FileDialog(QWidget *parent) : QWizardPage(parent)
             connect(button, SIGNAL(clicked(bool)), this, SLOT(selectFile()));
         }
     }
-    mRadioButtons.at(0)->setChecked(true);
     groupBox->setLayout(vbox);
 
     QVBoxLayout *layout = new QVBoxLayout();
@@ -42,15 +40,9 @@ void FileDialog::selectFile()
 {
     // set the file name ocorresponding to the checked file name
 
-    qDebug() << Q_FUNC_INFO;
-
     for (qint32 index = 0; index < mRadioButtons.size(); index++) {
-        QRadioButton *button = mRadioButtons.at(index);
-        if( button->isChecked() )
+        if ( mRadioButtons.at(index)->isChecked() )
             setFileName(mRadioButtons.at(index)->text());
     }
-    qDebug() << Q_FUNC_INFO << getFileName() << parent();
-
-    Summary *fd = (Summary*)(((ThermusWiz*)parentWidget())->page(((ThermusWiz*)parentWidget())->getSummaryId()));
-    fd->uppdate();
+    RunMacro::instance().setParticlesListFileName(getFileName());
 }
