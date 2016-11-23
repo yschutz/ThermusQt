@@ -4,6 +4,7 @@
 
 #include "macros/runmacro.h"
 #include "filedialog.h"
+#include "mainwindow.h"
 #include "parasel.h"
 #include "summary.h"
 #include "thermuswiz.h"
@@ -82,4 +83,6 @@ void ThermusWiz::accept()
 
     mLoop.exit(0);
     close();
+    qobject_cast<MainWindow*>(parentWidget())->createConsol();
+    qDebug() << parentWidget();
 }

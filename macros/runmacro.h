@@ -1,6 +1,7 @@
 // Author: Yves Schutz 24 octobre 2016
 //
 // The steering class to prediction thermus (aka ROOT macro)
+// Singleton
 
 
 #ifndef PREDICTION_H

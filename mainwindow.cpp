@@ -12,6 +12,7 @@
 #include <QVBoxLayout>
 
 #include "macros/runmacro.h"
+#include "logger.h"
 #include "thermuswiz.h"
 
 //__________________________________________________________________________
@@ -33,7 +34,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // central widget
 
     mCentralwidget = new QWidget;
-//    setCentralWidget(mCentralwidget);
 
     QWidget *topFiller = new QWidget;
     topFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -71,7 +71,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setMinimumSize(160, 160);
     resize(480, 320);
-    createConsol();
 }
 
 //__________________________________________________________________________
@@ -91,15 +90,50 @@ void MainWindow::createConsol()
     QMdiArea *mdiArea = new QMdiArea(outputAreaWindow);
 
     // the console for log output from qDebug, qInfo, qWarning
-    mOutConsole = new QPlainTextEdit("log Consol", mdiArea);
-    mOutConsole->setReadOnly(true);
-    mdiArea->addSubWindow(mOutConsole);
-    // direct the log info to the console
-    qInstallMessageHandler(appOutput);
+    mLogConsol = new QPlainTextEdit("log Consol", mdiArea);
+    mLogConsol->setReadOnly(true);
+    mdiArea->addSubWindow(mLogConsol);
 
     outputAreaWindow->setCentralWidget(mdiArea);
 
     outputAreaWindow->show();
+
+
+    // direct the log info to the console
+    qInstallMessageHandler(customMessageHandler);
+}
+
+//__________________________________________________________________________
+void MainWindow::customMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    // redifinition on how to handle log messages
+
+    QString txt;
+    switch (type) {
+    case QtDebugMsg:
+        txt = QString("Debug<%1-%2>: %3").arg(context.function).arg(context.line).arg(msg);
+        break;
+    case QtInfoMsg:
+        txt = QString("Info<%1>: %2").arg(context.function).arg(msg);
+        break;
+    case QtWarningMsg:
+        txt = QString("Warning<%1-%2>: %3").arg(context.function).arg(context.line).arg(msg);
+        break;
+    case QtCriticalMsg:
+        txt = QString("Critical:<%1-%2>: %3").arg(context.function).arg(context.line).arg(msg);
+        break;
+    case QtFatalMsg:
+        txt = QString("Fatal:<%1-%2>: %3").arg(context.function).arg(context.line).arg(msg);
+        abort();
+    }
+
+    Logger& logger = Logger::instance();
+
+    // Set my QTextEdit
+    logger.setTextEdit(mLogConsol);
+
+    // Write the message to QTextEdit
+    logger.writeMessage(txt);
 }
 
 //__________________________________________________________________________

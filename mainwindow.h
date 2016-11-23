@@ -13,12 +13,7 @@
 #include <QPainter>
 #include <QPlainTextEdit>
 
-static QPlainTextEdit* mOutConsole; // Console for log qDebug/Info/Warning output
-
-static void appOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg){
-    mOutConsole->appendPlainText(msg);
-}
-
+static QPlainTextEdit* mLogConsol;         // Consol where to write log information
 
 namespace Ui {
 class MainWindow;
@@ -33,6 +28,7 @@ public:
     ~MainWindow();
 
     void createConsol();
+    static void customMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
     void setDebugMode(bool val);
 
 private slots:
@@ -49,14 +45,14 @@ private:
 
     Ui::MainWindow *ui;
 
-    QWidget* mCentralwidget;     // The window so far inactive
-    bool     mDebug;             // True for running debug mode
-    QMenu*   mDebugMenu;         // Menu Tab to set the debug on/off
-    QAction* mDebugOffAction;    // Action for debug mode off
-    QAction* mDebugOnAction;     // Action for debug mode on
-    QAction* mPredictionAction;  // Action for the Prediction macro
-    QAction* mQuitAction;        // Action for quitting the application
-    QMenu*   mRunMenu;           // Menu Tab to select the macro to run
+    QWidget*   mCentralwidget;     // The window so far inactive
+    bool       mDebug;             // True for running debug mode
+    QMenu*     mDebugMenu;         // Menu Tab to set the debug on/off
+    QAction*   mDebugOffAction;    // Action for debug mode off
+    QAction*   mDebugOnAction;     // Action for debug mode on
+    QAction*   mPredictionAction;  // Action for the Prediction macro
+    QAction*   mQuitAction;        // Action for quitting the application
+    QMenu*     mRunMenu;           // Menu Tab to select the macro to run
 
 };
 

@@ -83,19 +83,18 @@ void TTMParameter::list()
 {
     // Outputs the variable's properties
 
+    QString text;
     if (mError != 0.)
-        qDebug() << Q_FUNC_INFO << "INFO: " << objectName() << mValue << "+-" << mError;
+        text = QString("%1 %2 ± %3").arg(objectName()).arg(mValue).arg(mError);
     else
-        qDebug() << Q_FUNC_INFO << "INFO: " << objectName() << mValue;
+        text = QString("%1 %2").arg(objectName()).arg(mValue);
 
     if (mFlag == 0) {
-      qDebug() << mStatus;
-      qDebug() << "      " << " start: " << mStart;
-      qDebug() << "      " << " range: " << mMin << " -- " << mMax;
-      qDebug() << "      " << " step:  " << mStep;
+        text = text.append(" %1 start: %2; range: %3 -- %4; step: %5").arg(mStatus).arg(mStart).arg(mMin).arg(mMax).arg(mStep);
     } else {
-      qDebug() << mStatus;
+        text = text.append(QString(" %1").arg(mStatus));
     }
+    qInfo() << text;
 }
 
 //__________________________________________________________________________

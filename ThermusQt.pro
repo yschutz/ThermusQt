@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     main/TTMYield.cpp \
     external/QMinuit.cpp \
     summary.cpp \
-    macros/runmacro.cpp
+    macros/runmacro.cpp \
+    logger.cpp
 
 HEADERS  += mainwindow.h \
     filedialog.h \
@@ -47,7 +48,8 @@ HEADERS  += mainwindow.h \
     main/TTMYield.h \
     external/QMinuit.h \
     summary.h \
-    macros/runmacro.h
+    macros/runmacro.h \
+    logger.h
 
 FORMS    += mainwindow.ui
 

@@ -14,7 +14,7 @@
 RunMacro RunMacro::mInstance = RunMacro();
 
 //__________________________________________________________________________
-RunMacro::RunMacro() ://mFileDialog(nullptr),
+RunMacro::RunMacro() :
     mParaInfo(nullptr),
     mParaSel(nullptr), mPartInfo(nullptr)
 {
@@ -151,7 +151,6 @@ RunMacro &RunMacro::instance()
     // returns the unique instance
 
     return mInstance;
-
 }
 
 //__________________________________________________________________________
