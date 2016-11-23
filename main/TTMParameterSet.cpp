@@ -11,7 +11,7 @@
 #include "TTMParameterSet.h"
 
 TTMParameterSet::TTMParameterSet(QObject *parent) : QObject(parent),
-    mPar(NULL), mConstraintInfo("Parameters unconstrained")
+    mPar(nullptr), mConstraintInfo("Parameters unconstrained")
 {
 // ctor
 }

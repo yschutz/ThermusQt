@@ -11,7 +11,7 @@
 
 //__________________________________________________________________________
 TTMDecayChannel::TTMDecayChannel(QObject* parent) : QObject(parent),
-    mBRatio(0.0), mDaughters(NULL)
+    mBRatio(0.0), mDaughters(nullptr)
 {
     //ctor
 }

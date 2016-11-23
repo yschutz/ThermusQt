@@ -11,6 +11,7 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QPainter>
+#include <QPlainTextEdit>
 
 namespace Ui {
 class MainWindow;
@@ -24,9 +25,11 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void appOutput(QString &msg) {mOutConsole->appendPlainText(msg);}
+    void createConsol();
     void setDebugMode(bool val);
-private slots:
 
+private slots:
     void runPrediction();
     void quit();
 
@@ -40,14 +43,16 @@ private:
 
     Ui::MainWindow *ui;
 
+    QWidget* mCentralwidget;     // The window so far inactive
     bool     mDebug;             // True for running debug mode
     QMenu*   mDebugMenu;         // Menu Tab to set the debug on/off
     QAction* mDebugOffAction;    // Action for debug mode off
     QAction* mDebugOnAction;     // Action for debug mode on
-    QMenu*   mRunMenu;           // Menu Tab to select the macro to run
     QAction* mPredictionAction;  // Action for the Prediction macro
     QAction* mQuitAction;        // Action for quitting the application
-    QWidget* mCentralwidget;     // The window so far inactive
+    QMenu*   mRunMenu;           // Menu Tab to select the macro to run
+
+    QPlainTextEdit* mOutConsole; // Console for log qDebug/Info/Warning output
 };
 
 #endif // MAINWINDOW_H

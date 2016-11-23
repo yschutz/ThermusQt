@@ -349,7 +349,7 @@ QObject *QMinuit::Contour(qint32 npoints, qint32 pa1, qint32 pa2)
 //    delete [] ycoor;
 //    return gr;
     qWarning() << Q_FUNC_INFO << "This is a root specific method";
-    return NULL;
+    return nullptr;
 }
 
 //__________________________________________________________________________
@@ -5693,8 +5693,8 @@ void QMinuit::qmnpint(double &pexti, qint32 i1, double &pinti)
 
 void QMinuit::qmnplot(double *xpt, double *ypt, char *chpt, qint32 nxypt, qint32 npagwd, qint32 npagln)
 {
-    ypt = NULL;
-    xpt = NULL;
+    ypt = nullptr;
+    xpt = nullptr;
     qWarning() << Q_FUNC_INFO << "NOT IMPLEMENTED" << xpt << ypt << chpt << nxypt << npagwd << npagln;
     qFatal("77");
 //    if (mGraphicsMode) {

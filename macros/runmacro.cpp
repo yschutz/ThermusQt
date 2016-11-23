@@ -14,9 +14,9 @@
 RunMacro RunMacro::mInstance = RunMacro();
 
 //__________________________________________________________________________
-RunMacro::RunMacro() ://mFileDialog(NULL),
-    mParaInfo(NULL),
-    mParaSel(NULL), mPartInfo(NULL)
+RunMacro::RunMacro() ://mFileDialog(nullptr),
+    mParaInfo(nullptr),
+    mParaSel(nullptr), mPartInfo(nullptr)
 {
     // ctor
     setObjectName("Run Macro");

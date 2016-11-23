@@ -448,12 +448,25 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     // register the fields
     for (qint32 type = 0; type < kParTypes; type++) {
         QString name = getParaName((ParameterType)type);
-        registerField(name, mParameterValue[type]);
-        name.append("Fix");
-        registerField(name, mParameterFix[type]);
-        name.append("Fixm");
-        registerField(name, mParameterFix[type]);
+        QString text(name);
+        registerField(text, mParameterValue[type]);
+        text = name + "Fix";
+        registerField(text, mParameterFix[type]);
+        text = name + "Fixm";
+        registerField(text, mFitMin[type]);
+        text = name + "FixM";
+        registerField(text, mFitMax[type]);
+        text = name + "Fixs";
+        registerField(text, mFitSte[type]);
     }
+    registerField(getParaName(kMuQ)+"C", mParameterCon[kMuQ]);
+    registerField(getParaName(kMuQ)+"CD", mDensity[kMuQ]);
+    registerField(getParaName(kMuS)+"C", mParameterCon[kMuS]);
+    registerField(getParaName(kMuS)+"CD", mDensity[kMuS]);
+    registerField(getParaName(kMuC)+"C", mParameterCon[kMuC]);
+    registerField(getParaName(kMuC)+"CD", mDensity[kMuC]);
+    registerField(getParaName(kMuBeauty)+"C", mParameterCon[kMuBeauty]);
+    registerField(getParaName(kMuBeauty)+"CD", mDensity[kMuBeauty]);
 }
 
 //__________________________________________________________________________

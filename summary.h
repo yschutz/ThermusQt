@@ -16,6 +16,8 @@ public:
     void updateParameters();
 
 private:
+    QGroupBox*    mConsGB;      // the constraints Group Box
+    QGridLayout*  mConsGBlay;   // the constraints Group Box layout
     QGroupBox*    mFileGB;      // the file Group Box
     QGridLayout*  mFileGBlay;   // the file Group Box layout
     QGridLayout*  mMainLayout;  // the main layout

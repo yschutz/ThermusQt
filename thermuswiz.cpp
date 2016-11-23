@@ -71,7 +71,6 @@ void ThermusWiz::initializePage(qint32 id)
 
         summary->updateFileName(file->getFileName());
     } else if (id - 1 == mParaSelId) {
-        ParaSel * para = qobject_cast<ParaSel*>(page(mParaSelId));
         summary->updateParameters();
     }
 }
@@ -81,10 +80,6 @@ void ThermusWiz::accept()
 {
     // finish (done) button pressed
 
-
-
-
-
-
     mLoop.exit(0);
+    close();
 }

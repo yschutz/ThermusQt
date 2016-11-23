@@ -185,13 +185,13 @@ TTMParticleSet::TTMParticleSet(const TTMParticleSet &obj)
         part->setThresholdFlag((*a)->getThresholdFlag());
         part->setRadius((*a)->getRadius());
 
-        QList<TTMDecayChannel*>::iterator old;
-        for (old = (*a)->getDecayChannels()->begin(); old != (*a)->getDecayChannels()->end(); ++old) {
+        QList<TTMDecayChannel*>::const_iterator old;
+        for (old = (*a)->getDecayChannels().begin(); old != (*a)->getDecayChannels().end(); ++old) {
             QList<TTMIDObj*>* ndlist = new QList<TTMIDObj*>;
-            QList<TTMIDObj*>::iterator oldid;
+            QList<TTMIDObj*>::const_iterator oldid;
             for (oldid = (*old)->getDaughterList()->begin(); oldid != (*old)->getDaughterList()->end(); ++oldid)
                 ndlist->append(new TTMIDObj((*oldid)->getID()));
-            part->getDecayChannels()->append(new TTMDecayChannel((*old)->getBRatio(),ndlist));
+            (part->getDecayChannels()).append(new TTMDecayChannel((*old)->getBRatio(),ndlist));
         }
         part->updateDecaySummary();
         mPartTable->insert(part->objectName(), part);
@@ -290,7 +290,7 @@ void TTMParticleSet::calculateThreshold(TTMParticle *part)
         thresh = 0.;
 
         QList<TTMDecayChannel*>::iterator ch;
-        for (ch = part->getDecayChannels()->begin(); ch != part->getDecayChannels()->end(); ++ch) {
+        for (ch = part->getDecayChannels().begin(); ch != part->getDecayChannels().end(); ++ch) {
             QList<TTMIDObj*>::iterator id;
             double mch = 0.;
             for (id = (*ch)->getDaughterList()->begin(); id != (*ch)->getDaughterList()->end(); ++id) {
@@ -340,26 +340,26 @@ void TTMParticleSet::generateBRatios(TTMParticle *parent)
     // GenerateBRatios() updates the summaries first.
     //
 
-    QList<TTMDecay*>* parent_decays = parent->getDecaySummary();
+    QList<TTMDecay*>& parent_decays = parent->getDecaySummary();
 
     if (!parent->getStable())    //Parent unstable
     {
-        QList<TTMDecay*>* temp_decays = new QList<TTMDecay*>;
+        QList<TTMDecay*> temp_decays; // = new QList<TTMDecay*>;
         QList<TTMDecay*>::iterator p_decay;
 
         qint32 flag;
 
         do {
             flag = 0;
-            qDeleteAll(temp_decays->begin(), temp_decays->end());
-            for (p_decay = parent_decays->begin(); p_decay != parent_decays->end(); ++p_decay) {
+            qDeleteAll(temp_decays.begin(), temp_decays.end());
+            for (p_decay = parent_decays.begin(); p_decay != parent_decays.end(); ++p_decay) {
                 TTMParticle* daughter = getParticle((*p_decay)->getDaughterID());
                 if(daughter){                 //if daughter is in the set
                     if (daughter->getStable())  //if daughter is stable
                     {
                         QList<TTMDecay*>::iterator t_decay;
                         bool found = false;
-                        for (t_decay = temp_decays->begin(); t_decay != temp_decays->end(); ++t_decay) {
+                        for (t_decay = temp_decays.begin(); t_decay != temp_decays.end(); ++t_decay) {
                             if (found)
                                 break;
                             if ((*t_decay)->getDaughterID() == daughter->getID())
@@ -373,15 +373,15 @@ void TTMParticleSet::generateBRatios(TTMParticle *parent)
                         if (!found)
                             //daughter not yet in temp decay table of parent
                         {
-                            temp_decays->append(new TTMDecay((*p_decay)->getParentID(),
+                            temp_decays.append(new TTMDecay((*p_decay)->getParentID(),
                                                              (*p_decay)->getDaughterID(),
                                                              (*p_decay)->getBRatio()));
                         }
                     } else              // if daughter is unstable
                     {
-                        QList<TTMDecay*>* daughter_decays = daughter->getDecaySummary();
+                        QList<TTMDecay*>& daughter_decays = daughter->getDecaySummary();
                         QList<TTMDecay*>::iterator d_decay;
-                        for (d_decay = daughter_decays->begin(); d_decay != daughter_decays->end(); ++d_decay) {
+                        for (d_decay = daughter_decays.begin(); d_decay != daughter_decays.end(); ++d_decay) {
                             TTMParticle* grandaughter = getParticle((*d_decay)->getDaughterID());
 
                             if (grandaughter->getStable())
@@ -389,7 +389,7 @@ void TTMParticleSet::generateBRatios(TTMParticle *parent)
                             {
                                 QList<TTMDecay*>::iterator t_decay;
                                 bool found = 0;
-                                for (t_decay = temp_decays->begin(); t_decay != temp_decays->end(); ++t_decay) {
+                                for (t_decay = temp_decays.begin(); t_decay != temp_decays.end(); ++t_decay) {
                                     if (found)
                                         break;
                                     if ((*t_decay)->getDaughterID() == grandaughter->getID())
@@ -410,7 +410,7 @@ void TTMParticleSet::generateBRatios(TTMParticle *parent)
                                                          grandaughter->getID(),
                                                          (*p_decay)->getBRatio() *
                                                          (*d_decay)->getBRatio());
-                                    temp_decays->append(decay);
+                                    temp_decays.append(decay);
                                 }
                             } else
                                 //if grandaughter is unstable
@@ -448,9 +448,9 @@ void TTMParticleSet::getParents(QList<TTMDecay *> *parents, qint32 id)
     qDeleteAll(parents->begin(), parents->end());
     QHash<QString, TTMParticle*>::iterator p;
     for (p = mPartTable->begin(); p != mPartTable->end(); ++p) {
-        QList<TTMDecay*>* parent_decays = (*p)->getDecaySummary();
+        QList<TTMDecay*>& parent_decays = (*p)->getDecaySummary();
         QList<TTMDecay*>::iterator d;
-        for (d = parent_decays->begin(); d != parent_decays->end(); ++p) {
+        for (d = parent_decays.begin(); d != parent_decays.end(); ++p) {
             if((*d)->getDaughterID()==id){parents->append((*d));}
         }
     }
@@ -687,13 +687,13 @@ TTMParticleSet &TTMParticleSet::operator=(const TTMParticleSet &obj)
         part->setThresholdFlag((*a)->getThresholdFlag());
 
         QList<TTMDecayChannel*>::iterator old;
-        for (old = (*a)->getDecayChannels()->begin(); old != (*a)->getDecayChannels()->end(); ++old) {
+        for (old = (*a)->getDecayChannels().begin(); old != (*a)->getDecayChannels().end(); ++old) {
             QList<TTMIDObj*>* ndlist = new QList<TTMIDObj*>;
             QList<TTMIDObj*>::iterator oldid;
             for (oldid = (*old)->getDaughterList()->begin(); oldid != (*old)->getDaughterList()->end(); ++oldid) {
                 ndlist->append(new TTMIDObj((*oldid)->getID()));
             }
-            part->getDecayChannels()->append(new TTMDecayChannel((*old)->getBRatio(), ndlist));
+            part->getDecayChannels().append(new TTMDecayChannel((*old)->getBRatio(), ndlist));
         }
         part->updateDecaySummary();
         mPartTable->insert(part->objectName(), part);

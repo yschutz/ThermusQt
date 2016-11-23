@@ -23,12 +23,12 @@ TTMParticle::TTMParticle(QObject* parent) : QObject(parent),
     // ctor
     // Note: the id is set through the function SetID() which sets fName too.
 
-    mDecaySummary = new QList<TTMDecay*>;
-    mDecayChannels = new QList<TTMDecayChannel*>;
+//    mDecaySummary = new QList<TTMDecay*>;
+//    mDecayChannels = new QList<TTMDecayChannel*>;
 }
 
 //__________________________________________________________________________
-TTMParticle::TTMParticle(const TTMParticle &obj, QObject* parent) : QObject(parent)
+TTMParticle::TTMParticle(TTMParticle &obj, QObject* parent) : QObject(parent)
 {
     //cpy ctor
     setID(obj.getID());
@@ -53,21 +53,21 @@ TTMParticle::TTMParticle(const TTMParticle &obj, QObject* parent) : QObject(pare
     mBContent      = obj.getBContent();
     mTContent      = obj.getTContent();
 
-    mDecaySummary = new QList<TTMDecay*>;
-    mDecayChannels = new QList<TTMDecayChannel*>;
+//    mDecaySummary = new QList<TTMDecay*>;
+//    mDecayChannels = new QList<TTMDecayChannel*>;
 
-    qDeleteAll(mDecaySummary->begin(), mDecaySummary->end());
-    qDeleteAll(mDecayChannels->begin(), mDecayChannels->end());
+    qDeleteAll(mDecaySummary.begin(), mDecaySummary.end());
+    qDeleteAll(mDecayChannels.begin(), mDecayChannels.end());
 
-    QList<TTMDecayChannel*>::iterator oldch;
-    for (oldch = obj.getDecayChannels()->begin(); oldch != obj.getDecayChannels()->end(); ++oldch) {
+    QList<TTMDecayChannel*>::const_iterator oldch;
+    for (oldch = (obj.getDecayChannels()).begin(); oldch != (obj.getDecayChannels()).end(); ++oldch) {
         double bRatio = (*oldch)->getBRatio();
         QList<TTMIDObj*>::iterator oldid;
         QList<TTMIDObj*>* dlist = new QList<TTMIDObj*>;
         for (oldid = (*oldch)->getDaughterList()->begin(); oldid != (*oldch)->getDaughterList()->end(); ++oldid) {
             dlist->append(new TTMIDObj((*oldid)->getID(), obj.parent()));
         }
-        mDecayChannels->append(new TTMDecayChannel(bRatio, dlist, obj.parent()));
+        mDecayChannels.append(new TTMDecayChannel(bRatio, dlist, obj.parent()));
     }
     updateDecaySummary();
 }
@@ -79,22 +79,15 @@ TTMParticle::~TTMParticle()
     // to the heap
     //
 
-    if(mDecaySummary){
-        qDeleteAll(mDecaySummary->begin(), mDecaySummary->end()); // kills all heap-based entries
-        delete mDecaySummary;              // returns memory to heap
-    }
+    qDeleteAll(mDecaySummary.begin(), mDecaySummary.end()); // kills all heap-based entries
 
-    if(mDecayChannels){
-
-        QList<TTMDecayChannel*>::iterator ch;
-        for (ch = mDecayChannels->begin(); ch != mDecayChannels->end(); ++ch) {
+        QList<TTMDecayChannel*>::const_iterator ch;
+        for (ch = mDecayChannels.begin(); ch != mDecayChannels.end(); ++ch) {
             qDeleteAll((*ch)->getDaughterList()->begin(), (*ch)->getDaughterList()->end());
             delete (*ch)->getDaughterList();
         }
 
-        qDeleteAll(mDecayChannels->begin(), mDecayChannels->end()); // kills all heap-based entries
-        delete mDecayChannels;              // returns memory to heap
-    }
+        qDeleteAll(mDecayChannels.begin(), mDecayChannels.end()); // kills all heap-based entries
 }
 
 //__________________________________________________________________________
@@ -104,10 +97,10 @@ TTMDecay *TTMParticle::getDecay(qint32 daughter_id)
     // Returns 0 if daughter_id is not in the list of daughter id's.
     //
 
-    TTMDecay* rv = NULL;
+    TTMDecay* rv = nullptr;
 
     QList<TTMDecay*>::iterator decay;
-    for (decay = mDecaySummary->begin(); decay != mDecaySummary->end(); ++decay) {
+    for (decay = mDecaySummary.begin(); decay != mDecaySummary.end(); ++decay) {
         if ((*decay)->getDaughterID() == daughter_id) {
             rv  = *decay;
             break;
@@ -125,10 +118,10 @@ TTMDecayChannel *TTMParticle::getDecayChannel(qint32 channel)
     TTMDecayChannel *rv = 0;
 
     for( qint32 index = 0; index <= channel; index++) {
-        rv = mDecayChannels->at(index);
+        rv = mDecayChannels.at(index);
         if(!rv) {
             qWarning() << Q_FUNC_INFO << "WARNING: Channel #" << channel << "does not exist!";
-            rv = NULL;
+            rv = nullptr;
         }
     }
     return rv;
@@ -164,13 +157,13 @@ void TTMParticle::list() const
         qDebug() << "\t\t UNSTABLE";
         qDebug() << "\t\t Decay Channels:";
 
-        QList<TTMDecayChannel*>::iterator nextch;
-        for( nextch = mDecayChannels->begin(); nextch != mDecayChannels->end(); ++nextch)
+        QList<TTMDecayChannel*>::const_iterator nextch;
+        for( nextch = mDecayChannels.begin(); nextch != mDecayChannels.end(); ++nextch)
             (*nextch)->list();
         qDebug() << "\t\t Summary of Decays: ";
 
-        QList<TTMDecay*>::iterator d;
-        for (d = mDecaySummary->begin(); d != mDecaySummary->end(); ++d) {
+        QList<TTMDecay*>::const_iterator d;
+        for (d = mDecaySummary.begin(); d != mDecaySummary.end(); ++d) {
             qDebug() << "\t\t" << (*d)->getDaughterID() << "\t\t"
                      << (*d)->getBRatio() * 100 << "%";
         }
@@ -194,8 +187,8 @@ void TTMParticle::setDecayChannels(QString file, bool scaleBRatios)
     // daughter appearing only once using UpdateDecaySummary.
     //
 
-    qDeleteAll(mDecaySummary->begin(), mDecaySummary->end());
-    qDeleteAll(mDecayChannels->begin(), mDecayChannels->end());
+    qDeleteAll(mDecaySummary.begin(), mDecaySummary.end());
+    qDeleteAll(mDecayChannels.begin(), mDecayChannels.end());
 
     QFile data(file);
     if (!data.open(QFile::ReadOnly)) {
@@ -230,24 +223,20 @@ void TTMParticle::setDecayChannels(QString file, bool scaleBRatios)
                 vBRatio[ch] /= 100.;
             else
                 vBRatio[ch] = vBRatio[ch] / 100. * 100. / totalBRatio;
-            mDecayChannels->append(new TTMDecayChannel(vBRatio[ch], ld[ch]));
+            mDecayChannels.append(new TTMDecayChannel(vBRatio[ch], ld[ch]));
         }
     }
     updateDecaySummary();
 }
 
 //__________________________________________________________________________
-void TTMParticle::setDecayChannels(QList<TTMDecayChannel *> *x)
+void TTMParticle::setDecayChannels(QList<TTMDecayChannel *> &x)
 {
     // Sets decay channel list and generates fDecaySummary using
     // UpdateDecaySummary
     //
 
-    if(mDecayChannels){
-        qDeleteAll(mDecayChannels->begin(), mDecayChannels->end());
-        delete mDecayChannels;
-    }
-
+    qDeleteAll(mDecayChannels.begin(), mDecayChannels.end());
     mDecayChannels = x;
 
     updateDecaySummary();
@@ -269,16 +258,13 @@ void TTMParticle::setDecayChannelEfficiency(qint32 channel, double eff)
 }
 
 //__________________________________________________________________________
-void TTMParticle::setDecaySummary(QList<TTMDecay*>* x)
+void TTMParticle::setDecaySummary(QList<TTMDecay*>& x)
 {
     // Sets fDecaySummary-- allows for incompatibility between channel and
     // summary lists.
     //
 
-    if(mDecaySummary){
-        qDeleteAll(mDecaySummary->begin(), mDecaySummary->end());
-        delete mDecaySummary;
-    }
+    qDeleteAll(mDecaySummary.begin(), mDecaySummary.end());
 
     mDecaySummary = x;
 }
@@ -299,10 +285,10 @@ void TTMParticle::updateDecaySummary()
     // iterating over these channels. Uses GetDecay().
     //
 
-    qDeleteAll(mDecaySummary->begin(), mDecaySummary->end());
+    qDeleteAll(mDecaySummary.begin(), mDecaySummary.end());
 
     QList<TTMDecayChannel*>::iterator ch;
-    for( ch = mDecayChannels->begin(); ch != mDecayChannels->end(); ++ch) {
+    for( ch = mDecayChannels.begin(); ch != mDecayChannels.end(); ++ch) {
         double BRatio = (*ch)->getBRatio();
         QList<TTMIDObj*>::iterator daughter;
         for( daughter = (*ch)->getDaughterList()->begin(); daughter != (*ch)->getDaughterList()->end(); ++daughter) {
@@ -311,14 +297,14 @@ void TTMParticle::updateDecaySummary()
                 TTMDecay* decay = getDecay(d_id);
                 decay->setBRatio(decay->getBRatio() + BRatio);
             } else {             // daughter not yet in summary decay list of parent
-                mDecaySummary->append(new TTMDecay(mID, d_id, BRatio, parent()));
+                mDecaySummary.append(new TTMDecay(mID, d_id, BRatio, parent()));
             }
         }
     }
 }
 
 //__________________________________________________________________________
-TTMParticle &TTMParticle::operator=(const TTMParticle &obj)
+TTMParticle &TTMParticle::operator=(TTMParticle &obj)
 {
     // assignation operator
 
@@ -347,18 +333,19 @@ TTMParticle &TTMParticle::operator=(const TTMParticle &obj)
     mBContent      = obj.getBContent();
     mTContent      = obj.getTContent();
 
-    qDeleteAll(mDecaySummary->begin(), mDecaySummary->end());
-    qDeleteAll(mDecayChannels->begin(), mDecayChannels->end());
+    qDeleteAll(mDecaySummary.begin(), mDecaySummary.end());
+    qDeleteAll(mDecayChannels.begin(), mDecayChannels.end());
 
-    QList<TTMDecayChannel*>::iterator oldch;
-    for (oldch = obj.getDecayChannels()->begin(); oldch != obj.getDecayChannels()->end(); ++oldch) {
+    QList<TTMDecayChannel*>::const_iterator oldch;
+//    for (TTMDecayChannel* it : obj.getDecayChannels()) {
+    for (oldch = obj.getDecayChannels().begin(); oldch != obj.getDecayChannels().end(); ++oldch) {
         double  BRatio = (*oldch)->getBRatio();
         QList<TTMIDObj*>::iterator oldid;
         QList<TTMIDObj*>* dlist = new QList<TTMIDObj*>;
         for (oldid = (*oldch)->getDaughterList()->begin(); oldid != (*oldch)->getDaughterList()->end(); oldid++) {
             dlist->append(new TTMIDObj((*oldid)->getID()));
         }
-        mDecayChannels->append(new TTMDecayChannel(BRatio, dlist));
+        mDecayChannels.append(new TTMDecayChannel(BRatio, dlist));
     }
 
     updateDecaySummary();

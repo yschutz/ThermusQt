@@ -8,6 +8,7 @@
 #include <QAbstractButton>
 #include <QDateTime>
 #include <QDebug>
+#include <QMdiArea>
 #include <QVBoxLayout>
 
 #include "macros/runmacro.h"
@@ -70,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setMinimumSize(160, 160);
     resize(480, 320);
+    createConsol();
 }
 
 //__________________________________________________________________________
@@ -78,6 +80,25 @@ MainWindow::~MainWindow()
     // dtor
 
     delete ui;
+}
+
+//__________________________________________________________________________
+void MainWindow::createConsol()
+{
+    // creates an area where to display subwindows for log infos, plots, etcc
+
+    QMainWindow *outputAreaWindow = new QMainWindow(this);
+    QMdiArea *mdiArea = new QMdiArea(outputAreaWindow);
+
+    // the console for log output from qDebug, qInfo, qWarning
+    mOutConsole = new QPlainTextEdit(mdiArea);
+    mdiArea->addSubWindow(mOutConsole);
+    // direct the log info to the console
+//    qInstallMessageHandler(appOutput);
+
+    outputAreaWindow->setCentralWidget(mdiArea);
+
+    outputAreaWindow->show();
 }
 
 //__________________________________________________________________________
@@ -150,20 +171,21 @@ void MainWindow::quit()
 //__________________________________________________________________________
 void MainWindow::paintEvent(QPaintEvent *event)
 {
+    // decorate the central widget
 
     QPainter painter(this);
 
+    // the background image
+
     QPixmap bkgnd(":/2015-Jul-03-Fit_PbPb0010_Reference_final_SQM.png");
-
-
     painter.drawPixmap(0,0,width(), height(),bkgnd);
 
-    QFont font;
-    font.setPixelSize(40);
-    painter.setPen(QPen(Qt::red));
-    painter.setFont(font);
-
-    QRect bg = QRect(0,height()/2  , width(), height()/2 + 200);
+    // the Thermus banner, first the background
+    qint32 bheight = height() / 3 ;
+    qint32 bwidth  = width() * 0.7 ;
+    qint32 bx = (width() - bwidth) / 2;
+    qint32 by = (height() - bheight) / 2;
+    QRect bg = QRect(bx, by, bwidth, bheight);
 
     QColor blue = Qt::blue;
     blue.setAlphaF(0.5);
@@ -171,13 +193,11 @@ void MainWindow::paintEvent(QPaintEvent *event)
     painter.setBrush(QBrush(blue));
     painter.drawRect(bg);
 
+    // the Thermus banner, then the text
+
+    painter.setPen(QPen(Qt::red));
+    painter.setFont(QFont("Helvetica [Cronyx]", QFont::ExtraBold, 10, true));
     painter.drawText(rect(), Qt::AlignHCenter|Qt::AlignVCenter,"Thermus");
-
-    QLabel *thermus  = new QLabel("THERMUS");
-
-
-
-
 
     QMainWindow::paintEvent(event);
 }
