@@ -10,6 +10,7 @@
 #include <QLabel>
 #include <QMainWindow>
 #include <QMenu>
+#include <QPainter>
 
 namespace Ui {
 class MainWindow;
@@ -23,10 +24,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private slots:
     void setDebugMode(bool val);
+private slots:
+
     void runPrediction();
     void quit();
+
+protected:
+    void paintEvent(QPaintEvent *event);
 
 private:
 

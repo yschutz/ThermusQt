@@ -23,16 +23,16 @@ MainWindow::MainWindow(QWidget *parent) :
     setGeometry(0, 0, 50, 25);
 
     setWindowTitle("THERMUS");
-    QPixmap bkgnd(":/2015-Jul-03-Fit_PbPb0010_Reference_final_SQM.png");
-    bkgnd = bkgnd.scaled(QSize(550, 500));
-    QPalette palette;
-    palette.setBrush(QPalette::Background, bkgnd);
-    this->setPalette(palette);
+//    QPixmap bkgnd(":/2015-Jul-03-Fit_PbPb0010_Reference_final_SQM.png");
+//    bkgnd = bkgnd.scaled(QSize(550, 500));
+//    QPalette palette;
+//    palette.setBrush(QPalette::Background, bkgnd);
+//    this->setPalette(palette);
 
     // central widget
 
     mCentralwidget = new QWidget;
-    setCentralWidget(mCentralwidget);
+//    setCentralWidget(mCentralwidget);
 
     QWidget *topFiller = new QWidget;
     topFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -147,6 +147,40 @@ void MainWindow::quit()
     statusBar()->showMessage(mQuitAction->statusTip());
     close();
 }
+//__________________________________________________________________________
+void MainWindow::paintEvent(QPaintEvent *event)
+{
+
+    QPainter painter(this);
+
+    QPixmap bkgnd(":/2015-Jul-03-Fit_PbPb0010_Reference_final_SQM.png");
+
+
+    painter.drawPixmap(0,0,width(), height(),bkgnd);
+
+    QFont font;
+    font.setPixelSize(40);
+    painter.setPen(QPen(Qt::red));
+    painter.setFont(font);
+
+    QRect bg = QRect(0,height()/2  , width(), height()/2 + 200);
+
+    QColor blue = Qt::blue;
+    blue.setAlphaF(0.5);
+
+    painter.setBrush(QBrush(blue));
+    painter.drawRect(bg);
+
+    painter.drawText(rect(), Qt::AlignHCenter|Qt::AlignVCenter,"Thermus");
+
+    QLabel *thermus  = new QLabel("THERMUS");
+
+
+
+
+
+    QMainWindow::paintEvent(event);
+}
 
 //__________________________________________________________________________
 void MainWindow::createActions()
@@ -170,6 +204,10 @@ void MainWindow::createActions()
     mDebugOffAction->setStatusTip(tr("Set debug mode off"));
     connect(mDebugOnAction, &QAction::triggered, this, [this]{ setDebugMode(true); });
     connect(mDebugOffAction, &QAction::triggered, this, [this]{ setDebugMode(false); });
+
+
+
+
 
     // run prediction macro
 

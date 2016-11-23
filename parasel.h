@@ -63,7 +63,7 @@ private:
     QCheckBox*     mParameterFix[kParTypes];     // checkbox list to fix or not the parameters
     QLineEdit*     mParameterValue[kParTypes];   // checkbox list to fix or not the parameters
     QPalette       mPalette;                     // the palette for the QLineEdit objects
-    QGroupBox*     mRFitBox;                     // the fit box parameters for R
+    QGroupBox*     mRFitBox;                    // the fit box parameters for R
     QGridLayout*   mRFitBoxLayout;               // and its layout
     QGroupBox*     mTFitBox;                     // the fit box parameters for T
     QGridLayout*   mTFitBoxLayout;               // and its layout

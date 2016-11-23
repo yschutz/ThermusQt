@@ -8,6 +8,8 @@
 #include "summary.h"
 #include "thermuswiz.h"
 
+#include <QDesktopServices>
+
 //__________________________________________________________________________
 ThermusWiz::ThermusWiz(QString summaryTitle, QWidget *parent) : QWizard(parent)
 {
@@ -78,6 +80,11 @@ void ThermusWiz::initializePage(qint32 id)
 void ThermusWiz::accept()
 {
     // finish (done) button pressed
+
+
+
+
+
 
     mLoop.exit(0);
 }

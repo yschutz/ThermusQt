@@ -21,6 +21,11 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
 
     setTitle("Select parameters values and fit constrains");
 
+
+
+
+
+
     for (qint32 index = 0; index < kParTypes; index++) {
         mFitMax[index]       = NULL;
         mFitMin[index]       = NULL;
