@@ -13,6 +13,13 @@
 #include <QPainter>
 #include <QPlainTextEdit>
 
+static QPlainTextEdit* mOutConsole; // Console for log qDebug/Info/Warning output
+
+static void appOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg){
+    mOutConsole->appendPlainText(msg);
+}
+
+
 namespace Ui {
 class MainWindow;
 }
@@ -25,7 +32,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void appOutput(QString &msg) {mOutConsole->appendPlainText(msg);}
     void createConsol();
     void setDebugMode(bool val);
 
@@ -52,7 +58,6 @@ private:
     QAction* mQuitAction;        // Action for quitting the application
     QMenu*   mRunMenu;           // Menu Tab to select the macro to run
 
-    QPlainTextEdit* mOutConsole; // Console for log qDebug/Info/Warning output
 };
 
 #endif // MAINWINDOW_H

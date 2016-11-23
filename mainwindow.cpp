@@ -91,10 +91,11 @@ void MainWindow::createConsol()
     QMdiArea *mdiArea = new QMdiArea(outputAreaWindow);
 
     // the console for log output from qDebug, qInfo, qWarning
-    mOutConsole = new QPlainTextEdit(mdiArea);
+    mOutConsole = new QPlainTextEdit("log Consol", mdiArea);
+    mOutConsole->setReadOnly(true);
     mdiArea->addSubWindow(mOutConsole);
     // direct the log info to the console
-//    qInstallMessageHandler(appOutput);
+    qInstallMessageHandler(appOutput);
 
     outputAreaWindow->setCentralWidget(mdiArea);
 
