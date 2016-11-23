@@ -39,8 +39,8 @@ public:
            void    updateDisplay();
 
 public slots:
-    void fixParanmeter(ParameterType type);
-    void conParanmeter(ParameterType type);
+    void fixParameter(ParameterType type);
+    void conParameter(ParameterType type);
 
 private:
 
@@ -59,7 +59,6 @@ private:
     QGridLayout*   mMuConBoxLayout;              // and its layout
     QGroupBox*     mMuFitBox;                    // the fit box parameters for the mus
     QGridLayout*   mMuFitBoxLayout;              // and its layout
-    QString        mParameterNames[kParTypes];   // given names of the parameters
     QCheckBox*     mParameterCon[kParTypes];     // checkbox list to constrain or not the parameters
     QCheckBox*     mParameterFix[kParTypes];     // checkbox list to fix or not the parameters
     QLineEdit*     mParameterValue[kParTypes];   // checkbox list to fix or not the parameters

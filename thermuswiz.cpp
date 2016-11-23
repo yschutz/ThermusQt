@@ -43,33 +43,24 @@ ThermusWiz::ThermusWiz(QString summaryTitle, QWidget *parent) : QWizard(parent)
 
     show();
 
-    QAbstractButton *donebutton = button(QWizard::FinishButton);
-    mLoop.connect(donebutton, SIGNAL(clicked(bool)), this, SLOT(accept()));
-
-    QAbstractButton *nextbutton = button(QWizard::NextButton);
-    mLoop.connect(nextbutton, SIGNAL(clicked(bool)), this, SLOT(next()));
-
-
     mLoop.exec();
 }
 
 //__________________________________________________________________________
-void ThermusWiz::accept()
+void ThermusWiz::cleanupPage(qint32 /*id*/)
 {
-    // finish (done) button pressed
-    mLoop.exit(0);
+    // called when back button is hit
+    // implemented here to prevent clearing the fields of the page
 
 }
 
 //__________________________________________________________________________
-void ThermusWiz::next()
+void ThermusWiz::initializePage(qint32 id)
 {
-    // fills the summary page each time a page is filled (next button pressed)
-
     Summary * summary = (Summary*)page(mSummaryId);
 
-    if (currentId() - 1 == mDialogId) {
-        FileDialog * file = (FileDialog*)page(mDialogId);
+    if (id - 1 == mDialogId) {
+        FileDialog * file = qobject_cast<FileDialog*>(page(mDialogId));
         for (qint32 index = 0; index < file->getRadioButtons().size(); index++) {
             QRadioButton * but = file->getRadioButtons().at(index);
             if (but->isChecked())
@@ -77,7 +68,16 @@ void ThermusWiz::next()
         }
 
         summary->updateFileName(file->getFileName());
-    } else if (currentId() - 1 == mParaSelId) {
+    } else if (id - 1 == mParaSelId) {
+        ParaSel * para = qobject_cast<ParaSel*>(page(mParaSelId));
         summary->updateParameters();
     }
+}
+
+//__________________________________________________________________________
+void ThermusWiz::accept()
+{
+    // finish (done) button pressed
+
+    mLoop.exit(0);
 }

@@ -33,17 +33,6 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     collSysNames[kpp]    = "pp";
     collSysNames[kpPb]   = "pPb";
 
-//    mParameterNames[kGammaS]      = "gammaS";
-//    mParameterNames[kGammaC]      = "gammaC";
-//    mParameterNames[kGammaBeauty] = "gammaBeauty";
-//    mParameterNames[kMuQ]         = "muQ";
-//    mParameterNames[kMuB]         = "muB";
-//    mParameterNames[kMuS]         = "muS";
-//    mParameterNames[kMuC]         = "muC";
-//    mParameterNames[kMuBeauty]    = "muBeauty";
-//    mParameterNames[kRadius]      = "radius";
-//    mParameterNames[kTemp]        = "temperature";
-
     mPalette.setColor(QPalette::Base,Qt::white);
     mPalette.setColor(QPalette::Text,Qt::red);
 
@@ -57,10 +46,13 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     tempLabel->setBuddy(mParameterValue[kTemp]);
     QLabel *tempUnitLabel = new QLabel(tr("GeV"));
     mParameterFix[kTemp] = new QCheckBox(" ", tBox);
+
+    registerField("temp", mParameterFix[kTemp]);
+
     mParameterFix[kTemp]->setChecked(true);
     mParameterValue[kTemp]->setPalette(mPalette);
     mParameterValue[kTemp]->setReadOnly(true);
-    connect(mParameterFix[kTemp], &QCheckBox::stateChanged, this, [this]{ fixParanmeter(kTemp); });
+    connect(mParameterFix[kTemp], &QCheckBox::stateChanged, this, [this]{ fixParameter(kTemp); });
 
     QGridLayout *tLayout = new QGridLayout(tBox);
     tLayout->addWidget(tfix, 0, 3, 1, 1, Qt::AlignTop | Qt::AlignHCenter);
@@ -118,8 +110,8 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     mParameterCon[kMuQ]->setChecked(false);
     mParameterValue[kMuQ]->setPalette(mPalette);
     mParameterValue[kMuQ]->setReadOnly(true);
-    connect(mParameterFix[kMuQ], &QCheckBox::stateChanged, this, [this]{ fixParanmeter(kMuQ); });
-    connect(mParameterCon[kMuQ], &QCheckBox::stateChanged, this, [this]{ conParanmeter(kMuQ); });
+    connect(mParameterFix[kMuQ], &QCheckBox::stateChanged, this, [this]{ fixParameter(kMuQ); });
+    connect(mParameterCon[kMuQ], &QCheckBox::stateChanged, this, [this]{ conParameter(kMuQ); });
     QLabel *b2qLabel = new QLabel("<html> B/2Q", muBox);
 
     QLabel  *muBLabel = new QLabel(muBox);
@@ -131,7 +123,7 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     mParameterFix[kMuB]->setChecked(true);
     mParameterValue[kMuB]->setPalette(mPalette);
     mParameterValue[kMuB]->setReadOnly(true);
-    connect(mParameterFix[kMuB], &QCheckBox::stateChanged, this, [this]{ fixParanmeter(kMuB); });
+    connect(mParameterFix[kMuB], &QCheckBox::stateChanged, this, [this]{ fixParameter(kMuB); });
 
     QLabel  *muSLabel = new QLabel(muBox);
     muSLabel->setTextFormat(Qt::RichText);
@@ -144,8 +136,8 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     mParameterCon[kMuS]->setChecked(false);
     mParameterValue[kMuS]->setPalette(mPalette);
     mParameterValue[kMuS]->setReadOnly(true);
-    connect(mParameterFix[kMuS], &QCheckBox::stateChanged, this, [this]{ fixParanmeter(kMuS); });
-    connect(mParameterCon[kMuS], &QCheckBox::stateChanged, this, [this]{ conParanmeter(kMuS); });
+    connect(mParameterFix[kMuS], &QCheckBox::stateChanged, this, [this]{ fixParameter(kMuS); });
+    connect(mParameterCon[kMuS], &QCheckBox::stateChanged, this, [this]{ conParameter(kMuS); });
     QLabel *sDensityLabel = new QLabel("<html> S Density", muBox);
 
 
@@ -160,8 +152,8 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     mParameterCon[kMuC]->setChecked(false);
     mParameterValue[kMuC]->setPalette(mPalette);
     mParameterValue[kMuC]->setReadOnly(true);
-    connect(mParameterFix[kMuC], &QCheckBox::stateChanged, this, [this]{ fixParanmeter(kMuC); });
-    connect(mParameterCon[kMuC], &QCheckBox::stateChanged, this, [this]{ conParanmeter(kMuC); });
+    connect(mParameterFix[kMuC], &QCheckBox::stateChanged, this, [this]{ fixParameter(kMuC); });
+    connect(mParameterCon[kMuC], &QCheckBox::stateChanged, this, [this]{ conParameter(kMuC); });
     QLabel *cDensityLabel = new QLabel("<html> C Density", muBox);
 
     QLabel  *muBeautyLabel = new QLabel(muBox);
@@ -175,8 +167,8 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     mParameterCon[kMuBeauty]->setChecked(false);
     mParameterValue[kMuBeauty]->setPalette(mPalette);
     mParameterValue[kMuBeauty]->setReadOnly(true);
-    connect(mParameterFix[kMuBeauty], &QCheckBox::stateChanged, this, [this]{ fixParanmeter(kMuBeauty); });
-    connect(mParameterCon[kMuBeauty], &QCheckBox::stateChanged, this, [this]{ conParanmeter(kMuBeauty); });
+    connect(mParameterFix[kMuBeauty], &QCheckBox::stateChanged, this, [this]{ fixParameter(kMuBeauty); });
+    connect(mParameterCon[kMuBeauty], &QCheckBox::stateChanged, this, [this]{ conParameter(kMuBeauty); });
     QLabel *bDensityLabel = new QLabel("<html> B Density", muBox);
 
     QGridLayout *muBoxLayout = new QGridLayout(muBox);
@@ -281,7 +273,7 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     mParameterFix[kGammaS]->setChecked(true);
     mParameterValue[kGammaS]->setPalette(mPalette);
     mParameterValue[kGammaS]->setReadOnly(true);
-    connect(mParameterFix[kGammaS], &QCheckBox::stateChanged, this, [this]{ fixParanmeter(kGammaS); });
+    connect(mParameterFix[kGammaS], &QCheckBox::stateChanged, this, [this]{ fixParameter(kGammaS); });
 
     QLabel  *gammaCLabel = new QLabel(tr("gammaC:"), gammaBox);
     gammaCLabel->setTextFormat(Qt::RichText);
@@ -292,7 +284,7 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     mParameterFix[kGammaC]->setChecked(true);
     mParameterValue[kGammaC]->setPalette(mPalette);
     mParameterValue[kGammaC]->setReadOnly(true);
-    connect(mParameterFix[kGammaC], &QCheckBox::stateChanged, this, [this]{ fixParanmeter(kGammaC); });
+    connect(mParameterFix[kGammaC], &QCheckBox::stateChanged, this, [this]{ fixParameter(kGammaC); });
 
     QLabel  *gammaBeautyLabel = new QLabel(tr("gammaBeauty:"), gammaBox);
     gammaBeautyLabel->setTextFormat(Qt::RichText);
@@ -303,7 +295,7 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     mParameterFix[kGammaBeauty]->setChecked(true);
     mParameterValue[kGammaBeauty]->setPalette(mPalette);
     mParameterValue[kGammaBeauty]->setReadOnly(true);
-    connect(mParameterFix[kGammaBeauty], &QCheckBox::stateChanged, this, [this]{ fixParanmeter(kGammaBeauty); });
+    connect(mParameterFix[kGammaBeauty], &QCheckBox::stateChanged, this, [this]{ fixParameter(kGammaBeauty); });
 
     QGridLayout *gammaBoxLayout = new QGridLayout(gammaBox);
     gammaBoxLayout->addWidget(gammafix, 0, 2, 1, 1);
@@ -382,7 +374,7 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     mParameterFix[kRadius]->setChecked(true);
     mParameterValue[kRadius]->setPalette(mPalette);
     mParameterValue[kRadius]->setReadOnly(true);
-    connect(mParameterFix[kRadius], &QCheckBox::stateChanged, this, [this]{ fixParanmeter(kRadius); });
+    connect(mParameterFix[kRadius], &QCheckBox::stateChanged, this, [this]{ fixParameter(kRadius); });
 
     QGridLayout *rLayout = new QGridLayout(rBox);
     rLayout->addWidget(rfix, 0, 3, 1, 1);
@@ -450,7 +442,12 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
 
     // register the fields
     for (qint32 type = 0; type < kParTypes; type++) {
-        registerField(getParaName((ParameterType)type), mParameterValue[type]);
+        QString name = getParaName((ParameterType)type);
+        registerField(name, mParameterValue[type]);
+        name.append("Fix");
+        registerField(name, mParameterFix[type]);
+        name.append("Fixm");
+        registerField(name, mParameterFix[type]);
     }
 }
 
@@ -592,7 +589,7 @@ void ParaSel::updateDisplay()
 }
 
 //__________________________________________________________________________
-void ParaSel::conParanmeter(ParameterType type)
+void ParaSel::conParameter(ParameterType type)
 {
     // displays the box to set constrain value
     bool read;
@@ -612,7 +609,7 @@ void ParaSel::conParanmeter(ParameterType type)
 }
 
 //__________________________________________________________________________
-void ParaSel::fixParanmeter(ParaSel::ParameterType type)
+void ParaSel::fixParameter(ParaSel::ParameterType type)
 {
    // fix/free parameters and request fitting constrains
     QGroupBox *temp = NULL;
