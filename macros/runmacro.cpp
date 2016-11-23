@@ -6,7 +6,7 @@
 #include "parasel.h"
 #include "runmacro.h"
 
-#include "main/TTMparticleSet.h"
+#include "main/TTMParticleSet.h"
 
 #include <QDebug>
 #include <QDir>

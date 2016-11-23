@@ -9,7 +9,7 @@
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
-#include <qDebug>
+#include <QDebug>
 
 #include "TTMParameter.h"
 
