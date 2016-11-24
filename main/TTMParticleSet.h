@@ -24,28 +24,29 @@ public:
     explicit TTMParticleSet(QObject* parent = 0);
     TTMParticleSet(QString file, bool CB = true, QObject *parent = 0); // BH 26/04/2014
 //    TTMParticleSet(TDatabasePDG *pdg);
-    TTMParticleSet(const TTMParticleSet &obj);
+    TTMParticleSet(TTMParticleSet &obj);
     ~TTMParticleSet();
 
     void                          addParticle(TTMParticle* part);
     void                          calculateThresholds();
     void                          generateBRatios();
-    QString                       getFilename() const {return mFilename;}
-    void                          getParents(QList<TTMDecay *> *parents, qint32 id);
-    TTMParticle*                  getParticle(qint32 id);
+    QString&                      getFilename() {return mFilename;}
+    void                          getParents(QList<TTMDecay *> *parents, qint32 id) const;
+    TTMParticle*                  getParticle(qint32 id) const;
     qint32                        getParticleNumber() const {return mParticleNumber;}
     QHash<QString, TTMParticle*>* getParticleTable() const {return mPartTable;}
     void                          inputDecays(QString dir, bool scaleBRatios = false);
 //    void                        inputDecays(TDatabasePDG *pdg);
-    void                          listParents(qint32 id);
-    void                          listParticle(qint32 id);
+    void                          listParents(qint32 id) const;
+    void                          listParticle(qint32 id) const;
+    void                          listParticles(bool reduced = true) const;
     void                          listStableParticles();
     void                          massCut(double max);
     void                          removeParticle(qint32 id);
     void                          setDecayEfficiency(qint32 p_id, qint32 d_id, double eff);
     void                          setRadii(double radius); // BH 24/04/2014
 
-    TTMParticleSet& operator=(const TTMParticleSet& obj);
+    TTMParticleSet& operator=(TTMParticleSet& obj);
 
 private:
     void generateBRatios(TTMParticle* parent);

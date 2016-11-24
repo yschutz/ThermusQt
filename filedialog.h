@@ -14,12 +14,10 @@ class FileDialog : public QWizardPage
 public:
     explicit FileDialog(QWidget *parent = 0);
 
-    void                 setFileName(QString val) { mFileName = val;}
-    QString              getFileName() const { return mFileName; }
-    QList<QRadioButton*> getRadioButtons() const  { return mRadioButtons; }
 
-
-public slots:
+    void                  setFileName(const QString val) { mFileName = val;}
+    QString&              getFileName()                  { return mFileName; }
+    QList<QRadioButton*>& getRadioButtons()              { return mRadioButtons; }
 
 private:
     QEventLoop            mLoop;           // loo for waiting the validate button to be pressed

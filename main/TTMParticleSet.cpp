@@ -146,7 +146,7 @@ TTMParticleSet::TTMParticleSet(QString file, bool CB, QObject *parent)  : QObjec
 //}
 
 //__________________________________________________________________________
-TTMParticleSet::TTMParticleSet(const TTMParticleSet &obj)
+TTMParticleSet::TTMParticleSet(TTMParticleSet &obj)
 {
     // cpy ctor
 
@@ -440,7 +440,7 @@ void TTMParticleSet::generateBRatios(TTMParticle *parent)
 }
 
 //__________________________________________________________________________
-void TTMParticleSet::getParents(QList<TTMDecay *> *parents, qint32 id)
+void TTMParticleSet::getParents(QList<TTMDecay *> *parents, qint32 id) const
 {
     // On return parents points to a list containing the parents of particle id.
     //
@@ -457,7 +457,7 @@ void TTMParticleSet::getParents(QList<TTMDecay *> *parents, qint32 id)
 }
 
 //__________________________________________________________________________
-TTMParticle *TTMParticleSet::getParticle(qint32 id)
+TTMParticle *TTMParticleSet::getParticle(qint32 id) const
 {
     // Returns a pointer to a particle object with the specified ID if
     // that particle is in the set. If not in the set, 0 is returned.
@@ -541,7 +541,7 @@ void TTMParticleSet::inputDecays(QString dir, bool scaleBRatios)
 //}
 
 //__________________________________________________________________________
-void TTMParticleSet::listParents(qint32 id)
+void TTMParticleSet::listParents(qint32 id) const
 {
     // Lists parents of particle id.
     //
@@ -559,7 +559,7 @@ void TTMParticleSet::listParents(qint32 id)
 }
 
 //__________________________________________________________________________
-void TTMParticleSet::listParticle(qint32 id)
+void TTMParticleSet::listParticle(qint32 id) const
 {
     // List particle with specified ID if it is in set
     //
@@ -567,6 +567,22 @@ void TTMParticleSet::listParticle(qint32 id)
     if (TTMParticle* part = getParticle(id)) {
         part->list();
     }
+}
+
+//__________________________________________________________________________
+void TTMParticleSet::listParticles(bool reduced) const
+{
+    // Lists all particles (and anti-particles) in the set,
+
+    qInfo() << "************** ALL PARTICLES **************";
+
+    for( TTMParticle* part : *mPartTable) {
+        if (reduced)
+            qInfo() << QString("    %1").arg(part->getPartName());
+        else
+            part->list();
+    }
+    qInfo() << "**********************************************";
 }
 
 //__________________________________________________________________________
@@ -647,7 +663,7 @@ void TTMParticleSet::setRadii(double radius)
 }
 
 //__________________________________________________________________________
-TTMParticleSet &TTMParticleSet::operator=(const TTMParticleSet &obj)
+TTMParticleSet &TTMParticleSet::operator=(TTMParticleSet &obj)
 {
     if (this == &obj)
         return *this;

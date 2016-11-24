@@ -19,8 +19,8 @@ TTMDecay::TTMDecay(QObject* parent) : QObject(parent),
 
 //__________________________________________________________________________
 TTMDecay::TTMDecay(qint32 mother, qint32 daughter, double fraction, QObject* parent) :
-   QObject(parent),
-   mParentID(mother), mDaughterID(daughter), mBRatio(fraction)
+    QObject(parent),
+    mParentID(mother), mDaughterID(daughter), mBRatio(fraction)
 {
     //ctor
 }
@@ -29,11 +29,8 @@ TTMDecay::TTMDecay(qint32 mother, qint32 daughter, double fraction, QObject* par
 void TTMDecay::list()
 {
     // list data members
-
-    qDebug() << Q_FUNC_INFO << " INFO:";
-    qDebug() << "          BRatio   =   " << mBRatio;
-    qDebug() << "          Parent   =   " << mParentID;
-    qDebug() << "          Daughter = " << mDaughterID;
+    QString text = QString("        BRatio   = %1\n       Parent  = %2\n        Daughter = %3").arg(mBRatio).arg(mParentID).arg(mDaughterID);
+    qInfo() << text;
 }
 
 //__________________________________________________________________________
@@ -42,8 +39,8 @@ TTMDecay &TTMDecay::operator=(const TTMDecay &obj)
     // assignation operator
 
     if (this != &obj) {
-         mParentID = obj.getParentID();
-         mDaughterID = obj.getDaughterID();
+        mParentID = obj.getParentID();
+        mDaughterID = obj.getDaughterID();
         mBRatio = obj.getBRatio();
     }
     return *this;

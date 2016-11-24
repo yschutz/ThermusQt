@@ -202,6 +202,7 @@ void MainWindow::quit()
     // end gracefully
     statusBar()->showMessage(mQuitAction->statusTip());
     close();
+    exit(0);
 }
 //__________________________________________________________________________
 void MainWindow::paintEvent(QPaintEvent *event)

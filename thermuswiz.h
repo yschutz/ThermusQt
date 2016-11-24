@@ -16,10 +16,10 @@ class ThermusWiz : public QWizard
 public:
     ThermusWiz(QString Title = " ", QWidget *parent = 0);
 
-    void   cleanupPage(qint32 id);
-    qint32 getDialogId()  const { return mDialogId; }
-    qint32 getSummaryId() const { return mSummaryId; }
-    void   initializePage(qint32 id);
+    void    cleanupPage(qint32 id);
+    qint32  getDialogId()  const { return mDialogId; }
+    qint32  getSummaryId() const { return mSummaryId; }
+    void    initializePage(qint32 id);
 
 public slots:
     void accept();

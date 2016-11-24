@@ -31,7 +31,7 @@ Summary::Summary(QWidget *parent) : QWizardPage(parent)
 }
 
 //__________________________________________________________________________
-void Summary::updateFileName(QString name)
+void Summary::updateFileName(const QString name)
 {
     // display particles file name
 

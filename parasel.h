@@ -48,11 +48,8 @@ private:
     bool           mConstrain[kParTypes];        // if true parameter is constrained
     QLineEdit*     mDensity[kParTypes];          // value of the density to constrain for BQ, S, C, and Beauty
     QLineEdit*     mFitMax[kParTypes];           // max value of the parameters for the fit
-    double         mFitMaxD[kParTypes];          // default value;
     QLineEdit*     mFitMin[kParTypes];           // min value of the parameters for the fit
-    double         mFitMinD[kParTypes];          // default value;
     QLineEdit*     mFitSte[kParTypes];           // step value of the parameters for the fit
-    double         mFitSteD[kParTypes];          // default value;
     QGroupBox*     mGammaFitBox;                 // the fit box parameters for gammas
     QGridLayout*   mGammaFitBoxLayout;           // and its layout
     QGroupBox*     mMuConBox;                    // the constrain box parameters for the mus
@@ -63,7 +60,7 @@ private:
     QCheckBox*     mParameterFix[kParTypes];     // checkbox list to fix or not the parameters
     QLineEdit*     mParameterValue[kParTypes];   // checkbox list to fix or not the parameters
     QPalette       mPalette;                     // the palette for the QLineEdit objects
-    QGroupBox*     mRFitBox;                    // the fit box parameters for R
+    QGroupBox*     mRFitBox;                     // the fit box parameters for R
     QGridLayout*   mRFitBoxLayout;               // and its layout
     QGroupBox*     mTFitBox;                     // the fit box parameters for T
     QGridLayout*   mTFitBoxLayout;               // and its layout

@@ -139,10 +139,11 @@ void RunMacro::setParticlesListFile()
     mParticlesList.prepend(":/particles/");
     QString tempo(QString("The selected particles lis file is: %1").arg(mParticlesList));
     if (mDebug)
-        qDebug() << Q_FUNC_INFO << tempo;
+        qDebug() << tempo;
 
     mPartInfo = new  TTMParticleSet(mParticlesList, true);  // here true means the decays are scaled to sum(BR) = 100%
     mPartInfo->inputDecays(":/particles/");
+    mPartInfo->listParticles(false);
 }
 
 //__________________________________________________________________________

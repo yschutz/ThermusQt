@@ -60,6 +60,8 @@ void ThermusWiz::cleanupPage(qint32 /*id*/)
 //__________________________________________________________________________
 void ThermusWiz::initializePage(qint32 id)
 {
+    // called when the next button is hit
+
     Summary * summary = (Summary*)page(mSummaryId);
 
     if (id - 1 == mDialogId) {
@@ -67,9 +69,8 @@ void ThermusWiz::initializePage(qint32 id)
         for (qint32 index = 0; index < file->getRadioButtons().size(); index++) {
             QRadioButton * but = file->getRadioButtons().at(index);
             if (but->isChecked())
-              file->setFileName(but->text());
+                file->setFileName(but->text());
         }
-
         summary->updateFileName(file->getFileName());
     } else if (id - 1 == mParaSelId) {
         summary->updateParameters();

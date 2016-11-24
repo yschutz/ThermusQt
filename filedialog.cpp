@@ -7,6 +7,9 @@
 #include <QDir>
 #include <QGroupBox>
 
+#include <QFormLayout>
+#include <QLabel>
+
 #include "filedialog.h"
 #include "macros/runmacro.h"
 
@@ -19,6 +22,7 @@ FileDialog::FileDialog(QWidget *parent) : QWizardPage(parent)
     QGroupBox *groupBox = new QGroupBox(tr("Available files"));
     QDir dir(":/particles");
     QVBoxLayout *vbox = new QVBoxLayout;
+
     for (qint32 index = 0; index < dir.entryList().size(); index++) {
         if (dir.entryList().at(index).contains("PartList_")) {
             QRadioButton *button = new QRadioButton(dir.entryList().at(index), groupBox);
@@ -26,6 +30,8 @@ FileDialog::FileDialog(QWidget *parent) : QWizardPage(parent)
             vbox->addWidget(mRadioButtons.last());
         }
     }
+    mRadioButtons.last()->setChecked(true);
+
     groupBox->setLayout(vbox);
 
     QVBoxLayout *layout = new QVBoxLayout();

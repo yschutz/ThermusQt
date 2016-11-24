@@ -12,7 +12,7 @@ class Summary : public QWizardPage
 public:
     Summary(QWidget *parent = 0);
 
-    void updateFileName(QString name);
+    void updateFileName(const QString name);
     void updateParameters();
 
 private:

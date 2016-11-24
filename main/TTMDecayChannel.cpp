@@ -28,16 +28,17 @@ TTMDecayChannel::TTMDecayChannel(double fraction, QList<TTMIDObj *> *list, QObje
 //__________________________________________________________________________
 void TTMDecayChannel::list()
 {
-    //list all daughters
+    // list all daughters
 
-    qDebug() << Q_FUNC_INFO << "INFO: BRatio: " << mBRatio;
+    QString text = QString("BRatio: %1 ☛ ").arg(mBRatio);
+
     if (mDaughters) {
         QList<TTMIDObj*>::iterator i;
-        for (i = mDaughters->begin(); i != mDaughters->end(); ++i)
-            qDebug() << Q_FUNC_INFO << "INFO: " << (*i)->getID() << endl;
-    } else {
-        qWarning("%s WARNING: No daughters list defined", Q_FUNC_INFO);
-    }
+        for (i = mDaughters->begin(); i != mDaughters->end(); ++i)            
+            text.append(QString("%1; ").arg((*i)->getID()));
+        qInfo() << text;
+    } else
+        qWarning("WARNING: No daughters list defined");
 }
 
 //__________________________________________________________________________
