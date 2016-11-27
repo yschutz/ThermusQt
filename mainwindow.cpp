@@ -18,11 +18,9 @@
 bool MainWindow::mDebug = false;
 //__________________________________________________________________________
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    QMainWindow(parent)
 {
     // ctor
-    ui->setupUi(this);
     setGeometry(0, 0, 50, 25);
 
     setWindowTitle("THERMUS");
@@ -79,7 +77,6 @@ MainWindow::~MainWindow()
 {
     // dtor
 
-    delete ui;
 }
 
 //__________________________________________________________________________

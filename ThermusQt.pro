@@ -51,7 +51,6 @@ HEADERS  += mainwindow.h \
     macros/runmacro.h \
     logger.h
 
-FORMS    += mainwindow.ui
 
 RESOURCES += \
     particles/particles.qrc \

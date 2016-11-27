@@ -15,9 +15,6 @@
 
 static QPlainTextEdit* mLogConsol;         // Consol where to write log information
 
-namespace Ui {
-class MainWindow;
-}
 
 class MainWindow : public QMainWindow
 {
@@ -45,7 +42,6 @@ private:
     void createActions();
     void createMenus();
 
-    Ui::MainWindow *ui;
 
     QWidget*   mCentralwidget;     // The window so far inactive
     static bool       mDebug;             // True for running debug mode
