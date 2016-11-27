@@ -14,10 +14,15 @@ Logger::Logger()
 }
 
 //__________________________________________________________________________
-void Logger::writeMessage(const QString &message)
+void Logger::writeMessage(const QString &message, bool debug)
 {
-   if (mTextEdit)
-       mTextEdit->appendPlainText(message);
+    if (mTextEdit) {
+        if (debug)
+            mTextEdit->appendPlainText(message);
+        else
+            mTextEdit->appendHtml(message);
+
+    }
 }
 
 //__________________________________________________________________________

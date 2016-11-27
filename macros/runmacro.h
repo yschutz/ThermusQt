@@ -24,8 +24,9 @@ class RunMacro : public QObject
 public:
     static      RunMacro& instance();
 
-    bool        isDebug() const { return mDebug; }
-    void        listParameters() const { mParaInfo->list(); }
+    bool        isDebug() const {return mDebug;}
+    void        listParameters() const {mParaInfo->list();}
+    void        listParticles(bool full = false)  const {mPartInfo->listParticles(full);}
     void        setConstrain();
     void        setDebug(bool val) {mDebug = val; }
     void        setDefaultParameters();

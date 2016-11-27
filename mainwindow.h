@@ -27,11 +27,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void createConsol();
+    void        createConsol();
     static void customMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
-    void setDebugMode(bool val);
+    void        setDebugMode(bool val);
 
 private slots:
+    void listParameters();
+    void listParticles(bool full);
     void runPrediction();
     void quit();
 
@@ -46,10 +48,13 @@ private:
     Ui::MainWindow *ui;
 
     QWidget*   mCentralwidget;     // The window so far inactive
-    bool       mDebug;             // True for running debug mode
+    static bool       mDebug;             // True for running debug mode
     QMenu*     mDebugMenu;         // Menu Tab to set the debug on/off
     QAction*   mDebugOffAction;    // Action for debug mode off
     QAction*   mDebugOnAction;     // Action for debug mode on
+    QAction*   mParametersList;    // list all parameteres with properties
+    QAction*   mParticlesListLong; // list all particles properties and their decay (long output)
+    QAction*   mParticlesListShort;// list all particles properties and their decay (short output)
     QAction*   mPredictionAction;  // Action for the Prediction macro
     QAction*   mQuitAction;        // Action for quitting the application
     QMenu*     mRunMenu;           // Menu Tab to select the macro to run

@@ -15,10 +15,11 @@
 #include "logger.h"
 #include "thermuswiz.h"
 
+bool MainWindow::mDebug = false;
 //__________________________________________________________________________
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow), mDebug(false)
+    ui(new Ui::MainWindow)
 {
     // ctor
     ui->setupUi(this);
@@ -133,7 +134,10 @@ void MainWindow::customMessageHandler(QtMsgType type, const QMessageLogContext &
     logger.setTextEdit(mLogConsol);
 
     // Write the message to QTextEdit
-    logger.writeMessage(txt);
+    if (mDebug)
+        logger.writeMessage(txt, true);
+    else
+        logger.writeMessage(txt, false);
 }
 
 //__________________________________________________________________________
@@ -149,6 +153,18 @@ void MainWindow::setDebugMode(bool val)
         mDebugOnAction->setText("On");
         mDebugOffAction->setText("✓ Off");
     }
+}
+
+//__________________________________________________________________________
+void MainWindow::listParameters()
+{
+    RunMacro::instance().listParameters();
+}
+
+//__________________________________________________________________________
+void MainWindow::listParticles(bool full)
+{
+    RunMacro::instance().listParticles(full);
 }
 
 //__________________________________________________________________________
@@ -179,9 +195,16 @@ void MainWindow::runPrediction()
 
     myMacro.setParticlesListFile();
 
+    // adds the Particles list to the menu
+
+    mRunMenu->insertAction(mQuitAction, mParticlesListLong);
+    mRunMenu->insertAction(mQuitAction, mParticlesListShort);
+
     // Choice of starting parameters
 
     myMacro.setParameters();
+
+    // adds the Particles list to the menu
 
     // choice of parameter to fit or to fix
     // -> Default is fixed at zero or at unity so important to check !!
@@ -192,8 +215,10 @@ void MainWindow::runPrediction()
 
     myMacro.setConstrain();
 
+    mRunMenu->insertAction(mQuitAction, mParametersList);
+
     // list parameters settings
-    myMacro.listParameters();
+//    myMacro.listParameters();
 }
 
 //__________________________________________________________________________
@@ -261,16 +286,28 @@ void MainWindow::createActions()
     connect(mDebugOnAction, &QAction::triggered, this, [this]{ setDebugMode(true); });
     connect(mDebugOffAction, &QAction::triggered, this, [this]{ setDebugMode(false); });
 
-
-
-
-
     // run prediction macro
 
     mPredictionAction = new QAction(tr("&Prediction"), this);
     mPredictionAction->setShortcuts(QKeySequence::New);
     mPredictionAction->setStatusTip(tr("Makes a Thermus prediction"));
     connect(mPredictionAction, &QAction::triggered, this, &MainWindow::runPrediction);
+
+    // Particles list action
+
+    mParticlesListLong = new QAction(tr("Long particles list"), this);
+    mParticlesListLong->setStatusTip("Makes a long list of all particles with full properties");
+    connect(mParticlesListLong, &QAction::triggered, this, [this]{ listParticles(true); });
+
+    mParticlesListShort = new QAction(tr("Short particles list"), this);
+    mParticlesListShort->setStatusTip("Makes a short list of all particles with full properties");
+    connect(mParticlesListShort, &QAction::triggered, this, [this]{ listParticles(false); });
+
+    // Parameters list action
+
+    mParametersList = new QAction(tr("Parameters list"), this);
+    mParametersList->setStatusTip("Makes a list of parameters with properties");
+    connect(mParametersList, &QAction::triggered, this, [this]{ listParameters(); });
 
     // quit
 
@@ -294,4 +331,5 @@ void MainWindow::createMenus()
     mRunMenu = menuBar()->addMenu(tr("&Run"));
     mRunMenu->addAction(mPredictionAction);
     mRunMenu->addAction(mQuitAction);
+
 }

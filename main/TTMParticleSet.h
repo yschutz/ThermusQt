@@ -39,7 +39,7 @@ public:
 //    void                        inputDecays(TDatabasePDG *pdg);
     void                          listParents(qint32 id) const;
     void                          listParticle(qint32 id) const;
-    void                          listParticles(bool reduced = true) const;
+    void                          listParticles(bool full = true) const;
     void                          listStableParticles();
     void                          massCut(double max);
     void                          removeParticle(qint32 id);

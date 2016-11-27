@@ -16,7 +16,7 @@ public:
     static Logger& instance();
 
     void setTextEdit(QPlainTextEdit* val) {mTextEdit = val;}
-    void writeMessage(const QString& message);
+    void writeMessage(const QString& message, bool debug=true);
 
 private:
     Logger();

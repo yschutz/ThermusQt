@@ -143,7 +143,6 @@ void RunMacro::setParticlesListFile()
 
     mPartInfo = new  TTMParticleSet(mParticlesList, true);  // here true means the decays are scaled to sum(BR) = 100%
     mPartInfo->inputDecays(":/particles/");
-    mPartInfo->listParticles(false);
 }
 
 //__________________________________________________________________________

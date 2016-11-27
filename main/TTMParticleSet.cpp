@@ -570,17 +570,17 @@ void TTMParticleSet::listParticle(qint32 id) const
 }
 
 //__________________________________________________________________________
-void TTMParticleSet::listParticles(bool reduced) const
+void TTMParticleSet::listParticles(bool full) const
 {
     // Lists all particles (and anti-particles) in the set,
 
     qInfo() << "************** ALL PARTICLES **************";
 
     for( TTMParticle* part : *mPartTable) {
-        if (reduced)
-            qInfo() << QString("    %1").arg(part->getPartName());
-        else
+        if (full)
             part->list();
+        else
+            qInfo() << QString("    %1").arg(part->getPartName());
     }
     qInfo() << "**********************************************";
 }

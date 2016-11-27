@@ -132,42 +132,41 @@ void TTMParticle::list() const
 {
     // Listing for particles
 
-    qDebug() << Q_FUNC_INFO << "INFO: ********* LISTING FOR PARTICLE " << mPartName
-             << " *********";
-
-    qDebug() << "\t ID                 = " << mID        << "    \t";
-    qDebug() << "\t Deg.               = " << mDeg       << "    \t";
-    qDebug() << "\t STAT               = " << mStat      << "    \t";
-    qDebug() << "\t Mass               = " << mMass      << "GeV \t";
-    qDebug() << "\t Width              = " << mWidth     << "GeV \t";
-    qDebug() << "\t Threshold          = " << mThreshold << "GeV \t";
-    if(mThresholdFlag){
-        qDebug() << "\t Calculated Threshold \t= " << mThresholdCalc << "GeV \t";
-    }
-    qDebug() << "\t Hard sphere radius = " << mRadius    << "    \t";
-    qDebug() << "\t B                  = " << mB         << "    \t";
-    qDebug() << "\t S                  = " << mS         << "    \t" << "\t" << "|S| = " << mSContent;
-    qDebug() << "\t Q                  = " << mQ         << "    \t";
-    qDebug() << "\t Charm              = " << mCharm     << "    \t" << "\t" << "|C| = " << mCContent;
-    qDebug() << "\t Beauty             = " << mBeauty    << "    \t" << "\t" << "|B| = " << mBContent;
-    qDebug() << "\t Top                = " << mTop       << "    \t" << "\t" << "|T| = " << mTContent;
+    QString text = QString("********* LISTING FOR PARTICLE %1 *********").arg(mPartName);
+    qInfo() << text;
+    qInfo() <<  QString("ID                             = %1").arg(mID, 5);
+    qInfo() << QString("Deg.                         = %1").arg(mDeg);
+    qInfo() << QString("STAT                        = %1").arg(mStat);
+    qInfo() << QString("Mass                        = %1 GeV").arg(mMass);
+    qInfo() << QString("Width                       = %1 GeV").arg(mWidth);
+    qInfo() << QString("Threshold                = %1 GeV").arg(mThreshold);
+    if(mThresholdFlag)
+        qInfo() << QString("Calculated Threshold \t= %1 GeV").arg(mThresholdCalc);
+    qInfo() << QString("Hard sphere radius = %1").arg(mRadius);
+    qInfo() << QString("B                               = %1").arg(mB);
+    qInfo() << QString("S                               = %1     |S| = %2").arg(mS).arg(mSContent);
+    qInfo() << QString("Q                               = %1").arg(mQ);
+    qInfo() << QString("Charm                      = %1    |C| = %2").arg(mCharm).arg(mCContent);
+    qInfo() << QString("Beauty                     = %1     |B| = %2").arg(mBeauty).arg(mBContent);
+    qInfo() << QString("Top                          = %1     |T| = %2").arg(mTop).arg(mTContent);
+    qInfo() << text;
     if (mStable) {
-        qDebug() << "\t\t STABLE";
+        text  = "STABLE";
     } else {
-        qDebug() << "\t\t UNSTABLE";
-        qDebug() << "\t\t Decay Channels:";
+        text = "UNSTABLE";
+        qInfo() << "Decay Channels:";
 
-        QList<TTMDecayChannel*>::const_iterator nextch;
-        for( nextch = mDecayChannels.begin(); nextch != mDecayChannels.end(); ++nextch)
-            (*nextch)->list();
-        qDebug() << "\t\t Summary of Decays: ";
+        qInfo() << text;
 
-        QList<TTMDecay*>::const_iterator d;
-        for (d = mDecaySummary.begin(); d != mDecaySummary.end(); ++d) {
-            qDebug() << "\t\t" << (*d)->getDaughterID() << "\t\t"
-                     << (*d)->getBRatio() * 100 << "%";
-        }
-        qDebug() << "\t ********************************************** ";
+        for (TTMDecayChannel * dc : mDecayChannels)
+            dc->list();
+
+        qInfo() << "Summary of Decays: ";
+
+        for (TTMDecay * decay : mDecaySummary)
+            qInfo() << QString("%1 %2 %").arg(decay->getDaughterID()).arg(decay->getBRatio() * 100);
+
+        qInfo() << "\t ********************************************** ";
     }
 }
 
