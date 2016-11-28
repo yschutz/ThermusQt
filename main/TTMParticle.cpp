@@ -134,21 +134,21 @@ void TTMParticle::list() const
 
     QString text = QString("********* LISTING FOR PARTICLE %1 *********").arg(mPartName);
     qInfo() << text;
-    qInfo() <<  QString("ID                             = %1").arg(mID, 5);
-    qInfo() << QString("Deg.                         = %1").arg(mDeg);
-    qInfo() << QString("STAT                        = %1").arg(mStat);
-    qInfo() << QString("Mass                        = %1 GeV").arg(mMass);
-    qInfo() << QString("Width                       = %1 GeV").arg(mWidth);
-    qInfo() << QString("Threshold                = %1 GeV").arg(mThreshold);
+    qInfo() << QString("%1 = %2").arg("ID",  -20, QChar('.')).arg(mID, 5);
+    qInfo() << QString("%1 = %2").arg("Deg.", -20, QChar('.')).arg(mDeg, 5);
+    qInfo() << QString("%1 = %2").arg("STAT",  -20, QChar('.')).arg(mStat, 5);
+    qInfo() << QString("%1 = %2 GeV").arg("Mass",  -20, QChar('.')).arg(mMass, 5);
+    qInfo() << QString("%1 = %2 GeV").arg("Width",  -20, QChar('.')).arg(mWidth, 5);
+    qInfo() << QString("%1 = %2 GeV").arg("Threshold",  -20, QChar('.')).arg(mThreshold, 5);
     if(mThresholdFlag)
-        qInfo() << QString("Calculated Threshold \t= %1 GeV").arg(mThresholdCalc);
-    qInfo() << QString("Hard sphere radius = %1").arg(mRadius);
-    qInfo() << QString("B                               = %1").arg(mB);
-    qInfo() << QString("S                               = %1     |S| = %2").arg(mS).arg(mSContent);
-    qInfo() << QString("Q                               = %1").arg(mQ);
-    qInfo() << QString("Charm                      = %1    |C| = %2").arg(mCharm).arg(mCContent);
-    qInfo() << QString("Beauty                     = %1     |B| = %2").arg(mBeauty).arg(mBContent);
-    qInfo() << QString("Top                          = %1     |T| = %2").arg(mTop).arg(mTContent);
+        qInfo() << QString("%1 = %2 GeV").arg("Calculated Threshold",  -20, QChar('.')).arg(mThresholdCalc, 5);
+    qInfo() << QString("%1 = %2").arg("Hard sphere radius",  -20, QChar('.')).arg(mRadius);
+    qInfo() << QString("%1 = %2").arg("B",  -20, QChar('.')).arg(mB);
+    qInfo() << QString("%1 = %2  %3 = %4").arg("S",  -20, QChar('.')).arg(mS).arg("|S|", -5, QChar('.')).arg(mSContent, 5);
+    qInfo() << QString("%1 = %2").arg("ID",  -10, QChar('.')).arg(mQ);
+    qInfo() << QString("%1 = %2  %3 = %4").arg("Charm",  -20, QChar('.')).arg(mCharm).arg("|C|", -5, QChar('.')).arg(mCContent, 5);
+    qInfo() << QString("%1 = %2  %3 = %4").arg("Beauty", -20, QChar('.')).arg(mBeauty).arg("|B|", -5, QChar('.')).arg(mBContent, 5);
+    qInfo() << QString("%1 = %2  %3 = %4").arg("Top",    -20, QChar('.')).arg(mTop).arg("|T|", -5, QChar('.')).arg(mTContent, 5);
     qInfo() << text;
     if (mStable) {
         text  = "STABLE";

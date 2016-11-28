@@ -85,12 +85,12 @@ void TTMParameter::list()
 
     QString text;
     if (mError != 0.)
-        text = QString("%1 %2 ± %3").arg(objectName()).arg(mValue).arg(mError);
+        text = QString("%1 %2 ± %3").arg(objectName(), 10, QChar('.')).arg(mValue, 5).arg(mError, 5);
     else
         text = QString("%1 %2").arg(objectName()).arg(mValue);
 
     if (mFlag == 0) {
-        text = text.append(" %1 start: %2; range: %3 -- %4; step: %5").arg(mStatus).arg(mStart).arg(mMin).arg(mMax).arg(mStep);
+        text = text.append(" %1 start: %2; range: %3 -- %4; step: %5").arg(mStatus, -5, QChar('.')).arg(mStart, 5).arg(mMin, 5).arg(mMax, 5).arg(mStep, 5);
     } else {
         text = text.append(QString(" %1").arg(mStatus));
     }
