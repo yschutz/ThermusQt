@@ -10,11 +10,11 @@
 #include <QFormLayout>
 #include <QLabel>
 
-#include "filedialog.h"
+#include "filesel.h"
 #include "macros/runmacro.h"
 
 //__________________________________________________________________________
-FileDialog::FileDialog(QWidget *parent) : QWizardPage(parent)
+FileSel::FileSel(QWidget *parent) : QWizardPage(parent)
 {
     // create an interactive widow to select a single file among a list
 

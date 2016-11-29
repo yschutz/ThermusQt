@@ -2,7 +2,7 @@
 //
 // The steering class to run a thermus prediction(aka ROOT macro)
 
-#include "filedialog.h"
+#include "filesel.h"
 #include "parasel.h"
 #include "runmacro.h"
 
@@ -135,7 +135,7 @@ void RunMacro::setParticlesListFile()
 {
     // setting the particles list and particles properties
 
-    mParticlesList = mFileDialog->getFileName();
+    mParticlesList = mFileSel->getFileName();
     mParticlesList.prepend(":/particles/");
     QString tempo(QString("The selected particles lis file is: %1").arg(mParticlesList));
     if (mDebug)

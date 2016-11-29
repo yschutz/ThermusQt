@@ -1,5 +1,5 @@
-#ifndef FILEDIALOG_H
-#define FILEDIALOG_H
+#ifndef FILESEL_H
+#define FILESEL_H
 
 #include <QEventLoop>
 #include <QList>
@@ -8,11 +8,11 @@
 #include <QRadioButton>
 #include <QWizardPage>
 
-class FileDialog : public QWizardPage
+class FileSel : public QWizardPage
 {
     Q_OBJECT
 public:
-    explicit FileDialog(QWidget *parent = 0);
+    explicit FileSel(QWidget *parent = 0);
 
 
     void                  setFileName(const QString val) { mFileName = val;}
@@ -25,4 +25,4 @@ private:
     QString               mFileName;       // the selected filename
 };
 
-#endif // FILEDIALOG_H
+#endif // FILESEL_H

@@ -14,7 +14,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    filedialog.cpp \
     main/TTMParticleSet.cpp \
     main/TTMParticle.cpp \
     main/TTMDecay.cpp \
@@ -30,10 +29,10 @@ SOURCES += main.cpp\
     external/QMinuit.cpp \
     summary.cpp \
     macros/runmacro.cpp \
-    logger.cpp
+    logger.cpp \
+    filesel.cpp
 
 HEADERS  += mainwindow.h \
-    filedialog.h \
     main/TTMParticleSet.h \
     main/TTMParticle.h \
     main/TTMDecay.h \
@@ -49,7 +48,8 @@ HEADERS  += mainwindow.h \
     external/QMinuit.h \
     summary.h \
     macros/runmacro.h \
-    logger.h
+    logger.h \
+    filesel.h
 
 
 RESOURCES += \
