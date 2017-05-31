@@ -3,12 +3,12 @@
 // The main window steering the show
 
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 
 #include <QAbstractButton>
 #include <QDateTime>
 #include <QDebug>
 #include <QMdiArea>
+#include <QtWidgets>
 #include <QVBoxLayout>
 
 #include "macros/runmacro.h"

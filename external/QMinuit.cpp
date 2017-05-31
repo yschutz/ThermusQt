@@ -3021,7 +3021,7 @@ void QMinuit::qmnhelp(QString comd)
     //*-*  ====================================
     //*-*
     comd.toUpper();
-    if( comd.length() == 0 || comd[0] == '*' || comd[0] == '?' || comd[0] == 0 || comd=="HELP" ) {
+    if( comd.length() == 0 || comd[0] == '*' || comd[0] == '?' || comd[0] == '0' || comd=="HELP" ) {
         qInfo() << "   ==>List of MINUIT Interactive commands:";
         qInfo() << " CLEar     Reset all parameter names and values undefined";
         qInfo() << " CONtour   Make contour map of the user function";

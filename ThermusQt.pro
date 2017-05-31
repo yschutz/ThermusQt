@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -55,3 +55,6 @@ HEADERS  += mainwindow.h \
 RESOURCES += \
     particles/particles.qrc \
     images/images.qrc
+
+unix:LIBS += -L/usr/local/lib -lgsl
+INCLUDEPATH += /usr/local/include
