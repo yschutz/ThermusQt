@@ -100,6 +100,9 @@ TTMParticleSet::TTMParticleSet(QString file, bool CB, QObject *parent)  : QObjec
         part->setRadius(0.);
 
         mPartTable->insert(part->objectName(), part);
+
+        part->list();
+
         mParticleNumber++;
         if (part->getB() != 0 || part->getS() != 0 || part->getQ() != 0 || part->getCharm() != 0 || part->getBeauty() != 0 || part->getTop() != 0) {
             TTMParticle* apart = new TTMParticle();
@@ -133,6 +136,8 @@ TTMParticleSet::TTMParticleSet(QString file, bool CB, QObject *parent)  : QObjec
 
             mPartTable->insert(apart->objectName(), apart);
             mParticleNumber++;
+
+            apart->list();
         }
         data.readLine(); // skip empty lines
     }

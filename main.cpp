@@ -16,26 +16,26 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-//    MainWindow w;
-//    w.show();
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-        db.setDatabaseName("/Users/schutz/group/Qt/ThermusQt/particles/Thermus.db");
-        bool ok = db.open();
-        qDebug() << ok;
+    MainWindow w;
+    w.show();
+//    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+//        db.setDatabaseName("/Users/schutz/group/Qt/ThermusQt/particles/Thermus.db");
+//        bool ok = db.open();
+//        qDebug() << ok;
 
-        QSqlQueryModel  *model = new QSqlQueryModel;
-        QTableView *view = new QTableView;
-        view->setModel(model);
+//        QSqlQueryModel  *model = new QSqlQueryModel;
+//        QTableView *view = new QTableView;
+//        view->setModel(model);
 
-        model->setQuery("SELECT * FROM particle");
-        view->show();
+//        model->setQuery("SELECT * FROM particle");
+//        view->show();
 
-        QSqlQuery q;
-        q.exec("SELECT * FROM particle");
-        while (q.next()) {
-            QString name = q.record().value("name").toString();
+//        QSqlQuery q;
+//        q.exec("SELECT * FROM particle");
+//        while (q.next()) {
+//            QString name = q.record().value("name").toString();
 
-            qDebug() << name;
-        }
+//            qDebug() << name;
+//        }
         return a.exec();
 }
