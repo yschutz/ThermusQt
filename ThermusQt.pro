@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     summary.cpp \
     macros/runmacro.cpp \
     logger.cpp \
-    filesel.cpp
+    filesel.cpp \
+    external/particlesdbmanager.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -49,7 +50,8 @@ HEADERS  += mainwindow.h \
     summary.h \
     macros/runmacro.h \
     logger.h \
-    filesel.h
+    filesel.h \
+    external/particlesdbmanager.h
 
 
 RESOURCES += \

@@ -9,26 +9,18 @@
 #include <QDebug>
 #include <QtWidgets>
 
-#include <QtSql>
+#include "external/particlesdbmanager.h"
 
 #include <gsl/gsl_sf_bessel.h>
 
+#include <QtSql>
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
-//    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-//        db.setDatabaseName("/Users/schutz/group/Qt/ThermusQt/particles/Thermus.db");
-//        bool ok = db.open();
-//        qDebug() << ok;
-
-//        QSqlQueryModel  *model = new QSqlQueryModel;
-//        QTableView *view = new QTableView;
-//        view->setModel(model);
-
-//        model->setQuery("SELECT * FROM particle");
-//        view->show();
+//    MainWindow w;
+//    w.show();
+    ParticlesDBManager* db = new ParticlesDBManager("/Users/schutz/work/ThermusQt/particles/Particles.db");
+    db->listDecays(9000111, 0.);
 
 //        QSqlQuery q;
 //        q.exec("SELECT * FROM particle");
