@@ -7,7 +7,9 @@
 #include <QAbstractButton>
 #include <QDateTime>
 #include <QDebug>
+#include <QFileInfo>
 #include <QMdiArea>
+#include <QMessageBox>
 #include <QtWidgets>
 #include <QVBoxLayout>
 
@@ -15,20 +17,23 @@
 #include "logger.h"
 #include "thermuswiz.h"
 
+#include "external/finddialog.h"
+#include "external/particlesdbmanager.h"
+
 bool MainWindow::mDebug = false;
 //__________________________________________________________________________
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent)
+    QMainWindow(parent), mFd(nullptr)
 {
     // ctor
     setGeometry(0, 0, 50, 25);
 
     setWindowTitle("THERMUS");
-//    QPixmap bkgnd(":/2015-Jul-03-Fit_PbPb0010_Reference_final_SQM.png");
-//    bkgnd = bkgnd.scaled(QSize(550, 500));
-//    QPalette palette;
-//    palette.setBrush(QPalette::Background, bkgnd);
-//    this->setPalette(palette);
+    //    QPixmap bkgnd(":/2015-Jul-03-Fit_PbPb0010_Reference_final_SQM.png");
+    //    bkgnd = bkgnd.scaled(QSize(550, 500));
+    //    QPalette palette;
+    //    palette.setBrush(QPalette::Background, bkgnd);
+    //    this->setPalette(palette);
 
     // central widget
 
@@ -140,7 +145,7 @@ void MainWindow::customMessageHandler(QtMsgType type, const QMessageLogContext &
 //__________________________________________________________________________
 void MainWindow::setDebugMode(bool val)
 {
-   // set debug mode on/off
+    // set debug mode on/off
     mDebug = val;
     if (mDebug) {
         mDebugOnAction->setText("✓ On");
@@ -215,7 +220,7 @@ void MainWindow::runPrediction()
     mRunMenu->insertAction(mQuitAction, mParametersList);
 
     // list parameters settings
-//    myMacro.listParameters();
+    //    myMacro.listParameters();
 }
 
 //__________________________________________________________________________
@@ -283,6 +288,25 @@ void MainWindow::createActions()
     connect(mDebugOnAction, &QAction::triggered, this, [this]{ setDebugMode(true); });
     connect(mDebugOffAction, &QAction::triggered, this, [this]{ setDebugMode(false); });
 
+    // particles database related actions
+
+    mPdgCreatePDG        = new QAction(QIcon(":/pdglogo.jpg"), "&PDG", this);
+    connect(mPdgCreatePDG, &QAction::triggered, this, [this]{ particlesDBManagement(kCreateP); });
+    mPdgCreateThermus    = new QAction(QIcon(":/thermusicon.png"), "&Thermus", this);
+    connect(mPdgCreateThermus, &QAction::triggered, this, [this]{ particlesDBManagement(kCreateT); });
+
+    mPdgUpdateMassAction   = new QAction(QIcon(":/updateicon.png"), tr("&Update masses"), this);
+    connect(mPdgUpdateMassAction, &QAction::triggered, this, [this]{ particlesDBManagement(kUpdate); });
+
+//    mPdgInsertAction = new QAction(QIcon(":/inserticon.png"), tr("&Insert"), this);
+//    connect(mPdgInsertAction, &QAction::triggered, this, [this]{ particlesDBManagement(kInsert); });
+
+    mPdgListAction   = new QAction(QIcon(":/listicon.png"), tr("&List"), this);
+    connect(mPdgListAction, &QAction::triggered, this, [this]{ particlesDBManagement(kList); });
+
+    mPdgSelectAction = new QAction(QIcon(":/selecticon.png"), tr("&Select"), this);
+    connect(mPdgSelectAction, &QAction::triggered, this, [this]{ particlesDBManagement(kSelect); });
+
     // run prediction macro
 
     mPredictionAction = new QAction(tr("&Prediction"), this);
@@ -324,9 +348,134 @@ void MainWindow::createMenus()
     mDebugMenu->addAction(mDebugOnAction);
     mDebugMenu->addAction(mDebugOffAction);
 
+    // Menu related to the particles database
+    mPdgMenu = menuBar()->addMenu(tr("&Particles"));
+
+    mPdgCreateMenu = mPdgMenu->addMenu(QIcon(":/createicon.png"), tr("&Create"));
+    mPdgCreateMenu->addAction(mPdgCreatePDG);
+    mPdgCreateMenu->addAction(mPdgCreateThermus);
+
+    mPdgMenu->addAction(mPdgUpdateMassAction);
+    mPdgMenu->addAction(mPdgListAction);
+    mPdgMenu->addAction(mPdgSelectAction);
+//    mPdgMenu->addAction(mPdgInsertAction);
+
     // select the macro to run or quit
     mRunMenu = menuBar()->addMenu(tr("&Run"));
     mRunMenu->addAction(mPredictionAction);
     mRunMenu->addAction(mQuitAction);
 
+}
+
+//__________________________________________________________________________
+void MainWindow::particlesDBManagement(DBOPS option)
+{
+    // Manages the particles DB
+
+    // !!!!! FIXME: do not hard code the path
+
+    const QString kPythonPath("/usr/local/bin/python3");
+    QMessageBox msg;
+    QFileInfo check(kPythonPath);
+    if (!check.exists() || !check.isExecutable()) {
+        msg.setText(QString("%1: %2 is not found or not executable!").arg(Q_FUNC_INFO, kPythonPath));
+        msg.exec();
+        return;
+    }
+
+    qDebug() << Q_FUNC_INFO << QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory);
+
+    QString pythonScript;
+    QString dbPath;
+    QString input("");
+        if (option == kCreateP) {
+        pythonScript = "/Users/schutz/work/ThermusQt/external/PDGParticles.py";
+        dbPath       = "/Users/schutz/work/ThermusQt/external/PDGParticles.db";
+    // !!!!! EMXIF
+    } else if (option == kCreateT) {
+        pythonScript = "/Users/schutz/work/ThermusQt/external/ThermusParticles.py";
+        dbPath       = "/Users/schutz/work/ThermusQt/external/ThermusParticles.db";
+        input        = "/Users/schutz/work/ThermusQt/particles/PartList_PPB2014_CBHN_fixed_saveQM14.txt";
+    // !!!!! EMXIF
+    }
+    QMetaEnum metaEnum = QMetaEnum::fromType<DBOPS>();
+    QString soption    = metaEnum.valueToKey(option);
+    soption.remove(0,1);
+    soption.remove(soption.length() - 1 ,1);
+
+    QTimer t;
+    QEventLoop loop;
+    connect(&t, SIGNAL(timeout()), &loop, SLOT(quit()));
+
+    // create or update
+    QProcess p;
+    p.setProcessChannelMode(QProcess::SeparateChannels);
+    QStringList params;
+    params << pythonScript << soption << input;
+    QProgressDialog progress;
+    if (option == kCreateP || option == kCreateT || option == kUpdate) {
+        p.start(kPythonPath, params);
+        int iprogress = 0;
+        while (p.state() == QProcess::Running || p.state() == QProcess::Starting) {
+            if (iprogress == 0 && p.state() == QProcess::Running) {
+                progress.setLabelText(QString("%1 particles DB").arg(soption));
+                progress.setCancelButtonText("Cancel");
+                progress.setMinimum(0);
+                progress.setMaximum(200);
+                progress.setWindowModality(Qt::WindowModal);
+                progress.show();
+            }
+            if (p.state() == QProcess::Running) {
+                progress.setValue(iprogress++);
+                progress.show();
+            }
+            t.start(600);
+            loop.exec();
+            if (progress.wasCanceled()) {
+                p.kill();
+                QMessageBox msg;
+                msg.setText(QString("The particles DB was not %1d").arg(soption));
+                msg.exec();
+                return;
+            }
+        }
+        if (p.error() == QProcess::FailedToStart) {
+            QMessageBox msg;
+            msg.setText(QString("%1 or %2 not found").arg(kPythonPath, pythonScript));
+            msg.exec();
+            return;
+        }
+        QString p_stdout = p.readAllStandardOutput();
+        QStringList listout = p_stdout.split('\n');
+        QString p_stderr = p.readAllStandardError();
+
+        if (p.exitStatus() == QProcess::CrashExit)
+            msg.setText("Python process ended abnormally");
+        if (p_stderr != "")
+            msg.setText(msg.text() + " Error encountered in Python macro: " + p_stderr);
+        else
+            msg.setText(QString("The particles DB has been %1d with %2 entries").arg(soption).arg(listout.size()));
+        msg.exec();
+        return;
+    }
+
+    // list a particle with its decay channels
+    if (option == kList) {
+        bool connected = ParticlesDBManager::Instance().connect(dbPath);
+        if (!connected) {
+            qWarning() << QString("Could not connect to particles DB: %1").arg(dbPath);
+        } else {
+            if (mFd)
+                mFd->close();
+            mFd = new FindDialog(this);
+            mFd->show();
+        }
+        return;
+        }
+
+    // select the particles to be taken into account by Thermus
+    if (option == kSelect) {
+        qDebug() << Q_FUNC_INFO;
+        return;
+    }
 }

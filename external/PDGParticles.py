@@ -1,4 +1,5 @@
-#!/usr/local/bin/python
+#!/usr/local/bin/python3
+import sys
 import os.path
 from peewee import * # installation of peewee required: pip3 install peewee
 import array
@@ -108,12 +109,10 @@ def normDecay(decays):
 			brt += decay[jbr]
 		if brt: 
 			brt = 1.0 / brt
-			for idec in range(0, ndec): 
-				decay = decays[idec]
-				decay[jbr] = decay[jbr] * brt
+	return brt
 #=======================================================================
 def createDB(filename):
-	url = https://raw.githubusercontent.com/rootpy/rootpy/master/rootpy/etc/pdg_table.txt
+	url = 'https://raw.githubusercontent.com/rootpy/rootpy/master/rootpy/etc/pdg_table.txt'
 	try:
 		urllib.request.urlretrieve(url, filename)
 	except:
@@ -121,9 +120,11 @@ def createDB(filename):
 		return False
 	if (os.path.isfile(filename)):
 		f = open(filename, 'r')
+		print ("data saved as text file in %s" %(filename))
 	else: 
 		print (filename + "does not exist")
 		return False
+
 
 	if Particle.table_exists():
 		Particle.drop_table()
@@ -141,7 +142,7 @@ def createDB(filename):
 	np = 0
 	while True:
 		try:
-			line = f.next()
+			line = f.readline()
 		except:
 			break; 
 		if ( np == 0):
@@ -149,7 +150,7 @@ def createDB(filename):
 				if line.startswith("#") is False:
 					print ("There should be three lines of comments at the beginning \n")
 					return False
-				line = f.next()
+				line = f.readline()
 			if line.startswith("#"):
 				print ("Comment not expected here!!!\n")
 				return False
@@ -169,23 +170,23 @@ def createDB(filename):
    				life = 0.0
    			if data[I_NDECAY] > 0: 
    				for i in range(0, 3): 
-   					line = f.next()
+   					line = f.readline()
    					if line.startswith("#") is False:
    						print ("Disaster comment!!!\n")
    						return False
 	   			decays = list()
    				for i in range(0, data[I_NDECAY]): 
-   					line = f.next()
+   					line = f.readline()
    					if line.startswith("#"): 
    						print ("No comment expected here!!!\n")
    						return False
 	   				dcount = int(line[0:13])
    					decay = getDecay(line)
    					if dcount != i + 1: 
-   						print ("Wrong sequence dcount (%i) != i+1 (%i)" % dcount, i + 1)
-   						return False 
+   						print ("Wrong sequence dcount (%i) != i+1 (%i)" %(dcount, i + 1))
+   						# return False 
    					decays.append(decay)
-   				normDecay(decays)
+   				norm = normDecay(decays)
    			elif life == 0.0: 
    				life = 1e38
    			part = Particle.create(name = data[I_NAME], \
@@ -206,7 +207,7 @@ def createDB(filename):
    			part.save()
    			for decay in decays:
    				childs = decay[2]
-   				dd = Decay.create(mother = part, dtype = decay[0], br = decay[1], ndaughters = len(childs))
+   				dd = Decay.create(mother = part, dtype = decay[0], br = decay[1], brn = decay[1] * norm, ndaughters = len(childs))
    				dd.save()
    				for child in childs:
    					ichild = int(child)
@@ -253,7 +254,7 @@ def createDB(filename):
    			apart.save()
 
    			for decay in Decay.select().join(Particle).where(Particle.pdg == part.pdg):
-   				dd = Decay.create(mother = apart, dtype = decay.dtype, br = decay.br, ndaughters = decay.ndaughters)
+   				dd = Decay.create(mother = apart, dtype = decay.dtype, br = decay.br, brn = decay.brn, ndaughters = decay.ndaughters)
    				dd.save()
    				for child in Daughter.select().where(Daughter.decay == decay):
    					dodo = Daughter.create(decay = dd, pdg = -child.pdg)
@@ -262,9 +263,8 @@ def createDB(filename):
 	f.close()
 	return True
 #=======================================================================
-def updateMasses()
+def updateMasses(filename):
 	url = 'http://pdg.lbl.gov/2017/mcdata/mass_width_2017.mcd'
-	filename = mass_width_2017.txt
 	try:
 		urllib.request.urlretrieve(url, filename)
 	except:
@@ -272,6 +272,7 @@ def updateMasses()
 		return False
 	if (os.path.isfile(filename)):
 		f = open(filename, 'r')
+		print ("data saved as text file in %s" %(filename))
 	else: 
 		print (filename + "does not exist")
 		return False
@@ -385,6 +386,7 @@ class Decay(BaseModel):
     mother     = ForeignKeyField(Particle, related_name = 'decays')
     dtype      = IntegerField()
     br         = DoubleField()
+    brn        = DoubleField()
     ndaughters = IntegerField()
 
 class Daughter(BaseModel): 
@@ -393,7 +395,12 @@ class Daughter(BaseModel):
 
 db.connect()
 filename = 'pdg_table.txt' # the file should be taken from https://github.com/rootpy/rootpy/blob/master/rootpy/etc/pdg_table.txt
-# createDB(filename)
-
-updateMasses()
+if sys.argv[1] == "Create":
+	filename = 'pdg_table.txt' # the file should be taken from https://github.com/rootpy/rootpy/blob/master/rootpy/etc/pdg_table.txt
+	createDB(filename)
+elif sys.argv[1] == "Update":
+	filename = 'mass_width_2017.txt'
+	updateMasses(filename)
+else: 
+	sys.exit("%s is a wrong option" %(sys.argv[1]))
 db.close()

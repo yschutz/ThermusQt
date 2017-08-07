@@ -172,26 +172,26 @@ while True:
 			line = f.next()
 		if line.startswith("#"):
 			print ("Comment not expected here!!!\n")
-	   		quit(1)
+			quit(1)
 	np += 1
-   	data = getPart(line)
-   	if np != data[I_COUNT]:
+	data = getPart(line)
+	if np != data[I_COUNT]:
    		print ("Wrong sequence count np(%i) != count(%i)" % np, int(data[I_COUNT])) 
    		quit(1)
-   	if data[I_PDG] >= 0:
+	if data[I_PDG] >= 0:
    		if data[I_ISOSPIN] != -100: 
    			data[I_ISOSPIN] = (data[I_ISOSPIN] - 1) / 2
    		if data[I_STRANGE] != -100: 
    			data[I_STRANGE] = (data[I_STRANGE] - 1) / 2
-		if data[I_WIDTH] > 0: 
-			life = HBAR / data[I_WIDTH] 
-		else:
-			life = 0.0
+   		if data[I_WIDTH] > 0: 
+   			life = HBAR / data[I_WIDTH] 
+   		else:
+   			life = 0.0
    		if data[I_NDECAY] > 0: 
    			for i in range(0, 3): 
    				line = f.next()
-				if line.startswith("#") is False:
-   					print "Disaster comment!!!\n"
+   				if line.startswith("#") is False:
+   					print ("Disaster comment!!!\n")
    					quit(1)
    			decays = list()
    			for i in range(0, data[I_NDECAY]): 
@@ -201,14 +201,14 @@ while True:
    					quit(1)
    				dcount = int(line[0:13])
    				decay = getDecay(line)
-   				if dcount != i + 1: 
-   					print ("Wrong sequence dcount (%i) != i+1 (%i)" % dcount, i + 1)
-   					quit(1) 
+   				# if dcount != i + 1: 
+   				# 	print ("Wrong sequence dcount (%i) != i+1 (%i)" % dcount, i + 1)
+   					# quit(1) 
    				decays.append(decay)
    			normDecay(decays)
-		elif life == 0.0: 
-			life = 1e38
-		part = Particle.create(name = data[I_NAME], \
+   		elif life == 0.0: 
+   			life = 1e38
+   		part = Particle.create(name = data[I_NAME], \
 			pdg      = data[I_PDG], 
 			matter   = data[I_MATTER], 
 			pcode    = data[I_PCODE],
@@ -223,17 +223,17 @@ while True:
    			flavor   = data[I_FLAVOR], 
    			track    = data[I_TRACK], 
    			ndecay   = data[I_NDECAY])
-		part.save()
-		for decay in decays:
-			childs = decay[2]
-			dd = Decay.create(mother = part, dtype = decay[0], br = decay[1], ndaughters = len(childs))
-			dd.save()
-			for child in childs:
-				ichild = int(child)
-				dodo = Daughter.create(decay = dd, pdg = ichild)
-				dodo.save
+   		part.save()
+   		for decay in decays:
+   			childs = decay[2]
+   			dd = Decay.create(mother = part, dtype = decay[0], br = decay[1], ndaughters = len(childs))
+   			dd.save()
+   			for child in childs:
+   				ichild = int(child)
+   				dodo = Daughter.create(decay = dd, pdg = ichild)
+   				dodo.save
    		print ("Processing {}, {}" .format(data[I_COUNT], data[I_NAME]))
-   	else: # create anti particle from particle
+	else: # create anti particle from particle
    		part = Particle.get(Particle.pdg == -data[I_PDG])
    		if part.charge is 0:
    			acharge = 0

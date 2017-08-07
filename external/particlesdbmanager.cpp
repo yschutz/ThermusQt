@@ -1,16 +1,42 @@
 #include <QTableView>
 #include "particlesdbmanager.h"
 
+
+ParticlesDBManager ParticlesDBManager::mPDBM = ParticlesDBManager();
+
 //__________________________________________________________________________
-ParticlesDBManager::ParticlesDBManager(const QString& path) : QObject(nullptr)
+ParticlesDBManager::ParticlesDBManager() : QObject(nullptr)
 {
     //ctor
     mDB = QSqlDatabase::addDatabase("QSQLITE");
+}
+
+//__________________________________________________________________________
+ParticlesDBManager::~ParticlesDBManager()
+{
+    mDB.close();
+}
+
+//__________________________________________________________________________
+bool ParticlesDBManager::connect(const QString &path)
+{
     mDB.setDatabaseName(path);
-    if (!mDB.open())
-        qDebug() << "Cannot open connection to " << path;
-    else
-        qDebug() << "connected to DB " << path;
+    if (!mDB.open()) {
+        qWarning() << "Cannot open connection to " << path;
+        return false;
+    }
+    else {
+        qInfo() << "connected to DB " << path;
+        return true;
+    }
+}
+
+//__________________________________________________________________________
+ParticlesDBManager &ParticlesDBManager::Instance()
+{
+    // return the unique instance
+
+    return mPDBM;
 }
 
 //__________________________________________________________________________
@@ -37,18 +63,24 @@ void ParticlesDBManager::listParticles(const ParticlesDBManager::ListOption opt)
 }
 
 //__________________________________________________________________________
-void ParticlesDBManager::listDecays(int partPDG, qreal thr)
+QStringList ParticlesDBManager::listDecays(const QString &partPDG, qreal thr)
 {
-    // list decays of particle part for br above thr
-
-    //    QSqlQueryModel  *model = new QSqlQueryModel;
-    //    QTableView *view = new QTableView;
-    //    view->setModel(model);
-
+    QSqlQueryModel  *model = new QSqlQueryModel;
+    QTableView *view = new QTableView;
+    view->setModel(model);
+    bool* ok = new bool;
+    int ipartPDG = partPDG.toInt(ok);
+    QString squery;
+    if (*ok)
+        squery = "SELECT * FROM particle WHERE pdg = (:val)";
+    else
+        squery = "SELECT * FROM particle WHERE name = (:val)";
     QSqlQuery query;
-    QString squery = "SELECT * FROM particle WHERE pdg = (:val)";
     query.prepare(squery);
-    query.bindValue(":val", partPDG);
+    if (*ok)
+        query.bindValue(":val", ipartPDG);
+    else
+        query.bindValue(":val", partPDG);
     if (query.exec()) {
         query.next(); // one unique answer
         int id       = query.record().value("id").toInt();
@@ -63,12 +95,13 @@ void ParticlesDBManager::listDecays(int partPDG, qreal thr)
             double brt = 0.0;
             if (query.exec()) {
                 while (query.next()) {
-                    int did   = query.record().value("id").toInt();
-                    double br = query.record().value("br").toDouble();
-                    int ndau  = query.record().value("ndaughters").toInt();
+                    int did    = query.record().value("id").toInt();
+                    double br  = query.record().value("br").toDouble();
+                    double brn = query.record().value("brn").toDouble();
+                    //                    int ndau   = query.record().value("ndaughters").toInt();
                     if (br > thr) {
                         brt += br;
-                        soutput.append(QString("%1 --> ").arg(br));
+                        soutput.append(QString("%1[%2] --> ").arg(br).arg(brn));
                         QSqlQuery query2;
                         query2.clear();
                         squery = "SELECT * FROM daughter WHERE decay_id = (:val)";
@@ -96,11 +129,10 @@ void ParticlesDBManager::listDecays(int partPDG, qreal thr)
         } else {
             soutput.append("nodecay defined");
         }
-        qDebug() << soutput;
-    } else
+        soutput.replace(soutput.lastIndexOf(";"), 1, "");
+        return soutput.split(';');
+    } else {
         qWarning() << "Query error";
-
-    //    while (q.next()) {
-    //        QString name = q.record().value("name").toString();
-
+        return QStringList();
+    }
 }

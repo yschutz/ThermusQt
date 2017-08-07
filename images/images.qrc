@@ -2,5 +2,13 @@
     <qresource prefix="/">
         <file>2015-Jul-03-Fit_PbPb0010_Reference_final_SQM.png</file>
         <file>tumblr_static_9sry26wrvv484cg0wsw4o0gc0_640_v2.jpg</file>
+        <file>createicon.png</file>
+        <file>inserticon.png</file>
+        <file>updateicon.png</file>
+        <file>listicon.png</file>
+        <file>selecticon.png</file>
+        <file>rootlogo.gif</file>
+        <file>thermusicon.png</file>
+        <file>pdglogo.jpg</file>
     </qresource>
 </RCC>

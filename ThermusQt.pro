@@ -31,7 +31,9 @@ SOURCES += main.cpp\
     macros/runmacro.cpp \
     logger.cpp \
     filesel.cpp \
-    external/particlesdbmanager.cpp
+    external/particlesdbmanager.cpp \
+    external/finddialog.cpp \
+    external/listdialog.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -51,7 +53,9 @@ HEADERS  += mainwindow.h \
     macros/runmacro.h \
     logger.h \
     filesel.h \
-    external/particlesdbmanager.h
+    external/particlesdbmanager.h \
+    external/finddialog.h \
+    external/listdialog.h
 
 
 RESOURCES += \
@@ -60,3 +64,6 @@ RESOURCES += \
 
 unix:LIBS += -L/usr/local/lib -lgsl
 INCLUDEPATH += /usr/local/include
+
+DISTFILES += \
+    external/ManageParticleDB.py

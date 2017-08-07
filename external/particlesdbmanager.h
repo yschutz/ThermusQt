@@ -12,13 +12,22 @@ public:
     enum ListOption {kAll, kQuark, kGaugeBoson, kLepton, kMeson, kBaryon};
     Q_ENUM (ListOption)
 
-    explicit ParticlesDBManager(const QString& path);
-    void listParticles(const ListOption opt = kAll);
-    void listDecays(int partPDG, qreal thr = 0.0);
+    bool                       connect(const QString& path);
+    static ParticlesDBManager& Instance();
+    void                       listParticles(const ListOption opt = kAll);
+    QStringList                listDecays(const QString& partPDG, qreal thr = 0.0);
+
+private:
+    ParticlesDBManager();
+    ~ParticlesDBManager();
+
+    ParticlesDBManager(const ParticlesDBManager&) {}
+    ParticlesDBManager& operator = (const ParticlesDBManager&) {return *this;}
 
 
 private:
-    QSqlDatabase mDB; // the data base
+    static ParticlesDBManager mPDBM; // the unique instance
+    QSqlDatabase              mDB;   // the data base
 };
 
 #endif // PARTICLESDBMANAGER_H

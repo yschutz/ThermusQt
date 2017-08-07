@@ -281,6 +281,5 @@
         <file>Xic'0_decay.txt</file>
         <file>Xic(2645)+_decay.txt</file>
         <file>Xic(2645)0_decay.txt</file>
-        <file>Particles.db</file>
     </qresource>
 </RCC>
