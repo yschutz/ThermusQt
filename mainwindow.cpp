@@ -7,6 +7,7 @@
 #include <QAbstractButton>
 #include <QDateTime>
 #include <QDebug>
+#include <QDialogButtonBox>
 #include <QFileInfo>
 #include <QMdiArea>
 #include <QMessageBox>
@@ -19,6 +20,7 @@
 
 #include "external/finddialog.h"
 #include "external/particlesdbmanager.h"
+#include "external/selectdialog.h"
 
 bool MainWindow::mDebug = false;
 //__________________________________________________________________________
@@ -26,6 +28,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), mFd(nullptr)
 {
     // ctor
+
+    mThermusDir.setPath(QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory) + "/ThermusQt");
+    if (!mThermusDir.exists()) {
+        QMessageBox* msg = new QMessageBox(QMessageBox::Critical,"Wrong Installation", QString("ThermusQt installation is expected at %1").arg(mThermusDir.path()));
+        int ret = msg->exec();
+        if(ret ==QMessageBox::Ok)
+            exit(1);
+    }
+
     setGeometry(0, 0, 50, 25);
 
     setWindowTitle("THERMUS");
@@ -75,6 +86,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setMinimumSize(160, 160);
     resize(480, 320);
+
+
 }
 
 //__________________________________________________________________________
@@ -290,19 +303,23 @@ void MainWindow::createActions()
 
     // particles database related actions
 
-    mPdgCreatePDG        = new QAction(QIcon(":/pdglogo.jpg"), "&PDG", this);
-    connect(mPdgCreatePDG, &QAction::triggered, this, [this]{ particlesDBManagement(kCreateP); });
-    mPdgCreateThermus    = new QAction(QIcon(":/thermusicon.png"), "&Thermus", this);
-    connect(mPdgCreateThermus, &QAction::triggered, this, [this]{ particlesDBManagement(kCreateT); });
+    mCreatePDG        = new QAction(QIcon(":/pdglogo.jpg"), "&PDG", this);
+    connect(mCreatePDG, &QAction::triggered, this, [this]{ particlesDBManagement(kCreateP); });
+    mCreateThermus    = new QAction(QIcon(":/thermusicon.png"), "&Thermus", this);
+    connect(mCreateThermus, &QAction::triggered, this, [this]{ particlesDBManagement(kCreateT); });
 
-    mPdgUpdateMassAction   = new QAction(QIcon(":/updateicon.png"), tr("&Update masses"), this);
-    connect(mPdgUpdateMassAction, &QAction::triggered, this, [this]{ particlesDBManagement(kUpdate); });
+    mUpdatePDG   = new QAction(QIcon(":/pdglogo.jpg"), tr("&PDG"), this);
+    connect(mUpdatePDG, &QAction::triggered, this, [this]{ particlesDBManagement(kUpdateP); });
+    mUpdateThermus   = new QAction(QIcon(":/thermusicon.png"), tr("&Thermus"), this);
+    connect(mUpdateThermus, &QAction::triggered, this, [this]{ particlesDBManagement(kUpdateT); });
 
 //    mPdgInsertAction = new QAction(QIcon(":/inserticon.png"), tr("&Insert"), this);
 //    connect(mPdgInsertAction, &QAction::triggered, this, [this]{ particlesDBManagement(kInsert); });
 
-    mPdgListAction   = new QAction(QIcon(":/listicon.png"), tr("&List"), this);
-    connect(mPdgListAction, &QAction::triggered, this, [this]{ particlesDBManagement(kList); });
+    mListPDG   = new QAction(QIcon(":/pdglogo.jpg"), tr("&PDG"), this);
+    connect(mListPDG, &QAction::triggered, this, [this]{ particlesDBManagement(kListP); });
+    mListThermus   = new QAction(QIcon(":/thermusicon.png"), tr("&Thermus"), this);
+    connect(mListThermus, &QAction::triggered, this, [this]{ particlesDBManagement(kListT); });
 
     mPdgSelectAction = new QAction(QIcon(":/selecticon.png"), tr("&Select"), this);
     connect(mPdgSelectAction, &QAction::triggered, this, [this]{ particlesDBManagement(kSelect); });
@@ -351,13 +368,23 @@ void MainWindow::createMenus()
     // Menu related to the particles database
     mPdgMenu = menuBar()->addMenu(tr("&Particles"));
 
-    mPdgCreateMenu = mPdgMenu->addMenu(QIcon(":/createicon.png"), tr("&Create"));
-    mPdgCreateMenu->addAction(mPdgCreatePDG);
-    mPdgCreateMenu->addAction(mPdgCreateThermus);
+    mCreateMenu = mPdgMenu->addMenu(QIcon(":/createicon.png"), tr("&Create"));
+    mCreateMenu->addAction(mCreatePDG);
+    mCreateMenu->addAction(mCreateThermus);
 
-    mPdgMenu->addAction(mPdgUpdateMassAction);
-    mPdgMenu->addAction(mPdgListAction);
-    mPdgMenu->addAction(mPdgSelectAction);
+    mUpdateMenu = mPdgMenu->addMenu(QIcon(":/updateicon.png"), tr("&Update"));
+
+    qDebug() << Q_FUNC_INFO << mUpdateMenu;
+
+
+    mUpdateMenu->addAction(mUpdatePDG);
+    mUpdateMenu->addAction(mUpdateThermus);
+
+    mListMenu = mPdgMenu->addMenu(QIcon(":/listicon.png"), tr("&List"));
+    mListMenu->addAction(mListPDG);
+    mListMenu->addAction(mListThermus);
+
+//    mPdgMenu->addAction(mPdgSelectAction);
 //    mPdgMenu->addAction(mPdgInsertAction);
 
     // select the macro to run or quit
@@ -372,8 +399,6 @@ void MainWindow::particlesDBManagement(DBOPS option)
 {
     // Manages the particles DB
 
-    // !!!!! FIXME: do not hard code the path
-
     const QString kPythonPath("/usr/local/bin/python3");
     QMessageBox msg;
     QFileInfo check(kPythonPath);
@@ -382,47 +407,90 @@ void MainWindow::particlesDBManagement(DBOPS option)
         msg.exec();
         return;
     }
-
-    qDebug() << Q_FUNC_INFO << QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory);
-
-    QString pythonScript;
-    QString dbPath;
-    QString input("");
-        if (option == kCreateP) {
-        pythonScript = "/Users/schutz/work/ThermusQt/external/PDGParticles.py";
-        dbPath       = "/Users/schutz/work/ThermusQt/external/PDGParticles.db";
-    // !!!!! EMXIF
-    } else if (option == kCreateT) {
-        pythonScript = "/Users/schutz/work/ThermusQt/external/ThermusParticles.py";
-        dbPath       = "/Users/schutz/work/ThermusQt/external/ThermusParticles.db";
-        input        = "/Users/schutz/work/ThermusQt/particles/PartList_PPB2014_CBHN_fixed_saveQM14.txt";
-    // !!!!! EMXIF
+    bool pdg     = false;
+    bool thermus = false;
+    QString sourceName("");
+    if (option < kLastP) {
+        pdg = true;
+        sourceName = "PDG";
     }
+    else {
+        thermus = true;
+        sourceName = "Thermus";
+    }
+
     QMetaEnum metaEnum = QMetaEnum::fromType<DBOPS>();
     QString soption    = metaEnum.valueToKey(option);
     soption.remove(0,1);
     soption.remove(soption.length() - 1 ,1);
+
+    const QString kExtDir = mThermusDir.path() + "/external/";
+    const QString kPartDir = mThermusDir.path() + "/particles/";
+    QString pythonScript;
+    QString dbName;
+    QString input("");
+    if (pdg) {
+        pythonScript = "PDGParticles.py";
+        dbName       = "PDGParticles.db";
+    } else if (thermus) {
+        pythonScript = "ThermusParticles.py";
+        dbName       = "ThermusParticles.db";
+        if (soption.contains("Create")) {
+            // check if PDG particles db exists
+            QString pdgName(dbName);
+            pdgName.replace("Thermus", "PDG");
+            pdgName.prepend(kPartDir);
+            QFileInfo check(pdgName);
+            if (! check.exists()) {
+                QMessageBox msg(QMessageBox::Critical, "Particles DB creation", "You must first create the PDG particles list");
+                msg.exec();
+                return;
+            }
+            SelectDialog sdia(kPartDir, this);
+            sdia.setModal(true);
+            if (sdia.exec() == QDialog::Accepted)
+                input = sdia.fileName();
+        }
+    }
 
     QTimer t;
     QEventLoop loop;
     connect(&t, SIGNAL(timeout()), &loop, SLOT(quit()));
 
     // create or update
-    QProcess p;
-    p.setProcessChannelMode(QProcess::SeparateChannels);
-    QStringList params;
-    params << pythonScript << soption << input;
-    QProgressDialog progress;
-    if (option == kCreateP || option == kCreateT || option == kUpdate) {
+    if (soption.contains("Create") || soption.contains("Update")) {
+        if (soption.contains(("Update"))) {
+            // check if PDG particles db exists
+            QString fullname(dbName);
+            fullname.prepend(kPartDir);
+            QFileInfo check(fullname);
+            if (! check.exists()) {
+                QMessageBox msg(QMessageBox::Critical, "Particles DB creation", "You must first create the particles DB");
+                msg.exec();
+                return;
+            }
+        }
+        QProcess p;
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        env.insert("EXTDIR", kExtDir); // Add an environment variable
+        env.insert("PARTDIR", kPartDir);
+        env.insert("DBNAME", dbName);
+        p.setProcessEnvironment(env);
+
+        p.setProcessChannelMode(QProcess::SeparateChannels);
+        QStringList params;
+        params << kExtDir + pythonScript << soption << input;
+        QProgressDialog progress;
         p.start(kPythonPath, params);
         int iprogress = 0;
         while (p.state() == QProcess::Running || p.state() == QProcess::Starting) {
             if (iprogress == 0 && p.state() == QProcess::Running) {
-                progress.setLabelText(QString("%1 particles DB").arg(soption));
+                progress.setLabelText(QString("%1 particles DB (%2)").arg(soption, sourceName));
                 progress.setCancelButtonText("Cancel");
                 progress.setMinimum(0);
                 progress.setMaximum(200);
                 progress.setWindowModality(Qt::WindowModal);
+                progress.resize(progress.width() * 1.5, progress.height());
                 progress.show();
             }
             if (p.state() == QProcess::Running) {
@@ -439,6 +507,7 @@ void MainWindow::particlesDBManagement(DBOPS option)
                 return;
             }
         }
+        progress.close();
         if (p.error() == QProcess::FailedToStart) {
             QMessageBox msg;
             msg.setText(QString("%1 or %2 not found").arg(kPythonPath, pythonScript));
@@ -460,18 +529,20 @@ void MainWindow::particlesDBManagement(DBOPS option)
     }
 
     // list a particle with its decay channels
-    if (option == kList) {
-        bool connected = ParticlesDBManager::Instance().connect(dbPath);
+    if (soption.contains("List")) {
+        bool connected = ParticlesDBManager::Instance().connect(kPartDir + dbName);
         if (!connected) {
-            qWarning() << QString("Could not connect to particles DB: %1").arg(dbPath);
+            QMessageBox msg(QMessageBox::Critical, "DB connection",
+                            QString("Could not connect to particles DB: %1").arg(kPartDir + dbName));
+            msg.exec();
         } else {
             if (mFd)
                 mFd->close();
-            mFd = new FindDialog(this);
-            mFd->show();
+            mFd = new FindDialog(sourceName, this);
+            mFd->exec();
         }
         return;
-        }
+    }
 
     // select the particles to be taken into account by Thermus
     if (option == kSelect) {

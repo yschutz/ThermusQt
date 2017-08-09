@@ -33,14 +33,14 @@ ListDialog::ListDialog(const QStringList &decays, QWidget *parent) : QDialog(par
         decayCheckLayout->addWidget(check, index, 1);
     }
 
-    mModify = new QPushButton("Modify");
-    connect(mModify, SIGNAL(clicked(bool)), this, SLOT(exec()));
     mDone   = new QPushButton("Done");
     connect(mDone, SIGNAL(clicked(bool)), this, SLOT(close()));
+    mModify = new QPushButton("Modify");
+    connect(mModify, SIGNAL(clicked(bool)), this, SLOT(modify()));
 
     QHBoxLayout* modDoneLayout = new QHBoxLayout;
-    modDoneLayout->addWidget(mModify);
     modDoneLayout->addWidget(mDone);
+    modDoneLayout->addWidget(mModify);
 
     QWidget* viewport = new QWidget;
     QScrollArea *scroll = new QScrollArea(this);
@@ -63,9 +63,8 @@ ListDialog::ListDialog(const QStringList &decays, QWidget *parent) : QDialog(par
 }
 
 //__________________________________________________________________________
-int ListDialog::exec()
+void ListDialog::modify()
 {
     QMessageBox* msg = new QMessageBox(QMessageBox::Information, "Modify decay", "not yet implemented");
     msg->show();
-    return 1;
 }

@@ -11,7 +11,7 @@
 #include "external/particlesdbmanager.h"
 
 //__________________________________________________________________________
-FindDialog::FindDialog(QWidget *parent) : QDialog(parent), mLd(nullptr)
+FindDialog::FindDialog(const QString& what, QWidget *parent) : QDialog(parent), mLd(nullptr)
 {
     mFindLabel = new QLabel(tr("Particle to find:"), this);
     mFindText  = new QLineEdit(this);
@@ -22,7 +22,7 @@ FindDialog::FindDialog(QWidget *parent) : QDialog(parent), mLd(nullptr)
     searchLayout->addWidget(mFindText);
 
     mGo = new QPushButton("Find");
-    connect(mGo, SIGNAL(pressed()), this, SLOT(exec()));
+    connect(mGo, SIGNAL(pressed()), this, SLOT(go()));
     mDone = new QPushButton("Done");
     connect(mDone, SIGNAL(clicked(bool)), this, SLOT(close()));
 
@@ -37,11 +37,11 @@ FindDialog::FindDialog(QWidget *parent) : QDialog(parent), mLd(nullptr)
 
     setLayout(mainLayout);
 
-    setWindowTitle(tr("Particle search"));
+    setWindowTitle(QString(tr("Particle search (%1)")).arg(what));
 }
 
 //__________________________________________________________________________
-int FindDialog::exec()
+void FindDialog::go()
 {
     QStringList list;
 //    if (mPDGRadio->isChecked()) {
@@ -55,13 +55,11 @@ int FindDialog::exec()
     list = ParticlesDBManager::Instance().listDecays(name, 0.);
     if (list.size() == 0) {
         qWarning() << Q_FUNC_INFO << QString("Something went wrong with the DB query or paricle %1 not found").arg(mFindText->text());
-        return 1;
     } else {
         if (mLd)
             mLd->close();
         mLd = new ListDialog(list);
-        mLd->show();
-        return 0;
+        mLd->exec();
     }
 }
 

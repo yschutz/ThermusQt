@@ -1,4 +1,5 @@
 #!/usr/local/bin/python3
+from __future__ import print_function
 import sys
 import os.path
 from peewee import * # installation of peewee required: pip3 install peewee
@@ -31,6 +32,10 @@ I_DTYPE     = 1 # decay type (Pythia 6)
 I_BR        = 2 # branching ratio
 I_NDEC      = 3 # number of daughters
 I_DAUGHTER1 = 4 # first daughter
+
+#=======================================================================
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 #=======================================================================
 def isBlank (myString):
     return not (myString and myString.strip())
@@ -116,13 +121,12 @@ def createDB(filename):
 	try:
 		urllib.request.urlretrieve(url, filename)
 	except:
-		print ("url %s not found" % url)
+		eprint ("url %s not found" % url)
 		return False
 	if (os.path.isfile(filename)):
 		f = open(filename, 'r')
-		print ("data saved as text file in %s" %(filename))
 	else: 
-		print (filename + "does not exist")
+		eprint (filename + "does not exist")
 		return False
 
 
@@ -148,16 +152,16 @@ def createDB(filename):
 		if ( np == 0):
 			for i in range(0,3):
 				if line.startswith("#") is False:
-					print ("There should be three lines of comments at the beginning \n")
+					eprint ("There should be three lines of comments at the beginning \n")
 					return False
 				line = f.readline()
 			if line.startswith("#"):
-				print ("Comment not expected here!!!\n")
+				eprint ("Comment not expected here!!!\n")
 				return False
 		np += 1
 		data = getPart(line)
 		if np != data[I_COUNT]:
-   			print ("Wrong sequence count np(%i) != count(%i)" % np, int(data[I_COUNT])) 
+   			eprint ("Wrong sequence count np(%i) != count(%i)" % np, int(data[I_COUNT])) 
    			return False
 		if data[I_PDG] >= 0:
    			if data[I_ISOSPIN] != -100: 
@@ -172,18 +176,18 @@ def createDB(filename):
    				for i in range(0, 3): 
    					line = f.readline()
    					if line.startswith("#") is False:
-   						print ("Disaster comment!!!\n")
+   						eprint ("Disaster comment!!!\n")
    						return False
 	   			decays = list()
    				for i in range(0, data[I_NDECAY]): 
    					line = f.readline()
    					if line.startswith("#"): 
-   						print ("No comment expected here!!!\n")
+   						eprint ("No comment expected here!!!\n")
    						return False
 	   				dcount = int(line[0:13])
    					decay = getDecay(line)
    					if dcount != i + 1: 
-   						print ("Wrong sequence dcount (%i) != i+1 (%i)" %(dcount, i + 1))
+   						eprint ("Wrong sequence dcount (%i) != i+1 (%i)" %(dcount, i + 1))
    						# return False 
    					decays.append(decay)
    				norm = normDecay(decays)
@@ -268,13 +272,12 @@ def updateMasses(filename):
 	try:
 		urllib.request.urlretrieve(url, filename)
 	except:
-		print ("url %s not found" % url)
+		eprint ("url %s not found" % url)
 		return False
 	if (os.path.isfile(filename)):
 		f = open(filename, 'r')
-		print ("data saved as text file in %s" %(filename))
 	else: 
-		print (filename + "does not exist")
+		eprint (filename + " does not exist")
 		return False
 # reading the file line by line 	
 	for line in f:
@@ -318,7 +321,7 @@ def updateMasses(filename):
 				elif charges[index] == "+2/3":
 					charge[index] = -2.0 /3.0
 				else:
-					print ("error: cannot decode %s" % charges[index])
+					eprint ("error: cannot decode %s" % charges[index])
 					return False
 			for index in range(0,4):
 				if pdg[index] != 0:
@@ -359,7 +362,8 @@ def updateMasses(filename):
 	return True
 #=======================================================================
 #main 
-db = SqliteDatabase('Particles.db')
+dbname = os.environ['PARTDIR'] + os.environ['DBNAME']
+db = SqliteDatabase(dbname)
 
 class BaseModel(Model):
     class Meta:
@@ -396,10 +400,10 @@ class Daughter(BaseModel):
 db.connect()
 filename = 'pdg_table.txt' # the file should be taken from https://github.com/rootpy/rootpy/blob/master/rootpy/etc/pdg_table.txt
 if sys.argv[1] == "Create":
-	filename = 'pdg_table.txt' # the file should be taken from https://github.com/rootpy/rootpy/blob/master/rootpy/etc/pdg_table.txt
+	filename = os.environ['PARTDIR'] + 'pdg_table.txt' # the file should be taken from https://github.com/rootpy/rootpy/blob/master/rootpy/etc/pdg_table.txt
 	createDB(filename)
 elif sys.argv[1] == "Update":
-	filename = 'mass_width_2017.txt'
+	filename = os.environ['PARTDIR'] + 'mass_width_2017.txt'
 	updateMasses(filename)
 else: 
 	sys.exit("%s is a wrong option" %(sys.argv[1]))

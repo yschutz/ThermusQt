@@ -15,7 +15,7 @@ public:
     ListDialog(const QStringList& decays, QWidget* parent = 0);
 
 private slots:
-    int exec();
+    void modify();
 
 private:
     QList<QCheckBox*> mChecks; // checks decay to be modified;

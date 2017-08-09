@@ -15,10 +15,10 @@ class FindDialog : public QDialog
     Q_OBJECT
 
 public:
-    FindDialog(QWidget* parent = 0);
+    FindDialog(const QString& what, QWidget* parent = 0);
 
 private slots:
-    int exec();
+    void go();
 
 private:
 

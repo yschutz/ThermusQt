@@ -1,9 +1,12 @@
 #!/usr/local/bin/python3
+from __future__ import print_function
 import sys
+import os
 import os.path
 from peewee import * # installation of peewee required: pip3 install peewee
 import array
 import urllib.request
+
 
 
 HBAR = 6.5821192815e-25 # GeV 
@@ -30,6 +33,13 @@ I_DTYPE     = 1 # decay type (Pythia 6)
 I_BR        = 2 # branching ratio
 I_NDEC      = 3 # number of daughters
 I_DAUGHTER1 = 4 # first daughter
+
+dbname = os.environ['PARTDIR'] + os.environ['DBNAME']
+db = SqliteDatabase(dbname)
+
+#=======================================================================
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 #=======================================================================
 def normDecay(decays):
 	jbr = 0 
@@ -44,11 +54,11 @@ def normDecay(decays):
 	return brt
 #=======================================================================
 def countDecays(name):
-	filename = name + "_decay.txt"
+	filename = os.environ['PARTDIR'] + name + "_decay.txt"
 	if (os.path.isfile(filename)):
 		f = open(filename, 'r')
 	else: 
-		print ("%s does not exist" %(filename))
+		# eprint ("%s does not exist" %(filename))
 		return 0
 	ndecay = 0
 	for line in f:
@@ -56,11 +66,11 @@ def countDecays(name):
 	return ndecay
 #=======================================================================
 def makeDecays(part):
-	filename = part.name + "_decay.txt"
+	filename = os.environ['PARTDIR'] + part.name + "_decay.txt"
 	if (os.path.isfile(filename)):
 		f = open(filename, 'r')
 	else: 
-		print ("%s does not exist" %(filename))
+		# eprint ("%s does not exist" %(filename))
 		return 0
 	decays = list()
 	for line in f:
@@ -93,17 +103,16 @@ def makeADecays(part, apart):
 #=======================================================================
 def updateMasses():
 	url = 'http://pdg.lbl.gov/2017/mcdata/mass_width_2017.mcd'
-	filename = 'mass_width_2017.txt'
+	filename = os.environ['PARTDIR'] + 'mass_width_2017.txt'
 	try:
 		urllib.request.urlretrieve(url, filename)
 	except:
-		print ("url %s not found" % url)
+		eprint ("url %s not found" % url)
 		return False
 	if (os.path.isfile(filename)):
 		f = open(filename, 'r')
-		print ("data saved as text file in %s" %(filename))
 	else: 
-		print (filename + "does not exist")
+		eprint (filename + "does not exist")
 		return False
 # reading the file line by line 	
 	for line in f:
@@ -147,7 +156,7 @@ def updateMasses():
 				elif charges[index] == "+2/3":
 					charge[index] = -2.0 /3.0
 				else:
-					print ("error: cannot decode %s" % charges[index])
+					eprint ("error: cannot decode %s" % charges[index])
 					return False
 			for index in range(0,4):
 				if pdg[index] != 0:
@@ -177,13 +186,13 @@ def updateMasses():
   		 #  					flavor   = -1, 
 		   # 					track    = -1, 
   		 #  					ndecay   = 0)
-					# apart = Particle.select()
-					# if apart.where(Particle.pdg == -pdg[index]).exists():
-					# 	apart = Particle.select().where(Particle.pdg == -pdg[index]).get()
-					# 	apart.mass     = part.mass
-					# 	apart.width    = part.width
-					# 	apart.lifetime = part.lifetime
-					# 	apart.save()
+					apart = Particle.select()
+					if apart.where(Particle.pdg == -pdg[index]).exists():
+						apart = Particle.select().where(Particle.pdg == -pdg[index]).get()
+						apart.mass     = part.mass
+						apart.width    = part.width
+						apart.lifetime = part.lifetime
+						apart.save()
 	f.close()
 	return True
 #=======================================================================
@@ -253,13 +262,12 @@ def updateDecays():
 	try:
 		urllib.request.urlretrieve(url, filename)
 	except:
-		print ("url %s not found" % url)
+		eprint ("url %s not found" % url)
 		return False
 	if (os.path.isfile(filename)):
 		f = open(filename, 'r')
-		print ("data saved as text file in %s" %(filename))
 	else: 
-		print (filename + "does not exist")
+		eprint (filename + "does not exist")
 		return False
 	np = 0
 	while True:
@@ -270,16 +278,16 @@ def updateDecays():
 		if ( np == 0):
 			for i in range(0,3):
 				if line.startswith("#") is False:
-					print ("There should be three lines of comments at the beginning \n")
+					eprint ("There should be three lines of comments at the beginning \n")
 					return False
 				line = f.readline()
 			if line.startswith("#"):
-				print ("Comment not expected here!!!\n")
+				eprint ("Comment not expected here!!!\n")
 				return False
 		np += 1
 		data = getPart(line)
 		if np != data[I_COUNT]:
-   			print ("Wrong sequence count np(%i) != count(%i)" % np, int(data[I_COUNT])) 
+   			eprint ("Wrong sequence count np(%i) != count(%i)" % np, int(data[I_COUNT])) 
    			return False
 		if data[I_PDG] >= 0:
    			if data[I_ISOSPIN] != -100: 
@@ -294,18 +302,18 @@ def updateDecays():
    				for i in range(0, 3): 
    					line = f.readline()
    					if line.startswith("#") is False:
-   						print ("Disaster comment!!!\n")
+   						eprint ("Disaster comment!!!\n")
    						return False
 	   			decays = list()
    				for i in range(0, data[I_NDECAY]): 
    					line = f.readline()
    					if line.startswith("#"): 
-   						print ("No comment expected here!!!\n")
+   						eprint ("No comment expected here!!!\n")
    						return False
 	   				dcount = int(line[0:13])
    					decay = getDecay(line)
    					if dcount != i + 1: 
-   						print ("Wrong sequence dcount (%i) != i+1 (%i)" %(dcount, i + 1))
+   						eprint ("Wrong sequence dcount (%i) != i+1 (%i)" %(dcount, i + 1))
    						# return False 
    					decays.append(decay)
    				norm = normDecay(decays)
@@ -320,9 +328,9 @@ def updateDecays():
    					if decay.where(Decay.mother == part).exists():
    						decay = Decay.select().where(Decay.mother == part).get()
    					else:
-   						print("no decay found in Thermus for %s" %(part.name))   
+   						eprint("no decay found in Thermus for %s" %(part.name))   
    			else :
-   				print ("%i %s Not found in the Thermus Table" %(pdg, data[I_NAME]))
+   				eprint ("%i %s Not found in the Thermus Table" %(pdg, data[I_NAME]))
    			# for decay in Decay.select().join(Particle).where(Particle.pdg == part.pdg):
    			# 	dd = Decay.create(mother = apart, dtype = decay.dtype, br = decay.br, brn = decay.brn, ndaughters = decay.ndaughters)
    			# 	dd.save()
@@ -333,6 +341,43 @@ def updateDecays():
 	f.close()
 	return True
 
+#=======================================================================
+def rename(part):
+	class Particle(BaseModel):
+		name     = CharField(unique = True)
+		pdg      = IntegerField()
+		matter   = BooleanField()
+		pcode    = IntegerField()
+		pclass   = CharField()
+		charge   = FloatField()
+		mass     = DoubleField()
+		width    = DoubleField()
+		lifetime = DoubleField()
+		isospin  = IntegerField()
+		iso3     = IntegerField()
+		strange  = IntegerField()
+		flavor   = IntegerField()
+		track    = IntegerField()
+		ndecay   = IntegerField()
+	pdgname = os.environ['DBNAME'].replace('Thermus', 'PDG')
+	localname = os.environ['PARTDIR'] + pdgname
+	db.init(localname)
+	apart = Particle.select()
+	if apart.select().where(Particle.pdg == -part.pdg).exists():
+		apart = Particle.select().where(Particle.pdg == -part.pdg).get()
+		if 'bar' in apart.name: 
+			apartname = part.name + '_bar'
+		else:	
+			part = Particle.select().where(Particle.pdg == part.pdg).get()
+			if part.charge > 0: 
+				apartname = part.name.replace('+', '-')
+			else:
+				apartname = part.name.replace('-', '+')
+	else:
+		apartname = part.name + '_bar'
+	dbname = os.environ['PARTDIR'] + os.environ['DBNAME']
+	db.init(dbname)
+	return apartname
 #=======================================================================
 def createDB(): 
 	if Particle.table_exists():
@@ -346,12 +391,11 @@ def createDB():
 		Daughter.drop_table()
 	Daughter.create_table()
 
-	filename = sys.argv[2]
+	filename = os.environ['PARTDIR'] + sys.argv[2]
 	if (os.path.isfile(filename)):
 		f = open(filename, 'r')
-		print ("data saved as text file in %s" %(filename))
 	else: 
-		print ("%sdoes not exist" %(filename))
+		eprint ("%s does not exist" %(filename))
 		return False
 	for line in f:
 		data = line.split('\t')
@@ -398,10 +442,12 @@ def createDB():
 	  		threshold = threshold,
 	  		radius    = radius,
 	  		ndecay    = ndecay)
+		print ("Added ", name)
 		if stable == 0:
 			makeDecays(part)
-		if (Baryon + S + C + B + T) > 0: 
-			apart = Particle.create(name = "anti-" + part.name, 
+		if (Baryon + Q + S + C + B + T) > 0: 
+			aname = rename(part)
+			apart = Particle.create(name = aname, 
 				pdg = -part.pdg, 
 				spin = part.spin, 
 				statistic = part.statistic, 
@@ -421,56 +467,56 @@ def createDB():
 		  		threshold = part.threshold,
 	 	 		radius    = part.radius,
 	  			ndecay    = part.ndecay)
+			print ("Added ", aname)
 			makeADecays(part, apart)
 	f.close()	
 	return True
 #=======================================================================
-db = SqliteDatabase('/Users/schutz/work/ThermusQt/particles/ThermusParticles.db')
-
 class BaseModel(Model):
-    class Meta:
-        database = db
+	class Meta:
+		database = db
 
 class Particle(BaseModel):
-    name     = CharField(unique = True)
-    pdg      = IntegerField(unique = True)
-    spin     = IntegerField()
-    statistic= IntegerField()
-    mass     = DoubleField()
-    S        = IntegerField()
-    Baryon   = IntegerField()
-    Q        = FloatField()
-    C        = IntegerField()
-    B        = IntegerField()
-    T        = IntegerField()
-    SC       = IntegerField()
-    CC       = IntegerField()
-    BC       = IntegerField()
-    TC       = IntegerField()
-    width    = DoubleField()
-    lifetime = DoubleField()
-    threshold= DoubleField()
-    radius   = DoubleField()
-    ndecay   = IntegerField()
+	name     = CharField(unique = True)
+	pdg      = IntegerField(unique = True)
+	spin     = IntegerField()
+	statistic= IntegerField()
+	mass     = DoubleField()
+	S        = IntegerField()
+	Baryon   = IntegerField()
+	Q        = FloatField()
+	C        = IntegerField()
+	B        = IntegerField()
+	T        = IntegerField()
+	SC       = IntegerField()
+	CC       = IntegerField()
+	BC       = IntegerField()
+	TC       = IntegerField()
+	width    = DoubleField()
+	lifetime = DoubleField()
+	threshold= DoubleField()
+	radius   = DoubleField()
+	ndecay   = IntegerField()
 
 class Decay(BaseModel): 
-    mother     = ForeignKeyField(Particle, related_name = 'decays')
-    dtype      = IntegerField()
-    br         = DoubleField()
-    brn        = DoubleField()
-    ndaughters = IntegerField()
+	mother     = ForeignKeyField(Particle, related_name = 'decays')
+	dtype      = IntegerField()
+	br         = DoubleField()
+	brn        = DoubleField()
+	ndaughters = IntegerField()
 
 class Daughter(BaseModel): 
-    decay = ForeignKeyField(Decay, related_name = 'daughters')
-    pdg   = IntegerField()
+	decay = ForeignKeyField(Decay, related_name = 'daughters')
+	pdg   = IntegerField()
 
 db.connect()
+
 if sys.argv[1] == "Create":
 	createDB()
-elif sys.argv[1] == "UpdateM":
+elif sys.argv[1] == "Update":
 	updateMasses()
-elif sys.argv[1] == "UpdateD":
-	updateDecays()
+# elif sys.argv[1] == "UpdateD":
+# 	updateDecays()
 else: 
 	sys.exit("%s is a wrong option" %(sys.argv[1]))
 db.close()
