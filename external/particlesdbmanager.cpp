@@ -5,7 +5,8 @@
 ParticlesDBManager ParticlesDBManager::mPDBM = ParticlesDBManager();
 
 //__________________________________________________________________________
-ParticlesDBManager::ParticlesDBManager() : QObject(nullptr)
+ParticlesDBManager::ParticlesDBManager() : QObject(nullptr),
+    mCurrentPart(""), mDBName("")
 {
     //ctor
     mDB = QSqlDatabase::addDatabase("QSQLITE");
@@ -27,6 +28,7 @@ bool ParticlesDBManager::connect(const QString &path)
     }
     else {
         qInfo() << "connected to DB " << path;
+        mDBName = path;
         return true;
     }
 }
@@ -63,7 +65,7 @@ void ParticlesDBManager::listParticles(const ParticlesDBManager::ListOption opt)
 }
 
 //__________________________________________________________________________
-QStringList ParticlesDBManager::listDecays(const QString &partPDG, qreal thr)
+QStringList ParticlesDBManager::listDecays(const QString &partPDG, qreal thr) const
 {
     QSqlQueryModel  *model = new QSqlQueryModel;
     QTableView *view = new QTableView;
@@ -101,7 +103,7 @@ QStringList ParticlesDBManager::listDecays(const QString &partPDG, qreal thr)
                     //                    int ndau   = query.record().value("ndaughters").toInt();
                     if (br > thr) {
                         brt += br;
-                        soutput.append(QString("%1[%2] --> ").arg(br).arg(brn));
+                        soutput.append(QString("%1 %2[%3] --> ").arg(did).arg(br).arg(brn));
                         QSqlQuery query2;
                         query2.clear();
                         squery = "SELECT * FROM daughter WHERE decay_id = (:val)";
@@ -135,4 +137,69 @@ QStringList ParticlesDBManager::listDecays(const QString &partPDG, qreal thr)
         qWarning() << "Query error";
         return QStringList();
     }
+}
+
+//__________________________________________________________________________
+QStringList ParticlesDBManager::listProperties(const QString &partPDG) const
+{
+    // list properties of given particle
+    QStringList rv;
+    bool* ok = new bool;
+    int ipartPDG = partPDG.toInt(ok);
+    QString squery;
+    if (*ok)
+        squery = "SELECT * FROM particle WHERE pdg = (:val)";
+    else
+        squery = "SELECT * FROM particle WHERE name = (:val)";
+    QSqlQuery query;
+    query.prepare(squery);
+    if (*ok)
+        query.bindValue(":val", ipartPDG);
+    else
+        query.bindValue(":val", partPDG);
+    if (query.exec()) {
+        query.next(); // one unique answer
+        int pdg       = query.record().value("pdg").toInt();
+        QString name = query.record().value("name").toString();
+        if (!*ok)
+            rv.append(QString("%1").arg(pdg));
+        else
+            rv.append(name);
+        double mass = query.record().value("mass").toDouble();
+        rv.append(QString("%1 GeV").arg(mass, 9, 'f', 7));
+        double lifetime = query.record().value("lifetime").toDouble();
+        rv.append(QString("%1 s").arg(lifetime, 9, 'g', 6));
+        double ndecays = query.record().value("ndecay").toInt();
+        rv.append(QString("%1 decays").arg(ndecays));
+    }
+    return rv;
+}
+
+//__________________________________________________________________________
+void ParticlesDBManager::modifyBR(int decayid, double val) const
+{
+    // modify the branching ratio and renormalize
+
+    QString squery("UPDATE decay SET br = (:val1) WHERE id = (:val2)");
+    QSqlQuery query;
+    query.prepare(squery);
+    query.bindValue(":val1", decayid);
+    query.bindValue(":val2", val);
+    qDebug() << Q_FUNC_INFO << query.exec();
+}
+
+//__________________________________________________________________________
+double ParticlesDBManager::getBR(int decayindex) const
+{
+    // retrieves the branching ratio of the given decay
+    double rv = 0.0;
+    QString squery("SELECT * FROM decay WHERE id = (:val)");
+    QSqlQuery query;
+    query.prepare(squery);
+    query.bindValue(":val", decayindex);
+    if (query.exec()) {
+        query.next();
+        rv = query.record().value("br").toDouble();
+    }
+    return rv;
 }

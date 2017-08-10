@@ -342,7 +342,37 @@ def updateDecays():
 	return True
 
 #=======================================================================
-def rename(part):
+def rename(pdg): 
+	partname = ""
+	class Particle(BaseModel):
+		name     = CharField(unique = True)
+		pdg      = IntegerField()
+		matter   = BooleanField()
+		pcode    = IntegerField()
+		pclass   = CharField()
+		charge   = FloatField()
+		mass     = DoubleField()
+		width    = DoubleField()
+		lifetime = DoubleField()
+		isospin  = IntegerField()
+		iso3     = IntegerField()
+		strange  = IntegerField()
+		flavor   = IntegerField()
+		track    = IntegerField()
+		ndecay   = IntegerField()
+	pdgname = os.environ['DBNAME'].replace('Thermus', 'PDG')
+	localname = os.environ['PARTDIR'] + pdgname
+	db.init(localname)
+	part = Particle.select()
+	if part.select().where(Particle.pdg == pdg).exists():
+		part = Particle.select().where(Particle.pdg == pdg).get()
+		partname = part.name
+	dbname = os.environ['PARTDIR'] + os.environ['DBNAME']
+	db.init(dbname)
+	return partname
+#=======================================================================
+def arename(pdg):
+	partname = ""
 	class Particle(BaseModel):
 		name     = CharField(unique = True)
 		pdg      = IntegerField()
@@ -363,21 +393,12 @@ def rename(part):
 	localname = os.environ['PARTDIR'] + pdgname
 	db.init(localname)
 	apart = Particle.select()
-	if apart.select().where(Particle.pdg == -part.pdg).exists():
-		apart = Particle.select().where(Particle.pdg == -part.pdg).get()
-		if 'bar' in apart.name: 
-			apartname = part.name + '_bar'
-		else:	
-			part = Particle.select().where(Particle.pdg == part.pdg).get()
-			if part.charge > 0: 
-				apartname = part.name.replace('+', '-')
-			else:
-				apartname = part.name.replace('-', '+')
-	else:
-		apartname = part.name + '_bar'
+	if apart.select().where(Particle.pdg == pdg).exists():
+		apart = Particle.select().where(Particle.pdg == pdg).get()
+		partname = apart.name
 	dbname = os.environ['PARTDIR'] + os.environ['DBNAME']
 	db.init(dbname)
-	return apartname
+	return partname
 #=======================================================================
 def createDB(): 
 	if Particle.table_exists():
@@ -422,6 +443,10 @@ def createDB():
 		ndecay = 0
 		if stable == 0:
 			ndecay = countDecays(name)
+		newname = rename(pdg) 
+		if not newname == "":
+			name = newname
+		print ("Adding ", name)
 		part = Particle.create(name  = name, 
 	  		pdg       = pdg,
 	  		spin      = spin,
@@ -442,11 +467,20 @@ def createDB():
 	  		threshold = threshold,
 	  		radius    = radius,
 	  		ndecay    = ndecay)
-		print ("Added ", name)
 		if stable == 0:
 			makeDecays(part)
-		if (Baryon + Q + S + C + B + T) > 0: 
-			aname = rename(part)
+		if  not (Baryon == 0 and Q == 0 and S == 0 and C == 0 and B == 0 and T == 0) :
+			aname = name + '_bar' 
+			newname = arename(-pdg)
+			if not newname == "":
+				aname = newname
+			else:
+				if name.find('Delta') == -1 and name.find('Sigma') == -1: 
+					if name.find('+') != -1: 
+						aname = name.replace('+', '-')
+					elif name.find('-') != -1:
+						aname = name.replace('-', '+')
+			print ("Adding ", aname)
 			apart = Particle.create(name = aname, 
 				pdg = -part.pdg, 
 				spin = part.spin, 
@@ -467,7 +501,6 @@ def createDB():
 		  		threshold = part.threshold,
 	 	 		radius    = part.radius,
 	  			ndecay    = part.ndecay)
-			print ("Added ", aname)
 			makeADecays(part, apart)
 	f.close()	
 	return True
