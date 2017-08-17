@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     external/particlesdbmanager.cpp \
     external/finddialog.cpp \
     external/listdialog.cpp \
-    external/selectdialog.cpp
+    external/selectdialog.cpp \
+    external/newdecaydialog.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -57,7 +58,8 @@ HEADERS  += mainwindow.h \
     external/particlesdbmanager.h \
     external/finddialog.h \
     external/listdialog.h \
-    external/selectdialog.h
+    external/selectdialog.h \
+    external/newdecaydialog.h
 
 
 RESOURCES += \

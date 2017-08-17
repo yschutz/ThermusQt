@@ -15,9 +15,11 @@ public:
     bool                       connect(const QString& path);
     QString                    currentPart() const { return mCurrentPart; }
     QString                    dbName() const { return mDBName; }
+    int                        findPartID(QString name) const;
     double                     getBR(int decayindex) const;
     static ParticlesDBManager& Instance();
-    void                       listParticles(const ListOption opt = kAll);
+    void                       insertDecay(int mother, int dtype, double br, double brn, QStringList &daughters) const;
+    void                       listParticles(const ListOption opt = kAll) const ;
     QStringList                listDecays(const QString& partPDG, qreal thr = 0.0) const;
     QStringList                listProperties(const QString& partPDG) const;
     void                       modifyBR(int decayid, double val) const;
@@ -30,6 +32,7 @@ private:
     ParticlesDBManager(const ParticlesDBManager&) {}
     ParticlesDBManager& operator = (const ParticlesDBManager&) {return *this;}
 
+    void error(QString text, QString info) const;
 
 private:
     QString                   mCurrentPart; // the current particle

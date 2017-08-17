@@ -1,47 +1,61 @@
+#include <QApplication>
 #include <QCheckBox>
 #include <QDebug>
+#include <QFontMetrics>
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QScrollArea>
 #include <QVBoxLayout>
 
-#include "external/particlesdbmanager.h"
+#include "particlesdbmanager.h"
 #include "listdialog.h"
+#include "newdecaydialog.h"
 
 //__________________________________________________________________________
 ListDialog::ListDialog(const QStringList &decays, QWidget *parent) : QDialog(parent)
 {
-    QString tempo = decays.at(0);
-    QStringList ltempo = tempo.split(':');
-    QString particleName = ltempo[0];
-    QString sdecays      = ltempo[1];
-    sdecays = sdecays.trimmed();
-    mIndexList.append((sdecays.left(sdecays.indexOf(' '))).toInt());
+    // a dialog box, listing all decays of a given particle (called from FindDialog) and options for modifications
 
-    QStringList particleDecays;
-    particleDecays.append(ltempo[1]);
-    for (int index = 1; index < decays.size(); index++) {
-        sdecays = decays.at(index);
-        sdecays = sdecays.trimmed();
-        mIndexList.append((sdecays.left(sdecays.indexOf(' '))).toInt());
-        particleDecays.append(sdecays);
-    }
+    // decode the string list
+    mPartName = decays.at(0);
 
     QGridLayout* decayCheckLayout = new QGridLayout;
-    for (int index = 0; index < particleDecays.size(); index++) {
-        QLineEdit* line = new QLineEdit;
-        line->setReadOnly(true);
-        QString text = ((QString)particleDecays.at(index)).prepend(QString("%1: ").arg(index, 3));
-        line->setText(text);
-        decayCheckLayout->addWidget(line, index, 0);
+    decayCheckLayout->addWidget(new QLabel("DB ID"), 0, 0, Qt::AlignCenter);
+    decayCheckLayout->addWidget(new QLabel("BR"),    0, 1, Qt::AlignCenter);
+    decayCheckLayout->addWidget(new QLabel("BRN"),   0, 2, Qt::AlignCenter);
+    decayCheckLayout->addWidget(new QLabel("Decay"), 0, 3, Qt::AlignCenter);
+    QFontMetrics metrics(QApplication::font());
+    for (int index = 1; index < decays.size(); index++) {
+        QString decay = decays.at(index);
+        QString id = (decay.split(' ').first());
+        QString br = decay.split('[').first().split(' ').last();
+        QString brn = decay.split(']').first().split('[').last();
+        QString sdecay = decay.split('>').last().trimmed();
+        QLabel* idLabel = new QLabel(id);
+        mids.append(idLabel);
+        decayCheckLayout->addWidget(idLabel, index, 0);
+        QLineEdit* brEdit = new QLineEdit(br);
+        brEdit->setReadOnly(true);
+        brEdit->setFixedSize(metrics.width("8888888888"), metrics.height() * 1.5);
+        brEdit->setAlignment(Qt::AlignRight);
+        brEdit->setStyleSheet("QLineEdit { background: rgb(255, 211, 231); selection-background-color: rgb(233, 99, 0); }");
+        mbrs.append(brEdit);
+        decayCheckLayout->addWidget(brEdit, index, 1, Qt::AlignCenter);
+        QLabel* brnLabel = new QLabel(brn);
+        brnLabel->setAlignment(Qt::AlignRight);
+        mbrns.append(brnLabel);
+        decayCheckLayout->addWidget(brnLabel, index, 2, Qt::AlignCenter);
+        decayCheckLayout->addWidget(new QLabel(sdecay), index, 3, Qt::AlignCenter);
         QCheckBox* check = new QCheckBox;
         check->setChecked(false);
+        connect(check, SIGNAL(stateChanged(int)), this, SLOT(ckecked(int)));
         mChecks.append(check);
-        decayCheckLayout->addWidget(check, index, 1);
+        decayCheckLayout->addWidget(check, index, 4, Qt::AlignCenter);
     }
 
     mMinus = new QPushButton("-");
@@ -80,7 +94,7 @@ ListDialog::ListDialog(const QStringList &decays, QWidget *parent) : QDialog(par
 
     setLayout(dialog_layout);
 
-    setWindowTitle(QString(tr("%1 decays")).arg(particleName));
+    setWindowTitle(QString(tr("%1 decays")).arg(mPartName));
     resize(500, 100);
 }
 
@@ -88,31 +102,58 @@ ListDialog::ListDialog(const QStringList &decays, QWidget *parent) : QDialog(par
 void ListDialog::add()
 {
     // add a decay: firs check if the decay is found in PDGParticles.db
-    QString save = ParticlesDBManager::Instance().dbName();
-    QString newName(save);
-    newName.replace("ThermusParticles", "PDGParticles");
-    bool connected = ParticlesDBManager::Instance().connect(newName);
-    if (!connected) {
-        QMessageBox msg(QMessageBox::Critical, "DB connection",
-                        QString("Could not connect to particles DB: %1").arg(newName));
-        msg.exec();
-    } else {
-    QStringList list = ParticlesDBManager::Instance().listDecays(ParticlesDBManager::Instance().currentPart());
-    qDebug() << list;
+
+//    QString save = ParticlesDBManager::Instance().dbName();
+//    QString newName(save);
+//    newName.replace("ThermusParticles", "PDGParticles");
+//    bool connected = ParticlesDBManager::Instance().connect(newName);
+//    if (!connected) {
+//        QMessageBox msg(QMessageBox::Critical, "DB connection",
+//                        QString("Could not connect to particles DB: %1").arg(newName));
+//        msg.exec();
+//    } else {
+//    QStringList list = ParticlesDBManager::Instance().listDecays(ParticlesDBManager::Instance().currentPart());
+//    qDebug() << list;
+//    }
+//    connected = ParticlesDBManager::Instance().connect(save);
+
+      NewDecayDialog* nd = new NewDecayDialog(mPartName, this);
+      nd->move(pos().x() + 300, pos().y() + 300);
+      nd->exec();
+}
+
+//__________________________________________________________________________
+void ListDialog::ckecked(int /*which*/)
+{
+    // called whenever the status of check button changed
+    for (int index = 0; index < mChecks.size(); index++) {
+        if (mChecks.at(index)->isChecked()) {
+            mbrs.at(index)->setReadOnly(false);
+            mbrs.at(index)->setStyleSheet("QLineEdit { background: rgb(212, 255, 255); selection-background-color: rgb(233, 99, 0); }");
+        } else {
+            mbrs.at(index)->setReadOnly(true);
+            mbrs.at(index)->setStyleSheet("QLineEdit { background: rgb(255, 211, 231); selection-background-color: rgb(233, 99, 0); }");
+
+        }
     }
-    connected = ParticlesDBManager::Instance().connect(save);
 }
 
 //__________________________________________________________________________
 void ListDialog::modify()
 {
-    // modify the selected decay
+    // modify the branching ratio of a selected decay and recalculate the normalized branching ratio
+
     int decayIndex = 0;
+    double sum = 0.0;
+    for (int index = 0; index < mChecks.size(); index++)
+        sum += mbrs.at(index)->text().toDouble();
     for (int index = 0; index < mChecks.size(); index++) {
+        double value = mbrs.at(index)->text().toDouble();
+        mbrns.at(index)->setText(QString("%1").arg(value * 100 / sum));
         if (mChecks.at(index)->isChecked()) {
-            decayIndex = mIndexList.at(index);
-            double br = ParticlesDBManager::Instance().getBR(decayIndex);
-            ParticlesDBManager::Instance().modifyBR(decayIndex, 0.0);
+            decayIndex = mids.at(index)->text().toInt();
+            value      = mbrs.at(index)->text().toDouble();
+            ParticlesDBManager::Instance().modifyBR(decayIndex, value);
         }
     }
 }

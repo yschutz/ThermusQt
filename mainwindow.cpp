@@ -374,9 +374,6 @@ void MainWindow::createMenus()
 
     mUpdateMenu = mPdgMenu->addMenu(QIcon(":/updateicon.png"), tr("&Update"));
 
-    qDebug() << Q_FUNC_INFO << mUpdateMenu;
-
-
     mUpdateMenu->addAction(mUpdatePDG);
     mUpdateMenu->addAction(mUpdateThermus);
 

@@ -14,6 +14,8 @@
 //__________________________________________________________________________
 FindDialog::FindDialog(const QString& what, QWidget *parent) : QDialog(parent), mLd(nullptr)
 {
+    // ctor: a dialog box for a single particle defined in a search box
+
     mFindLabel = new QLabel(tr("Particle to find:"), this);
     mFindText  = new QLineEdit("PDG or name");
     mFindText->setClearButtonEnabled(true);
@@ -61,6 +63,7 @@ FindDialog::FindDialog(const QString& what, QWidget *parent) : QDialog(parent), 
 void FindDialog::go()
 {
     // display particle properties and decays as extracted from the db
+
     QString name = mFindText->text();
 
     QStringList properties = ParticlesDBManager::Instance().listProperties(name);
