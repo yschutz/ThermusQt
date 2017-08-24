@@ -426,16 +426,16 @@ def createDB():
 		spin      = int(data[3])  # spin degeneracy
 		stat      = int(data[4])  # statistics 0:Boltzmann +1:Fermi-Dirac -1:Bose-Einstein
 		mass      = float(data[5])
-		S         = int(data[6])  # strangeness
-		Baryon    = int(data[7])  # baryon number
-		Q         = int(data[8])  # electric charge
-		C         = int(data[9])  # charm
-		B         = int(data[10]) # beauty
-		T         = 0        # top
-		SC        = float(data[11]) # #s + #s-bar quarks
-		CC        = C
-		BC        = B
-		TC        = T
+		s         = int(data[6])  # strangeness
+		baryon    = int(data[7])  # baryon number
+		charge    = int(data[8])  # electric charge
+		c         = int(data[9])  # charm
+		b         = int(data[10]) # beauty
+		t         = 0        # top
+		sc        = float(data[11]) # #s + #s-bar quarks
+		cc        = c
+		bc        = b
+		tc        = t
 		width     = float(data[12])
 		life      = HBAR / width if width != 0 else 0.
 		threshold = float(data[13])
@@ -452,16 +452,16 @@ def createDB():
 	  		spin      = spin,
 	  		statistic = stat,
 	  		mass      = mass, 
-	  		S         = S,
-	  		Baryon    = Baryon,
-	  		Q         = Q,
-	  		C         = C,
-	  		B         = B,
-	  		T         = T,
-	  		SC        = SC,
-	  		CC        = CC,
-	  		BC        = BC,
-	  		TC        = TC,
+	  		s         = s,
+	  		baryon    = baryon,
+	  		charge    = charge,
+	  		c         = c,
+	  		b         = b,
+	  		t         = t,
+	  		sc        = sc,
+	  		cc        = cc,
+	  		bc        = bc,
+	  		tc        = tc,
 	  		width     = width,
 	  		lifetime  = life,
 	  		threshold = threshold,
@@ -469,7 +469,7 @@ def createDB():
 	  		ndecay    = ndecay)
 		if stable == 0:
 			makeDecays(part)
-		if  not (Baryon == 0 and Q == 0 and S == 0 and C == 0 and B == 0 and T == 0) :
+		if  not (baryon == 0 and charge == 0 and s == 0 and c == 0 and b == 0 and t == 0) :
 			aname = name + '_bar' 
 			newname = arename(-pdg)
 			if not newname == "":
@@ -486,16 +486,16 @@ def createDB():
 				spin = part.spin, 
 				statistic = part.statistic, 
 				mass      = part.mass, 
-				S         = -part.S, 
-				Baryon    = -part.Baryon,
-	  			Q         = -part.Q,
-		  		C         = -part.C,
-		  		B         = -part.B,
-		  		T         = -part.T,
-		  		SC        = part.SC,
-	  			CC        = part.CC,
-		  		BC        = part.BC,
-		  		TC        = part.TC,
+				s         = -part.s, 
+				baryon    = -part.baryon,
+	  			charge         = -part.charge,
+		  		c         = -part.c,
+		  		b         = -part.b,
+		  		t         = -part.t,
+		  		sc        = part.sc,
+	  			cc        = part.cc,
+		  		bc        = part.bc,
+		  		tc        = part.tc,
 		  		width     = part.width,
 	  			lifetime  = part.lifetime,
 		  		threshold = part.threshold,
@@ -515,16 +515,16 @@ class Particle(BaseModel):
 	spin     = IntegerField()
 	statistic= IntegerField()
 	mass     = DoubleField()
-	S        = IntegerField()
-	Baryon   = IntegerField()
-	Q        = FloatField()
-	C        = IntegerField()
-	B        = IntegerField()
-	T        = IntegerField()
-	SC       = IntegerField()
-	CC       = IntegerField()
-	BC       = IntegerField()
-	TC       = IntegerField()
+	s        = IntegerField()
+	baryon   = IntegerField()
+	charge   = FloatField()
+	c        = IntegerField()
+	b        = IntegerField()
+	t        = IntegerField()
+	sc       = IntegerField()
+	cc       = IntegerField()
+	bc       = IntegerField()
+	tc       = IntegerField()
 	width    = DoubleField()
 	lifetime = DoubleField()
 	threshold= DoubleField()

@@ -5,33 +5,31 @@
 #include <QObject>
 
 class QCheckBox;
+class QGridLayout;
 class QLabel;
 class QLineEdit;
 class QPushButton;
+class QScrollArea;
+class QWidget;
 
 class ListDialog : public QDialog
 {   
   Q_OBJECT
 
 public:
-    ListDialog(const QStringList& decays, QWidget* parent = 0);
+    ListDialog(QWidget* parent = 0);
 
 private slots:
     void add();
-    void ckecked(int);
+    void ckecked();
     void modify();
+    void refresh();
     void remove();
 
 private:    
-    QList<QCheckBox*> mChecks;   // checks decay to be modified;
-    QPushButton*      mDone;     // done button
-    QList<QLineEdit*> mbrs;      // Edit box to modify br
-    QList<QLabel*>    mbrns;     // Labels box for brn
-    QList<QLabel*>    mids;      // Labels box for DB ID
-    QPushButton*      mMinus;    // button to remove a selected entry
-    QPushButton*      mMod;      // button to modify a selected entry
-    QString           mPartName; // name of the current particle
-    QPushButton*      mPlus;     // button to add an entry
+    QList<QCheckBox*> mChecks;      // checks decay to be modified;
+    QList<QLineEdit*> mbrs;         // Edit box to modify br
+    QList<QLabel*>    mbrns;        // Labels box for brn
 };
 
 #endif // LISTDIALOG_H

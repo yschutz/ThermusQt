@@ -11,10 +11,11 @@ class NewDecayDialog : public QDialog
     Q_OBJECT
 
 public:
-    NewDecayDialog(QString& partName, QWidget* parent = 0);
+    NewDecayDialog(QStringList& decays, QWidget* parent = 0);
 
 private slots:
-    void go(QString partName);
+    void insert(QString partName);
+    void selectDecay(QString decay);
 
 private:
     QLineEdit* mbrEdit;    // edit box for the branching ratio

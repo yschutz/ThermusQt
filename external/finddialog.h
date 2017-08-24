@@ -20,6 +20,7 @@ public:
 
 private slots:
     void go();
+    void showDecays();
 
 private:
 

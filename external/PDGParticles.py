@@ -162,7 +162,7 @@ def createDB(filename):
 		data = getPart(line)
 		if np != data[I_COUNT]:
    			eprint ("Wrong sequence count np(%i) != count(%i)" % np, int(data[I_COUNT])) 
-   			return False
+   			# return False
 		if data[I_PDG] >= 0:
    			if data[I_ISOSPIN] != -100: 
    				data[I_ISOSPIN] = (data[I_ISOSPIN] - 1) / 2
@@ -186,9 +186,9 @@ def createDB(filename):
    						return False
 	   				dcount = int(line[0:13])
    					decay = getDecay(line)
-   					if dcount != i + 1: 
-   						eprint ("Wrong sequence dcount (%i) != i+1 (%i)" %(dcount, i + 1))
-   						# return False 
+   					# if dcount != i + 1: 
+   					# 	eprint ("Wrong sequence dcount (%i) != i+1 (%i)" %(dcount, i + 1))
+   					# 	# return False 
    					decays.append(decay)
    				norm = normDecay(decays)
    			elif life == 0.0: 
@@ -211,7 +211,7 @@ def createDB(filename):
    			part.save()
    			for decay in decays:
    				childs = decay[2]
-   				dd = Decay.create(mother = part, dtype = decay[0], br = decay[1], brn = decay[1] * norm, ndaughters = len(childs))
+   				dd = Decay.create(mother = part, dtype = decay[0], br = decay[1] * 100, brn = decay[1] * norm * 100, ndaughters = len(childs))
    				dd.save()
    				for child in childs:
    					ichild = int(child)

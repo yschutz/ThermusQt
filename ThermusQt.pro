@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     external/finddialog.cpp \
     external/listdialog.cpp \
     external/selectdialog.cpp \
-    external/newdecaydialog.cpp
+    external/newdecaydialog.cpp \
+    external/newparticledialog.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -59,7 +60,8 @@ HEADERS  += mainwindow.h \
     external/finddialog.h \
     external/listdialog.h \
     external/selectdialog.h \
-    external/newdecaydialog.h
+    external/newdecaydialog.h \
+    external/newparticledialog.h
 
 
 RESOURCES += \

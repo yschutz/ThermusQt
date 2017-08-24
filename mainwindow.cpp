@@ -19,13 +19,14 @@
 #include "thermuswiz.h"
 
 #include "external/finddialog.h"
+#include "external/newparticledialog.h"
 #include "external/particlesdbmanager.h"
 #include "external/selectdialog.h"
 
 bool MainWindow::mDebug = false;
 //__________________________________________________________________________
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), mFd(nullptr)
+    QMainWindow(parent), mFd(nullptr), mNPD(nullptr)
 {
     // ctor
 
@@ -313,8 +314,8 @@ void MainWindow::createActions()
     mUpdateThermus   = new QAction(QIcon(":/thermusicon.png"), tr("&Thermus"), this);
     connect(mUpdateThermus, &QAction::triggered, this, [this]{ particlesDBManagement(kUpdateT); });
 
-//    mPdgInsertAction = new QAction(QIcon(":/inserticon.png"), tr("&Insert"), this);
-//    connect(mPdgInsertAction, &QAction::triggered, this, [this]{ particlesDBManagement(kInsert); });
+    mNewParticleAction = new QAction(QIcon(":/inserticon.png"), tr("&New"), this);
+    connect(mNewParticleAction, &QAction::triggered, this, [this]{ particlesDBManagement(kInsert); });
 
     mListPDG   = new QAction(QIcon(":/pdglogo.jpg"), tr("&PDG"), this);
     connect(mListPDG, &QAction::triggered, this, [this]{ particlesDBManagement(kListP); });
@@ -366,23 +367,21 @@ void MainWindow::createMenus()
     mDebugMenu->addAction(mDebugOffAction);
 
     // Menu related to the particles database
-    mPdgMenu = menuBar()->addMenu(tr("&Particles"));
+    mParticlesMenu = menuBar()->addMenu(tr("&Particles"));
 
-    mCreateMenu = mPdgMenu->addMenu(QIcon(":/createicon.png"), tr("&Create"));
+    mCreateMenu = mParticlesMenu->addMenu(QIcon(":/createicon.png"), tr("&Create"));
     mCreateMenu->addAction(mCreatePDG);
     mCreateMenu->addAction(mCreateThermus);
 
-    mUpdateMenu = mPdgMenu->addMenu(QIcon(":/updateicon.png"), tr("&Update"));
-
+    mUpdateMenu = mParticlesMenu->addMenu(QIcon(":/updateicon.png"), tr("&Update"));
     mUpdateMenu->addAction(mUpdatePDG);
     mUpdateMenu->addAction(mUpdateThermus);
 
-    mListMenu = mPdgMenu->addMenu(QIcon(":/listicon.png"), tr("&List"));
+    mListMenu = mParticlesMenu->addMenu(QIcon(":/listicon.png"), tr("&List"));
     mListMenu->addAction(mListPDG);
     mListMenu->addAction(mListThermus);
 
-//    mPdgMenu->addAction(mPdgSelectAction);
-//    mPdgMenu->addAction(mPdgInsertAction);
+    mParticlesMenu->addAction(mNewParticleAction);
 
     // select the macro to run or quit
     mRunMenu = menuBar()->addMenu(tr("&Run"));
@@ -396,71 +395,74 @@ void MainWindow::particlesDBManagement(DBOPS option)
 {
     // Manages the particles DB
 
-    const QString kPythonPath("/usr/local/bin/python3");
-    QMessageBox msg;
-    QFileInfo check(kPythonPath);
-    if (!check.exists() || !check.isExecutable()) {
-        msg.setText(QString("%1: %2 is not found or not executable!").arg(Q_FUNC_INFO, kPythonPath));
-        msg.exec();
-        return;
-    }
+    const QString kPartDir = mThermusDir.path() + "/particles/";
+    const QString kThermusDBName("ThermusParticles.db");
+    const QString kPDGDBName("PDGParticles.db");
     bool pdg     = false;
     bool thermus = false;
+    QString dbName;
     QString sourceName("");
     if (option < kLastP) {
-        pdg = true;
+        pdg        = true;
         sourceName = "PDG";
+        dbName     = kPDGDBName;
     }
     else {
-        thermus = true;
+        thermus    = true;
         sourceName = "Thermus";
+        dbName     = kThermusDBName;
     }
+    QString fullDBName(dbName);
+    fullDBName.prepend(kPartDir);
 
     QMetaEnum metaEnum = QMetaEnum::fromType<DBOPS>();
     QString soption    = metaEnum.valueToKey(option);
     soption.remove(0,1);
     soption.remove(soption.length() - 1 ,1);
 
-    const QString kExtDir = mThermusDir.path() + "/external/";
-    const QString kPartDir = mThermusDir.path() + "/particles/";
-    QString pythonScript;
-    QString dbName;
-    QString input("");
-    if (pdg) {
-        pythonScript = "PDGParticles.py";
-        dbName       = "PDGParticles.db";
-    } else if (thermus) {
-        pythonScript = "ThermusParticles.py";
-        dbName       = "ThermusParticles.db";
-        if (soption.contains("Create")) {
-            // check if PDG particles db exists
-            QString pdgName(dbName);
-            pdgName.replace("Thermus", "PDG");
-            pdgName.prepend(kPartDir);
-            QFileInfo check(pdgName);
-            if (! check.exists()) {
-                QMessageBox msg(QMessageBox::Critical, "Particles DB creation", "You must first create the PDG particles list");
-                msg.exec();
-                return;
-            }
-            SelectDialog sdia(kPartDir, this);
-            sdia.setModal(true);
-            if (sdia.exec() == QDialog::Accepted)
-                input = sdia.fileName();
-        }
-    }
-
-    QTimer t;
-    QEventLoop loop;
-    connect(&t, SIGNAL(timeout()), &loop, SLOT(quit()));
-
+    QMessageBox msg;
+    // ======================
     // create or update
     if (soption.contains("Create") || soption.contains("Update")) {
+
+        QTimer t;
+        QEventLoop loop;
+        connect(&t, SIGNAL(timeout()), &loop, SLOT(quit()));
+
+        const QString kPythonPath("/usr/local/bin/python3");
+        QFileInfo check(kPythonPath);
+        if (!check.exists() || !check.isExecutable()) {
+            msg.setText(QString("%1: %2 is not found or not executable!").arg(Q_FUNC_INFO, kPythonPath));
+            msg.exec();
+            return;
+        }
+        const QString kExtDir = mThermusDir.path() + "/external/";
+        QString pythonScript;
+        QString input("");
+        if (pdg) {
+            pythonScript = "PDGParticles.py";
+        } else if (thermus) {
+            pythonScript = "ThermusParticles.py";
+            if (soption.contains("Create")) {
+                // check if PDG particles db exists
+                QString pdgName(dbName);
+                pdgName.replace("Thermus", "PDG");
+                pdgName.prepend(kPartDir);
+                QFileInfo check(pdgName);
+                if (! check.exists()) {
+                    QMessageBox msg(QMessageBox::Critical, "Particles DB creation", "You must first create the PDG particles list");
+                    msg.exec();
+                    return;
+                }
+                SelectDialog sdia(kPartDir, this);
+                sdia.setModal(true);
+                if (sdia.exec() == QDialog::Accepted)
+                    input = sdia.fileName();
+            }
+        }
         if (soption.contains(("Update"))) {
             // check if PDG particles db exists
-            QString fullname(dbName);
-            fullname.prepend(kPartDir);
-            QFileInfo check(fullname);
+            QFileInfo check(fullDBName);
             if (! check.exists()) {
                 QMessageBox msg(QMessageBox::Critical, "Particles DB creation", "You must first create the particles DB");
                 msg.exec();
@@ -525,6 +527,7 @@ void MainWindow::particlesDBManagement(DBOPS option)
         return;
     }
 
+    // ======================
     // list a particle with its decay channels
     if (soption.contains("List")) {
         bool connected = ParticlesDBManager::Instance().connect(kPartDir + dbName);
@@ -533,17 +536,27 @@ void MainWindow::particlesDBManagement(DBOPS option)
                             QString("Could not connect to particles DB: %1").arg(kPartDir + dbName));
             msg.exec();
         } else {
-            if (mFd)
+            if (mFd) {
                 mFd->close();
+            }
             mFd = new FindDialog(sourceName, this);
             mFd->exec();
         }
         return;
     }
 
-    // select the particles to be taken into account by Thermus
-    if (option == kSelect) {
-        qDebug() << Q_FUNC_INFO;
+    // ======================
+    // Insert a new particle into Thermus DB
+    if (option == kInsert) {
+        bool connected = ParticlesDBManager::Instance().connect(kPartDir + dbName);
+        if (!connected) {
+            QMessageBox msg(QMessageBox::Critical, "DB connection",
+                            QString("Could not connect to particles DB: %1").arg(kPartDir + dbName));
+            msg.exec();
+        } else {
+            mNPD = new NewParticleDialog(this);
+            mNPD->exec();
+        }
         return;
     }
 }

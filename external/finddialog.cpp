@@ -16,6 +16,8 @@ FindDialog::FindDialog(const QString& what, QWidget *parent) : QDialog(parent), 
 {
     // ctor: a dialog box for a single particle defined in a search box
 
+    setAttribute(Qt::WA_DeleteOnClose);
+
     mFindLabel = new QLabel(tr("Particle to find:"), this);
     mFindText  = new QLineEdit("PDG or name");
     mFindText->setClearButtonEnabled(true);
@@ -73,15 +75,16 @@ void FindDialog::go()
     mDecays->setText(properties.at(3));
     mProperties->setVisible(true);
 
-    QStringList list = ParticlesDBManager::Instance().listDecays(name, 0.);
-    if (list.size() == 0) {
-        qWarning() << Q_FUNC_INFO << QString("Something went wrong with the DB query or paricle %1 not found").arg(mFindText->text());
-    } else {
-        ParticlesDBManager::Instance().setCurrentParticle(name);
-        if (mLd)
-            mLd->close();
-        mLd = new ListDialog(list);
-        mLd->exec();
-    }
+    ParticlesDBManager::Instance().setCurrentParticle(name);
+    showDecays();
 }
 
+//__________________________________________________________________________
+void FindDialog::showDecays()
+{
+    // show the decay in a QDialog box
+    mLd = new ListDialog(this);
+    connect(mLd, &QDialog::accepted, this, [this]{ showDecays(); });
+    mLd->move(pos().x() + 300, pos().y() + 300);
+    mLd->exec();
+}
