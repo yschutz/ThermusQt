@@ -99,14 +99,14 @@ void NewParticleDialog::searchName()
 {
     // check if not exist in Thermus DB or PDG DB
     int pdg = mEntries.at(ParticlesDBManager::kPDG)->text().toInt();
-    QString name = ParticlesDBManager::Instance().name(pdg, "Thermus");
+    QString name = ParticlesDBManager::Instance().name(pdg, ParticlesDBManager::Instance().getThermusDBName());
     if (!name.isEmpty()) {
         QMessageBox msg(QMessageBox::Critical, "Exists", QString("%1 already in Thermus DB").arg(name));
         msg.exec();
         reset();
         return;
     } else {
-        name = ParticlesDBManager::Instance().name(pdg, "PDG");
+        name = ParticlesDBManager::Instance().name(pdg, ParticlesDBManager::Instance().getPDGDBName());
     }
     if (name.isEmpty()) {
         for (int index = ParticlesDBManager::kNAME; index != ParticlesDBManager::kLAST; index++) {
@@ -116,16 +116,16 @@ void NewParticleDialog::searchName()
     } else {
         mEntries.at(ParticlesDBManager::kNAME)->setText(name);
 
-        double mass = ParticlesDBManager::Instance().mass(pdg, "PDG");
+        double mass = ParticlesDBManager::Instance().mass(pdg, ParticlesDBManager::Instance().getPDGDBName());
         mEntries.at(ParticlesDBManager::kMASS)->setText(QString("%1").arg(mass, 13, 'g', 8));
 
-        double charge = ParticlesDBManager::Instance().charge(pdg, "PDG");
+        double charge = ParticlesDBManager::Instance().charge(pdg, ParticlesDBManager::Instance().getPDGDBName());
         mEntries.at(ParticlesDBManager::kCHARGE)->setText(QString("%1").arg(charge, 13, 'g', 8));
 
-        double width = ParticlesDBManager::Instance().width(pdg, "PDG");
+        double width = ParticlesDBManager::Instance().width(pdg, ParticlesDBManager::Instance().getPDGDBName());
         mEntries.at(ParticlesDBManager::kWIDTH)->setText(QString("%1").arg(width, 13, 'g', 8));
 
-        double lifetime = ParticlesDBManager::Instance().lifetime(pdg, "PDG");
+        double lifetime = ParticlesDBManager::Instance().lifetime(pdg, ParticlesDBManager::Instance().getPDGDBName());
         mEntries.at(ParticlesDBManager::kLIFETIME)->setText(QString("%1").arg(lifetime, 13, 'g', 8));
 
         for (int index = ParticlesDBManager::kNAME; index != ParticlesDBManager::kLAST; index++) {

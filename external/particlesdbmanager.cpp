@@ -19,7 +19,7 @@ ParticlesDBManager ParticlesDBManager::mPDBM = ParticlesDBManager();
 
 //__________________________________________________________________________
 ParticlesDBManager::ParticlesDBManager() : QObject(nullptr),
-    mCurrentPart(""), mDBName("")
+    mCurrentPart("")
 {
     //ctor
 
@@ -61,7 +61,7 @@ QString ParticlesDBManager::makeQuery(ENTRY en, const QString& para, QString &sq
     }
     squery.insert(squery.indexOf(')'), column);
     squery.insert(squery.lastIndexOf(')'), bind);
-    return bind.remove(')').remove('(').remove(',');
+    return bind.remove(')').remove('(').remove(',').trimmed();
 }
 
 //__________________________________________________________________________
@@ -71,11 +71,11 @@ bool ParticlesDBManager::connect(const QString &path)
 
     mDB.setDatabaseName(path);
     if (!mDB.open()) {
-        error(Q_FUNC_INFO, QString("cannot connect to DB %1").arg(path));
+        QMessageBox msg(QMessageBox::Critical, "DB connection",
+                        QString("Could not connect to particles DB: %1").arg(path));
+        msg.exec();
         return false;
-    }
-    else {
-        mDBName = path;
+    } else {
         return true;
     }
 }
@@ -84,8 +84,37 @@ bool ParticlesDBManager::connect(const QString &path)
 void ParticlesDBManager::deleteDecay(int id)
 {
     // delete a decay from the DB
-    QString squery("DELETE FROM decay WHERE id = (:val)");
+    QString squery("SELECT mother_id FROM decay WHERE id = (:id)");
     QSqlQuery query;
+    query.prepare(squery);
+    query.bindValue(":id", id);
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
+        return;
+    }
+    query.next();
+    int mother_id = query.value(0).toInt();
+
+    squery = "SELECT ndecay FROM particle WHERE id = (:motherid)";
+    query.prepare(squery);
+    query.bindValue(":motherid", mother_id);
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
+        return;
+    }
+    query.next();
+    int ndecay = query.value(0).toInt();
+
+    squery = "UPDATE particle SET ndecay = (:val1) WHERE id = (:motherid)";
+    query.prepare(squery);
+    query.bindValue(":val1", ndecay - 1);
+    query.bindValue(":motherid", mother_id);
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
+        return;
+    }
+
+    squery = "DELETE FROM decay WHERE id = (:val)";
     query.prepare(squery);
     query.bindValue(":val", id);
     if (!query.exec()) {
@@ -116,14 +145,11 @@ QString ParticlesDBManager::getPartParameter(int pdg, ENTRY what, const QString 
     query.prepare(squery);
     query.bindValue(":val", pdg);
     QString save = ParticlesDBManager::Instance().dbName();
-    if (where.contains("PDG")) {
+    if (where.contains(mkPDGName)) {
         QString newName(save);
-        newName.replace("ThermusParticles", "PDGParticles");
+        newName.replace(mkThermusName, mkPDGName);
         bool connected = ParticlesDBManager::Instance().connect(newName);
         if (!connected) {
-            QMessageBox msg(QMessageBox::Critical, "DB connection",
-                            QString("Could not connect to particles DB: %1").arg(newName));
-            msg.exec();
             return rv;
         }
     }
@@ -133,7 +159,7 @@ QString ParticlesDBManager::getPartParameter(int pdg, ENTRY what, const QString 
         query.next();
         rv = query.record().value(sEntry).toString();
     }
-    if (where.contains("PDG"))
+    if (where.contains(mkPDGName))
         ParticlesDBManager::Instance().connect(save);
     return rv;
 }
@@ -166,7 +192,7 @@ QString ParticlesDBManager::name(int pdg, const QString& where) const
     query.prepare(squery);
     query.bindValue(":val", pdg);
 
-    if (where.contains("all") || where.contains("Thermus")) {
+    if (where.contains("all") || where.contains(mkThermusName)) {
         if (!query.exec()) {
             error(Q_FUNC_INFO, query.lastError().text());
             return name;
@@ -175,15 +201,12 @@ QString ParticlesDBManager::name(int pdg, const QString& where) const
         name = query.record().value("name").toString();
     }
 
-    if (name.isEmpty() && (where.contains("all") || where.contains("PDG"))) { // try to find it in PDG DB
+    if (name.isEmpty() && (where.contains("all") || where.contains(mkPDGName))) { // try to find it in PDG DB
         QString save = ParticlesDBManager::Instance().dbName();
         QString newName(save);
-        newName.replace("ThermusParticles", "PDGParticles");
-        bool connected = ParticlesDBManager::Instance().connect(newName);
-        if (!connected) {
-            QMessageBox msg(QMessageBox::Critical, "DB connection",
-                            QString("Could not connect to particles DB: %1").arg(newName));
-            msg.exec();
+        newName.replace(mkThermusName, mkPDGName);
+        if (!ParticlesDBManager::Instance().connect(newName)) {
+            return "";
         }  else {
             query.clear();
             query.prepare(squery);
@@ -195,7 +218,7 @@ QString ParticlesDBManager::name(int pdg, const QString& where) const
             query.next();
             name = query.record().value("name").toString();
         }
-        connected = ParticlesDBManager::Instance().connect(save);
+        ParticlesDBManager::Instance().connect(save);
     }
 
     return name;
@@ -218,13 +241,9 @@ int ParticlesDBManager::pdg(QString name) const
     if (pdg == 0) { // try to find it in PDG DB
         QString save = ParticlesDBManager::Instance().dbName();
         QString newName(save);
-        newName.replace("ThermusParticles", "PDGParticles");
-        bool connected = ParticlesDBManager::Instance().connect(newName);
-        if (!connected) {
-            QMessageBox msg(QMessageBox::Critical, "DB connection",
-                            QString("Could not connect to particles DB: %1").arg(newName));
-            msg.exec();
-        }  else {
+        newName.replace(mkThermusName, mkPDGName);
+//        bool connected = ParticlesDBManager::Instance().connect(newName);
+        if (ParticlesDBManager::Instance().connect(newName)) {
             query.clear();
             query.prepare(squery);
             query.bindValue(":val", name);
@@ -235,7 +254,7 @@ int ParticlesDBManager::pdg(QString name) const
             query.next();
             pdg = query.record().value("pdg").toInt();
         }
-        connected = ParticlesDBManager::Instance().connect(save);
+        ParticlesDBManager::Instance().connect(save);
     }
     return pdg;
 }
@@ -253,9 +272,27 @@ void ParticlesDBManager::insertDecay(int mother, int dtype, double br, QStringLi
 {       
     // insert a decay together with the daughters list     and recalculate brn
 
-    double sum = normalizeBR(br);
-    QString squery("INSERT INTO decay (mother_id, dtype, br, brn, ndaughters) VALUES ((:v1), (:v2), (:v3), (:v4), (:v5))");
+    QString squery("SELECT ndecay FROM particle WHERE id = (:motherid)");
     QSqlQuery query;
+    query.prepare(squery);
+    query.bindValue(":motherid", mother);
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
+        return;
+    }
+    query.next();
+    int ndecay = query.value(0).toInt();
+
+    squery = "UPDATE particle SET ndecay = (:val1) WHERE id = (:motherid)";
+    query.prepare(squery);
+    query.bindValue(":val1", ndecay + 1);
+    query.bindValue(":motherid", mother);
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
+        return;
+    }
+    double sum = normalizeBR(br);
+    squery = "INSERT INTO decay (mother_id, dtype, br, brn, ndaughters) VALUES ((:v1), (:v2), (:v3), (:v4), (:v5))";
     query.prepare(squery);
     query.bindValue(":v1", mother);
     query.bindValue(":v2", dtype);
@@ -352,38 +389,95 @@ void ParticlesDBManager::insertParticle(const QList<QString> &parameters)
     bind = makeQuery(kNDECAY, parameters.at(kNDECAY), squery);
     binds.insert(kNDECAY, bind);
 
-
-    qDebug() << Q_FUNC_INFO << squery;
-
     QSqlQuery query;
-    QString name = "test";
-    squery=
-            QString("INSERT INTO particle (name, pdg, statistic, spin, mass, s, baryon, charge, c, b, t, sc, cc, bc, tc, width, lifetime, threshold, radius, ndecay) VALUES(%1,1,1,1,0.5,1,1,1,1,1,1,1,1,1,1,0.5,0.5,0,1.2,1)").arg(name);
     query.prepare(squery);
-    bool* ok = new bool;
-//    for (int index = kPDG; index != kLAST; index++) {
-//        QString svalue = parameters.at(index);
-//        int ivalue = svalue.toInt();
-//        if (*ok) {
-//            query.bindValue(binds.at(index), ivalue);
-//            qDebug() << Q_FUNC_INFO << binds.at(index) << svalue << "i";
-//        }
-//        else {
-//            double dvalue= svalue.toDouble(ok);
-//            if (*ok) {
-//                query.bindValue(binds.at(index), dvalue);
-//                qDebug() << Q_FUNC_INFO << binds.at(index) << dvalue << "d";
-//           } else {
-//                query.bindValue(binds.at(index), svalue);
-//        qDebug() << Q_FUNC_INFO << binds.at(index) << svalue << "s";
-//            }
+    bool ok;
+    for (int index = kPDG; index != kLAST; index++) {
+        QString svalue = parameters.at(index);
+        int ivalue = svalue.toInt(&ok);
+        if (ok) {
+            query.bindValue(binds.at(index), ivalue);
+        }
+        else {
+            double dvalue= svalue.toDouble(&ok);
+            if (ok) {
+                query.bindValue(binds.at(index), dvalue);
+            } else {
+                query.bindValue(binds.at(index), svalue);
+            }
 
-//        }
-//    }
+        }
+    }
     if (!query.exec()) {
         error(Q_FUNC_INFO, query.lastError().text());
         return;
     }
+    // and now the decays
+    int partid = query.lastInsertId().toInt();
+
+    // do it by hand starting from finddialog
+
+//    QMessageBox msg(QMessageBox::Information, "Insert", QString("%1 inserted with ID = %2").arg(parameters.at(kNAME)).arg(partid));
+//    msg.exec();
+//    QString save = dbName();
+//    QString newName(save);
+//    newName.replace(mkThermusName, mkPDGName);
+//    QStringList tempo;
+//    if (connect(newName)) {
+//        squery = "SELECT id FROM particle WHERE name = (:name)";
+//        query.prepare(squery);
+//        query.bindValue(":name", parameters.at(kNAME));
+//        if (!query.exec()) {
+//            error(Q_FUNC_INFO, query.lastError().text());
+//            return;
+//        }
+//        query.next();
+//        int motherid = query.value(0).toInt();
+//        squery = "SELECT * FROM decay WHERE mother_id = (:motherid)";
+//        query.prepare(squery);
+//        query.bindValue(":motherid", motherid);
+//        if (!query.exec()) {
+//            error(Q_FUNC_INFO, query.lastError().text());
+//            return;
+//        }
+//        double brt = 0.0;
+//        QStringList tempo;
+//        while (query.next()) {
+//            int did    = query.record().value("id").toInt();
+//            double br  = query.record().value("br").toDouble();
+//            double brn = query.record().value("brn").toDouble();
+//            brt += br;
+//            QString soutput(QString("%1 %2[%3] --> ").arg(did).arg(br).arg(brn));
+//            QSqlQuery query2;
+//            query2.clear();
+//            squery = "SELECT * FROM daughter WHERE decay_id = (:val)";
+//            query2.prepare(squery);
+//            query2.bindValue(":val", did);
+//            if (query2.exec()) {
+//                while (query2.next()) {
+//                    int dpdg = query2.record().value("pdg").toInt();
+//                    soutput.append(QString("%1, ").arg(dpdg));
+//                }
+//                soutput.replace(soutput.lastIndexOf(", "), 2, "");
+//                tempo.append(soutput);
+//            }
+//        }
+//        QStringList rv;
+//        for (QString decay : tempo) {
+//            QString output = decay.split('>').first().append("> ");
+//            QStringList pdgs = decay.split('>').last().split(',');
+//            for (QString sdpdg : pdgs) {
+//                int dpdg = sdpdg.trimmed().toInt();
+//                QString name = ParticlesDBManager::Instance().name(dpdg);
+//                output.append(QString("%1, ").arg(name));
+//            }
+//            output.remove(output.lastIndexOf(','), 2);
+//            rv.append(output);
+//        }
+//        qDebug() << Q_FUNC_INFO << rv;
+//    }
+//    connect(save);
+
 }
 
 //__________________________________________________________________________
@@ -505,16 +599,16 @@ QStringList ParticlesDBManager::listProperties(const QString &partPDG) const
     // list properties of given particle
 
     QStringList rv;
-    bool* ok = new bool;
-    int ipartPDG = partPDG.toInt(ok);
+    bool ok;
+    int ipartPDG = partPDG.toInt(&ok);
     QString squery;
-    if (*ok)
+    if (ok)
         squery = "SELECT * FROM particle WHERE pdg = (:val)";
     else
         squery = "SELECT * FROM particle WHERE name = (:val)";
     QSqlQuery query;
     query.prepare(squery);
-    if (*ok)
+    if (ok)
         query.bindValue(":val", ipartPDG);
     else
         query.bindValue(":val", partPDG);
@@ -522,10 +616,17 @@ QStringList ParticlesDBManager::listProperties(const QString &partPDG) const
         query.next(); // one unique answer
         int pdg       = query.record().value("pdg").toInt();
         QString name  = query.record().value("name").toString();
-        if (!*ok)
+        if (pdg == 0 && name.isEmpty()) {
+            QMessageBox msg(QMessageBox::Critical, "Find", QString("%1 not found").arg(partPDG));
+            msg.exec();
+            return rv;
+        }
+
+        if (!ok)
             rv.append(QString("%1").arg(pdg));
         else
             rv.append(name);
+
         double mass = query.record().value("mass").toDouble();
         rv.append(QString("%1 GeV").arg(mass, 9, 'f', 7));
         double lifetime = query.record().value("lifetime").toDouble();
@@ -614,6 +715,28 @@ double ParticlesDBManager::normalizeBR(double sum) const
         }
     }
     return rv;
+}
+
+//__________________________________________________________________________
+void ParticlesDBManager::setCurrentParticle(const QString &part)
+{
+    // sets the current particle name
+
+    bool ok;
+    int pdg = part.toInt(&ok);
+    if (ok) {
+        QString squery("SELECT name FROM particle WHERE pdg = (:pdg)");
+        QSqlQuery query;
+        query.prepare(squery);
+        query.bindValue(":pdg", pdg);
+        if (!query.exec()) {
+            error(Q_FUNC_INFO, query.lastError().text());
+            return;
+        }
+        query.next();
+        mCurrentPart = query.value(0).toString();
+    } else
+        mCurrentPart = part;
 }
 
 //__________________________________________________________________________

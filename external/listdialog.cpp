@@ -97,7 +97,7 @@ ListDialog::ListDialog(QWidget *parent) : QDialog(parent)
 
     setLayout(dialog_layout);
 
-    setWindowTitle(QString(tr("%1 decays")).arg(partName));
+    setWindowTitle(QString(tr("decays of %1")).arg(partName));
     resize(500, 100);
 }
 
@@ -108,12 +108,8 @@ void ListDialog::add()
 
     QString save = ParticlesDBManager::Instance().dbName();
     QString newName(save);
-    newName.replace("ThermusParticles", "PDGParticles");
-    if (!ParticlesDBManager::Instance().connect(newName)) {
-        QMessageBox msg(QMessageBox::Critical, "DB connection",
-                        QString("Could not connect to particles DB: %1").arg(newName));
-        msg.exec();
-    } else {
+    newName.replace(ParticlesDBManager::Instance().getThermusDBName(), ParticlesDBManager::Instance().getPDGDBName());
+    if (ParticlesDBManager::Instance().connect(newName)) {
         QStringList list = ParticlesDBManager::Instance().listDecays(ParticlesDBManager::Instance().currentPart());
         ParticlesDBManager::Instance().connect(save);
         NewDecayDialog* nd = new NewDecayDialog(list, this);

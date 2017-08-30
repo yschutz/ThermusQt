@@ -15,7 +15,6 @@ NewDecayDialog::NewDecayDialog(QStringList &decays, QWidget*/*parent*/)
 {
     // a dialog box to enter a new decay
     setAttribute(Qt::WA_DeleteOnClose);
-
     QString partName = ParticlesDBManager::Instance().currentPart();
 
     QVBoxLayout* decaysLayout = new QVBoxLayout;

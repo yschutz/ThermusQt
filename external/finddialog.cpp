@@ -69,6 +69,8 @@ void FindDialog::go()
     QString name = mFindText->text();
 
     QStringList properties = ParticlesDBManager::Instance().listProperties(name);
+    if (properties.size() == 0)
+        return;
     mPDG->setText(properties.at(0));
     mMass->setText(properties.at(1));
     mLife->setText(properties.at(2));

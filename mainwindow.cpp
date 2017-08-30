@@ -396,8 +396,8 @@ void MainWindow::particlesDBManagement(DBOPS option)
     // Manages the particles DB
 
     const QString kPartDir = mThermusDir.path() + "/particles/";
-    const QString kThermusDBName("ThermusParticles.db");
-    const QString kPDGDBName("PDGParticles.db");
+    const QString kThermusDBName(QString(ParticlesDBManager::Instance().getThermusDBName()).append(".db"));
+    const QString kPDGDBName(QString(ParticlesDBManager::Instance().getPDGDBName()).append(".db"));
     bool pdg     = false;
     bool thermus = false;
     QString dbName;
@@ -530,15 +530,12 @@ void MainWindow::particlesDBManagement(DBOPS option)
     // ======================
     // list a particle with its decay channels
     if (soption.contains("List")) {
-        bool connected = ParticlesDBManager::Instance().connect(kPartDir + dbName);
-        if (!connected) {
-            QMessageBox msg(QMessageBox::Critical, "DB connection",
-                            QString("Could not connect to particles DB: %1").arg(kPartDir + dbName));
-            msg.exec();
+        if (!ParticlesDBManager::Instance().connect(kPartDir + dbName)) {
+            return;
         } else {
-            if (mFd) {
-                mFd->close();
-            }
+//            if (mFd) {
+//                mFd->close();
+//            }
             mFd = new FindDialog(sourceName, this);
             mFd->exec();
         }

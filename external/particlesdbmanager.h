@@ -20,9 +20,11 @@ public:
     double                     charge(int pdg, const QString& where = "Thermus");
     bool                       connect(const QString& path);
     QString                    currentPart() const { return mCurrentPart; }
-    QString                    dbName() const { return mDBName; }
+    QString                    dbName() const { return mDB.databaseName(); } //mDBName; }
     void                       deleteDecay(int id);
     QString                    getPartParameter(int pdg, ParticlesDBManager::ENTRY what, const QString& where = "Thermus") const;
+    QString                    getPDGDBName() const { return mkPDGName; }
+    QString                    getThermusDBName() const { return mkThermusName; }
     int                        id(QString name) const;
     QString                    name(int pdg, const QString& where = "all") const;
     int                        pdg(QString name) const;
@@ -36,7 +38,7 @@ public:
     double                     mass(int pdg, const QString& where = "Thermus");
     void                       modifyBR(int decayid, double val) const;
     double                     normalizeBR(double sum = 0.0) const;
-    void                       setCurrentParticle(const QString& part) { mCurrentPart = part; }
+    void                       setCurrentParticle(const QString& part);
     double                     width(int pdg, const QString& where = "Thermus");
 
 private:
@@ -47,13 +49,15 @@ private:
     ParticlesDBManager& operator = (const ParticlesDBManager&) {return *this;}
 
     void     error(QString text, QString info) const;
-    QString makeQuery(ParticlesDBManager::ENTRY en, const QString &para, QString& squery) const;
+    QString  makeQuery(ParticlesDBManager::ENTRY en, const QString &para, QString& squery) const;
 
 private:
     QString                   mCurrentPart; // the current particle
     QSqlDatabase              mDB;          // the data base
-    QString                   mDBName;      // DB name et path
+//    QString                   mDBName;      // current DB name et path
     static ParticlesDBManager mPDBM;        // the unique instance
+    const QString             mkThermusName = "ThermusParticles";
+    const QString             mkPDGName     = "PDGParticles";
 
 };
 
