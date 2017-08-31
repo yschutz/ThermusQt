@@ -81,7 +81,39 @@ bool ParticlesDBManager::connect(const QString &path)
 }
 
 //__________________________________________________________________________
-void ParticlesDBManager::deleteDecay(int id)
+void ParticlesDBManager::deleteDecays(int motherid) const
+{
+    // delete all decays of given mother
+    // get all the decays id
+    QString squery("SELECT id FROM decay WHERE mother_id =(:mother)");
+    QSqlQuery query;
+    query.prepare(squery);
+    query.bindValue(":mother", motherid);
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
+        return;
+    }
+    while(query.next()) {
+        int decayid = query.record().value(0).toInt();
+        squery = "DELETE FROM daughter WHERE decay_id = (:decay)";
+        query.prepare(squery);
+        query.bindValue(":decay", decayid);
+        if (!query.exec()) {
+            error(Q_FUNC_INFO, query.lastError().text());
+            return;
+        }
+        squery = "DELETE FROM decay WHERE id = (:decay)";
+        query.prepare(squery);
+        query.bindValue(":decay", decayid);
+        if (!query.exec()) {
+            error(Q_FUNC_INFO, query.lastError().text());
+            return;
+        }
+    }
+}
+
+//__________________________________________________________________________
+void ParticlesDBManager::deleteDecay(int id) const
 {
     // delete a decay from the DB
     QString squery("SELECT mother_id FROM decay WHERE id = (:id)");
@@ -412,8 +444,10 @@ void ParticlesDBManager::insertParticle(const QList<QString> &parameters)
         error(Q_FUNC_INFO, query.lastError().text());
         return;
     }
+    QMessageBox msg(QMessageBox::Information, "Insert", QString("%1 added").arg(parameters.at(kNAME)));
+    msg.exec();
     // and now the decays
-    int partid = query.lastInsertId().toInt();
+//    int partid = query.lastInsertId().toInt();
 
     // do it by hand starting from finddialog
 
@@ -715,6 +749,48 @@ double ParticlesDBManager::normalizeBR(double sum) const
         }
     }
     return rv;
+}
+
+//__________________________________________________________________________
+void ParticlesDBManager::removeParticle(const QString& part) const
+{
+    // remove a particle and its decay dfrom the data base
+
+    QString squery;
+    QSqlQuery query;
+    bool ok;
+    int pdg = part.toInt(&ok);
+    if (ok) {
+        squery = "SELECT id, name FROM particle WHERE pdg = (:pdg)";
+        query.prepare(squery);
+        query.bindValue(":pdg", pdg);
+     } else {
+        squery = "SELECT id, name FROM particle WHERE name = (:name)";
+        query.prepare(squery);
+        query.bindValue(":name", part);
+    }
+
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
+        return;
+    }
+    query.next();
+    int motherid = query.record().value(0).toInt();
+    QString name = query.record().value(1).toString();
+
+
+    deleteDecays(motherid);
+
+    squery = "DELETE FROM particle WHERE id = (:id)";
+    query.prepare(squery);
+    query.bindValue(":id", motherid);
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
+        return;
+    }
+
+    QMessageBox msg(QMessageBox::Information, "Remove", QString("%1 has been removed").arg(name));
+    msg.exec();
 }
 
 //__________________________________________________________________________

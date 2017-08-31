@@ -28,9 +28,12 @@ FindDialog::FindDialog(const QString& what, QWidget *parent) : QDialog(parent), 
     searchLayout->addWidget(mFindText);
 
     mGo = new QPushButton("Find");
-    connect(mGo, SIGNAL(pressed()), this, SLOT(go()));
+    connect(mGo, &QPushButton::pressed, this, [this] { go(); });
     mDone = new QPushButton("Done");
-    connect(mDone, SIGNAL(clicked(bool)), this, SLOT(close()));
+    connect(mDone, &QPushButton::pressed, this, [this] { close(); });
+    mDelete = new QPushButton("Delete");
+    connect(mDelete, &QPushButton::pressed, this, [this] { remove(); });
+    mDelete->setVisible(false);
 
     mProperties = new QGroupBox("Properties");
     mProperties->setVisible(false);
@@ -47,6 +50,7 @@ FindDialog::FindDialog(const QString& what, QWidget *parent) : QDialog(parent), 
 
     QHBoxLayout* goDoneLayout = new QHBoxLayout;
     goDoneLayout->addWidget(mGo);
+    goDoneLayout->addWidget(mDelete);
     goDoneLayout->addWidget(mDone);
 
     QGridLayout* mainLayout = new QGridLayout;
@@ -59,6 +63,14 @@ FindDialog::FindDialog(const QString& what, QWidget *parent) : QDialog(parent), 
 
     setWindowTitle(QString(tr("Particle search (%1)")).arg(what));
 
+}
+
+//__________________________________________________________________________
+void FindDialog::remove()
+{
+    // remove the selected particle and decays from DB
+
+    ParticlesDBManager::Instance().removeParticle(mPDG->text());
 }
 
 //__________________________________________________________________________
@@ -76,6 +88,7 @@ void FindDialog::go()
     mLife->setText(properties.at(2));
     mDecays->setText(properties.at(3));
     mProperties->setVisible(true);
+    mDelete->setVisible(true);
 
     ParticlesDBManager::Instance().setCurrentParticle(name);
     showDecays();
@@ -85,7 +98,7 @@ void FindDialog::go()
 void FindDialog::showDecays()
 {
     // show the decay in a QDialog box
-    mLd = new ListDialog(this);
+    mLd = new ListDialog();
     connect(mLd, &QDialog::accepted, this, [this]{ showDecays(); });
     mLd->move(pos().x() + 300, pos().y() + 300);
     mLd->exec();

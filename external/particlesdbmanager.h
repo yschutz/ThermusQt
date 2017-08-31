@@ -21,7 +21,8 @@ public:
     bool                       connect(const QString& path);
     QString                    currentPart() const { return mCurrentPart; }
     QString                    dbName() const { return mDB.databaseName(); } //mDBName; }
-    void                       deleteDecay(int id);
+    void                       deleteDecays(int motherid) const;
+    void                       deleteDecay(int id) const;
     QString                    getPartParameter(int pdg, ParticlesDBManager::ENTRY what, const QString& where = "Thermus") const;
     QString                    getPDGDBName() const { return mkPDGName; }
     QString                    getThermusDBName() const { return mkThermusName; }
@@ -38,6 +39,7 @@ public:
     double                     mass(int pdg, const QString& where = "Thermus");
     void                       modifyBR(int decayid, double val) const;
     double                     normalizeBR(double sum = 0.0) const;
+    void                       removeParticle(const QString &part) const;
     void                       setCurrentParticle(const QString& part);
     double                     width(int pdg, const QString& where = "Thermus");
 

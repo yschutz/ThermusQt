@@ -377,7 +377,7 @@ void MainWindow::createMenus()
     mUpdateMenu->addAction(mUpdatePDG);
     mUpdateMenu->addAction(mUpdateThermus);
 
-    mListMenu = mParticlesMenu->addMenu(QIcon(":/listicon.png"), tr("&List"));
+    mListMenu = mParticlesMenu->addMenu(QIcon(":/listicon.png"), tr("&List/Update"));
     mListMenu->addAction(mListPDG);
     mListMenu->addAction(mListThermus);
 
