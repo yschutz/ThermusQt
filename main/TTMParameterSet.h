@@ -35,7 +35,7 @@ public:
 
 protected:
     TTMParameter* mPar;             // Pointer to first Parameter Object
-    QString       mConstraintInfo;  // Constraqint32 information
+    QString       mConstraintInfo;  // Constraint information
 };
 
 #endif // TTMPARAMETERSET_H

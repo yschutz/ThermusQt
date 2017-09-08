@@ -10,5 +10,6 @@
         <file>rootlogo.gif</file>
         <file>thermusicon.png</file>
         <file>pdglogo.jpg</file>
+        <file>searchicon.png</file>
     </qresource>
 </RCC>

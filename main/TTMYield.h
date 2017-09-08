@@ -35,11 +35,12 @@ public:
     double          getModelError() const {return mModelError;}
     double          getModelValue() const {return mModelValue;}
     qint32          getID2() const {return mID2;}
-    TTMParticleSet* getPartSet1() const {return mSet1;}
-    TTMParticleSet* getPartSet2() const {return mSet2;}
+//    TTMParticleSet* getPartSet1() const {return mSet1;}
+//    TTMParticleSet* getPartSet2() const {return mSet2;}
     double          getQuadDev() const {return (mModelValue - mExpValue) / mModelValue;}
     double          getStdDev() const {return (mModelValue - mExpValue) / mExpError;}
     QString         getTMName() {return objectName();}
+    bool            isFitted() const {return mFit;}
     void            list();
     void            predict() {mFit = false;}
     void            setExpError(double x) {mExpError = x;}
@@ -47,7 +48,7 @@ public:
     void            setID(qint32 x, qint32 y) {mID1 = x; mID2 = y;}
     void            setModelError(double x) {mModelError = x;}
     void            setModelValue(double x) {mModelValue = x;}
-    void            setPartSet(TTMParticleSet *x, TTMParticleSet *y = (TTMParticleSet *) 0) { mSet1 = x; mSet2 = y;}
+//    void            setPartSet(TTMParticleSet *x, TTMParticleSet *y = (TTMParticleSet *) 0) { mSet1 = x; mSet2 = y;}
     void            setTMName(QString x) {setObjectName(x);}
 //    TTMYield operator=(TTMYield obj);
 
@@ -59,8 +60,8 @@ private:
     bool            mFit;        // true if yield is to be fitted (predicted if false)
     double          mModelError; // model error
     double          mModelValue; // model value
-    TTMParticleSet* mSet1;       // particle set relevant to yield (numerator)
-    TTMParticleSet* mSet2;       // particle set relevant to denominator
+//    TTMParticleSet* mSet1;       // particle set relevant to yield (numerator)
+//    TTMParticleSet* mSet2;       // particle set relevant to denominator
 };
 
 #endif // TTMYIELD_H

@@ -11,7 +11,7 @@
 #ifndef TTMTHERMALFIT_H
 #define TTMTHERMALFIT_H
 
-#include "TTMParticleSet.h"
+//#include "TTMParticleSet.h"
 #include "TTMYield.h"
 #include "external/QMinuit.h"
 
@@ -22,14 +22,24 @@ class TTMThermalFit : public QObject
     Q_OBJECT
 public:
     explicit TTMThermalFit(QObject *parent = 0);
+    ~TTMThermalFit();
 
+    void      addYield(TTMYield *yield);
+    void      generateYields();
+    QString   getTMName(int id1, int id2, const QString& descr) const;
+    TTMYield *getYield(int id1, int id2, const QString& descr) const;
+    void      inputExpYields(const QString& fileName);
+    void      listMinuitInfo() const;
+    void      listYields() const;
+    void      removeYield(int id1, int id2, const QString& descr);
 
 protected:
-     TTMParticleSet*  mPartSet;   // pointer to BASE Particle Set
-     QList<TTMYield*> mYields;    // Container for yields of interest
+
+//     TTMParticleSet*  mPartSet;   // pointer to BASE Particle Set
      double           mChiSquare; // chi-squared
-     double           mQuadDev;   // quadratic deviation
      QMinuit*         mMinuit;    // pointer to QMinuit obj
+     double           mQuadDev;   // quadratic deviation
+     QList<TTMYield*> mYields;    // Container for yields of interest
 };
 
 #endif // TTMTHERMALFIT_H

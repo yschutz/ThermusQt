@@ -3,7 +3,7 @@
 // The wizard to setp up various things
 
 #include "macros/runmacro.h"
-#include "filesel.h"
+//#include "filesel.h"
 #include "mainwindow.h"
 #include "parasel.h"
 #include "summary.h"
@@ -29,8 +29,8 @@ ThermusWiz::ThermusWiz(QString summaryTitle, QWidget *parent) : QWizard(parent)
 
     // page to select the particles list file
 
-    mDialogId = addPage(new FileSel(this));
-    myMacro.setDialog((FileSel*)page(mDialogId));
+//    mDialogId = addPage(new FileSel(this));
+//    myMacro.setDialog((FileSel*)page(mDialogId));
 
     // page for the parameters setting
 
@@ -64,17 +64,20 @@ void ThermusWiz::initializePage(qint32 id)
 
     Summary * summary = (Summary*)page(mSummaryId);
 
-    if (id - 1 == mDialogId) {
-        FileSel * file = qobject_cast<FileSel*>(page(mDialogId));
-        for (qint32 index = 0; index < file->getRadioButtons().size(); index++) {
-            QRadioButton * but = file->getRadioButtons().at(index);
-            if (but->isChecked())
-                file->setFileName(but->text());
-        }
-        summary->updateFileName(file->getFileName());
-    } else if (id - 1 == mParaSelId) {
+    //    if (id - 1 == mDialogId) {
+    //        FileSel * file = qobject_cast<FileSel*>(page(mDialogId));
+    //        for (qint32 index = 0; index < file->getRadioButtons().size(); index++) {
+    //            QRadioButton * but = file->getRadioButtons().at(index);
+    //            if (but->isChecked())
+    //                file->setFileName(but->text());
+    //        }
+    //        summary->updateFileName(file->getFileName());
+    //    } else if (id - 1 == mParaSelId) {
+    //        summary->updateParameters();
+    //    }
+    if (id - 1 == mParaSelId)
         summary->updateParameters();
-    }
+
 }
 
 //__________________________________________________________________________

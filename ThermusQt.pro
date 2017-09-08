@@ -30,13 +30,14 @@ SOURCES += main.cpp\
     summary.cpp \
     macros/runmacro.cpp \
     logger.cpp \
-    filesel.cpp \
     external/particlesdbmanager.cpp \
     external/finddialog.cpp \
     external/listdialog.cpp \
     external/selectdialog.cpp \
     external/newdecaydialog.cpp \
-    external/newparticledialog.cpp
+    external/newparticledialog.cpp \
+    main/TTMThermalmodel.cpp \
+    main/TTMDensobj.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -55,13 +56,14 @@ HEADERS  += mainwindow.h \
     summary.h \
     macros/runmacro.h \
     logger.h \
-    filesel.h \
     external/particlesdbmanager.h \
     external/finddialog.h \
     external/listdialog.h \
     external/selectdialog.h \
     external/newdecaydialog.h \
-    external/newparticledialog.h
+    external/newparticledialog.h \
+    main/TTMThermalmodel.h \
+    main/TTMDensobj.h
 
 
 RESOURCES += \

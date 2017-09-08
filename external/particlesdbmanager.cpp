@@ -257,10 +257,10 @@ QString ParticlesDBManager::name(int pdg, const QString& where) const
 }
 
 //__________________________________________________________________________
-int ParticlesDBManager::pdg(QString name) const
+int ParticlesDBManager::getPDG(QString name) const
 {
     // retrieve the particle pdg of the given name
-    QString squery("SELECT * FROM particle WHERE name = (:val)");
+    QString squery("SELECT pdg FROM particle WHERE name = (:val)");
     QSqlQuery query;
     query.prepare(squery);
     query.bindValue(":val", name);
@@ -269,7 +269,7 @@ int ParticlesDBManager::pdg(QString name) const
         return -1;
     }
     query.next();
-    int pdg = query.record().value("pdg").toInt();
+    int pdg = query.record().value(0).toInt();
     if (pdg == 0) { // try to find it in PDG DB
         QString save = ParticlesDBManager::Instance().dbName();
         QString newName(save);
@@ -284,11 +284,27 @@ int ParticlesDBManager::pdg(QString name) const
                 return -1;
             }
             query.next();
-            pdg = query.record().value("pdg").toInt();
+            pdg = query.record().value(0).toInt();
         }
         ParticlesDBManager::Instance().connect(save);
     }
     return pdg;
+}
+
+//__________________________________________________________________________
+int ParticlesDBManager::getPDG(int id) const
+{
+    // retrieve the particle pdg of the given DB id
+    QString squery("SELECT pdg FROM particle WHERE id = (:val)");
+    QSqlQuery query;
+    query.prepare(squery);
+    query.bindValue(":val", id);
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
+        return -1;
+    }
+    query.next();
+    return query.record().value("pdg").toInt();
 }
 
 //__________________________________________________________________________
@@ -515,6 +531,25 @@ void ParticlesDBManager::insertParticle(const QList<QString> &parameters)
 }
 
 //__________________________________________________________________________
+bool ParticlesDBManager::isStable(int pdg) const
+{
+    // check if a particle is stable
+    bool rv = false;
+    QString squery("SELECT ndecay FROM particle WHERE pdg = (:val)");
+    QSqlQuery query;
+    query.prepare(squery);
+    query.bindValue(":val", pdg);
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
+    } else {
+        query.next();
+        if (query.record().value(0).toInt() == 0)
+            rv = true;
+    }
+    return rv;
+}
+
+//__________________________________________________________________________
 double ParticlesDBManager::lifetime(int pdg, const QString &where)
 {
     // gets the lifetime of the given particle
@@ -529,22 +564,30 @@ void ParticlesDBManager::listParticles(const ParticlesDBManager::ListOption opt)
     // list all particles of class opt (Quark, Meson, Lepton, ....)
 
     QSqlQueryModel  *model = new QSqlQueryModel;
-    QTableView *view = new QTableView;
-    view->setModel(model);
 
-    QMetaEnum metaEnum = QMetaEnum::fromType<ListOption>();
-    QString sopt = metaEnum.valueToKey(opt);
-    sopt.remove(0,1);
+//    QMetaEnum metaEnum = QMetaEnum::fromType<ListOption>();
+//    QString sopt = metaEnum.valueToKey(opt);
+//    sopt.remove(0,1);
 
     QSqlQuery query;
-    QString squery = "SELECT * FROM particle WHERE pclass = (:val)";
+    QString squery("SELECT * FROM particle"); // WHERE pclass = (:val)";
     query.prepare(squery);
-    query.bindValue(":val", sopt);
+//    query.bindValue(":val", sopt);
     if (query.exec()) {
         model->setQuery(query);
-        view->show();
     } else
         error(Q_FUNC_INFO, query.lastError().text());
+
+    QSortFilterProxyModel* proxymodel=new QSortFilterProxyModel();
+    proxymodel->setDynamicSortFilter(true);
+    proxymodel->setSourceModel(model);
+
+    QTableView *view = new QTableView;
+    view->setModel(proxymodel);
+    view->setSortingEnabled(true);
+
+    view->resize(2100, 200);
+    view->show();
 }
 
 //__________________________________________________________________________
@@ -816,12 +859,77 @@ void ParticlesDBManager::setCurrentParticle(const QString &part)
 }
 
 //__________________________________________________________________________
+int ParticlesDBManager::size() const
+{
+    // returns the size of the Thermus DB (number of particles)
+
+    QString squery("SELECT * FROM particle");
+    QSqlQuery query;
+    query.prepare(squery);
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
+        return 0;
+    }
+    query.last();
+    return query.value(0).toInt();
+}
+
+//__________________________________________________________________________
 double ParticlesDBManager::width(int pdg, const QString &where)
 {
     // gets the width of the given particle
     double rv = 0.0;
     rv = getPartParameter(pdg, kWIDTH, where).toDouble();
     return rv;
+}
+
+//__________________________________________________________________________
+void ParticlesDBManager::allDecays(int pdg, QHash<int, double> &br) const
+{
+    // retrieves all mother and br of daughter given by pdg
+    QString squery("SELECT mother_id, brn FROM decay WHERE id IN (SELECT d.decay_id FROM daughter d where d.pdg = (:pdg))");
+    QSqlQuery query;
+    query.prepare(squery);
+    query.bindValue(":pdg", pdg);
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
+        return;
+    }
+    while(query.next()) {
+        int motherid = query.record().value(0).toInt();
+        int mother = getPDG(motherid);
+        double brn = query.record().value(1).toDouble();
+        br[mother] =  brn + br[mother];
+    }
+}
+
+//__________________________________________________________________________
+void ParticlesDBManager::allParticles(QList<int>& list, ListOption opt) const
+{
+    // retrieves all particles in the Thermus DB
+    QString squery;
+    switch (opt) {
+    case kALL:
+        squery = "SELECT pdg FROM particle";
+        break;
+    case kSTABLE:
+        squery = "SELECT pdg FROM particle WHERE ndecay = 0";
+        break;
+    case kUNSTABLE:
+        squery = "SELECT pdg FROM particle WHERE ndecay != 0";
+        break;
+    default:
+        break;
+    }
+
+    QSqlQuery query(squery);
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
+        return;
+    }
+    while(query.next())
+
+        list.append(query.record().value(0).toInt());
 }
 
 //__________________________________________________________________________

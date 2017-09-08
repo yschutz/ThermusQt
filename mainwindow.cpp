@@ -38,6 +38,13 @@ MainWindow::MainWindow(QWidget *parent) :
             exit(1);
     }
 
+    QString partDir = mThermusDir.path() + "/particles/";
+    QString thermusDBName(QString(ParticlesDBManager::Instance().getThermusDBName()).append(".db"));
+    QString pdgDBName(QString(ParticlesDBManager::Instance().getPDGDBName()).append(".db"));
+
+    mThermusDBPath = thermusDBName.prepend(partDir);
+    mPdgDBPath     = pdgDBName.prepend(partDir);
+
     setGeometry(0, 0, 50, 25);
 
     setWindowTitle("THERMUS");
@@ -172,15 +179,21 @@ void MainWindow::setDebugMode(bool val)
 }
 
 //__________________________________________________________________________
-void MainWindow::listParameters()
+QString MainWindow::getDBPath(const QString &opt)
 {
-    RunMacro::instance().listParameters();
+    // return the full path to DB
+    if (opt.contains("Thermus"))
+        return mThermusDBPath;
+    else if (opt.contains("PDG"))
+        return mPdgDBPath;
+    else
+        return "";
 }
 
 //__________________________________________________________________________
-void MainWindow::listParticles(bool full)
+void MainWindow::listParameters()
 {
-    RunMacro::instance().listParticles(full);
+    RunMacro::instance().listParameters();
 }
 
 //__________________________________________________________________________
@@ -205,22 +218,13 @@ void MainWindow::runPrediction()
     new ThermusWiz(info, this);
 
     // **************************************************
-    // Definition the particle list
-    // and their properties (and decays):
-    // open the particles list file
-
-    myMacro.setParticlesListFile();
-
-    // adds the Particles list to the menu
-
-    mRunMenu->insertAction(mQuitAction, mParticlesListLong);
-    mRunMenu->insertAction(mQuitAction, mParticlesListShort);
+    // connect to the Thermus DB
+    particlesDBManagement(kConnectT);
+//    myMacro.setParticlesListFile();
 
     // Choice of starting parameters
 
     myMacro.setParameters();
-
-    // adds the Particles list to the menu
 
     // choice of parameter to fit or to fix
     // -> Default is fixed at zero or at unity so important to check !!
@@ -317,6 +321,11 @@ void MainWindow::createActions()
     mNewParticleAction = new QAction(QIcon(":/inserticon.png"), tr("&New"), this);
     connect(mNewParticleAction, &QAction::triggered, this, [this]{ particlesDBManagement(kInsert); });
 
+    mSearchPDG   = new QAction(QIcon(":/pdglogo.jpg"), tr("&PDG"), this);
+    connect(mSearchPDG, &QAction::triggered, this, [this]{ particlesDBManagement(kSearchP); });
+    mSearchThermus   = new QAction(QIcon(":/thermusicon.png"), tr("&Thermus"), this);
+    connect(mSearchThermus, &QAction::triggered, this, [this]{ particlesDBManagement(kSearchT); });
+
     mListPDG   = new QAction(QIcon(":/pdglogo.jpg"), tr("&PDG"), this);
     connect(mListPDG, &QAction::triggered, this, [this]{ particlesDBManagement(kListP); });
     mListThermus   = new QAction(QIcon(":/thermusicon.png"), tr("&Thermus"), this);
@@ -331,16 +340,6 @@ void MainWindow::createActions()
     mPredictionAction->setShortcuts(QKeySequence::New);
     mPredictionAction->setStatusTip(tr("Makes a Thermus prediction"));
     connect(mPredictionAction, &QAction::triggered, this, &MainWindow::runPrediction);
-
-    // Particles list action
-
-    mParticlesListLong = new QAction(tr("Long particles list"), this);
-    mParticlesListLong->setStatusTip("Makes a long list of all particles with full properties");
-    connect(mParticlesListLong, &QAction::triggered, this, [this]{ listParticles(true); });
-
-    mParticlesListShort = new QAction(tr("Short particles list"), this);
-    mParticlesListShort->setStatusTip("Makes a short list of all particles with full properties");
-    connect(mParticlesListShort, &QAction::triggered, this, [this]{ listParticles(false); });
 
     // Parameters list action
 
@@ -377,7 +376,11 @@ void MainWindow::createMenus()
     mUpdateMenu->addAction(mUpdatePDG);
     mUpdateMenu->addAction(mUpdateThermus);
 
-    mListMenu = mParticlesMenu->addMenu(QIcon(":/listicon.png"), tr("&List/Update"));
+    mSearchMenu = mParticlesMenu->addMenu(QIcon(":/searchicon.png"), tr("&Search/Update"));
+    mSearchMenu->addAction(mSearchPDG);
+    mSearchMenu->addAction(mSearchThermus);
+
+    mListMenu = mParticlesMenu->addMenu(QIcon(":/listicon.png"), tr("&List"));
     mListMenu->addAction(mListPDG);
     mListMenu->addAction(mListThermus);
 
@@ -396,31 +399,38 @@ void MainWindow::particlesDBManagement(DBOPS option)
     // Manages the particles DB
 
     const QString kPartDir = mThermusDir.path() + "/particles/";
-    const QString kThermusDBName(QString(ParticlesDBManager::Instance().getThermusDBName()).append(".db"));
-    const QString kPDGDBName(QString(ParticlesDBManager::Instance().getPDGDBName()).append(".db"));
+
     bool pdg     = false;
     bool thermus = false;
-    QString dbName;
     QString sourceName("");
+    QString fullDBName;
     if (option < kLastP) {
         pdg        = true;
         sourceName = "PDG";
-        dbName     = kPDGDBName;
-    }
-    else {
+        fullDBName = mPdgDBPath;
+    } else {
         thermus    = true;
         sourceName = "Thermus";
-        dbName     = kThermusDBName;
+        fullDBName     = mThermusDBPath;
     }
-    QString fullDBName(dbName);
-    fullDBName.prepend(kPartDir);
 
+    QString dbName = fullDBName.replace(kPartDir, "");
     QMetaEnum metaEnum = QMetaEnum::fromType<DBOPS>();
     QString soption    = metaEnum.valueToKey(option);
     soption.remove(0,1);
     soption.remove(soption.length() - 1 ,1);
 
     QMessageBox msg;
+
+    // ======================
+    // connect
+    if (soption.contains("Connect")) {
+        if (thermus)
+            ParticlesDBManager::Instance().connect(mThermusDBPath);
+        else if (pdg)
+            ParticlesDBManager::Instance().connect(mPdgDBPath);
+        return;
+    }
     // ======================
     // create or update
     if (soption.contains("Create") || soption.contains("Update")) {
@@ -445,10 +455,10 @@ void MainWindow::particlesDBManagement(DBOPS option)
             pythonScript = "ThermusParticles.py";
             if (soption.contains("Create")) {
                 // check if PDG particles db exists
-                QString pdgName(dbName);
-                pdgName.replace("Thermus", "PDG");
-                pdgName.prepend(kPartDir);
-                QFileInfo check(pdgName);
+//                QString pdgName(dbName);
+//                pdgName.replace("Thermus", "PDG");
+//                pdgName.prepend(kPartDir);
+                QFileInfo check(mPdgDBPath);
                 if (! check.exists()) {
                     QMessageBox msg(QMessageBox::Critical, "Particles DB creation", "You must first create the PDG particles list");
                     msg.exec();
@@ -528,16 +538,20 @@ void MainWindow::particlesDBManagement(DBOPS option)
     }
 
     // ======================
-    // list a particle with its decay channels
-    if (soption.contains("List")) {
-        if (!ParticlesDBManager::Instance().connect(kPartDir + dbName)) {
-            return;
-        } else {
-//            if (mFd) {
-//                mFd->close();
-//            }
+    // search a particle with its decay channels
+    if (soption.contains("Search")) {
+        if (ParticlesDBManager::Instance().connect(kPartDir + dbName)) {
             mFd = new FindDialog(sourceName, this);
             mFd->exec();
+        }
+        return;
+    }
+
+    // ======================
+    // List all particles
+    if (soption.contains("List")) {
+        if (ParticlesDBManager::Instance().connect(kPartDir + dbName)) {
+            ParticlesDBManager::Instance().listParticles(ParticlesDBManager::kALL);
         }
         return;
     }

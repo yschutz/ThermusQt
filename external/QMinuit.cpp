@@ -13,6 +13,7 @@
 
 
 #include <QDebug>
+#include <QMessageBox>
 #include <QtMath>
 
 #include "QMinuit.h"
@@ -4600,7 +4601,9 @@ void QMinuit::qmnmatu(qint32 kode)
 
     isw2 = mISW[1];
     if (isw2 < 1) {
-       qInfo() << mCovmes[isw2];
+       QMessageBox msg(QMessageBox::Information, "qmnmatu", Q_FUNC_INFO);
+       msg.setInformativeText(QString("%1").arg( mCovmes[isw2]));
+       msg.exec();
        return;
     }
     if (mNPar == 0) {
@@ -5947,7 +5950,9 @@ void QMinuit::qmnprin(qint32 inkode, double fval)
     QString colhdl[6], colhdu[6], cx2, cx3, cheval;
 
     if (mNu == 0) {
-       qInfo() << " THERE ARE CURRENTLY NO PARAMETERS DEFINED";
+        QMessageBox msg(QMessageBox::Information, "qmnprin", Q_FUNC_INFO);
+        msg.setInformativeText("There are currently no parameters defined");
+        msg.exec();
        return;
     }
  //*-*-                 get value of IKODE based in INKODE, mISW[1]

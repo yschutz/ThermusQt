@@ -10,7 +10,7 @@
 #include <QDebug>
 #include <QObject>
 
-#include "filesel.h"
+//#include "filesel.h"
 //#include "parasel.h"
 #include "summary.h"
 
@@ -26,11 +26,10 @@ public:
 
     bool        isDebug() const {return mDebug;}
     void        listParameters() const {mParaInfo->list();}
-    void        listParticles(bool full = false)  const {mPartInfo->listParticles(full);}
     void        setConstrain();
     void        setDebug(bool val) {mDebug = val; }
     void        setDefaultParameters();
-    void        setDialog(FileSel* val) {mFileSel = val;}
+//    void        setDialog(FileSel* val) {mFileSel = val;}
     void        setFitFix() ;
     void        setParameters();
     void        setParaSel(ParaSel* val);
@@ -46,7 +45,7 @@ private:
     bool                mDebug;            // true if debug mode on
     static RunMacro     mInstance;         // unique instance of the object
     QString             mParticlesList;    // txt file listing the particles
-    FileSel*            mFileSel;       // dialog window to select a file
+//    FileSel*            mFileSel;       // dialog window to select a file
     TTMParameterSetBSQ* mParaInfo;         // holds the information on parameters
     ParaSel*            mParaSel;          // window for parameters selection
     TTMParticleSet*     mPartInfo;         // holds the information on particles

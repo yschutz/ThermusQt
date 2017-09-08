@@ -2,7 +2,8 @@
 //
 // The steering class to run a thermus prediction(aka ROOT macro)
 
-#include "filesel.h"
+//#include "filesel.h"
+#include "mainwindow.h"
 #include "parasel.h"
 #include "runmacro.h"
 
@@ -133,16 +134,16 @@ void RunMacro::setParaSel(ParaSel *val)
 //__________________________________________________________________________
 void RunMacro::setParticlesListFile()
 {
-    // setting the particles list and particles properties
+//    // setting the particles list and particles properties
 
-    mParticlesList = mFileSel->getFileName();
-    mParticlesList.prepend(":/particles/");
-    QString tempo(QString("The selected particles lis file is: %1").arg(mParticlesList));
-    if (mDebug)
-        qDebug() << tempo;
+//    mParticlesList = mFileSel->getFileName();
+//    mParticlesList.prepend(":/particles/");
+//    QString tempo(QString("The selected particles lis file is: %1").arg(mParticlesList));
+//    if (mDebug)
+//        qDebug() << tempo;
 
     mPartInfo = new  TTMParticleSet(mParticlesList, true);  // here true means the decays are scaled to sum(BR) = 100%
-    mPartInfo->inputDecays(":/particles/");
+//    mPartInfo->inputDecays(":/particles/");
 }
 
 //__________________________________________________________________________

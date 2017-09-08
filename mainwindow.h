@@ -25,7 +25,9 @@ class MainWindow : public QMainWindow
 
 public:
 
-    enum DBOPS {kCreateP, kUpdateP, kListP, kLastP, kCreateT,  kUpdateT, kListT, kLastT, kInsert, kSelect};
+    enum DBOPS {kConnectP, kCreateP, kUpdateP, kSearchP, kListP, kLastP,
+                kConnectT, kCreateT, kUpdateT, kSearchT, kListT, kLastT,
+                kInsert, kSelect};
     Q_ENUM(DBOPS)
 
     explicit MainWindow(QWidget *parent = 0);
@@ -35,12 +37,11 @@ public:
     static void customMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
     void        setDebugMode(bool val);
 
-private slots:
-    void listParameters();
-    void listParticles(bool full);
-    void particlesDBManagement(DBOPS option);
-    void runPrediction();
-    void quit();
+    QString     getDBPath(const QString& opt);
+    void        listParameters();
+    void        particlesDBManagement(DBOPS option);
+    void        runPrediction();
+    void        quit();
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -60,7 +61,7 @@ private:
     QAction*           mDebugOffAction;        // Action for debug mode off
     QAction*           mDebugOnAction;         // Action for debug mode on
     FindDialog*        mFd;                    // the dialog box for particle search
-    QMenu*             mListMenu;              // to list the particles db from Root or Thermus Data
+    QMenu*             mListMenu;              // to list all the particles db from Root or Thermus Data
     QAction*           mListPDG;               // to list the particles Root db
     QAction*           mListThermus;           // to list the particles Thermus db
     QAction*           mNewParticleAction;     // insert a new particle in Thermus DB
@@ -68,12 +69,17 @@ private:
     QAction*           mParametersList;        // list all parameteres with properties
     QAction*           mParticlesListLong;     // list all particles properties and their decay (long output)
     QAction*           mParticlesListShort;    // list all particles properties and their decay (short output)
-    QAction*           mPdgUpdateMassAction;   // update particles mass and lifetime
+    QString            mPdgDBPath;             // the full path to PDG DB
     QAction*           mPdgSelectAction;       // select particles for the Thermus fit
+    QAction*           mPdgUpdateMassAction;   // update particles mass and lifetime
     QAction*           mPredictionAction;      // Action for the Prediction macro
     QAction*           mQuitAction;            // Action for quitting the application
     QMenu*             mRunMenu;               // Menu Tab to select the macro to run
+    QMenu*             mSearchMenu;            // to serach and update one particle from Root or Thermus Data
+    QAction*           mSearchPDG;             // to search for a particle Root db
+    QAction*           mSearchThermus;         // to search for a particle Thermus db
     QDir               mThermusDir;            // directory of the Thermus installation ($HOME/ThermusQt)
+    QString            mThermusDBPath;         // the full path to Thermus DB
     QMenu*             mUpdateMenu;            // to update the particles db from Root or Thermus Data
     QAction*           mUpdatePDG;             // to update the particles Root db
     QAction*           mUpdateThermus;         // to update the particles Thermus db

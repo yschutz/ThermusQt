@@ -7,16 +7,39 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QDebug>
-#include "external/particlesdbmanager.h"
 
+#include <QStandardItemModel>
+#include <QTableView>
+#include <QSqlQuery>
 
 #include <gsl/gsl_sf_bessel.h>
+
+#include "main/TTMThermalFit.h"
+#include "main/TTMYield.h"
+#include "external/particlesdbmanager.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    MainWindow w;
-    w.show();
-        return a.exec();
+//    MainWindow w;
+//    w.show();
+
+    ParticlesDBManager::Instance().connect("/Users/schutz/ThermusQt/particles/ThermusParticles.db");
+//    TTMThermalFit fit;
+//    fit.inputExpYields("/Users/schutz/cernbox/group/Thermus/THERMUS_v3.x_191016/simpletest/prediction_yannick.txt");
+//    fit.listYields();
+//    fit.listMinuitInfo();
+
+    QList<int> stableParticles;
+    ParticlesDBManager::Instance().allParticles(stableParticles, ParticlesDBManager::kUNSTABLE);
+    for (int pdg : stableParticles) {
+        if (ParticlesDBManager::Instance().isStable(pdg))
+            qDebug() << pdg << "Stable";
+        else
+            qDebug() << pdg <<
+                        "instable";
+
+    }
+    return a.exec();
 }

@@ -60,7 +60,7 @@ NewDecayDialog::NewDecayDialog(QStringList &decays, QWidget*/*parent*/)
     mainLayout->addLayout(insertcancelLayout);
 
     setLayout(mainLayout);
-    int pdg = ParticlesDBManager::Instance().pdg(partName);
+    int pdg = ParticlesDBManager::Instance().getPDG(partName);
     setWindowTitle(QString("New decay for particle %1 (pdg = %2)").arg(partName).arg(pdg));
 }
 
@@ -103,7 +103,7 @@ void NewDecayDialog::selectDecay(QString decay)
         sdecay.clear();
         for (QString dd : sdecays) {
             dd = dd.trimmed();
-            int pdg = ParticlesDBManager::Instance().pdg(dd);
+            int pdg = ParticlesDBManager::Instance().getPDG(dd);
             sdecay.append(QString("%1, ").arg(pdg));
         }
         sdecay.remove(sdecay.lastIndexOf(','), sdecay.size());

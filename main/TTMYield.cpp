@@ -10,7 +10,7 @@
 //__________________________________________________________________________
 TTMYield::TTMYield(QObject *parent) : QObject(parent),
     mExpError(0.), mExpValue(0.), mID1(0), mID2(0),
-    mModelError(0.), mModelValue(0.), mSet1(nullptr), mSet2(nullptr)
+    mModelError(0.), mModelValue(0.)//, mSet1(nullptr), mSet2(nullptr)
 
 {
     // default ctor
@@ -21,7 +21,7 @@ TTMYield::TTMYield(QObject *parent) : QObject(parent),
 TTMYield::TTMYield(QString name, double exp_val, double exp_err, qint32 id1, qint32 id2, bool fit) :
     QObject(),
     mExpError(exp_err),  mExpValue(exp_val), mID1(id1), mID2(id2),mFit(fit),
-    mModelError(0.), mModelValue(0.), mSet1(nullptr), mSet2(nullptr)
+    mModelError(0.), mModelValue(0.)//, mSet1(nullptr), mSet2(nullptr)
 {
     // ctor
     setObjectName(name);
