@@ -103,11 +103,11 @@ void TTMThermalModel::listDecayContributions(int daughter)
 
     QStandardItemModel* model = new QStandardItemModel;
     QStringList headers;
-    headers << "pdg" << "name" << "total density" << "partial density" << "relative density";
+    headers << "parent pdg" << "parent name" << "daughter density (%)" << "partial parent density" << "total parent density";
     model->setHorizontalHeaderLabels(headers);
 
     QHash<int, double> parents;
-    double n_decay = getDensities(parent)->getDecayDensity(daughter);
+    double n_decay = getDensities(daughter)->getDecayDensity();
 
     ParticlesDBManager::Instance().allDecays(daughter, parents);
 
@@ -116,6 +116,14 @@ void TTMThermalModel::listDecayContributions(int daughter)
     for (i = parents.begin(); i != parents.end(); ++i) {
         int parent = i.key();
         double br  = i.value();
-        total += getDensities(parent)->getPrimaryDensity() * br;
+        double contrib = etDensities(parent)->getPrimaryDensity() * br;
+        total += contrib;
+        QList<QStandardItem*> onerow;
+        onerow << new QStandardItem(QString::number(parent)) <<
+                  new QStandardItem(ParticlesDBManager::Instance().name(parent)) <<
+                  new QStandardItem(QString::number(n_decay * 100)) <<
+                  new QStandardItem(QString::number(contrib)) <<
+                  new QStandardItem(QString::number(total));
+        model->appendRow(onerow);
     }
 }
