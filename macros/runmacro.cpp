@@ -35,9 +35,9 @@ void RunMacro::setConstrain()
 {
     // option of addin constraints. b/2Q, S, C and B density
 
-  for (qint32 type = 0; type < ParaSel::kParTypes; type++) {
-      if (mParaSel->isConstrained((ParaSel::ParameterType)type))
-          mParaInfo->constrain((ParaSel::ParameterType)type, mParaSel->getConstrainValue((ParaSel::ParameterType)type));
+  for (qint32 type = 0; type < TTMParameterSet::kPARTYPES; type++) {
+      if (mParaSel->isConstrained((TTMParameterSet::ParameterType)type))
+          mParaInfo->constrain((TTMParameterSet::ParameterType)type, mParaSel->getConstrainValue((TTMParameterSet::ParameterType)type));
   }
 }
 
@@ -46,15 +46,15 @@ void RunMacro::setFitFix()
 {
     // fix/free the parameters
 
-    for (qint32 type = 0; type < ParaSel::kParTypes; type++) {
-        if (mParaSel->isFixed((ParaSel::ParameterType)type))
-            mParaInfo->fix((ParaSel::ParameterType)type, mParaSel->getParaValue((ParaSel::ParameterType)type));
+    for (qint32 type = 0; type < TTMParameterSet::kPARTYPES; type++) {
+        if (mParaSel->isFixed((TTMParameterSet::ParameterType)type))
+            mParaInfo->fix((TTMParameterSet::ParameterType)type, mParaSel->getParaValue((TTMParameterSet::ParameterType)type));
         else
-            mParaInfo->fit((ParaSel::ParameterType)type,
-                           mParaSel->getParaValue((ParaSel::ParameterType)type),
-                           mParaSel->getFitMin((ParaSel::ParameterType)type),
-                           mParaSel->getFitMax((ParaSel::ParameterType)type),
-                           mParaSel->getFitSte((ParaSel::ParameterType)type));
+            mParaInfo->fit((TTMParameterSet::ParameterType)type,
+                           mParaSel->getParaValue((TTMParameterSet::ParameterType)type),
+                           mParaSel->getFitMin((TTMParameterSet::ParameterType)type),
+                           mParaSel->getFitMax((TTMParameterSet::ParameterType)type),
+                           mParaSel->getFitSte((TTMParameterSet::ParameterType)type));
     }
 }
 
@@ -84,23 +84,23 @@ void RunMacro::setDefaultParameters()
 
     // ==== Default parameters =======
 
-    mParaSel->setParaValue(ParaSel::kTemp, TchDefault);
-    mParaSel->setParaValue(ParaSel::kMuQ, muQDefault);
-    mParaSel->setParaValue(ParaSel::kMuB, muBDefault);
-    mParaSel->setParaValue(ParaSel::kMuS, muSDefault);
-    mParaSel->setParaValue(ParaSel::kMuC, muCDefault);
-    mParaSel->setParaValue(ParaSel::kGammaS, gammaSDefault);
-    mParaSel->setParaValue(ParaSel::kGammaC, gammaCDefault);
-    mParaSel->setParaValue(ParaSel::kRadius, radiusDefault);
-    mParaSel->setParaValue(ParaSel::kMuBeauty, muBeautyDefault);
-    mParaSel->setParaValue(ParaSel::kGammaBeauty, gammaBeautyDefault);
+    mParaSel->setParaValue(TTMParameterSet::kT, TchDefault);
+    mParaSel->setParaValue(TTMParameterSet::kMUQ, muQDefault);
+    mParaSel->setParaValue(TTMParameterSet::kMUB, muBDefault);
+    mParaSel->setParaValue(TTMParameterSet::kMUS, muSDefault);
+    mParaSel->setParaValue(TTMParameterSet::kMUC, muCDefault);
+    mParaSel->setParaValue(TTMParameterSet::kGAMMAS, gammaSDefault);
+    mParaSel->setParaValue(TTMParameterSet::kGAMMAC, gammaCDefault);
+    mParaSel->setParaValue(TTMParameterSet::kRADIUS, radiusDefault);
+    mParaSel->setParaValue(TTMParameterSet::kMUBEAUTY, muBeautyDefault);
+    mParaSel->setParaValue(TTMParameterSet::kGAMMABEAUTY, gammaBeautyDefault);
 
     double fitMin = 0.05;
     double fitMax = 0.180;
     double fitSte = 0.001;
 
-    for (qint32 type = 0; type < ParaSel::kParTypes; type++)
-        mParaSel->setFitValues((ParaSel::ParameterType)type, fitMin, fitMax, fitSte);
+    for (qint32 type = 0; type < TTMParameterSet::kPARTYPES; type++)
+        mParaSel->setFitValues((TTMParameterSet::ParameterType)type, fitMin, fitMax, fitSte);
    mParaSel->updateDisplay();
 }
 
@@ -108,17 +108,18 @@ void RunMacro::setDefaultParameters()
 void RunMacro::setParameters()
 {
     // set the parameters
-    mParaInfo = new TTMParameterSetBSQ(mParaSel->getParaValue(ParaSel::kTemp),
-                           mParaSel->getParaValue(ParaSel::kMuB),
-                           mParaSel->getParaValue(ParaSel::kMuS),
-                           mParaSel->getParaValue(ParaSel::kMuQ),
-                           mParaSel->getParaValue(ParaSel::kGammaS),
-                           mParaSel->getParaValue(ParaSel::kRadius),
-                           mParaSel->getParaValue(ParaSel::kMuC),
-                           mParaSel->getParaValue(ParaSel::kGammaC),
-                           mParaSel->getParaValue(ParaSel::kMuBeauty),
-                           mParaSel->getParaValue(ParaSel::kGammaBeauty)
-                           );
+
+    mParaInfo = new TTMParameterSetBSQ(mParaSel->getParaValue(TTMParameterSet::kT),
+                                       mParaSel->getParaValue(TTMParameterSet::kMUB),
+                                       mParaSel->getParaValue(TTMParameterSet::kMUS),
+                                       mParaSel->getParaValue(TTMParameterSet::kMUQ),
+                                       mParaSel->getParaValue(TTMParameterSet::kGAMMAS),
+                                       mParaSel->getParaValue(TTMParameterSet::kRADIUS),
+                                       mParaSel->getParaValue(TTMParameterSet::kMUC),
+                                       mParaSel->getParaValue(TTMParameterSet::kGAMMAC),
+                                       mParaSel->getParaValue(TTMParameterSet::kMUBEAUTY),
+                                       mParaSel->getParaValue(TTMParameterSet::kGAMMABEAUTY)
+                                       );
     mParaInfo->setParent(this);
     mParaInfo->setB2Q(mParaSel->getB2Q());
 }

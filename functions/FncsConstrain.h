@@ -1,0 +1,28 @@
+class TTMThermalModelBSQ;
+class TTMThermalModelBQ;
+
+//int BSQConstrainSQ(TTMThermalModelBSQ *model);
+//int BSQConstrainSQC(TTMThermalModelBSQ *model);
+//int BSQConstrainSQCb(TTMThermalModelBSQ *model);
+//int BSQConstrainBSQ(TTMThermalModelBSQ *model, Double_t B, Double_t S, Double_t Q);
+//int BSQConstrainQQ(TTMThermalModelBSQ *model, Double_t Q);
+//int BSQConstrainS(TTMThermalModelBSQ *model);
+int BSQConstrainQ(TTMThermalModelBSQ *model);
+//int BSQConstrainSQEN(TTMThermalModelBSQ *model, Double_t eovern);
+//int BSQConstrainSQPercolation(TTMThermalModelBSQ *model);
+//int BSQConstrainSPercolation(TTMThermalModelBSQ *model);
+//int BSQConstrainSEN(TTMThermalModelBSQ *model, Double_t eovern);
+//int BSQConstrainSQST3(TTMThermalModelBSQ *model, Double_t sovert3);
+//int BSQConstrainSST3(TTMThermalModelBSQ *model, Double_t sovert3);
+//int BQConstrainQ(TTMThermalModelBQ *model);
+//int BQConstrainQEN(TTMThermalModelBQ *model, Double_t eovern);
+//int BQConstrainQPercolation(TTMThermalModelBQ *model);
+//int BQConstrainST3(TTMThermalModelBQ *model, Double_t SoverT3);
+//int BQConstrainBDens(TTMThermalModelBQ *model, Double_t nb);
+//int BQConstrainQNetBDens(TTMThermalModelBQ *model, Double_t nb);
+//int BQConstrainQST3(TTMThermalModelBQ *model, Double_t SoverT3);
+//int BQConstrainQBDens(TTMThermalModelBQ *model, Double_t nb);
+//int BQConstrainEN(TTMThermalModelBQ *model, Double_t eovern);
+//int BSQConstrainSBDens(TTMThermalModelBSQ *model, Double_t nb);
+//int BSQConstrainSQBDens(TTMThermalModelBSQ *model, Double_t nb);
+//int BSQConstrainSQNetBDens(TTMThermalModelBSQ *model, Double_t nb);

@@ -36,8 +36,12 @@ SOURCES += main.cpp\
     external/selectdialog.cpp \
     external/newdecaydialog.cpp \
     external/newparticledialog.cpp \
-    main/TTMThermalmodel.cpp \
-    main/TTMDensobj.cpp
+    main/TTMThermalFitBQ.cpp \
+    main/TTMParameterSetBQ.cpp \
+    main/TTMDensObj.cpp \
+    main/TTMThermalModel.cpp \
+    main/TTMThermalModelBQ.cpp \
+    functions/BQConstrainQ.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -62,8 +66,13 @@ HEADERS  += mainwindow.h \
     external/selectdialog.h \
     external/newdecaydialog.h \
     external/newparticledialog.h \
-    main/TTMThermalmodel.h \
-    main/TTMDensobj.h
+    main/TTMThermalFitBQ.h \
+    main/TTMParameterSetBQ.h \
+    main/TTMDensObj.h \
+    main/TTMThermalModel.h \
+    main/TTMThermalModelBQ.h \
+    functions/FncsConstrain.h \
+    functions/FncsThermalModel.h
 
 
 RESOURCES += \

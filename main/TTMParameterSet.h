@@ -24,18 +24,23 @@ class TTMParameterSet : public QObject
     Q_OBJECT
 
 public:
-    explicit TTMParameterSet(QObject *parent = 0);
-    ~TTMParameterSet() {}
+    enum ParameterType {kT, kMUB, kMUQ, kGAMMAS, kCRADIUS, kRADIUS, kGAMMAC, kGAMMABEAUTY,
+                        kMUS, kMUC, kMUBEAUTY, kPARTYPES};
 
+    explicit TTMParameterSet(QObject *parent = 0);
+    ~TTMParameterSet() {qDeleteAll(mPar.begin(), mPar.end()); mPar.clear();}
+
+    virtual double   getB2Q() const = 0;
     QString          getConstraintInfo() const {return mConstraintInfo;}
-    TTMParameter*    getParameter(qint32 i) const {return &(mPar[i]);}
+    TTMParameter*    getParameter(ParameterType type) const {return mPar[type];}
     virtual double   getRadius() const = 0 ;
     double           getVolume() const {return 4. * M_PI / 3. * qPow(getRadius(), 3);}
+    static QString   name(ParameterType type);
     void             setConstraintInfo(QString x) {mConstraintInfo = x;}
 
 protected:
-    TTMParameter* mPar;             // Pointer to first Parameter Object
-    QString       mConstraintInfo;  // Constraint information
+    QList<TTMParameter*> mPar;             // Parameters objects list
+    QString              mConstraintInfo;  // Constraint information
 };
 
 #endif // TTMPARAMETERSET_H

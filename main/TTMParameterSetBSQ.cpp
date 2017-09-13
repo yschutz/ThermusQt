@@ -23,36 +23,37 @@ TTMParameterSetBSQ::TTMParameterSetBSQ(double temp, double mub, double mus, doub
     //
 
     mB2Q                      = b2q;
-    mDens[ParaSel::kMuS]      = s;
-    mDens[ParaSel::kMuC]      = c;
-    mDens[ParaSel::kMuBeauty] = beauty;
+    mDens[kMUS]      = s;
+    mDens[kMUC]      = c;
+    mDens[kMUBEAUTY] = beauty;
 
-    mPar = new TTMParameter[ParaSel::kParTypes];
+    for (int index = 0; index < kPARTYPES; index++)
+        mPar.append(new TTMParameter);
 
-    mPar[ParaSel::kTemp].setParameter(ParaSel::getParaName(ParaSel::kTemp), temp, temp_error);
+    mPar[kT]->setParameter(name(kT), temp, temp_error);
 
-    mPar[ParaSel::kMuB].setParameter(ParaSel::getParaName(ParaSel::kMuB), mub, mub_error);
-    mConstrain[ParaSel::kMuB] = false;
+    mPar[kMUB]->setParameter(name(kMUB), mub, mub_error);
+    mConstrain[kMUB] = false;
 
-    mPar[ParaSel::kMuS].setParameter(ParaSel::getParaName(ParaSel::kMuS), mus, mus_error);
-    mConstrain[ParaSel::kMuS] = false;
+    mPar[kMUS]->setParameter(name(kMUS), mus, mus_error);
+    mConstrain[kMUS] = false;
 
-    mPar[ParaSel::kMuQ].setParameter(ParaSel::getParaName(ParaSel::kMuQ), muq, muq_error);
-    mConstrain[ParaSel::kMuQ] = false;
+    mPar[kMUQ]->setParameter(name(kMUQ), muq, muq_error);
+    mConstrain[kMUQ] = false;
 
-    mPar[ParaSel::kGammaS].setParameter(ParaSel::getParaName(ParaSel::kGammaS), gs, gs_error);
+    mPar[kGAMMAS]->setParameter(name(kGAMMAS), gs, gs_error);
 
-    mPar[ParaSel::kRadius].setParameter(ParaSel::getParaName(ParaSel::kRadius), r, r_error);
+    mPar[kRADIUS]->setParameter(name(kRADIUS), r, r_error);
 
-    mPar[ParaSel::kMuC].setParameter(ParaSel::getParaName(ParaSel::kMuC), muc, muc_error);
-    mConstrain[ParaSel::kMuC] = false;
+    mPar[kMUC]->setParameter(name(kMUC), muc, muc_error);
+    mConstrain[kMUC] = false;
 
-    mPar[ParaSel::kGammaC].setParameter(ParaSel::getParaName(ParaSel::kGammaC), gc, gc_error);
+    mPar[kGAMMAC]->setParameter(name(kGAMMAC), gc, gc_error);
 
-    mPar[ParaSel::kMuBeauty].setParameter(ParaSel::getParaName(ParaSel::kMuBeauty), mubeauty, mubeauty_error);
-    mConstrain[ParaSel::kMuBeauty] = false;
+    mPar[kMUBEAUTY]->setParameter(name(kMUBEAUTY), mubeauty, mubeauty_error);
+    mConstrain[kMUBEAUTY] = false;
 
-    mPar[ParaSel::kGammaBeauty].setParameter(ParaSel::getParaName(ParaSel::kGammaBeauty), gb, gb_error);
+    mPar[kGAMMABEAUTY]->setParameter(name(kGAMMABEAUTY), gb, gb_error);
 
     mConstraintInfo = "Parameters unconstrained";
 }
@@ -63,9 +64,11 @@ TTMParameterSetBSQ::TTMParameterSetBSQ()  : mB2Q(0.)
 {
     // default ctor
 
-    mPar = new TTMParameter[ParaSel::kParTypes];
-    for (qint32 type = 0; type < ParaSel::kParTypes; type++) {
-        mPar[type].setParameter(ParaSel::getParaName((ParaSel::ParameterType)type), 0.0, 0.0);
+    for (int index = 0; index < kPARTYPES; index++)
+        mPar.append(new TTMParameter);
+
+    for (qint32 type = 0; type < kPARTYPES; type++) {
+        mPar[type]->setParameter(name((ParameterType)type), 0.0, 0.0);
         mDens[type] = 0.0;
         mConstrain[type] = false;
     }
@@ -74,16 +77,16 @@ TTMParameterSetBSQ::TTMParameterSetBSQ()  : mB2Q(0.)
 }
 
 //__________________________________________________________________________
-void TTMParameterSetBSQ::constrain(ParaSel::ParameterType type, double x)
+void TTMParameterSetBSQ::constrain(ParameterType type, double x)
 {
     // Changes parameter type to a constrained type parameter. x is the initial value
     //
 
     mDens[type]      = x;
     mConstrain[type] = true;
-    mPar[type].constrain();
+    mPar[type]->constrain();
 
-    mB2Q = mDens[ParaSel::kMuQ];
+    mB2Q = mDens[kMUQ];
 
     mConstraintInfo = "Parameters constrained";
 }
@@ -94,16 +97,16 @@ void TTMParameterSetBSQ::list()
     // list all the parameters
 
     qInfo() << "  ***************************** Thermal Parameters **************************** ";
-    for (qint32 i = 0; i < ParaSel::kParTypes; i++) {
-        mPar[i].list();
-        if ((ParaSel::ParameterType)i == ParaSel::kMuS && mConstrain[ParaSel::kMuS]) {
-            qInfo() << "\t\t\t\t\t\t\t\t S/V:    " << mDens[ParaSel::kMuS];
-        } else if ((ParaSel::ParameterType)i == ParaSel::kMuQ && mConstrain[ParaSel::kMuQ]) {
+    for (qint32 i = 0; i < kPARTYPES; i++) {
+        mPar[i]->list();
+        if ((ParameterType)i == kMUS && mConstrain[kMUS]) {
+            qInfo() << "\t\t\t\t\t\t\t\t S/V:    " << mDens[kMUS];
+        } else if ((ParameterType)i == kMUQ && mConstrain[kMUQ]) {
             qInfo() << "\t\t\t\t\t\t\t\t B/2Q: " << mB2Q;
-        } else if ((ParaSel::ParameterType)i == ParaSel::kMuC && mConstrain[ParaSel::kMuC]) {
-            qInfo() << "\t\t\t\t\t\t\t\t C/V: " << mDens[ParaSel::kMuC];
-        } else if ((ParaSel::ParameterType)i == ParaSel::kMuBeauty && mConstrain[ParaSel::kMuBeauty]) {
-            qInfo() << "\t\t\t\t\t\t\t\t Beauty/V: " << mDens[ParaSel::kMuBeauty];
+        } else if ((ParameterType)i == kMUC && mConstrain[kMUC]) {
+            qInfo() << "\t\t\t\t\t\t\t\t C/V: " << mDens[kMUC];
+        } else if ((ParameterType)i == kMUBEAUTY && mConstrain[kMUBEAUTY]) {
+            qInfo() << "\t\t\t\t\t\t\t\t Beauty/V: " << mDens[kMUBEAUTY];
         }
     }
 
@@ -114,18 +117,20 @@ void TTMParameterSetBSQ::list()
 //__________________________________________________________________________
 TTMParameterSetBSQ &TTMParameterSetBSQ::operator=(const TTMParameterSetBSQ &obj)
 {
-    // assignation operatoe
+    // assignation operator
 
     if (this == &obj) return *this;
 
     mB2Q               = obj.getB2Q();
 
-    mPar = new TTMParameter[ParaSel::kParTypes];
-    for (qint32 type = 0; type < ParaSel::kParTypes; type++) {
-        mPar[(ParaSel::ParameterType)type] = *(obj.getParameter((ParaSel::ParameterType)type));
-        mDens[(ParaSel::ParameterType)type] = obj.get((ParaSel::ParameterType)type);
-        mConstrain[(ParaSel::ParameterType)type] = obj.getConstrain((ParaSel::ParameterType)type);
-        mDens[(ParaSel::ParameterType)type] = obj.getDens((ParaSel::ParameterType)type);
+    for (int index = 0; index < kPARTYPES; index++)
+        mPar.append(new TTMParameter);
+
+    for (qint32 type = 0; type < kPARTYPES; type++) {
+        mPar[(ParameterType)type] =  obj.getParameter((ParameterType)type);
+        mDens[(ParameterType)type] = obj.get((ParameterType)type);
+        mConstrain[(ParameterType)type] = obj.getConstrain((ParameterType)type);
+        mDens[(ParameterType)type] = obj.getDens((ParameterType)type);
     }
 
     mConstraintInfo    = obj.getConstraintInfo();

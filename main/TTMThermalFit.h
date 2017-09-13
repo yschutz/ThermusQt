@@ -36,10 +36,11 @@ public:
 protected:
 
 //     TTMParticleSet*  mPartSet;   // pointer to BASE Particle Set
-     double           mChiSquare; // chi-squared
-     QMinuit*         mMinuit;    // pointer to QMinuit obj
-     double           mQuadDev;   // quadratic deviation
-     QList<TTMYield*> mYields;    // Container for yields of interest
+     double           mChiSquare;   // chi-squared
+     QString          mDescriptor;  // string describing fit
+     QMinuit*         mMinuit;      // pointer to QMinuit obj
+     double           mQuadDev;     // quadratic deviation
+     QList<TTMYield*> mYields;      // Container for yields of interest
 };
 
 #endif // TTMTHERMALFIT_H

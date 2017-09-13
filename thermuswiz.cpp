@@ -40,9 +40,9 @@ ThermusWiz::ThermusWiz(QString summaryTitle, QWidget *parent) : QWizard(parent)
     // page summarizing evrything
 
 //    mSummary->setSubTitle(summaryTitle);
-    mSummaryId = addPage(new Summary(this));
-    myMacro.setSummary((Summary*)page(mSummaryId));
-    ((Summary*)page(mSummaryId))->setSubTitle(summaryTitle);
+//    mSummaryId = addPage(new Summary(this));
+//    myMacro.setSummary((Summary*)page(mSummaryId));
+//    ((Summary*)page(mSummaryId))->setSubTitle(summaryTitle);
 
     show();
 

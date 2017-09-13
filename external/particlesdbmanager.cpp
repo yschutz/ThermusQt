@@ -197,24 +197,34 @@ QString ParticlesDBManager::getPartParameter(int pdg, ENTRY what, const QString 
 }
 
 //__________________________________________________________________________
-int ParticlesDBManager::id(QString name) const
+int ParticlesDBManager::getBaryon(int pdg) const
 {
-    // retrieve the particle id in the DB of the given name
-    QString squery("SELECT * FROM particle WHERE name = (:val)");
-    QSqlQuery query;
-    query.prepare(squery);
-    query.bindValue(":val", name);
-    if (!query.exec()) {
-        error(Q_FUNC_INFO, query.lastError().text());
-        return -1;
-    }
-    query.next();
-    int id = query.record().value("id").toInt();
-    return id;
+    // gets the baryon number of the given particle
+    double rv = 0.0;
+    rv = getPartParameter(pdg, kBARYON, "Thermus").toInt();
+    return rv;
 }
 
 //__________________________________________________________________________
-QString ParticlesDBManager::name(int pdg, const QString& where) const
+double ParticlesDBManager::getCharge(int pdg, const QString &where) const
+{
+    // gets the charge of the given particle
+    double rv = 0.0;
+    rv = getPartParameter(pdg, kCHARGE, where).toDouble();
+    return rv;
+}
+
+//__________________________________________________________________________
+double ParticlesDBManager::getLifetime(int pdg, const QString &where) const
+{
+    // gets the lifetime of the given particle
+    double rv = 0.0;
+    rv = getPartParameter(pdg, kLIFETIME, where).toDouble();
+    return rv;
+}
+
+//__________________________________________________________________________
+QString ParticlesDBManager::getName(int pdg, const QString& where) const
 {
     // retrieve the particle name of the given pdg
 
@@ -308,11 +318,46 @@ int ParticlesDBManager::getPDG(int id) const
 }
 
 //__________________________________________________________________________
+int ParticlesDBManager::getSContent(int pdg) const
+{
+    // gets the strangeness content of the given particle
+    double rv = 0.0;
+    rv = getPartParameter(pdg, kSC, "Thermus").toInt();
+    return rv;
+}
+
+//__________________________________________________________________________
+int ParticlesDBManager::id(QString name) const
+{
+    // retrieve the particle id in the DB of the given name
+    QString squery("SELECT * FROM particle WHERE name = (:val)");
+    QSqlQuery query;
+    query.prepare(squery);
+    query.bindValue(":val", name);
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
+        return -1;
+    }
+    query.next();
+    int id = query.record().value("id").toInt();
+    return id;
+}
+
+//__________________________________________________________________________
 ParticlesDBManager &ParticlesDBManager::Instance()
 {
     // return the unique instance
 
     return mPDBM;
+}
+
+//__________________________________________________________________________
+double ParticlesDBManager::getWidth(int pdg, const QString &where) const
+{
+    // gets the width of the given particle
+    double rv = 0.0;
+    rv = getPartParameter(pdg, kWIDTH, where).toDouble();
+    return rv;
 }
 
 //__________________________________________________________________________
@@ -550,15 +595,6 @@ bool ParticlesDBManager::isStable(int pdg) const
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::lifetime(int pdg, const QString &where)
-{
-    // gets the lifetime of the given particle
-    double rv = 0.0;
-    rv = getPartParameter(pdg, kLIFETIME, where).toDouble();
-    return rv;
-}
-
-//__________________________________________________________________________
 void ParticlesDBManager::listParticles(const ParticlesDBManager::ListOption opt) const
 {
     // list all particles of class opt (Quark, Meson, Lepton, ....)
@@ -654,7 +690,7 @@ QStringList ParticlesDBManager::listDecays(const QString &partPDG, qreal thr) co
                 QStringList pdgs = decay.split('>').last().split(',');
                 for (QString sdpdg : pdgs) {
                     int dpdg = sdpdg.trimmed().toInt();
-                    QString name = ParticlesDBManager::Instance().name(dpdg);
+                    QString name = ParticlesDBManager::Instance().getName(dpdg);
                     output.append(QString("%1, ").arg(name));
                 }
                 output.remove(output.lastIndexOf(','), 2);
@@ -715,7 +751,7 @@ QStringList ParticlesDBManager::listProperties(const QString &partPDG) const
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::mass(int pdg, const QString &where)
+double ParticlesDBManager::getMass(int pdg, const QString &where) const
 {
     // gets the mass of the given particle
     double rv = 0.0;
@@ -875,16 +911,7 @@ int ParticlesDBManager::size() const
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::width(int pdg, const QString &where)
-{
-    // gets the width of the given particle
-    double rv = 0.0;
-    rv = getPartParameter(pdg, kWIDTH, where).toDouble();
-    return rv;
-}
-
-//__________________________________________________________________________
-void ParticlesDBManager::allDecays(int pdg, QHash<int, double> &br) const
+bool ParticlesDBManager::allDecays(int pdg, QHash<int, double> &br) const
 {
     // retrieves all mother and br of daughter given by pdg
     QString squery("SELECT mother_id, brn FROM decay WHERE id IN (SELECT d.decay_id FROM daughter d where d.pdg = (:pdg))");
@@ -893,7 +920,7 @@ void ParticlesDBManager::allDecays(int pdg, QHash<int, double> &br) const
     query.bindValue(":pdg", pdg);
     if (!query.exec()) {
         error(Q_FUNC_INFO, query.lastError().text());
-        return;
+        return false;
     }
     while(query.next()) {
         int motherid = query.record().value(0).toInt();
@@ -901,10 +928,11 @@ void ParticlesDBManager::allDecays(int pdg, QHash<int, double> &br) const
         double brn = query.record().value(1).toDouble();
         br[mother] =  brn + br[mother];
     }
+    return true;
 }
 
 //__________________________________________________________________________
-void ParticlesDBManager::allParticles(QList<int>& list, ListOption opt) const
+bool ParticlesDBManager::allParticles(QList<int>& list, ListOption opt) const
 {
     // retrieves all particles in the Thermus DB
     QString squery;
@@ -925,11 +953,12 @@ void ParticlesDBManager::allParticles(QList<int>& list, ListOption opt) const
     QSqlQuery query(squery);
     if (!query.exec()) {
         error(Q_FUNC_INFO, query.lastError().text());
-        return;
+        return false;
     }
     while(query.next())
-
         list.append(query.record().value(0).toInt());
+
+    return true;
 }
 
 //__________________________________________________________________________
@@ -947,14 +976,4 @@ double ParticlesDBManager::br(int decayindex) const
         rv = query.record().value("br").toDouble();
     }
     return rv;
-}
-
-//__________________________________________________________________________
-double ParticlesDBManager::charge(int pdg, const QString &where)
-{
-    // gets the charge of the given particle
-    double rv = 0.0;
-    rv = getPartParameter(pdg, kCHARGE, where).toDouble();
-    return rv;
-
 }

@@ -6,7 +6,7 @@
 
 #include <QStandardItem>
 
-#include "TTMDensobj.h"
+#include "TTMDensObj.h"
 
 //__________________________________________________________________________
 TTMDensObj::TTMDensObj(QObject *parent) : QObject(parent),

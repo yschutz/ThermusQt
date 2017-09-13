@@ -72,28 +72,28 @@ QString TTMThermalFit::getTMName(int id1, int id2, const QString& descr) const
        } else if (id1 == 33340) {
          name = name.append("Omega + anti-Omega");
        } else {
-         name = ParticlesDBManager::Instance().name(id1, "ThermusParticles");
+         name = ParticlesDBManager::Instance().getName(id1, "ThermusParticles");
        }
      } else {
        if(id1 == 3130) {
          name = "<";
-         name = name.append(ParticlesDBManager::Instance().name(313, "ThermusParticles"));
-         name = name.append(">").append("/").append(ParticlesDBManager::Instance().name(id2, "ThermusParticles"));
+         name = name.append(ParticlesDBManager::Instance().getName(313, "ThermusParticles"));
+         name = name.append(">").append("/").append(ParticlesDBManager::Instance().getName(id2, "ThermusParticles"));
        } else if(id1 == 33340){
          name = name.append("Omega + anti-Omega");
-         name = name.append("/").append(ParticlesDBManager::Instance().name(id2, "ThermusParticles"));
+         name = name.append("/").append(ParticlesDBManager::Instance().getName(id2, "ThermusParticles"));
        } else if(id2 == 2) {
-         name = ParticlesDBManager::Instance().name(id1, "ThermusParticles");
+         name = ParticlesDBManager::Instance().getName(id1, "ThermusParticles");
          name = name.append("/").append("h-");
        } else if(id2 == 3){
-         name = ParticlesDBManager::Instance().name(id1, "ThermusParticles");
+         name = ParticlesDBManager::Instance().getName(id1, "ThermusParticles");
          name = name.append("/").append("h+");
        } else if(id2 == 33340){
-         name = ParticlesDBManager::Instance().name(id1, "ThermusParticles");
+         name = ParticlesDBManager::Instance().getName(id1, "ThermusParticles");
          name = name.append("/").append("Omega + anti-Omega");
        } else {
-         name = ParticlesDBManager::Instance().name(id1, "ThermusParticles");
-         name = name.append("/").append(ParticlesDBManager::Instance().name(id2, "ThermusParticles"));
+         name = ParticlesDBManager::Instance().getName(id1, "ThermusParticles");
+         name = name.append("/").append(ParticlesDBManager::Instance().getName(id2, "ThermusParticles"));
        }
      }
      if(!descr.isEmpty()) {
@@ -213,8 +213,13 @@ void TTMThermalFit::listMinuitInfo() const
         onerow << new QStandardItem(QString::number(amin)) <<
                   new QStandardItem(QString::number(edm))  <<
                   new QStandardItem(QString::number(errdef));
+        model->appendRow(onerow);
         mMinuit->qmnprin(2, amin);
         mMinuit->qmnmatu(1);
+        QTableView* view = new QTableView;
+        view->setAttribute(Qt::WA_DeleteOnClose);
+        view->setModel(model);
+        view->show();
       } else {
         QMessageBox msg(QMessageBox::Warning, "ListMinuitInfo", Q_FUNC_INFO);
         msg.setInformativeText("Run FitData() to instantiate a QMinuit object");

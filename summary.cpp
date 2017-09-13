@@ -2,8 +2,10 @@
 #include <QLabel>
 #include <QVariant>
 
-#include "parasel.h"
+//#include "parasel.h"
 #include "summary.h"
+
+#include "main/TTMParameterSet.h"
 
 //__________________________________________________________________________
 Summary::Summary(QWidget *parent) : QWizardPage(parent)
@@ -49,8 +51,8 @@ void Summary::updateParameters()
 {
     // displays the parameters
 
-    for (qint32 type = 0; type < ParaSel::kParTypes; type++) {
-        QString name = ParaSel::getParaName((ParaSel::ParameterType)type);
+    for (qint32 type = 0; type < TTMParameterSet::kPARTYPES; type++) {
+        QString name = TTMParameterSet::name((TTMParameterSet::ParameterType)type);
         double value = field(name).toDouble();
         double valm  = field(name + "Fixm").toDouble();
         double valM  = field(name + "FixM").toDouble();
@@ -79,10 +81,10 @@ void Summary::updateParameters()
     // and now the constrains
     QString text("Constrained");
 
-    if (!field(ParaSel::getParaName(ParaSel::kMuQ) + "C").toBool() &&
-           !field(ParaSel::getParaName(ParaSel::kMuS) + "C").toBool() &&
-            !field(ParaSel::getParaName(ParaSel::kMuC) + "C").toBool() &&
-            !field(ParaSel::getParaName(ParaSel::kMuQ) + "C").toBool()) {
+    if (!field(TTMParameterSet::name(TTMParameterSet::kMUQ) + "C").toBool() &&
+           !field(TTMParameterSet::name(TTMParameterSet::kMUS) + "C").toBool() &&
+            !field(TTMParameterSet::name(TTMParameterSet::kMUC) + "C").toBool() &&
+            !field(TTMParameterSet::name(TTMParameterSet::kMUQ) + "C").toBool()) {
         text = "Not Constrained";
         for (qint32 index = 1; index < mConsGBlay->count(); index++)
             if (mConsGBlay->itemAtPosition(index, 0))
@@ -94,8 +96,8 @@ void Summary::updateParameters()
     else
         qobject_cast<QLabel*>(mConsGBlay->itemAtPosition(0, 0)->widget())->setText(text);
 
-    if (field(ParaSel::getParaName(ParaSel::kMuQ) + "C").toBool()) {
-        text = QString("B/2Q constrained to %1").arg(field(ParaSel::getParaName(ParaSel::kMuQ)+"CD").toDouble());
+    if (field(TTMParameterSet::name(TTMParameterSet::kMUQ) + "C").toBool()) {
+        text = QString("B/2Q constrained to %1").arg(field(TTMParameterSet::name(TTMParameterSet::kMUQ)+"CD").toDouble());
         if (!mConsGBlay->itemAtPosition(1, 0))
             mConsGBlay->addWidget(new QLabel(text, mConsGB), 1, 0, 1, 1);
         else
@@ -104,8 +106,8 @@ void Summary::updateParameters()
         if (mConsGBlay->itemAtPosition(1, 0))
             delete mConsGBlay->itemAtPosition(1, 0)->widget();
     }
-    if (field(ParaSel::getParaName(ParaSel::kMuS) + "C").toBool()) {
-        text = QString("S density constrained to %1").arg(field(ParaSel::getParaName(ParaSel::kMuS)+"CD").toDouble());
+    if (field(TTMParameterSet::name(TTMParameterSet::kMUS) + "C").toBool()) {
+        text = QString("S density constrained to %1").arg(field(TTMParameterSet::name(TTMParameterSet::kMUS)+"CD").toDouble());
         if (!mConsGBlay->itemAtPosition(2, 0))
             mConsGBlay->addWidget(new QLabel(text, mConsGB), 2, 0, 1, 1);
         else
@@ -114,8 +116,8 @@ void Summary::updateParameters()
         if (mConsGBlay->itemAtPosition(2, 0))
             delete mConsGBlay->itemAtPosition(2, 0)->widget();
     }
-    if (field(ParaSel::getParaName(ParaSel::kMuC) + "C").toBool()) {
-        text = QString("C density constrained to %1").arg(field(ParaSel::getParaName(ParaSel::kMuC)+"CD").toDouble());
+    if (field(TTMParameterSet::name(TTMParameterSet::kMUC) + "C").toBool()) {
+        text = QString("C density constrained to %1").arg(field(TTMParameterSet::name(TTMParameterSet::kMUC)+"CD").toDouble());
         if (!mConsGBlay->itemAtPosition(3, 0))
             mConsGBlay->addWidget(new QLabel(text, mConsGB), 3, 0, 1, 1);
         else
@@ -124,8 +126,8 @@ void Summary::updateParameters()
         if (mConsGBlay->itemAtPosition(3, 0))
             delete mConsGBlay->itemAtPosition(3, 0)->widget();
     }
-    if (field(ParaSel::getParaName(ParaSel::kMuBeauty) + "C").toBool()) {
-        text = QString("Beauty density constrained to %1").arg(field(ParaSel::getParaName(ParaSel::kMuBeauty)+"CD").toDouble());
+    if (field(TTMParameterSet::name(TTMParameterSet::kMUBEAUTY) + "C").toBool()) {
+        text = QString("Beauty density constrained to %1").arg(field(TTMParameterSet::name(TTMParameterSet::kMUBEAUTY)+"CD").toDouble());
         if (!mConsGBlay->itemAtPosition(4, 0))
             mConsGBlay->addWidget(new QLabel(text, mConsGB), 4, 0, 1, 1);
         else
