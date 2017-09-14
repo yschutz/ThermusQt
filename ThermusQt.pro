@@ -41,7 +41,13 @@ SOURCES += main.cpp\
     main/TTMDensObj.cpp \
     main/TTMThermalModel.cpp \
     main/TTMThermalModelBQ.cpp \
-    functions/BQConstrainQ.cpp
+    functions/BQConstrainQ.cpp \
+    main/TTMThermalParticle.cpp \
+    functions/Functions.cpp \
+    external/f1.cpp \
+    functions/IntegrationRoutines.cpp \
+    main/TTMThermalParticleBQ.cpp \
+    main/TTMThermalParticleBSQ.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -72,7 +78,11 @@ HEADERS  += mainwindow.h \
     main/TTMThermalModel.h \
     main/TTMThermalModelBQ.h \
     functions/FncsConstrain.h \
-    functions/FncsThermalModel.h
+    functions/FncsThermalModel.h \
+    main/TTMThermalParticle.h \
+    external/f1.h \
+    main/TTMThermalParticleBQ.h \
+    main/TTMThermalParticleBSQ.h
 
 
 RESOURCES += \

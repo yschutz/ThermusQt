@@ -23,6 +23,9 @@
 #include "main/TTMParameter.h"
 #include "main/TTMDensObj.h"
 
+#include "functions/FncsThermalModel.h"
+#include "external/f1.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -47,21 +50,28 @@ int main(int argc, char *argv[])
 
 //    }
 
-    QVector<QVector<double>> vec(5);
-    vec[0].resize(5);
-    vec[1].resize(5);
-    vec[2].resize(5);
-    vec[3].resize(5);
-    vec[4].resize(5);
-    vec[0][0] = 10.1;
-    vec[0][1] = 10.2;
-    vec[0][2] = 10.3;
-    qDebug() << vec[0][2];
-    qDebug() << vec[1][2];
+//    QVector<QVector<double>> vec(5);
+//    vec[0].resize(5);
+//    vec[1].resize(5);
+//    vec[2].resize(5);
+//    vec[3].resize(5);
+//    vec[4].resize(5);
+//    vec[0][0] = 10.1;
+//    vec[0][1] = 10.2;
+//    vec[0][2] = 10.3;
+//    qDebug() << vec[0][2];
+//    qDebug() << vec[1][2];
 
-    double result = gsl_sf_bessel_In(1, 10.);
-    qDebug() << result;
+//    double result = gsl_sf_bessel_In(1, 10.);
+//    qDebug() << result << M_PI << qPow(M_PI, 2) << M_PI_2;
 
 
+    double (*ptr)(double*, double*);
+    ptr = &Test;
+    F1* test = new F1("test", ptr, 0, 10, 2);
+    test->setParameters(2, 5);
+    qDebug() <<  test->eval(4);
+    qDebug() << IntegrateLegendre40(test, 0, 10);
+    delete test;
     return a.exec();
 }

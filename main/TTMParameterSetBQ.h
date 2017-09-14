@@ -69,19 +69,19 @@ public:
     bool           getCorrRConstrain() const{return mCorrRConstrain;}
     double         getS() const             {return mS;}
     double         getB2Q() const           {return mB2Q;}
-    double         getT() const             {return mPar[kT]->getValue();}
-    TTMParameter*  getTPar()                {return mPar[kT];}
-    double         getMuB() const           {return mPar[kMUB]->getValue();}
-    TTMParameter*  getMuBPar()              {return mPar[kMUB];}
-    double         getMuQ() const           {return mPar[kMUQ]->getValue();}
-    TTMParameter*  getMuQPar()              {return mPar[kMUQ];}
-    double         getGammas() const        {return mPar[kGAMMAS]->getValue();}
-    TTMParameter*  getGammasPar()           {return mPar[kGAMMAS];}
-    double         getCanRadius() const     {return mPar[kCRADIUS]->getValue();}
-    TTMParameter*  getCanRadiusPar()        {return mPar[kCRADIUS];}
-    double         getRadius() const        {return mPar[kRADIUS]->getValue();}
-    TTMParameter*  getRadiusPar()           {return mPar[kRADIUS];}
-    void           setCanRadius(double x)   {mPar[kCRADIUS]->setValue(x);}
+//    double         getT() const             {return mPar[kT]->getValue();}
+//    TTMParameter*  getTPar()                {return mPar[kT];}
+//    double         getMuB() const           {return mPar[kMUB]->getValue();}
+//    TTMParameter*  getMuBPar()              {return mPar[kMUB];}
+//    double         getMuQ() const           {return mPar[kMUQ]->getValue();}
+//    TTMParameter*  getMuQPar()              {return mPar[kMUQ];}
+//    double         getGammas() const        {return mPar[kGAMMAS]->getValue();}
+//    TTMParameter*  getGammasPar()           {return mPar[kGAMMAS];}
+//    double         getCanRadius() const     {return mPar[kCRADIUS]->getValue();}
+//    TTMParameter*  getCanRadiusPar()        {return mPar[kCRADIUS];}
+//    double         getRadius() const        {return mPar[kRADIUS]->getValue();}
+//    TTMParameter*  getRadiusPar()           {return mPar[kRADIUS];}
+//    void           setCanRadius(double x)   {mPar[kCRADIUS]->setValue(x);}
 
     TTMParameterSetBQ& operator=(const TTMParameterSetBQ& obj);
 
@@ -89,7 +89,7 @@ public:
 private:
     bool         mCorrRConstrain;	// true if the correlation and fireball
     double       mS;	            // the required strangeness inside the correlation volume
-    double       mB2Q;		        // the initial B/2Q ratio
+//    double       mB2Q;		        // the initial B/2Q ratio
     bool         mMuQConstrain;     // true if muQ must be constrained
 
 };

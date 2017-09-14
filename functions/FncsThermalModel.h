@@ -2,69 +2,71 @@ class TTMParticle;
 class TTMThermalModel;
 class TTMThermalModelBSQ;
 class TTMThermalFit;
-class TF1;
+class F1;
 class TF2;
 
-Double_t Norm(Double_t *x, Double_t *par);
+double Test(double *x, double *par);
 
-Double_t Partition(Double_t *x, Double_t *par);
-Double_t CorrPiplus(Double_t *x, Double_t *par);
-Double_t CorrPiminus(Double_t *x, Double_t *par);
-Double_t CorrKminus(Double_t *x, Double_t *par);
-Double_t CorrKplus(Double_t *x, Double_t *par);
-Double_t CorrKzero(Double_t *x, Double_t *par);
-Double_t CorrAKzero(Double_t *x, Double_t *par);
-Double_t CorrProton(Double_t *x, Double_t *par);
-Double_t CorrAProton(Double_t *x, Double_t *par);
-Double_t CorrNeutron(Double_t *x, Double_t *par);
-Double_t CorrANeutron(Double_t *x, Double_t *par);
-Double_t CorrLa(Double_t *x, Double_t *par);
-Double_t CorrALa(Double_t *x, Double_t *par);
-Double_t CorrSigmaplus(Double_t *x, Double_t *par);
-Double_t CorrASigmaplus(Double_t *x, Double_t *par);
-Double_t CorrSigmaminus(Double_t *x, Double_t *par);
-Double_t CorrASigmaminus(Double_t *x, Double_t *par);
-Double_t CorrDeltaminus(Double_t *x, Double_t *par);
-Double_t CorrADeltaminus(Double_t *x, Double_t *par);
-Double_t CorrDeltaplusplus(Double_t *x, Double_t *par);
-Double_t CorrADeltaplusplus(Double_t *x, Double_t *par);
-Double_t CorrKsiminus(Double_t *x, Double_t *par);
-Double_t CorrAKsiminus(Double_t *x, Double_t *par);
-Double_t CorrKsi0(Double_t *x, Double_t *par);
-Double_t CorrAKsi0(Double_t *x, Double_t *par);
-Double_t CorrOmega(Double_t *x, Double_t *par);
-Double_t CorrAOmega(Double_t *x, Double_t *par);
+double Norm(double *x, double *par);
 
-Double_t FcnAbsOmega(Double_t *x, Double_t *par);
-Double_t FcnArgOmega(Double_t *x, Double_t *par);
+double Partition(double *x, double *par);
+double CorrPiplus(double *x, double *par);
+double CorrPiminus(double *x, double *par);
+double CorrKminus(double *x, double *par);
+double CorrKplus(double *x, double *par);
+double CorrKzero(double *x, double *par);
+double CorrAKzero(double *x, double *par);
+double CorrProton(double *x, double *par);
+double CorrAProton(double *x, double *par);
+double CorrNeutron(double *x, double *par);
+double CorrANeutron(double *x, double *par);
+double CorrLa(double *x, double *par);
+double CorrALa(double *x, double *par);
+double CorrSigmaplus(double *x, double *par);
+double CorrASigmaplus(double *x, double *par);
+double CorrSigmaminus(double *x, double *par);
+double CorrASigmaminus(double *x, double *par);
+double CorrDeltaminus(double *x, double *par);
+double CorrADeltaminus(double *x, double *par);
+double CorrDeltaplusplus(double *x, double *par);
+double CorrADeltaplusplus(double *x, double *par);
+double CorrKsiminus(double *x, double *par);
+double CorrAKsiminus(double *x, double *par);
+double CorrKsi0(double *x, double *par);
+double CorrAKsi0(double *x, double *par);
+double CorrOmega(double *x, double *par);
+double CorrAOmega(double *x, double *par);
 
-Double_t FcnDistr(Double_t *x, Double_t *par);
-Double_t FcnDens(Double_t *x, Double_t *par);
-Double_t FcnEnergyDens(Double_t *x, Double_t *par);
-Double_t FcnEntropyDens(Double_t *x, Double_t *par);
-Double_t FcnPressure(Double_t *x, Double_t *par);
-Double_t FcnDensWidth(Double_t *x, Double_t *par);
-Double_t FcnEnergyDensWidth(Double_t *x, Double_t *par);
-Double_t FcnEntropyDensWidth(Double_t *x, Double_t *par);
-Double_t FcnPressureWidth(Double_t *x, Double_t *par);
-Double_t FcnDensNormWidth(Double_t *x, Double_t *par);
-Double_t FcnDensBoltzmannWidth(Double_t *x, Double_t *par);
-Double_t FcnEnergyBoltzmannWidth(Double_t *x, Double_t *par);
-Double_t FcnEntropyBoltzmannWidth(Double_t *x, Double_t *par);
+double FcnAbsOmega(double *x, double *par);
+double FcnArgOmega(double *x, double *par);
 
-Double_t IntegrateLegendre32(TF1* func, Double_t a, Double_t b);
-Double_t IntegrateLegendre20(TF1* func, Double_t a, Double_t b);
-Double_t IntegrateLegendre40(TF1* func, Double_t a, Double_t b);
+double FcnDistr(double *x, double *par);
+double FcnDens(double *x, double *par);
+double FcnEnergyDens(double *x, double *par);
+double FcnEntropyDens(double *x, double *par);
+double FcnPressure(double *x, double *par);
+double FcnDensWidth(double *x, double *par);
+double FcnEnergyDensWidth(double *x, double *par);
+double FcnEntropyDensWidth(double *x, double *par);
+double FcnPressureWidth(double *x, double *par);
+double FcnDensNormWidth(double *x, double *par);
+double FcnDensBoltzmannWidth(double *x, double *par);
+double FcnEnergyBoltzmannWidth(double *x, double *par);
+double FcnEntropyBoltzmannWidth(double *x, double *par);
 
-Double_t IntegrateLaguerre32(TF1* func);
-Double_t Integrate2DLaguerre32Legendre32(TF2* func, Double_t ay, Double_t by);
+double IntegrateLegendre32(F1* func, double a, double b);
+double IntegrateLegendre20(F1* func, double a, double b);
+double IntegrateLegendre40(F1* func, double a, double b);
 
-Double_t FindExclVolPressure(TTMThermalModelBSQ *model, Double_t limit);
+double IntegrateLaguerre32(F1* func);
+double Integrate2DLaguerre32Legendre32(TF2* func, double ay, double by);
 
-void Minuit_fcn(Int_t &npar, Double_t *gin, Double_t &f, Double_t *par, 
-		Int_t iflag);
-void fit_function(TTMThermalModel *mod,char *file,Int_t flag = 0);
+double FindExclVolPressure(TTMThermalModelBSQ *model, double limit);
 
-Double_t FcnEnergyFlucBoltzmannWidth(Double_t *x, Double_t *par);
-Double_t GenericQStatDeriv(Double_t *x, Double_t *par);
-Double_t GenericQStatDerivWidth(Double_t *x, Double_t *par);
+void   Minuit_fcn(int &npar, double *gin, double &f, double *par,
+        int iflag);
+void   fit_function(TTMThermalModel *mod,char *file,int flag = 0);
+
+double FcnEnergyFlucBoltzmannWidth(double *x, double *par);
+double GenericQStatDeriv(double *x, double *par);
+double GenericQStatDerivWidth(double *x, double *par);

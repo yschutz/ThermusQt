@@ -24,6 +24,7 @@ public:
     int generateParticleDens();
 
 private:
+    int  PrimPartDens();
     void Term(double *x, double *y, uint m, uint n, double *t);
 
     bool               mNonStrangeQStats;	// true if S=0 hadrons are to be treated

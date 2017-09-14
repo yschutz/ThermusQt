@@ -206,6 +206,24 @@ int ParticlesDBManager::getBaryon(int pdg) const
 }
 
 //__________________________________________________________________________
+double ParticlesDBManager::getBContent(int pdg) const
+{
+    // gets the beauty content of the given particle
+    double rv = 0.0;
+    rv = getPartParameter(pdg, kBC, "Thermus").toDouble();
+    return rv;
+
+}
+
+//__________________________________________________________________________
+int ParticlesDBManager::getBeauty(int pdg) const
+{
+    double rv = 0.0;
+    rv = getPartParameter(pdg, kB, "Thermus").toDouble();
+    return rv;
+}
+
+//__________________________________________________________________________
 double ParticlesDBManager::getCharge(int pdg, const QString &where) const
 {
     // gets the charge of the given particle
@@ -215,11 +233,28 @@ double ParticlesDBManager::getCharge(int pdg, const QString &where) const
 }
 
 //__________________________________________________________________________
+double ParticlesDBManager::getCContent(int pdg) const
+{
+    // gets the charm content of the given particle
+    double rv = 0.0;
+    rv = getPartParameter(pdg, kCC, "Thermus").toDouble();
+    return rv;
+}
+
+//__________________________________________________________________________
 double ParticlesDBManager::getLifetime(int pdg, const QString &where) const
 {
     // gets the lifetime of the given particle
     double rv = 0.0;
     rv = getPartParameter(pdg, kLIFETIME, where).toDouble();
+    return rv;
+}
+
+//__________________________________________________________________________
+int ParticlesDBManager::getCharm(int pdg) const
+{
+    double rv = 0.0;
+    rv = getPartParameter(pdg, kC, "Thermus").toDouble();
     return rv;
 }
 
@@ -318,11 +353,48 @@ int ParticlesDBManager::getPDG(int id) const
 }
 
 //__________________________________________________________________________
-int ParticlesDBManager::getSContent(int pdg) const
+double ParticlesDBManager::getS(int pdg) const
+{
+    // gets the S of the given particle
+    double rv = 0.0;
+    rv = getPartParameter(pdg, kS, "Thermus").toDouble();
+    return rv;
+}
+
+//__________________________________________________________________________
+double ParticlesDBManager::getSContent(int pdg) const
 {
     // gets the strangeness content of the given particle
     double rv = 0.0;
-    rv = getPartParameter(pdg, kSC, "Thermus").toInt();
+    rv = getPartParameter(pdg, kSC, "Thermus").toDouble();
+    return rv;
+}
+
+//__________________________________________________________________________
+double ParticlesDBManager::getSpin(int pdg) const
+{
+    // gets the spin degeneracy of the given particle
+    double rv = 0.0;
+    rv = getPartParameter(pdg, kSPIN, "Thermus").toDouble();
+    return rv;
+}
+
+//__________________________________________________________________________
+int ParticlesDBManager::getStat(int pdg) const
+{
+    // gets the typ of statististics of the given particle
+    double rv = 0.0;
+    rv = getPartParameter(pdg, kSTATISTIC, "Thermus").toInt();
+    return rv;
+
+}
+
+//__________________________________________________________________________
+double ParticlesDBManager::getThreshold(int pdg, const QString &where) const
+{
+    // gets the width of the given particle
+    double rv = 0.0;
+    rv = getPartParameter(pdg, kTHRESHOLD, where).toDouble();
     return rv;
 }
 
@@ -595,7 +667,7 @@ bool ParticlesDBManager::isStable(int pdg) const
 }
 
 //__________________________________________________________________________
-void ParticlesDBManager::listParticles(const ParticlesDBManager::ListOption opt) const
+void ParticlesDBManager::listParticles(const ParticlesDBManager::ListOption /*opt*/) const
 {
     // list all particles of class opt (Quark, Meson, Lepton, ....)
 

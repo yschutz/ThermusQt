@@ -28,7 +28,7 @@ TTMParticle::TTMParticle(QObject* parent) : QObject(parent),
 }
 
 //__________________________________________________________________________
-TTMParticle::TTMParticle(TTMParticle &obj, QObject* parent) : QObject(parent)
+TTMParticle::TTMParticle(TTMParticle &/*obj*/, QObject* parent) : QObject(parent)
 {
     //cpy ctor
 //    setID(obj.getID());

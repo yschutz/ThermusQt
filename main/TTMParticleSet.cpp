@@ -25,7 +25,7 @@ TTMParticleSet::TTMParticleSet(QObject *parent) : QObject(parent)
 }
 
 //__________________________________________________________________________
-TTMParticleSet::TTMParticleSet(QString file, bool CB, QObject *parent)  : QObject(parent)
+TTMParticleSet::TTMParticleSet(QString /*file*/, bool /*CB*/, QObject *parent)  : QObject(parent)
 {
     // Populates the hash table with particles listed in the specified file.
     // This file lists only PARTICLES. If a particle listed in the file has

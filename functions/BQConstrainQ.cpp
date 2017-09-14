@@ -1,7 +1,7 @@
 // Author: Spencer Wheaton 14 July 2004 //
 
 #include "main/TTMParameterSet.h"
-#include "main/TTMThermalmodelBQ.h"
+#include "main/TTMThermalModelBQ.h"
 //#include <nrutil.h>
 
 #include <QMessageBox>

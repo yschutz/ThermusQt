@@ -25,16 +25,24 @@ public:
     void                       deleteDecays(int motherid) const;
     void                       deleteDecay(int id) const;
     int                        getBaryon(int pdg) const;
+    double                     getBContent(int pdg) const;
+    int                        getBeauty(int pdg) const;
     double                     getCharge(int pdg, const QString& where = "Thermus") const;
+    double                     getCContent(int pdg) const;
     double                     getLifetime(int pdg, const QString& where = "Thermus") const;
+    int                        getCharm(int pdg) const;
     double                     getMass(int pdg, const QString& where = "Thermus") const;
     QString                    getName(int pdg, const QString& where = "all") const;
     QString                    getPartParameter(int pdg, ParticlesDBManager::ENTRY what, const QString& where = "Thermus") const;
     int                        getPDG(QString name) const;
     int                        getPDG(int id) const;
     QString                    getPDGDBName() const { return mkPDGName; }
-    int                        getSContent(int pdg) const;
+    double                     getS(int pdg) const;
+    double                     getSContent(int pdg) const;
+    double                     getSpin(int pdg) const;
+    int                        getStat(int pdg) const;
     QString                    getThermusDBName() const { return mkThermusName; }
+    double                     getThreshold(int pdg, const QString& where = "Thermus") const;
     double                     getWidth(int pdg, const QString& where = "Thermus") const;
     int                        id(QString name) const;
     static ParticlesDBManager& Instance();

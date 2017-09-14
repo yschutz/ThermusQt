@@ -22,7 +22,7 @@ TTMParameterSetBSQ::TTMParameterSetBSQ(double temp, double mub, double mus, doub
     // All parameters are set as "fixed type".
     //
 
-    mB2Q                      = b2q;
+    mB2Q             = b2q;
     mDens[kMUS]      = s;
     mDens[kMUC]      = c;
     mDens[kMUBEAUTY] = beauty;
@@ -59,10 +59,10 @@ TTMParameterSetBSQ::TTMParameterSetBSQ(double temp, double mub, double mus, doub
 }
 
 //__________________________________________________________________________
-TTMParameterSetBSQ::TTMParameterSetBSQ()  : mB2Q(0.)
-
+TTMParameterSetBSQ::TTMParameterSetBSQ()
 {
     // default ctor
+    mB2Q = 0.;
 
     for (int index = 0; index < kPARTYPES; index++)
         mPar.append(new TTMParameter);
@@ -73,7 +73,6 @@ TTMParameterSetBSQ::TTMParameterSetBSQ()  : mB2Q(0.)
         mConstrain[type] = false;
     }
     mConstraintInfo = "Parameters unconstrained";
-
 }
 
 //__________________________________________________________________________

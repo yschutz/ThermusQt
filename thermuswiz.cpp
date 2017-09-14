@@ -12,7 +12,7 @@
 #include <QDesktopServices>
 
 //__________________________________________________________________________
-ThermusWiz::ThermusWiz(QString summaryTitle, QWidget *parent) : QWizard(parent)
+ThermusWiz::ThermusWiz(QString /*summaryTitle*/, QWidget *parent) : QWizard(parent)
 {
     // ctor
 
