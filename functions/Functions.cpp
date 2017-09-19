@@ -12,7 +12,7 @@ double Test(double *x, double *par)
     double a = par[0];
     double b = par[1];
 
-    return a * x[0] + b;
+    return a * x[0] + b * x[1];
 }
 
 //__________________________________________________________________________

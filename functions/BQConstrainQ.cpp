@@ -13,6 +13,7 @@
 TTMThermalModelBQ *gModelBQConQ;
 int gCheck;
 
+//__________________________________________________________________________
 int BQConstrainQ(TTMThermalModelBQ *model)
 {
 

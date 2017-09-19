@@ -19,17 +19,15 @@ class TTMIDObj : public QObject
     Q_OBJECT
 public:
     explicit TTMIDObj(QObject* parent = 0);
-    TTMIDObj(qint32 x, QObject* parent = 0);
+    TTMIDObj(int x, QObject* parent = 0);
     ~TTMIDObj() { }
 
-    qint32  getID() const {return mID;}
-    void setID(qint32 x) {mID = x;}
-
+    int    getID() const           {return mID;}
+    void   setID(int val)              {mID = val;}
 
     TTMIDObj& operator=(const TTMIDObj& obj);
 
-  qint32 mID;                   // particle ID
-
+    int    mID;                // particle ID
 };
 
 #endif // TTMIDOBJ_H

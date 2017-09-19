@@ -27,10 +27,10 @@ public:
                          double p9  = 0,
                          double p10 = 0);
 
-private:
+protected:
     double(*mFunction)(double*, double*);  // pointer to the function
-    double  mMax;                          // maximum x value to compute
-    double  mMin;                          // minimum x value to compute
+    double  mXMax;                         // maximum x value to compute
+    double  mXMin;                         // minimum x value to compute
     int     mNPar;                         // number of parameters
     double* mPar;                          // array of parameters
 };

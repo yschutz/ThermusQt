@@ -3,7 +3,7 @@ class TTMThermalModel;
 class TTMThermalModelBSQ;
 class TTMThermalFit;
 class F1;
-class TF2;
+class F2;
 
 double Test(double *x, double *par);
 
@@ -59,7 +59,7 @@ double IntegrateLegendre20(F1* func, double a, double b);
 double IntegrateLegendre40(F1* func, double a, double b);
 
 double IntegrateLaguerre32(F1* func);
-double Integrate2DLaguerre32Legendre32(TF2* func, double ay, double by);
+double Integrate2DLaguerre32Legendre32(F2* func, double ay, double by);
 
 double FindExclVolPressure(TTMThermalModelBSQ *model, double limit);
 

@@ -47,7 +47,9 @@ SOURCES += main.cpp\
     external/f1.cpp \
     functions/IntegrationRoutines.cpp \
     main/TTMThermalParticleBQ.cpp \
-    main/TTMThermalParticleBSQ.cpp
+    main/TTMThermalParticleBSQ.cpp \
+    external/f2.cpp \
+    functions/InteggrationRoutines2D.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -82,7 +84,8 @@ HEADERS  += mainwindow.h \
     main/TTMThermalParticle.h \
     external/f1.h \
     main/TTMThermalParticleBQ.h \
-    main/TTMThermalParticleBSQ.h
+    main/TTMThermalParticleBSQ.h \
+    external/f2.h
 
 
 RESOURCES += \

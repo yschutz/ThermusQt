@@ -21,14 +21,35 @@ public:
     TTMThermalModelBQ(QObject* parent = 0);
     TTMThermalModelBQ(TTMParameterSetBQ *parameters, bool width = true, QObject* parent = 0);
 
-    int generateParticleDens();
+    int  constrainEoverN(Double_t eovern);
+    int  constrainNetBaryonDensity(Double_t nb);
+    int  constrainPercolation();
+    int  constrainSoverT3(Double_t SoverT3);
+    int  constrainTotalBaryonDensity(Double_t nb);
+    void generateEnergyDens();
+    void generateEntropyDens();
+    int  generateParticleDens();
+    void generatePressure();
+    void listInfo();
+
+
 
 private:
-    int  PrimPartDens();
-    void Term(double *x, double *y, uint m, uint n, double *t);
+    int  primPartDens();
+    void term(double *x, double *y, uint m, uint n, double *t);
 
+    double             mCorrM1; 	        // canonical correction factor for S=-1 particles
+    double             mCorrM2; 	        // canonical correction factor for S=-2 particles
+    double             mCorrM3;	            // canonical correction factor for S=-3 particles
+    double             mCorrP1; 	        // canonical correction factor for S=+1 particles
+    double             mCorrP2; 	        // canonical correction factor for S=+2 particles
+    double             mCorrP3;	            // canonical correction factor for S=+3 particles
+    double             mExactMuS;           // exact strangeness chemical potential
+    double             mlnZtot;	            // log(total partition function)
+    double             mlnZ0;	            // log(non-strange part of partition function)
     bool               mNonStrangeQStats;	// true if S=0 hadrons are to be treated
     TTMParameterSetBQ* mPar;                // the parameters set
+
 };
 
 #endif // TTMTHERMALMODELBQ_H

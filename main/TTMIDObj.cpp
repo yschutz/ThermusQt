@@ -8,13 +8,16 @@
 #include "TTMIDObj.h"
 
 //__________________________________________________________________________
-TTMIDObj::TTMIDObj(QObject* parent) : QObject(parent), mID(0)
+TTMIDObj::TTMIDObj(QObject* parent) : QObject(parent),
+   mID(0)
 {
-        //ctor
+    // default ctor
 }
 
 //__________________________________________________________________________
-TTMIDObj::TTMIDObj(qint32 x, QObject* parent) : QObject(parent), mID(x)
+TTMIDObj::TTMIDObj(int x, QObject* parent) : QObject(parent),
+    mID(x)
+
 {
     // ctor
 }
@@ -28,5 +31,5 @@ TTMIDObj &TTMIDObj::operator=(const TTMIDObj &obj)
         return *this;
 
     setID(obj.getID());
-      return *this;
+    return *this;
 }

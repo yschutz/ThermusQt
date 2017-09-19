@@ -16,6 +16,8 @@
 #ifndef TTMTHERMALPARTICLEBQ_H
 #define TTMTHERMALPARTICLEBQ_H
 
+#include "TTMThermalParticle.h"
+
 class TTMParameterSetBQ;
 
 class TTMThermalParticleBQ : public TTMThermalParticle

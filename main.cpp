@@ -7,12 +7,13 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QDebug>
-
+#include <QScopedPointer>
 #include <QStandardItemModel>
 #include <QTableView>
 #include <QSqlQuery>
 #include <QHash>
 #include <QVector>
+#include <QtMath>
 
 #include <gsl/gsl_sf_bessel.h>
 
@@ -24,7 +25,7 @@
 #include "main/TTMDensObj.h"
 
 #include "functions/FncsThermalModel.h"
-#include "external/f1.h"
+#include "external/f2.h"
 
 int main(int argc, char *argv[])
 {
@@ -68,10 +69,14 @@ int main(int argc, char *argv[])
 
     double (*ptr)(double*, double*);
     ptr = &Test;
-    F1* test = new F1("test", ptr, 0, 10, 2);
+    QScopedPointer<F2> test(new F2("test", ptr, 0, 10, 0, 10, 2));
     test->setParameters(2, 5);
-    qDebug() <<  test->eval(4);
-    qDebug() << IntegrateLegendre40(test, 0, 10);
-    delete test;
+    qDebug() <<  test->eval(4, 3);
+
+    qDebug() << test->integral(0, 10, 0, 10, 1e-10);
+
+    qDebug() << gsl_sf_bessel_Kn(2, 10);
+
+//     qDebug() << Integrate2DLaguerre32Legendre32(test.data(), 0, 2);
     return a.exec();
 }

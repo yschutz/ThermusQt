@@ -5,6 +5,7 @@
 
 #include "gsl/gsl_sf_bessel.h"
 
+#include <QScopedPointer>
 #include <QtMath>
 
 #include "external/f1.h"
@@ -13,7 +14,6 @@
 
 #include "TTMThermalParticle.h"
 
-//const  double kEPS = 1e-5;   // required accuracy of integrals
 const double kHC3 = qPow(0.197, 3.);
 //__________________________________________________________________________
 TTMThermalParticle::TTMThermalParticle(QObject *parent) : QObject(parent)
@@ -50,28 +50,21 @@ double TTMThermalParticle::densityBoltzmannWidth()
 
         double (*pFcnDensBoltzmannWidth)(double*, double*);
         pFcnDensBoltzmannWidth = &FcnDensBoltzmannWidth;
-        F1* fn = new F1("n Boltzmann Width", pFcnDensBoltzmannWidth, 0., (mM + 3. * width) / mT, 5);
+        QScopedPointer<F1> fn(new F1("n Boltzmann Width", pFcnDensBoltzmannWidth, 0., (mM + 3. * width) / mT, 5));
         fn->setParameters(mMu / mT, mM / mT, mG, mDeg, width / mT);
 
-        double n = IntegrateLegendre40(fn, a / mT, (mM + 2. * width) / mT);
+        double n = IntegrateLegendre40(fn.data(), a / mT, (mM + 2. * width) / mT);
 
+        double (*pFcnDensNormWidth)(double*, double*);
+        pFcnDensNormWidth = &FcnDensNormWidth;
+        QScopedPointer<F1> fnorm(new F1("norm", FcnDensNormWidth, 0., (mM + 3. * width) / mT, 2));
+        fnorm->setParameters(mM / mT, width / mT);
 
-          double (*pFcnDensNormWidth)(double*, double*);
-          pFcnDensNormWidth = &FcnDensNormWidth;
-          F1* fnorm = new F1("norm", FcnDensNormWidth, 0., (mM + 3. * width) / mT, 2);
-          fnorm->setParameters(mM / mT, width / mT);
-
-          double norm = IntegrateLegendre40(fnorm, a / mT, (mM + 2. * width) / mT);
+        double norm = IntegrateLegendre40(fnorm.data(), a / mT, (mM + 2. * width) / mT);
 
         lDensity = mCorrFactor * qPow(mT, 3.) * n / norm / kHC3;
-        delete fn;
-        delete fnorm;
-
-    } else {
-
+    } else
         lDensity = densityBoltzmannNoWidth();
-
-    }
     return lDensity;
 }
 
@@ -92,46 +85,38 @@ double TTMThermalParticle::energyBoltzmannNoWidth()
 double TTMThermalParticle::energyBoltzmannWidth()
 {
     // Primordial Energy density contribution assuming finite width and
-     // Boltzmann stats
-     //
+    // Boltzmann stats
+    //
 
-     updateMembers();
-     double lEnergy = 0;
-     double width = ParticlesDBManager::Instance().getWidth(mParticle);
+    updateMembers();
+    double lEnergy = 0;
+    double width = ParticlesDBManager::Instance().getWidth(mParticle);
 
-     if(width != 0){
+    if(width != 0){
 
-       double threshold = ParticlesDBManager::Instance().getThreshold(mParticle);
+        double threshold = ParticlesDBManager::Instance().getThreshold(mParticle);
 
-       double a = qMax(mM - 2. * width, threshold);
+        double a = qMax(mM - 2. * width, threshold);
 
-       double (*pFcnEnergyBoltzmannWidth)(double*, double*);
-       pFcnEnergyBoltzmannWidth = &FcnEnergyBoltzmannWidth;
+        double (*pFcnEnergyBoltzmannWidth)(double*, double*);
+        pFcnEnergyBoltzmannWidth = &FcnEnergyBoltzmannWidth;
+        QScopedPointer<F1> fe(new F1("e Boltzmann Width", FcnEnergyBoltzmannWidth, 0., (mM + 3. * width) / mT, 5));
+        fe->setParameters(mMu / mT, mM / mT, mG, mDeg, width / mT);
 
-       F1 *fe = new F1("e Boltzmann Width", FcnEnergyBoltzmannWidth, 0., (mM + 3. * width) / mT, 5);
-       fe->setParameters(mMu / mT, mM / mT, mG, mDeg, width / mT);
+        double e = IntegrateLegendre40(fe.data(), a / mT, (mM + 2. * width) / mT);
 
-       double e = IntegrateLegendre40(fe, a / mT, (mM + 2. * width) / mT);
+        double (*pFcnDensNormWidth)(double*, double*);
+        pFcnDensNormWidth = &FcnDensNormWidth;
+        QScopedPointer<F1> fnorm(new F1("norm", FcnDensNormWidth, 0., (mM + 3. * width) / mT, 2));
+        fnorm->setParameters(mM / mT, width / mT);
 
-       double (*pFcnDensNormWidth)(double*, double*);
-       pFcnDensNormWidth = &FcnDensNormWidth;
+        double norm = IntegrateLegendre40(fnorm.data(), a / mT, (mM + 2. * width) / mT);
 
-       F1 *fnorm = new F1("norm", FcnDensNormWidth, 0., (mM + 3. * width) / mT, 2);
-       fnorm->setParameters(mM / mT, width / mT);
+        lEnergy = mCorrFactor * qPow(mT, 4.) * e / norm / kHC3;
+    } else
+        lEnergy = energyBoltzmannNoWidth();
 
-       double norm = IntegrateLegendre40(fnorm, a / mT, (mM + 2. * width) / mT);
-
-       lEnergy = mCorrFactor * qPow(mT, 4.) * e / norm / kHC3;
-
-       delete fe;
-       delete fnorm;
-
-     } else {
-
-       lEnergy = energyBoltzmannNoWidth();
-
-     }
-     return lEnergy;
+    return lEnergy;
 }
 
 //__________________________________________________________________________
