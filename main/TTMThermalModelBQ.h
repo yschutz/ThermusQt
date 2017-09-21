@@ -21,16 +21,16 @@ public:
     TTMThermalModelBQ(QObject* parent = 0);
     TTMThermalModelBQ(TTMParameterSetBQ *parameters, bool width = true, QObject* parent = 0);
 
-    int  constrainEoverN(Double_t eovern);
-    int  constrainNetBaryonDensity(Double_t nb);
+    int  constrainEoverN(double eovern);
+    int  constrainNetBaryonDensity(double nb);
     int  constrainPercolation();
-    int  constrainSoverT3(Double_t SoverT3);
-    int  constrainTotalBaryonDensity(Double_t nb);
+    int  constrainSoverT3(double soverT3);
+    int  constrainTotalBaryonDensity(double nb);
     void generateEnergyDens();
     void generateEntropyDens();
     int  generateParticleDens();
     void generatePressure();
-    void listInfo();
+    void listInfo() const;
 
 
 

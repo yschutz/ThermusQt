@@ -33,6 +33,9 @@ public:
     virtual void             generateEntropyDens() = 0;
     virtual int              generateParticleDens() = 0;
     virtual void             generatePressure() = 0;
+    double                   getBaryon() const  { return mBaryon; }
+    double                   getCharge() const  { return mCharge; }
+    double                   getDensity() const { return mDensity; }
     TTMDensObj*              getDensities(int pdg) const;
     virtual TTMParameterSet* getParameterSet() const = 0;
     void                     listDecayContributions(int daughter) const;
@@ -42,7 +45,7 @@ public:
 
 protected:
     void                     calcWroblewski();
-    virtual int              PrimPartDens() = 0;
+    virtual int              primPartDens() = 0;
 
     double                  mBaryon;	   // total baryon density in model
     double                  mBeauty;	   // total beauty density in model

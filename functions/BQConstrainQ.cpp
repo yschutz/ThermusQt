@@ -1,14 +1,16 @@
 // Author: Spencer Wheaton 14 July 2004 //
+// Adapted for Qt: Yves Schutz September 2017
+
+#include <gsl/gsl_multiroots.h>
 
 #include "main/TTMParameterSet.h"
 #include "main/TTMThermalModelBQ.h"
-//#include <nrutil.h>
 
 #include <QMessageBox>
 #include <QObject>
 
 //void broydn(float x[], int n, int *check, void (*vecfunc)(int, float [], float []));
-//void BQfuncQ(int n, float x[], float f[]);
+void BQfuncQ(int n, float x[], float f[]);
 
 TTMThermalModelBQ *gModelBQConQ;
 int gCheck;

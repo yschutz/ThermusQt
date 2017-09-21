@@ -53,313 +53,223 @@ TTMThermalModelBQ::TTMThermalModelBQ(TTMParameterSetBQ *parameters, bool width, 
     mEnergy  = mEntropy = 0.;
 }
 
-int TTMThermalModelBQ::constrainEoverN(Double_t eovern)
+//__________________________________________________________________________
+int TTMThermalModelBQ::constrainEoverN(double eovern)
 {
     // Constrains muB by the given E/N. 1 is returned if there are problems
     // 0 otherwise.
-    //
 
-    Int_t check;
+    int check;
 
-    if(!fParm->GetMuQConstrain()){
-
-      check = BQConstrainEN(this,EoverN);
-      if(check){
-        cout<<"Not Constrained"<<endl;
-      }
-
-    }else{
-
-      check = BQConstrainQEN(this,EoverN);
-      if(check){
-        cout<<"Not Constrained"<<endl;
-      }
-
-    }
+    if (!mPar->getMuQConstrain())
+        check = BQConstrainEN(this, eovern);
+    else
+        check = BQConstrainQEN(this, eovern);
 
     return check;
 }
 
-int TTMThermalModelBQ::constrainNetBaryonDensity(Double_t nb)
+//__________________________________________________________________________
+int TTMThermalModelBQ::constrainNetBaryonDensity(double nb)
 {
     // Constrains muB by the given nb. 1 is returned if there are problems
     // 0 otherwise.
-    //
 
-    Int_t check;
+    int check;
 
-    if(fParm->GetMuQConstrain()){
-
-      check = BQConstrainQNetBDens(this,nb);
-      if(check){
-        cout<<"Not Constrained"<<endl;
-      }
-
-    }else{
-
-      check = 1;
-      cout<<"Constraint not yet coded"<<endl;
-
+    if (mPar->getMuQConstrain())
+        check = BQConstrainQNetBDens(this,nb);
+    else {
+        check = 1;
+        QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, "Constraint not yet coded");
+        msg.exec();
     }
 
     return check;
-
 }
 
+//__________________________________________________________________________
 int TTMThermalModelBQ::constrainPercolation()
 {
-
     // Constrains muB by the percolation model. 1 is returned if there are problems
     // 0 otherwise.
-    //
 
-    Int_t check;
+    int check;
 
-    if(!fParm->GetMuQConstrain()){
-
+    if (!mPar->getMuQConstrain()) {
         check = 1;
-        cout<<"Such Constraint Not Yet Coded"<<endl;
-
-    }else{
-
-      check = BQConstrainQPercolation(this);
-      if(check){
-        cout<<"Not Constrained"<<endl;
-      }
-
-    }
+        QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, "Such Constraint Not Yet Coded");
+    } else
+        check = BQConstrainQPercolation(this);
 
     return check;
-
 }
 
-int TTMThermalModelBQ::constrainSoverT3(Double_t SoverT3)
+//__________________________________________________________________________
+int TTMThermalModelBQ::constrainSoverT3(double soverT3)
 {
     // Constrains muB by the given S/T^3. 1 is returned if there are problems
     // 0 otherwise.
-    //
 
-    Int_t check;
+    int check;
 
-    if(!fParm->GetMuQConstrain()){
-
-      check = BQConstrainST3(this,SoverT3);
-      if(check){
-        cout<<"Not Constrained"<<endl;
-      }
-
-    }else{
-
-      check = BQConstrainQST3(this,SoverT3);
-      if(check){
-        cout<<"Not Constrained"<<endl;
-      }
-
-    }
+    if (!mPar->getMuQConstrain())
+        check = BQConstrainST3(this, soverT3);
+    else
+        check = BQConstrainQST3(this, soverT3);
 
     return check;
-
 }
 
-int TTMThermalModelBQ::constrainTotalBaryonDensity(Double_t nb)
+//__________________________________________________________________________
+int TTMThermalModelBQ::constrainTotalBaryonDensity(double nb)
 {
     // Constrains muB by the given nb. 1 is returned if there are problems
     // 0 otherwise.
-    //
 
-    Int_t check;
+    int check;
 
-    if(!fParm->GetMuQConstrain()){
-
-      check = BQConstrainBDens(this,nb);
-      if(check){
-        cout<<"Not Constrained"<<endl;
-      }
-
-    }else{
-
-      check = BQConstrainQBDens(this,nb);
-      if(check){
-        cout<<"Not Constrained"<<endl;
-      }
-
-    }
+    if (!mPar->getMuQConstrain())
+        check = BQConstrainBDens(this, nb);
+    else
+        check = BQConstrainQBDens(this,nb);
 
     return check;
-
 }
 
+//__________________________________________________________________________
 void TTMThermalModelBQ::generateEnergyDens()
 {
     // Iterates through the density hash table calculating the primordial
-     // energy density of each particle in the hash table. Must first run
-     // GenerateParticleDens() to populate the hash table. If the parameters
-     // change then GenerateParticleDens() should be run again before this
-     // function to impose constraints and calculate the canonical correction
-     // factors.
-     //
+    // energy density of each particle in the hash table. Must first run
+    // GenerateParticleDens() to populate the hash table. If the parameters
+    // change then GenerateParticleDens() should be run again before this
+    // function to impose constraints and calculate the canonical correction
+    // factors.
+    //
 
-     TIter next(fDensTable);
-     TTMDensObj *dens;
+    mEnergy = 0.;
+    for(TTMDensObj* dens : mDensTable) {
+        int part = dens->getID();
+        double corrFactor;
+        double strange = ParticlesDBManager::Instance().getS(part);
+        if (     strange == 1)
+            corrFactor = mCorrP1;
+        else if (strange == 2)
+            corrFactor = mCorrP2;
+        else if (strange == 3)
+            corrFactor = mCorrP3;
+        else if (strange == -1)
+            corrFactor = mCorrM1;
+        else if (strange == -2)
+            corrFactor = mCorrM2;
+        else if (strange == -3)
+            corrFactor = mCorrM3;
+        else
+            corrFactor = 1.;
 
-     fEnergy = 0.;
+        double partEnergy;
+        double width = ParticlesDBManager::Instance().getWidth(part);
 
-     while ((dens = (TTMDensObj *) next())) {
-       TTMParticle *part = fPartSet->GetParticle(dens->GetID());
-       Double_t CorrFactor;
+        if (strange == 0. && mNonStrangeQStats) {
+            TTMParameterSetBSQ pGC(mPar->getT(), mPar->getMuB(), 0., mPar->getMuQ(), mPar->getGammas());
+            QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part, &pGC));
 
-       if (part->GetS() == 1) {
-         CorrFactor = fCorrP1;
-       } else if (part->GetS() == 2) {
-         CorrFactor = fCorrP2;
-       } else if (part->GetS() == 3) {
-         CorrFactor = fCorrP3;
-       } else if (part->GetS() == -1) {
-         CorrFactor = fCorrM1;
-       } else if (part->GetS() == -2) {
-         CorrFactor = fCorrM2;
-       } else if (part->GetS() == -3) {
-         CorrFactor = fCorrM3;
-       } else {
-         CorrFactor = 1.;
-       }
+            if(width == 0. || !mWidth)
+                partEnergy = ptr->energyQStatNoWidth();
+            else
+                partEnergy = ptr->energyQStatWidth();
+        } else {
+            QScopedPointer<TTMThermalParticleBQ> ptr(new TTMThermalParticleBQ(part, mPar, corrFactor));
 
-       Double_t PartEnergy;
+            if(width == 0. || !mWidth)
+                partEnergy = ptr->energyBoltzmannNoWidth();
+            else
+                partEnergy = ptr->energyBoltzmannWidth();
+        }
 
-       if(part->GetS() == 0. && fNonStrangeQStats){
-
-         TTMParameterSetBSQ pGC(fParm->GetT(),fParm->GetMuB(),0.,fParm->GetMuQ(),fParm->GetGammas());
-
-         TTMThermalParticleBSQ *ptr = new TTMThermalParticleBSQ(part, &pGC);
-
-         if(part->GetWidth() == 0 || !fWidth){
-           PartEnergy = ptr->EnergyQStatNoWidth();
-         }else{
-           PartEnergy = ptr->EnergyQStatWidth();
-         }
-
-         delete ptr;
-
-       }else{
-
-         TTMThermalParticleBQ *ptr = new TTMThermalParticleBQ(part, fParm, CorrFactor);
-
-         if(part->GetWidth() == 0 || !fWidth){
-           PartEnergy = ptr->EnergyBoltzmannNoWidth();
-         }else{
-           PartEnergy = ptr->EnergyBoltzmannWidth();
-         }
-
-         delete ptr;
-
-       }
-
-       dens->SetPrimEnergy(PartEnergy);
-       fEnergy += PartEnergy;
-     }
+        dens->setPrimaryEnergy(partEnergy);
+        mEnergy += partEnergy;
+    }
 }
 
+//__________________________________________________________________________
 void TTMThermalModelBQ::generateEntropyDens()
 {
     // Iterates through the density hash table calculating the primordial
-     // entropy density of each particle in the hash table. Must first run
-     // GenerateParticleDens() to populate the hash table. If the parameters
-     // change then GenerateParticleDens() should be run again before this
-     // function to impose constraints and calculate the canonical correction
-     // factors. Remember that the total entropy does not split into the sum
-     // of particle entropies.
-     //
+    // entropy density of each particle in the hash table. Must first run
+    // GenerateParticleDens() to populate the hash table. If the parameters
+    // change then GenerateParticleDens() should be run again before this
+    // function to impose constraints and calculate the canonical correction
+    // factors. Remember that the total entropy does not split into the sum
+    // of particle entropies.
+    //
 
-     TIter next(fDensTable);
-     TTMDensObj *dens;
+    mEntropy = 0.;
+    for (TTMDensObj* dens : mDensTable) {
+        int part = dens->GetID();
+        double corrFactor;
+        double strange = ParticlesDBManager::Instance().getS(part);
 
-     fEntropy = 0.;
+        if (     strange == 1)
+            corrFactor = mCorrP1;
+        else if (strange == 2)
+            corrFactor = mCorrP2;
+        else if (strange == 3)
+            corrFactor = mCorrP3;
+        else if (strange == -1)
+            corrFactor = mCorrM1;
+        else if (strange == -2)
+            corrFactor = mCorrM2;
+        else if (strange == -3)
+            corrFactor = mCorrM3;
+        else
+            corrFactor = 1.;
 
-     while ((dens = (TTMDensObj *) next())) {
-       TTMParticle *part = fPartSet->GetParticle(dens->GetID());
-       Double_t CorrFactor;
+        double partEntropy;
+        double width = ParticlesDBManager::Instance().getWidth(part);
 
-       if (part->GetS() == 1) {
-         CorrFactor = fCorrP1;
-       } else if (part->GetS() == 2) {
-         CorrFactor = fCorrP2;
-       } else if (part->GetS() == 3) {
-         CorrFactor = fCorrP3;
-       } else if (part->GetS() == -1) {
-         CorrFactor = fCorrM1;
-       } else if (part->GetS() == -2) {
-         CorrFactor = fCorrM2;
-       } else if (part->GetS() == -3) {
-         CorrFactor = fCorrM3;
-       } else {
-         CorrFactor = 1.;
-       }
+        if (strange == 0.) {
+            TTMParameterSetBSQ pGC(mPar->getT(), mPar->getMuB(), 0., mPar->getMuQ(), mPar->getGammas());
+            QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part, &pGC));
 
-       Double_t PartEntropy;
+            if (mNonStrangeQStats)
+                if(width == 0 || !mWidth){
+                    partEntropy = ptr->entropyQStatNoWidth();
+                    else
+                    partEntropy = ptr->entropyQStatWidth();
+                } else {
+                    if(width == 0 || !mWidth)
+                        partEntropy = ptr->entropyBoltzmannNoWidth();
+                    else
+                        partEntropy = ptr->entropyBoltzmannWidth();
+                }
+        } else {
+            QScopedPointer<TTMThermalParticleBQ> ptr(new TTMThermalParticleBQ(part, mPar, corrFactor));
+            double partEnergy;
 
-       if(part->GetS() == 0.){
+            if(width == 0 || !mWidth)
+                partEnergy = ptr->energyBoltzmannNoWidth();
+            else
+                partEnergy = ptr->energyBoltzmannWidth();
 
-         TTMParameterSetBSQ pGC(fParm->GetT(),fParm->GetMuB(),0.,fParm->GetMuQ(),fParm->GetGammas());
+            double partDens = dens->getPrimaryDensity();
+            double B        = ParticlesDBManager::Instance().getBaryon(part);
+            double Q        = ParticlesDBManager::Instance().getCharge(part);
+            double muB      = mPar->getMuB();
+            double muQ      = mPar->getMuQ();
+            double mu       = B * muB + Q * muQ;
 
-         TTMThermalParticleBSQ *ptr = new TTMThermalParticleBSQ(part, &pGC);
+            partEntropy     = (partEnergy - mu * partDens) / mPar->getT() ;
+        }
+        dens->setPrimaryEntropy(partEntropy);
+        mEntropy += partEntropy;
+    }
 
-         if(fNonStrangeQStats){
+    double r      = mPar->getCanRadius();
+    double volume = 4. * M_PI / 3. * r * r * r;
 
-           if(part->GetWidth() == 0 || !fWidth){
-             PartEntropy = ptr->EntropyQStatNoWidth();
-           }else{
-             PartEntropy = ptr->EntropyQStatWidth();
-           }
-
-         }else{
-
-           if(part->GetWidth() == 0 || !fWidth){
-             PartEntropy = ptr->EntropyBoltzmannNoWidth();
-           }else{
-             PartEntropy = ptr->EntropyBoltzmannWidth();
-           }
-
-         }
-
-         delete ptr;
-
-       }else{
-
-         TTMThermalParticleBQ *ptr = new TTMThermalParticleBQ(part, fParm, CorrFactor);
-
-         Double_t PartEnergy;
-
-         if(part->GetWidth() == 0 || !fWidth){
-           PartEnergy = ptr->EnergyBoltzmannNoWidth();
-         }else{
-           PartEnergy = ptr->EnergyBoltzmannWidth();
-         }
-
-         delete ptr;
-
-         Double_t PartDens = dens->GetPrimDensity();
-
-         Double_t B = part->GetB();
-         Double_t Q = part->GetQ();
-         Double_t muB = fParm->GetMuB();
-         Double_t muQ = fParm->GetMuQ();
-
-         Double_t mu = B*muB + Q*muQ;
-
-         PartEntropy = (PartEnergy - mu * PartDens) / fParm->GetT() ;
-
-       }
-
-       dens->SetPrimEntropy(PartEntropy);
-       fEntropy += PartEntropy;
-
-     }
-
-     Double_t r = fParm->GetCanRadius();
-     Double_t volume = 4. * TMath::Pi() / 3. * r * r * r;
-
-     fEntropy += (flnZtot - flnZ0)/volume;
-
+    mEntropy += (mlnZtot - mlnZ0) / volume;
 }
 
 //__________________________________________________________________________
@@ -394,6 +304,7 @@ int TTMThermalModelBQ::generateParticleDens()
     return check;
 }
 
+//__________________________________________________________________________
 void TTMThermalModelBQ::generatePressure()
 {
     // Iterates through the density hash table calculating the primordial
@@ -404,142 +315,130 @@ void TTMThermalModelBQ::generatePressure()
     // factors.
     //
 
-    TIter next(fDensTable);
-    TTMDensObj *dens;
+    mPressure = 0.;
 
-    fPressure = 0.;
+    for (TTMDensObj* dens : mDensTable) {
+        int part = dens->GetID();
+        double corrFactor;
+        double strange = ParticlesDBManager::Instance().getS(part);
 
-    while ((dens = (TTMDensObj *) next())) {
-      TTMParticle *part = fPartSet->GetParticle(dens->GetID());
-      Double_t CorrFactor;
+        if (     strange == 1)
+            corrFactor = mCorrP1;
+        else if (strange == 2)
+            corrFactor = mCorrP2;
+        else if (strange == 3)
+            corrFactor = mCorrP3;
+        else if (strange == -1)
+            corrFactor = mCorrM1;
+        else if (strange == -2)
+            corrFactor = mCorrM2;
+        else if (strange == -3)
+            corrFactor = mCorrM3;
+        else
+            corrFactor = 1.;
 
-      if (part->GetS() == 1) {
-        CorrFactor = fCorrP1;
-      } else if (part->GetS() == 2) {
-        CorrFactor = fCorrP2;
-      } else if (part->GetS() == 3) {
-        CorrFactor = fCorrP3;
-      } else if (part->GetS() == -1) {
-        CorrFactor = fCorrM1;
-      } else if (part->GetS() == -2) {
-        CorrFactor = fCorrM2;
-      } else if (part->GetS() == -3) {
-        CorrFactor = fCorrM3;
-      } else {
-        CorrFactor = 1.;
-      }
+        double partPressure;
 
-      Double_t PartPressure;
+        if(strange == 0. && mNonStrangeQStats) {
+            TTMParameterSetBSQ pGC(mPar->getT(), mPar->getMuB(), 0., mPar->getMuQ(), mPar->getGammas());
+            QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part, &pGC));
 
-      if(part->GetS() == 0. && fNonStrangeQStats){
+            double width = ParticlesDBManager::Instance().getWidth(part);
 
-        TTMParameterSetBSQ pGC(fParm->GetT(),fParm->GetMuB(),0.,fParm->GetMuQ(),fParm->GetGammas());
+            if(width== 0 || !mWidth)
+                partPressure = ptr->pressureQStatNoWidth();
+            else
+                partPressure = ptr->pressureQStatWidth();
+        } else {
+            QScopedPointer<TTMThermalParticleBQ> ptr(new TTMThermalParticleBQ(part, mPar, corrFactor));
 
-        TTMThermalParticleBSQ *ptr = new TTMThermalParticleBSQ(part, &pGC);
-
-        if(part->GetWidth() == 0 || !fWidth){
-          PartPressure = ptr->PressureQStatNoWidth();
-        }else{
-          PartPressure = ptr->PressureQStatWidth();
+            if(width == 0 || !mWidth)
+                partPressure = ptr->pressureBoltzmannNoWidth();
+            else
+                partPressure = ptr->pressureBoltzmannWidth();
         }
-
-        delete ptr;
-
-      }else{
-
-        TTMThermalParticleBQ *ptr = new TTMThermalParticleBQ(part, fParm, CorrFactor);
-
-        if(part->GetWidth() == 0 || !fWidth){
-          PartPressure = ptr->PressureBoltzmannNoWidth();
-        }else{
-          PartPressure = ptr->PressureBoltzmannWidth();
-        }
-
-        delete ptr;
-
-      }
-
-      dens->SetPrimPressure(PartPressure);
-      fPressure += PartPressure;
+        dens->setPrimaryPressure(partPressure);
+        mPressure += partPressure;
     }
 }
 
-void TTMThermalModelBQ::listInfo()
+//__________________________________________________________________________
+void TTMThermalModelBQ::listInfo() const
 {
     // List model information
       //
 
-      cout <<"  ************************************************************"
-           <<"*****************"
-           << endl;
-      cout <<"  ***************************** Thermal Model Info ***********"
-           <<"*****************"
-           << endl << endl;
+//      cout <<"  ************************************************************"
+//           <<"*****************"
+//           << endl;
+//      cout <<"  ***************************** Thermal Model Info ***********"
+//           <<"*****************"
+//           << endl << endl;
 
-      cout << "\t Particle set: " << endl << "\t\t" << fPartSet->GetFilename()
-           << endl << endl;
+//      cout << "\t Particle set: " << endl << "\t\t" << fPartSet->GetFilename()
+//           << endl << endl;
 
-      if(fNonStrangeQStats){
-        cout << "\t Quantum statistics for S=0 hadrons" << endl;
-      }else{
-        cout << "\t Boltzmann statistics for S=0 hadrons" << endl;
-      }
-      cout << "\t Boltzmann statistics for strange hadrons" << endl;
+//      if(fNonStrangeQStats){
+//        cout << "\t Quantum statistics for S=0 hadrons" << endl;
+//      }else{
+//        cout << "\t Boltzmann statistics for S=0 hadrons" << endl;
+//      }
+//      cout << "\t Boltzmann statistics for strange hadrons" << endl;
 
-      if(fWidth){
-        cout << "\t Resonance width included " << endl;
-      }else{
-        cout << "\t Resonance width excluded " << endl;
-      }
+//      if(fWidth){
+//        cout << "\t Resonance width included " << endl;
+//      }else{
+//        cout << "\t Resonance width excluded " << endl;
+//      }
 
-      cout << endl << endl;
+//      cout << endl << endl;
 
-      fParm->List();
-      cout <<"  ***************************** Thermal Quantities ***********"
-           <<"****************** "
-           << endl << endl;
-      cout << "\t S required in canonical volume: ";
-      cout.width(10);
-      cout << fParm->GetS();
-      cout << endl << endl;
-      Double_t r = fParm->GetCanRadius();
-      Double_t volume = 4. * TMath::Pi() / 3. * r * r * r;
-      cout << "\t S in canonical volume (model) = ";
-      cout.width(10);
-      cout << fStrange*volume;
-      cout << endl << endl;
-      cout << "\t B/2Q     = ";
-      cout.width(10);
-      cout << fBaryon / 2. / fCharge;
-      cout << "\t";
-      if (fParm->GetMuQConstrain()) {
-        cout << "(constraint :";
-        cout.width(8);
-        cout << fParm->GetB2Q() << ")";
-      }
-      cout << endl << endl;
-      cout << "\t lambda_s = ";
-      cout.width(8);
-      cout << fWroblewski << endl;
-      cout << endl << endl;
-      cout << "\t Primordial Densities: " << endl;
-      if (fDensity != 0.) {
-        cout << "\t\t\t\t n = " << fDensity << endl;
-      }
-      if (fEnergy != 0.) {
-        cout << "\t\t\t\t e = " << fEnergy << endl;
-      }
-      if (fEntropy != 0.) {
-        cout << "\t\t\t\t s = " << fEntropy << endl << endl;
-      }
-      ListStableParticles();
-      cout << endl << endl;
-      cout <<"  ***********************************************************"
-           <<"*******************"
-           << endl;
-      cout <<"  ***********************************************************"
-           <<"*******************"
-           << endl << endl;
+//      fParm->List();
+//      cout <<"  ***************************** Thermal Quantities ***********"
+//           <<"****************** "
+//           << endl << endl;
+//      cout << "\t S required in canonical volume: ";
+//      cout.width(10);
+//      cout << fParm->GetS();
+//      cout << endl << endl;
+//      double r = fParm->GetCanRadius();
+//      double volume = 4. * TMath::Pi() / 3. * r * r * r;
+//      cout << "\t S in canonical volume (model) = ";
+//      cout.width(10);
+//      cout << fStrange*volume;
+//      cout << endl << endl;
+//      cout << "\t B/2Q     = ";
+//      cout.width(10);
+//      cout << fBaryon / 2. / fCharge;
+//      cout << "\t";
+//      if (fParm->GetMuQConstrain()) {
+//        cout << "(constraint :";
+//        cout.width(8);
+//        cout << fParm->GetB2Q() << ")";
+//      }
+//      cout << endl << endl;
+//      cout << "\t lambda_s = ";
+//      cout.width(8);
+//      cout << fWroblewski << endl;
+//      cout << endl << endl;
+//      cout << "\t Primordial Densities: " << endl;
+//      if (fDensity != 0.) {
+//        cout << "\t\t\t\t n = " << fDensity << endl;
+//      }
+//      if (fEnergy != 0.) {
+//        cout << "\t\t\t\t e = " << fEnergy << endl;
+//      }
+//      if (fEntropy != 0.) {
+//        cout << "\t\t\t\t s = " << fEntropy << endl << endl;
+//      }
+//      ListStableParticles();
+//      cout << endl << endl;
+//      cout <<"  ***********************************************************"
+//           <<"*******************"
+//           << endl;
+//      cout <<"  ***********************************************************"
+//           <<"*******************"
+//           << endl << endl;
 }
 
 //__________________________________________________________________________

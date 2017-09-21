@@ -49,7 +49,14 @@ SOURCES += main.cpp\
     main/TTMThermalParticleBQ.cpp \
     main/TTMThermalParticleBSQ.cpp \
     external/f2.cpp \
-    functions/InteggrationRoutines2D.cpp
+    functions/InteggrationRoutines2D.cpp \
+    functions/BQConstrainEN.cpp \
+    functions/BQfuncQ.cpp \
+    functions/BQConstrainQEN.cpp \
+    functions/BQConstrainQNetBDens.cpp \
+    functions/BQConstrainQPercolation.cpp \
+    functions/BQfuncQPercolation.cpp \
+    functions/BQConstrainQST3.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
