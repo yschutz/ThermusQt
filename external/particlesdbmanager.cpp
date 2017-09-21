@@ -170,7 +170,7 @@ QString ParticlesDBManager::getPartParameter(int pdg, ENTRY what, const QString 
     // retrieve given parameter for given particle
     QMetaEnum metaEnum = QMetaEnum::fromType<ParticlesDBManager::ENTRY>();
     QString sEntry    = metaEnum.valueToKey(what);
-    sEntry.remove(0,1).toLower();
+    sEntry = sEntry.remove(0,1).toLower();
     QString rv("");
     QString squery("SELECT * FROM particle WHERE pdg = (:val)");
     QSqlQuery query;

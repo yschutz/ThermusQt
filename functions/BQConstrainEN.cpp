@@ -10,11 +10,10 @@
 #include <QtMath>
 
 
-void broydn(float x[], int n, int *check,
-            void (*vecfunc)(int, float [], float []));
+//void broydn(double x[], int n, int *check,
+//            void (*vecfunc)(int, double [], double []));
 
-void BQfuncEN(int n,
-              float x[], float f[]);
+void BQfuncEN(int n, double x[], double f[]);
 
 TTMThermalModelBQ *gModelBQConEN;
 double gBQyEN[1];
@@ -25,10 +24,10 @@ int BQConstrainEN(TTMThermalModelBQ *model, double eovern)
     gModelBQConEN = model;
     model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->setStatus("");
     int  check = 0;
-    float *x, *fbroydn;
+    double *x, *fbroydn;
 
-    //  x       = (float*)dvector(1,1);
-    //  fbroydn = (float*)dvector(1,1);
+    //  x       = (double*)dvector(1,1);
+    //  fbroydn = (double*)dvector(1,1);
 
     x[1] = model->getParameterSet()->getMuB();
 
@@ -39,19 +38,19 @@ int BQConstrainEN(TTMThermalModelBQ *model, double eovern)
         msg.exec();
         return 1;
     } else {
-        broydn(x, 1, &check, BQfuncEN);
+//        broydn(x, 1, &check, BQfuncEN);
         BQfuncEN(1 ,x, fbroydn);
         if (check) {
             QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "Convergence problems");
             msg.exec();
             model->getParameterSet()->setConstraintInfo("Unable to Constrain E/N");
-            model->getParameterSet()->getParameter(1)->setStatus("(Unable to constrain)");
-            model->getParameterSet()->getParameter(1)->setValue(0.);
+            model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setStatus("(Unable to constrain)");
+            model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setValue(0.);
             return 1;
         } else {
-            model->getParameterSet()->getParameter(1)->setValue(x[1]);
+            model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setValue(x[1]);
             model->getParameterSet()->setConstraintInfo("E/N Successfully Constrained");
-            model->getParameterSet()->getParameter(1)->setStatus("(*CONSTRAINED*)");
+            model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setStatus("(*CONSTRAINED*)");
             return 0;
         }
     }

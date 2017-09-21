@@ -16,52 +16,46 @@ double gBQyQST3[1];
 int BQConstrainQST3(TTMThermalModelBQ *model, double SoverT3)
 {    
 
-  gModelBQConQST3 = model;
-  model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setStatus("");
-  model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->setStatus("");
-  int  check = 0;
-  double *x, *fbroydn;
+    gModelBQConQST3 = model;
+    model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setStatus("");
+    model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->setStatus("");
+    int  check = 0;
+    double *x, *fbroydn;
 
-//  x=(double*)dvector(1,2);
-//  fbroydn=(double*)dvector(1,2);
+    //  x=(double*)dvector(1,2);
+    //  fbroydn=(double*)dvector(1,2);
 
-  x[1]        = model->getParameterSet()->getMuB();
-  x[2]        = model->getParameterSet()->getMuQ();
-  gBQyQST3[0] = SoverT3;
+    x[1]        = model->getParameterSet()->getMuB();
+    x[2]        = model->getParameterSet()->getMuQ();
+    gBQyQST3[0] = SoverT3;
 
-  if (gBQyQST3[0] == 0.) {
-      QMessageBox
-    cout<<"Cannot constrain S/T^3 to zero"<<endl;
-    return 1;
-  }else if(model->GetParameterSet()->GetB2Q() == 0.){
-    cout<<"Cannot constrain B/2Q to zero"<<endl;
-    return 1;
-  }else{
-    broydn(x,2,&check,BQfuncQST3);
-    BQfuncQST3(2,x,fbroydn);
-    if(check)
-      { 
-        cout<<"Convergence problems"<<endl;
-	    
-        model->GetParameterSet()->SetConstraintInfo("Unable to Constrain S/T^3 and B/2Q");
-        model->GetParameterSet()->GetParameter(1)->SetStatus("(Unable to constrain)");
-        model->GetParameterSet()->GetParameter(2)->SetStatus("(Unable to constrain)");
-
-        model->GetParameterSet()->GetParameter(1)->SetValue(0.);
-        model->GetParameterSet()->GetParameter(2)->SetValue(0.);
+    if (gBQyQST3[0] == 0.) {
+        QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "Cannot constrain S/T^3 to zero");
+        msg.exec();
         return 1;
-      }
-    else
-      {
-        model->GetParameterSet()->GetParameter(1)->SetValue(x[1]);
-        model->GetParameterSet()->GetParameter(2)->SetValue(x[2]);
-
-        model->GetParameterSet()->SetConstraintInfo("S/T^3 and B/2Q Successfully Constrained");
-	
-        model->GetParameterSet()->GetParameter(1)->SetStatus("(*CONSTRAINED*)");
-        model->GetParameterSet()->GetParameter(2)->SetStatus("(*CONSTRAINED*)");
-
-        return 0;
-      }
-  }
+    } else if(model->getParameterSet()->getB2Q() == 0.) {
+        QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "Cannot constrain B/2Q to zero");
+        msg.exec();
+        return 1;
+    } else {
+        //    broydn(x,2,&check,BQfuncQST3);
+        BQfuncQST3(2, x, fbroydn);
+        if (check) {
+            QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "Convergence problems");
+            msg.exec();
+            model->getParameterSet()->setConstraintInfo("Unable to Constrain S/T^3 and B/2Q");
+            model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setStatus("(Unable to constrain)");
+            model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->setStatus("(Unable to constrain)");
+            model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setValue(0.);
+            model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->setValue(0.);
+            return 1;
+        } else {
+            model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setValue(x[1]);
+            model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->setValue(x[2]);
+            model->getParameterSet()->setConstraintInfo("S/T^3 and B/2Q Successfully Constrained");
+            model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setStatus("(*CONSTRAINED*)");
+            model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->setStatus("(*CONSTRAINED*)");
+            return 0;
+        }
+    }
 }

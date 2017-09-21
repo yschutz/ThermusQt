@@ -141,7 +141,7 @@ void NewParticleDialog::newEntry(ParticlesDBManager::ENTRY en, bool readonly)
    // add a new parameter
     QMetaEnum metaEnum = QMetaEnum::fromType<ParticlesDBManager::ENTRY>();
     QString labelText    = metaEnum.valueToKey(en);
-    labelText.remove(0,1).toLower();
+    labelText = labelText.remove(0,1).toLower();
 
     QHBoxLayout* oneEntryLayout = new QHBoxLayout;
     oneEntryLayout->addWidget(new QLabel(labelText), Qt::AlignRight);

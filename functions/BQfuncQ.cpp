@@ -13,8 +13,6 @@ void BQfuncQ(int n, double x[], double f[])
   gCheck = gModelBQConQ->primPartDens();
 
   double y[1];
- 
   y[0] = gModelBQConQ->getParameterSet()->getB2Q();
-
   f[1] = (gModelBQConQ->getBaryon() / 2. / gModelBQConQ->getCharge() - y[0]) / y[0];
 }

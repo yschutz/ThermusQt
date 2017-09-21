@@ -207,7 +207,7 @@ void TTMThermalModelBQ::generateEntropyDens()
 
     mEntropy = 0.;
     for (TTMDensObj* dens : mDensTable) {
-        int part = dens->GetID();
+        int part = dens->getID();
         double corrFactor;
         double strange = ParticlesDBManager::Instance().getS(part);
 
@@ -233,17 +233,17 @@ void TTMThermalModelBQ::generateEntropyDens()
             TTMParameterSetBSQ pGC(mPar->getT(), mPar->getMuB(), 0., mPar->getMuQ(), mPar->getGammas());
             QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part, &pGC));
 
-            if (mNonStrangeQStats)
-                if(width == 0 || !mWidth){
+            if (mNonStrangeQStats) {
+                if(width == 0 || !mWidth)
                     partEntropy = ptr->entropyQStatNoWidth();
-                    else
+                else
                     partEntropy = ptr->entropyQStatWidth();
-                } else {
-                    if(width == 0 || !mWidth)
-                        partEntropy = ptr->entropyBoltzmannNoWidth();
-                    else
-                        partEntropy = ptr->entropyBoltzmannWidth();
-                }
+            } else {
+                if(width == 0 || !mWidth)
+                    partEntropy = ptr->entropyBoltzmannNoWidth();
+                else
+                    partEntropy = ptr->entropyBoltzmannWidth();
+            }
         } else {
             QScopedPointer<TTMThermalParticleBQ> ptr(new TTMThermalParticleBQ(part, mPar, corrFactor));
             double partEnergy;
@@ -318,7 +318,7 @@ void TTMThermalModelBQ::generatePressure()
     mPressure = 0.;
 
     for (TTMDensObj* dens : mDensTable) {
-        int part = dens->GetID();
+        int part = dens->getID();
         double corrFactor;
         double strange = ParticlesDBManager::Instance().getS(part);
 
@@ -339,12 +339,12 @@ void TTMThermalModelBQ::generatePressure()
 
         double partPressure;
 
+        double width = ParticlesDBManager::Instance().getWidth(part);
+
+
         if(strange == 0. && mNonStrangeQStats) {
             TTMParameterSetBSQ pGC(mPar->getT(), mPar->getMuB(), 0., mPar->getMuQ(), mPar->getGammas());
             QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part, &pGC));
-
-            double width = ParticlesDBManager::Instance().getWidth(part);
-
             if(width== 0 || !mWidth)
                 partPressure = ptr->pressureQStatNoWidth();
             else

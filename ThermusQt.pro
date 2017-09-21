@@ -56,7 +56,19 @@ SOURCES += main.cpp\
     functions/BQConstrainQNetBDens.cpp \
     functions/BQConstrainQPercolation.cpp \
     functions/BQfuncQPercolation.cpp \
-    functions/BQConstrainQST3.cpp
+    functions/BQConstrainQST3.cpp \
+    functions/BQConstrainST3.cpp \
+    functions/BQfuncST3.cpp \
+    functions/BQConstrainBDens.cpp \
+    functions/BQfuncBDens.cpp \
+    functions/BQConstrainQBDens.cpp \
+    functions/BQfuncQBDens.cpp \
+    functions/BQfuncQEN.cpp \
+    functions/BQfuncEN.cpp \
+    functions/BQfuncQNetBDens.cpp \
+    functions/BQfuncQST3.cpp \
+    functions/functest.cpp \
+    functions/broyden.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \

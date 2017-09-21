@@ -1,48 +1,51 @@
 // Author: Spencer Wheaton 14 July 2004 //
-// Adapted for QT: Yves Schutz September 2017
+// Adapted for Qt: Yves Schutz Septembre 2017
 
-#include "main/TTMParameterSet.h"
+#include "main/TTMParameterSetBQ.h"
 #include "main/TTMThermalModelBQ.h"
+
 #include <QMessageBox>
-#include <QtMath>
 
 
 //void broydn(double x[], int n, int *check,
 //            void (*vecfunc)(int, double [], double []));
 
-void BQfuncQEN(int n, double x[], double f[]);
+void BQfuncQBDens(int n, double x[], double f[]);
 
-TTMThermalModelBQ *gModelBQConQEN;
-double gBQyQEN[1];
+TTMThermalModelBQ *gModelBQConQBDens;
+double gBQyQBDens[1];
 
-int BQConstrainQEN(TTMThermalModelBQ *model, double eovern)
+int BQConstrainQBDens(TTMThermalModelBQ *model, double nb)
 {    
-    gModelBQConQEN = model;
+
+    gModelBQConQBDens = model;
     model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setStatus("");
     model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->setStatus("");
-    int  check=0;
+    int  check = 0;
     double *x, *fbroydn;
 
     //  x=(double*)dvector(1,2);
     //  fbroydn=(double*)dvector(1,2);
 
-    x[1]       = model->getParameterSet()->getMuB();
-    x[2]       = model->getParameterSet()->getMuQ();
-    gBQyQEN[0] = eovern;
+    x[1]          = model->getParameterSet()->getMuB();
+    x[2]          = model->getParameterSet()->getMuQ();
+    gBQyQBDens[0] = nb;
 
-    if (gBQyQEN[0] == 0.) {
-        QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "Cannot constrain E/N to zero");
+    if (gBQyQBDens[0] == 0.) {
+        QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "Cannot constrain nb to zero");
         msg.exec();
         return 1;
-    } else if (model->getParameterSet()->getB2Q() == 0.) {
+    } else if (model->getParameterSet()->getB2Q() == 0.){
         QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "Cannot constrain B/2Q to zero");
+        msg.exec();
         return 1;
     } else {
-        //    broydn(x,2,&check,BQfuncQEN);
-        BQfuncQEN(2, x, fbroydn);
+        //    broydn(x,2,&check,BQfuncQBDens);
+        BQfuncQBDens(2, x, fbroydn);
         if (check) {
-            QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, "Convergence problems");
-            model->getParameterSet()->setConstraintInfo("Unable to Constrain E/N and B/2Q");
+            QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "Convergence problems");
+            msg.exec();
+            model->getParameterSet()->setConstraintInfo("Unable to Constrain nb and B/2Q");
             model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setStatus("(Unable to constrain)");
             model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->setStatus("(Unable to constrain)");
             model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setValue(0.);
@@ -51,7 +54,7 @@ int BQConstrainQEN(TTMThermalModelBQ *model, double eovern)
         } else {
             model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setValue(x[1]);
             model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->setValue(x[2]);
-            model->getParameterSet()->setConstraintInfo("E/N and B/2Q Successfully Constrained");
+            model->getParameterSet()->setConstraintInfo("nb and B/2Q Successfully Constrained");
             model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setStatus("(*CONSTRAINED*)");
             model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->setStatus("(*CONSTRAINED*)");
             return 0;

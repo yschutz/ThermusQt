@@ -33,10 +33,13 @@ public:
     virtual void             generateEntropyDens() = 0;
     virtual int              generateParticleDens() = 0;
     virtual void             generatePressure() = 0;
-    double                   getBaryon() const  { return mBaryon; }
-    double                   getCharge() const  { return mCharge; }
-    double                   getDensity() const { return mDensity; }
+    double                   getBaryon() const       { return mBaryon; }
+    double                   getCharge() const       { return mCharge; }
+    double                   getDensity() const      { return mDensity; }
     TTMDensObj*              getDensities(int pdg) const;
+    QHash<int, TTMDensObj*>  getDensityTable() const { return mDensTable; }
+    double                   getEntropy() const      { return mEntropy; }
+    double                   getEnergy() const       { return mEnergy; }
     virtual TTMParameterSet* getParameterSet() const = 0;
     void                     listDecayContributions(int daughter) const;
     void                     listDecayContributions(int parent, int daughter) const;

@@ -31,11 +31,9 @@ public:
     int  generateParticleDens();
     void generatePressure();
     void listInfo() const;
-
-
+    int  primPartDens();
 
 private:
-    int  primPartDens();
     void term(double *x, double *y, uint m, uint n, double *t);
 
     double             mCorrM1; 	        // canonical correction factor for S=-1 particles

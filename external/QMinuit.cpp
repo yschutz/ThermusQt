@@ -875,10 +875,10 @@ void QMinuit::qmncomd(const char *crdbin, qint32&icondn)
 
     qint32 ierr, ipos, llist, lenbuf, lnc;
     bool leader;
-    QString comand, crdbuf, ctemp;
+    QString comand, ctemp;
 
-    crdbuf = crdbin;
-    crdbuf.toUpper();
+    QString crdbuf(crdbin);
+    crdbuf = crdbuf.toUpper();
     lenbuf = crdbuf.size();
     icondn = 0;
     //*-*-    record not case-sensitive, get upper case, strip leading blanks
@@ -2304,7 +2304,7 @@ void QMinuit::qmnexcm(const char *command, double *plist, qint32 llist, qint32 &
       lk = comand.size();
       if (lk > 20) lk = 20;
       mCword =  comand;
-      mCword.toUpper();
+      mCword = mCword.toUpper();
    //*-*-          Copy the first MAXP arguments into WORD7, making
    //*-*-          sure that WORD7(1)=0 if LLIST=0
       for (iw = 1; iw <= mMaxPar; ++iw) {
@@ -3021,7 +3021,7 @@ void QMinuit::qmnhelp(QString comd)
     //*-*  Global HELP: Summary of all commands
     //*-*  ====================================
     //*-*
-    comd.toUpper();
+    comd = comd.toUpper();
     if( comd.length() == 0 || comd[0] == '*' || comd[0] == '?' || comd[0] == '0' || comd=="HELP" ) {
         qInfo() << "   ==>List of MINUIT Interactive commands:";
         qInfo() << " CLEar     Reset all parameter names and values undefined";

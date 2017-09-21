@@ -16,6 +16,7 @@
 #include <QtMath>
 
 #include <gsl/gsl_sf_bessel.h>
+#include <gsl/gsl_multiroots.h>
 
 #include "main/TTMThermalFit.h"
 #include "main/TTMYield.h"
@@ -26,6 +27,11 @@
 
 #include "functions/FncsThermalModel.h"
 #include "external/f2.h"
+
+struct papa { double a; double b;};
+int funcTest(const gsl_vector* x, void* p, gsl_vector* f);
+void broyden(gsl_vector* x, size_t n, int& status, int (*f)(const gsl_vector* x, void* p, gsl_vector* f));
+
 
 int main(int argc, char *argv[])
 {
@@ -67,16 +73,61 @@ int main(int argc, char *argv[])
 //    qDebug() << result << M_PI << qPow(M_PI, 2) << M_PI_2;
 
 
-    double (*ptr)(double*, double*);
-    ptr = &Test;
-    QScopedPointer<F2> test(new F2("test", ptr, 0, 10, 0, 10, 2));
-    test->setParameters(2, 5);
-    qDebug() <<  test->eval(4, 3);
+//    double (*ptr)(double*, double*);
+//    ptr = &Test;
+//    QScopedPointer<F2> test(new F2("test", ptr, 0, 10, 0, 10, 2));
+//    test->setParameters(2, 5);
+//    qDebug() <<  test->eval(4, 3);
 
-    qDebug() << test->integral(0, 10, 0, 10, 1e-10);
+//    qDebug() << test->integral(0, 10, 0, 10, 1e-10);
 
-    qDebug() << gsl_sf_bessel_Kn(2, 10);
+//    qDebug() << gsl_sf_bessel_Kn(2, 10);
 
 //     qDebug() << Integrate2DLaguerre32Legendre32(test.data(), 0, 2);
+
+//    const size_t n = 2;
+//    struct papa p = {1, 10};
+//    gsl_multiroot_function f;
+//    f.f = &funcTest;
+//    f.n = n;
+//    f.params = &p;
+    double x_init[2] = {-10.0, -5.0};
+    gsl_vector *x = gsl_vector_alloc(2);
+    gsl_vector_set (x, 0, x_init[0]);
+    gsl_vector_set (x, 1, x_init[1]);
+
+//    const gsl_multiroot_fsolver_type *T;
+//    T = gsl_multiroot_fsolver_broyden;
+
+//    gsl_multiroot_fsolver *s;
+//    s = gsl_multiroot_fsolver_alloc(T, n);
+//    gsl_multiroot_fsolver_set (s, &f, x);
+
+//    size_t iter = 0;
+//    int status;
+//    do
+//      {
+//        iter++;
+//         status = gsl_multiroot_fsolver_iterate (s);
+
+////        print_state (iter, s);
+
+//        if (status)   /* check if solver is stuck */
+//          break;
+
+//        status =
+//          gsl_multiroot_test_residual (s->f, 1e-7);
+//      }
+//    while (status == GSL_CONTINUE && iter < 1000);
+
+//    qDebug() << "status = " << gsl_strerror (status);
+//    qDebug() << gsl_vector_get(s->x, 0) << gsl_vector_get(s->x, 1);
+//    qDebug() << gsl_vector_get(s->f, 0) << gsl_vector_get(s->f, 1);
+
+//     gsl_multiroot_fsolver_free (s);
+//     gsl_vector_free (x);
+       int check;
+       broyden(x, 2, check, funcTest);
+
     return a.exec();
 }

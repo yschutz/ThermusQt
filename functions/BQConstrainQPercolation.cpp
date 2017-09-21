@@ -36,8 +36,8 @@ int BQConstrainQPercolation(TTMThermalModelBQ *model)
         model->getParameterSet()->setConstraintInfo("Unable to Constrain to Percolation Model and B/2Q");
         model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setStatus("(Unable to constrain)");
         model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->setStatus("(Unable to constrain)");
-        model->GetParameterSet()->getParameter(TTMParameterSet::kMUB)->setValue(0.);
-        model->GetParameterSet()->getParameter(TTMParameterSet::kMUQ)->setValue(0.);
+        model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setValue(0.);
+        model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->setValue(0.);
         return 1;
     } else {
         model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->setValue(x[1]);

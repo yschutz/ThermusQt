@@ -11,8 +11,8 @@ extern TTMThermalModelBQ *gModelBQConQPercolation;
 
 void BQfuncQPercolation(int n, double x[], double f[])
 {
-    (gModelBQConQPercolation->getParameterSet())->getParameter(1)->setValue(x[1]);
-    (gModelBQConQPercolation->getParameterSet())->getParameter(2)->setValue(x[2]);
+    (gModelBQConQPercolation->getParameterSet())->getParameter(TTMParameterSet::kMUB)->setValue(x[1]);
+    (gModelBQConQPercolation->getParameterSet())->getParameter(TTMParameterSet::kMUQ)->setValue(x[2]);
 
     double y[1];
     y[0]      = gModelBQConQPercolation->getParameterSet()->getB2Q();
@@ -20,7 +20,7 @@ void BQfuncQPercolation(int n, double x[], double f[])
     int check = gModelBQConQPercolation->primPartDens();
 
     if (!check) {
-        gModelBQConQPercolation->GenerateEnergyDens();
+        gModelBQConQPercolation->generateEnergyDens();
         f[1] = (gModelBQConQPercolation->getDensity() - 1.24 / vh *
                 (1. - gModelBQConQPercolation->getBaryon() / gModelBQConQPercolation->getDensity()) - 0.34 /
                 vh * gModelBQConQPercolation->getBaryon() / gModelBQConQPercolation->getDensity()) /
