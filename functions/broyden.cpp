@@ -2,17 +2,17 @@
 
 #include <QDebug>
 
-struct params {int dummy;};
+struct params {double d1; double d2;};
 void broyden(gsl_vector* x, size_t n, int& status, int (*f)(const gsl_vector* x, void* p, gsl_vector* f))
 {
 
     gsl_multiroot_function function;
     function.f = f;
     function.n = n;
-    params p = {0};
+    params p = {1, 10};
     function.params = &p;
 
-    double x_init[2] = {-10.0, -5.0};
+    double x_init[2] = {0.0, 0.0};
 //    gsl_vector *x = gsl_vector_alloc(n);
 
     gsl_vector_set (x, 0, x_init[0]);
@@ -38,8 +38,7 @@ void broyden(gsl_vector* x, size_t n, int& status, int (*f)(const gsl_vector* x,
 
         status =
                 gsl_multiroot_test_residual (s->f, 1e-7);
-    }
-    while (status == GSL_CONTINUE && iter < 1000);
+    } while (status == GSL_CONTINUE && iter < 10);
 
     qDebug() << "status = " << gsl_strerror (status);
     qDebug() << gsl_vector_get(s->x, 0) << gsl_vector_get(s->x, 1);
