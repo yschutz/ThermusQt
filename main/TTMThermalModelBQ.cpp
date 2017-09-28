@@ -442,12 +442,12 @@ void TTMThermalModelBQ::listInfo() const
 }
 
 //__________________________________________________________________________
-int TTMThermalModelBQ::primPartDens()
+bool TTMThermalModelBQ::primPartDens()
 {
     // Calculates the primordial particle densities and populates the density
     // hash table. The parameters are not constrained first!. This is the
     // function used by GenerateParticleDens() and calls term().
-    // Returns 1 if there are problems 0 else.
+    // Returns false if there are problems true else.
 
     qDeleteAll(mDensTable.begin(), mDensTable.end());
     mDensTable.clear();
@@ -480,7 +480,7 @@ int TTMThermalModelBQ::primPartDens()
     if (check) {
         QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, "Chemical Potentials not allowed!");
         msg.exec();
-        return 1;
+        return false;
     } else {
         double z      = 0.;
         double k0     = 0., kp1 = 0., kp2 = 0., kp3 = 0., km1 = 0., km2 = 0., km3 = 0.;
@@ -542,11 +542,11 @@ int TTMThermalModelBQ::primPartDens()
         if (x[0] > xmax || x[1] > xmax || x[2] > xmax ) {
             QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "x's too large");
             msg.exec();
-            return 1;
+            return false;
         } else if (y[0] == 0 || y[1] == 0 || y[2] == 0) {
             QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "y's zero");
             msg.exec();
-            return 1;
+            return false;
         } else {
             double TSPartition3 = 0.0;
             double Tfactorkm1   = 0.0;
@@ -793,7 +793,7 @@ int TTMThermalModelBQ::primPartDens()
             mCharm   = mCplus + mCminus;
             mBeauty  = mbplus + mbminus;
 
-            return 0;
+            return true;
         }
     }
 }

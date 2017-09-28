@@ -91,10 +91,9 @@ int main(int argc, char *argv[])
 //    f.f = &funcTest;
 //    f.n = n;
 //    f.params = &p;
-    double x_init[2] = {-10.0, -5.0};
-    gsl_vector *x = gsl_vector_alloc(2);
-    gsl_vector_set (x, 0, x_init[0]);
-    gsl_vector_set (x, 1, x_init[1]);
+//    double x_init[2] = {-10.0, -5.0};
+//    gsl_vector_set (x, 0, x_init[0]);
+//    gsl_vector_set (x, 1, x_init[1]);
 
 //    const gsl_multiroot_fsolver_type *T;
 //    T = gsl_multiroot_fsolver_broyden;
@@ -126,8 +125,16 @@ int main(int argc, char *argv[])
 
 //     gsl_multiroot_fsolver_free (s);
 //     gsl_vector_free (x);
+    const size_t ndim = 2;
+
+    gsl_vector *x = gsl_vector_alloc(ndim);
+    gsl_vector_set (x, 0, 0.);
+    gsl_vector_set (x, 1, 0.);
+
        int check;
        broyden(x, 2, check, funcTest);
+       qDebug() << gsl_vector_get(x, 0) << gsl_vector_get(x, 1);
+       qDebug() << "status = " << gsl_strerror (check) << check;
 
     return a.exec();
 }

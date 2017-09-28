@@ -1,6 +1,7 @@
 // Author: Spencer Wheaton 14 July 2004 //
 // Adapted for Qt: Yves Schutz Septembre 2017
 
+#include <gsl/gsl_vector.h>
 
 #include "external/particlesdbmanager.h"
 
@@ -14,16 +15,16 @@
 extern TTMThermalModelBQ *gModelBQConQBDens;
 extern double gBQyQBDens[1];
 
-void BQfuncQBDens(int /*n*/, double x[], double f[])
+//__________________________________________________________________________
+void BQfuncQBDens(const gsl_vector *x, void */*p*/, gsl_vector *f)
 {
-    (gModelBQConQBDens->getParameterSet())->getParameter(TTMParameterSet::kMUB)->setValue(x[1]);
-    (gModelBQConQBDens->getParameterSet())->getParameter(TTMParameterSet::kMUQ)->setValue(x[2]);
+    (gModelBQConQBDens->getParameterSet())->getParameter(TTMParameterSet::kMUB)->setValue(gsl_vector_get(x, 0));
+    (gModelBQConQBDens->getParameterSet())->getParameter(TTMParameterSet::kMUQ)->setValue(gsl_vector_get(x, 1));
 
-    double y[1];
-    y[0]      = gModelBQConQBDens->getParameterSet()->getB2Q();
-    int check = gModelBQConQBDens->primPartDens();
+    double y = gModelBQConQBDens->getParameterSet()->getB2Q();
+    bool check = gModelBQConQBDens->primPartDens();
 
-    if (!check) {
+    if (check) {
         double nb = 0.;
         for (TTMDensObj* dens : gModelBQConQBDens->getDensityTable()) {
             int id          = dens->getID();
@@ -32,10 +33,12 @@ void BQfuncQBDens(int /*n*/, double x[], double f[])
                 nb += partdens;
         }
 
-        f[1] = (nb - gBQyQBDens[0]) / gBQyQBDens[0];
-        f[2] = (gModelBQConQBDens->getBaryon() / 2. / gModelBQConQBDens->getCharge() - y[0]) / y[0];
+        gsl_vector_set(f, 0, (nb - gBQyQBDens[0]) / gBQyQBDens[0]);
+        gsl_vector_set(f, 1, (gModelBQConQBDens->getBaryon() / 2. / gModelBQConQBDens->getCharge() - y) / y);
     } else {
-        QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "Prim part dens problems!");
+        QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);
+        msg.setInformativeText("Primary particles density problems!");
         msg.exec();
+        exit(1);
     }
 }

@@ -31,7 +31,7 @@ public:
     int  generateParticleDens();
     void generatePressure();
     void listInfo() const;
-    int  primPartDens();
+    bool primPartDens();
 
 private:
     void term(double *x, double *y, uint m, uint n, double *t);

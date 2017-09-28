@@ -5,9 +5,14 @@
 
 struct papa { double a; double b;};
 
+#include <QMessageBox>
+
 int funcTest(const gsl_vector* x, void* params, gsl_vector* f)
 {
+    int rv = 0;
 
+    bool check = true;
+    if (check) {
     double a = ((struct papa *) params)->a;
     double b = ((struct papa *) params)->b;
 
@@ -20,7 +25,13 @@ int funcTest(const gsl_vector* x, void* params, gsl_vector* f)
     gsl_vector_set (f, 0, y0);
     gsl_vector_set (f, 1, y1);
 
+} else {
 
-
-    return GSL_SUCCESS;
+        rv = 1;
+        QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);
+        msg.setInformativeText("Prim part dens problems!");
+        msg.exec();
+        exit(1);
+    }
+    return rv;
 }

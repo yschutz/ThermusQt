@@ -48,7 +48,7 @@ public:
 
 protected:
     void                     calcWroblewski();
-    virtual int              primPartDens() = 0;
+    virtual bool             primPartDens() = 0;
 
     double                  mBaryon;	   // total baryon density in model
     double                  mBeauty;	   // total beauty density in model

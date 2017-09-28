@@ -65,8 +65,8 @@ def countDecays(name):
 		ndecay = ndecay + 1
 	return ndecay
 #=======================================================================
-def makeDecays(part):
-	filename = os.environ['PARTDIR'] + part.name + "_decay.txt"
+def makeDecays(thermusName, part):
+	filename = os.environ['PARTDIR'] + thermusName + "_decay.txt"
 	if (os.path.isfile(filename)):
 		f = open(filename, 'r')
 	else: 
@@ -443,10 +443,11 @@ def createDB():
 		ndecay = 0
 		if stable == 0:
 			ndecay = countDecays(name)
-		newname = rename(pdg) 
-		if not newname == "":
-			name = newname
-		print ("Adding ", name)
+		pdgName = rename(pdg) 
+		thermusName = name
+		#print ("Adding ", thermusName, pdgName)
+		if not pdgName == "":
+			name = pdgName
 		part = Particle.create(name  = name, 
 	  		pdg       = pdg,
 	  		spin      = spin,
@@ -468,7 +469,7 @@ def createDB():
 	  		radius    = radius,
 	  		ndecay    = ndecay)
 		if stable == 0:
-			makeDecays(part)
+			makeDecays(thermusName, part)
 		if  not (baryon == 0 and charge == 0 and s == 0 and c == 0 and b == 0 and t == 0) :
 			aname = name + '_bar' 
 			newname = arename(-pdg)
@@ -480,7 +481,7 @@ def createDB():
 						aname = name.replace('+', '-')
 					elif name.find('-') != -1:
 						aname = name.replace('-', '+')
-			print ("Adding ", aname)
+			#print ("Adding ", aname)
 			apart = Particle.create(name = aname, 
 				pdg = -part.pdg, 
 				spin = part.spin, 

@@ -1,6 +1,8 @@
 // Author: Spencer Wheaton 14 July 2004 //
 // Adapted for Qt: Yves Schutz Septembre 2017
 
+#include <gsl/gsl_vector.h>
+
 #include "main/TTMParameterSetBQ.h"
 #include "main/TTMThermalModelBQ.h"
 
@@ -9,22 +11,26 @@
 extern TTMThermalModelBQ *gModelBQConQNetBDens;
 extern double gBQyQNetBDens[1];
 
-void BQfuncQNetBDens(int n, double x[], double f[])
+//__________________________________________________________________________
+int BQfuncQNetBDens(const gsl_vector *x, void */*p*/, gsl_vector *f)
 {
-    (gModelBQConQNetBDens->getParameterSet())->getParameter(TTMParameterSet::kMUB)->setValue(x[1]);
-    (gModelBQConQNetBDens->getParameterSet())->getParameter(TTMParameterSet::kMUQ)->setValue(x[2]);
+    int rv = 0;
+    (gModelBQConQNetBDens->getParameterSet())->getParameter(TTMParameterSet::kMUB)->setValue(gsl_vector_get(x, 0));
+    (gModelBQConQNetBDens->getParameterSet())->getParameter(TTMParameterSet::kMUQ)->setValue(gsl_vector_get(x, 1));
 
-    double y[1];
-    y[0]      = gModelBQConQNetBDens->getParameterSet()->getB2Q();
+    double y = gModelBQConQNetBDens->getParameterSet()->getB2Q();
 
-    int check = gModelBQConQNetBDens->primPartDens();
+    bool check = gModelBQConQNetBDens->primPartDens();
 
-    if (!check) {
+    if (check) {
         double nb = gModelBQConQNetBDens->getBaryon();
-        f[1]      = (nb - gBQyQNetBDens[0]) / gBQyQNetBDens[0];
-        f[2]      = (gModelBQConQNetBDens->getBaryon() /2. / gModelBQConQNetBDens->getCharge() - y[0]) / y[0];
+        gsl_vector_set(f, 0, (nb - gBQyQNetBDens[0]) / gBQyQNetBDens[0]);
+        gsl_vector_set(f, 1, (gModelBQConQNetBDens->getBaryon() /2. / gModelBQConQNetBDens->getCharge() - y) / y);
     } else {
-        QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "Prim part dens problems!");
+        QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);
+        msg.setInformativeText("Primary particles density problems!");
         msg.exec();
+        exit(1);
     }
+    return rv;
 }

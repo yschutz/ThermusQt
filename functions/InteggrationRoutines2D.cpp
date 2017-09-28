@@ -1,7 +1,6 @@
 // Author: Spencer Wheaton 14 July 2004 //
 // Adapted for Qt by Yves Schutz: September 2017
 
-#include <QObject.h>
 #include <QtMath>
 
 #include  "external/f2.h"
