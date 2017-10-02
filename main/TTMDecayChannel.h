@@ -21,8 +21,8 @@ class TTMDecayChannel : public QObject
 {
     Q_OBJECT
 public:
-    explicit TTMDecayChannel(QObject* parent = 0);
-    TTMDecayChannel(double fraction, QList<TTMIDObj*>* list, QObject* parent = 0);
+    explicit TTMDecayChannel(QObject* parent = nullptr);
+    TTMDecayChannel(double fraction, QList<TTMIDObj*>* list, QObject* parent = nullptr);
      ~TTMDecayChannel() { }
 
      double            getBRatio() const {return mBRatio;}

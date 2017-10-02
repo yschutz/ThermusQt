@@ -27,7 +27,7 @@ class TTMParticle : public QObject
     friend class TTMParticleSet;
 
 public:
-    explicit TTMParticle(QObject* parent = 0);
+    explicit TTMParticle(QObject* parent = nullptr);
     TTMParticle(TTMParticle &obj, QObject* parent);
     ~TTMParticle();
 

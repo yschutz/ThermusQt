@@ -27,10 +27,9 @@
 
 #include "functions/FncsThermalModel.h"
 #include "external/f2.h"
+#include "functions/FncsConstrain.h"
 
-struct papa { double a; double b;};
-int funcTest(const gsl_vector* x, void* p, gsl_vector* f);
-void broyden(gsl_vector* x, size_t n, int& status, int (*f)(const gsl_vector* x, void* p, gsl_vector* f));
+
 
 
 int main(int argc, char *argv[])
@@ -123,18 +122,23 @@ int main(int argc, char *argv[])
 //    qDebug() << gsl_vector_get(s->x, 0) << gsl_vector_get(s->x, 1);
 //    qDebug() << gsl_vector_get(s->f, 0) << gsl_vector_get(s->f, 1);
 
-//     gsl_multiroot_fsolver_free (s);
-//     gsl_vector_free (x);
+    //     gsl_multiroot_fsolver_free (s);
+    //     gsl_vector_free (x);
     const size_t ndim = 2;
-
     gsl_vector *x = gsl_vector_alloc(ndim);
     gsl_vector_set (x, 0, 0.);
     gsl_vector_set (x, 1, 0.);
+    int check = 0;
+    PARAMETERS p;
+    p.p0 = new TTMThermalModelBQ();
+    p.p1 = 333.;
+    broyden(x, 2, check, p, funcTest);
 
-       int check;
-       broyden(x, 2, check, funcTest);
-       qDebug() << gsl_vector_get(x, 0) << gsl_vector_get(x, 1);
-       qDebug() << "status = " << gsl_strerror (check) << check;
+    double x0 = gsl_vector_get(x, 0);
+    double x1 = gsl_vector_get(x, 1);
+    gsl_vector_free(x);
+    qDebug() << x0 << x1;
+    qDebug() << "status = " << gsl_strerror (check) << check;
 
     return a.exec();
 }

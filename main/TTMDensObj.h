@@ -19,8 +19,8 @@ class TTMDensObj : public QObject
 {
     Q_OBJECT
 public:
-    explicit TTMDensObj(QObject* parent = 0);
-    TTMDensObj(int pdg, QObject* parent = 0);
+    explicit TTMDensObj(QObject* parent = nullptr);
+    TTMDensObj(int pdg, QObject* parent = nullptr);
 
     double                getDecayDensity() const    { return mDecayDensity; }
     double                getFinalDensity() const    { return mDensity + mDecayDensity; }

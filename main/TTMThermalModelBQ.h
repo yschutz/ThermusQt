@@ -11,27 +11,30 @@
 #ifndef TTMTHERMALMODELBQ_H
 #define TTMTHERMALMODELBQ_H
 
+#include "TTMParameterSetBQ.h"
 #include "TTMThermalModel.h"
-
-class TTMParameterSetBQ;
 
 class TTMThermalModelBQ : public TTMThermalModel
 {
 public:
-    TTMThermalModelBQ(QObject* parent = 0);
-    TTMThermalModelBQ(TTMParameterSetBQ *parameters, bool width = true, QObject* parent = 0);
+    TTMThermalModelBQ(QObject* parent = nullptr);
+    TTMThermalModelBQ(TTMParameterSetBQ *parameters, bool width = true, QObject* parent = nullptr);
+    TTMThermalModelBQ(const TTMThermalModelBQ& model);
 
-    int  constrainEoverN(double eovern);
-    int  constrainNetBaryonDensity(double nb);
-    int  constrainPercolation();
-    int  constrainSoverT3(double soverT3);
-    int  constrainTotalBaryonDensity(double nb);
-    void generateEnergyDens();
-    void generateEntropyDens();
-    int  generateParticleDens();
-    void generatePressure();
-    void listInfo() const;
-    bool primPartDens();
+    int                constrainEoverN(double eovern);
+    int                constrainNetBaryonDensity(double nb);
+    int                constrainPercolation();
+    int                constrainSoverT3(double soverT3);
+    int                constrainTotalBaryonDensity(double nb);
+    void               generateEnergyDens();
+    void               generateEntropyDens();
+    int                generateParticleDens();
+    void               generatePressure();
+    TTMParameterSetBQ* getParameterSet() const { return mPar; }
+    void               listInfo() const;
+    bool               primPartDens();
+
+    TTMThermalModelBQ& operator=(TTMThermalModelBQ model);
 
 private:
     void term(double *x, double *y, uint m, uint n, double *t);

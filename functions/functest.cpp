@@ -3,18 +3,28 @@
 
 #include <QDebug>
 
+#include "main/TTMThermalModelBQ.h"
+#include "functions/FncsConstrain.h"
+
+
+
 struct papa { double a; double b;};
 
 #include <QMessageBox>
 
-int funcTest(const gsl_vector* x, void* params, gsl_vector* f)
+int funcTest(const gsl_vector* x, void* p, gsl_vector* f)
 {
     int rv = 0;
+    TTMThermalModelBQ* model = ((PARAMETERS *)p)->p0;
+    double ene = ((PARAMETERS*)p)->p1;
+    model->listInfo();
+    qDebug() << ene;
+
 
     bool check = true;
     if (check) {
-    double a = ((struct papa *) params)->a;
-    double b = ((struct papa *) params)->b;
+    double a = 1;// ((struct papa *) p)->a;
+    double b = 10; // ((struct papa *) p)->b;
 
     const double x0 = gsl_vector_get (x, 0);
     const double x1 = gsl_vector_get (x, 1);

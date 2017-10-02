@@ -25,6 +25,35 @@ TTMThermalModel::TTMThermalModel(QObject *parent) : QObject(parent),
 }
 
 //__________________________________________________________________________
+TTMThermalModel::TTMThermalModel(const TTMThermalModel &model)
+{
+    // coy ctor
+    mBaryon     = model.mBaryon;
+    mBeauty     = model.mBeauty;
+    mBminus     = model.mBminus;
+    mBplus      = model.mBplus;
+    mbminus     = model.mbminus;
+    mbplus      = model.mbplus;
+    mCharge     = model.mCharge;
+    mCharm      = model.mCharm;
+    mCminus     = model.mCminus;
+    mCplus      = model.mCplus;
+    mDensity    = model.mDensity;
+    mDensTable  = model.mDensTable;
+    mDescriptor = model.mDescriptor + " Copy";
+    mEnergy     = model.mEnergy;
+    mEntropy    = model.mEntropy;
+    mPressure   = model.mPressure;
+    mQminus     = model.mQminus;
+    mQplus      = model.mQplus;
+    mSminus     = model.mSminus;
+    mSplus      = model.mSplus;
+    mStrange    = model.mStrange;
+    mWidth      = model.mWidth;
+    mWroblewski = model.mWroblewski;
+}
+
+//__________________________________________________________________________
 TTMThermalModel::~TTMThermalModel()
 {
     //dtor

@@ -27,7 +27,7 @@ public:
     enum ParameterType {kT, kMUB, kMUQ, kGAMMAS, kCRADIUS, kRADIUS, kGAMMAC, kGAMMABEAUTY,
                         kMUS, kMUC, kMUBEAUTY, kPARTYPES};
 
-    explicit TTMParameterSet(QObject *parent = 0);
+    explicit TTMParameterSet(QObject *parent = nullptr);
     ~TTMParameterSet() {qDeleteAll(mPar.begin(), mPar.end()); mPar.clear();}
 
     double           get(ParameterType type) const          { return mPar[type]->getValue(); }

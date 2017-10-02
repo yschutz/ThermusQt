@@ -2,14 +2,15 @@
 
 #include <QDebug>
 
-struct params {double d1; double d2;};
-void broyden(gsl_vector* x, size_t ndim, int& status, int (*myfunction)(const gsl_vector* x, void* p, gsl_vector* f))
+#include "functions/FncsConstrain.h"
+
+void broyden(gsl_vector* x, size_t ndim, int& status, PARAMETERS p, int (*myfunction)(const gsl_vector* x, void* p, gsl_vector* f))
 {
+    // the broyden function to solve mutidimentional equations
 
     gsl_multiroot_function function;
     function.f = myfunction;
     function.n = ndim;
-    params p = {1, 10};
     function.params = &p;
 
     for (size_t i = 0; i < ndim; i++)

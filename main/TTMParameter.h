@@ -17,7 +17,7 @@ class TTMParameter : public QObject
     Q_OBJECT
 
 public:
-    explicit TTMParameter(QObject* parent = 0);
+    explicit TTMParameter(QObject* parent = nullptr);
     TTMParameter(QString name, double value, double error = 0.);
     ~TTMParameter() {}
 

@@ -18,8 +18,8 @@ class TTMParameterSetBSQ;
 class TTMThermalParticleBSQ : public TTMThermalParticle
 {
 public:
-    TTMThermalParticleBSQ(QObject* parent = 0);
-    TTMThermalParticleBSQ(int part, TTMParameterSetBSQ *parm, QObject* parent = 0);
+    TTMThermalParticleBSQ(QObject* parent = nullptr);
+    TTMThermalParticleBSQ(int part, TTMParameterSetBSQ *parm, QObject* parent = nullptr);
     TTMThermalParticleBSQ(TTMThermalParticleBSQ& obj);
 
     double              densityQStatNoWidth();

@@ -18,12 +18,12 @@ class TTMIDObj : public QObject
 {
     Q_OBJECT
 public:
-    explicit TTMIDObj(QObject* parent = 0);
-    TTMIDObj(int x, QObject* parent = 0);
+    explicit TTMIDObj(QObject* parent = nullptr);
+    TTMIDObj(int x, QObject* parent = nullptr);
     ~TTMIDObj() { }
 
     int    getID() const           {return mID;}
-    void   setID(int val)              {mID = val;}
+    void   setID(int val)          {mID = val;}
 
     TTMIDObj& operator=(const TTMIDObj& obj);
 

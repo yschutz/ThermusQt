@@ -23,8 +23,8 @@ class TTMParameterSetBQ;
 class TTMThermalParticleBQ : public TTMThermalParticle
 {
 public:
-    TTMThermalParticleBQ(QObject* parent = 0);
-    TTMThermalParticleBQ(int part, TTMParameterSetBQ *parm, double correction, QObject* parent = 0);
+    TTMThermalParticleBQ(QObject* parent = nullptr);
+    TTMThermalParticleBQ(int part, TTMParameterSetBQ *parm, double correction, QObject* parent = nullptr);
     TTMThermalParticleBQ(TTMThermalParticleBQ& obj);
 
     TTMParameterSetBQ* getParameters() const { return mParameters; }

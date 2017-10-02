@@ -24,7 +24,9 @@ class TTMThermalModel : public QObject
 {
     Q_OBJECT
 public:
-    explicit TTMThermalModel(QObject *parent = 0);
+    explicit TTMThermalModel(QObject *parent = nullptr);
+    TTMThermalModel(const TTMThermalModel& model);
+
     ~TTMThermalModel();
 
     void                     generateDecayPartDens();
@@ -73,7 +75,6 @@ protected:
     double                  mStrange;	   // total strangeness density in model
     bool                    mWidth;        // True if width is to be taken into account
     double                  mWroblewski;   // Wroblewski factor
-
 };
 
 #endif // TTMTHERMALMODEL_H

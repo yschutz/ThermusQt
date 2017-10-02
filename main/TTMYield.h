@@ -23,7 +23,7 @@ class TTMYield : public QObject
 {
     Q_OBJECT
 public:
-    explicit TTMYield(QObject *parent = 0);
+    explicit TTMYield(QObject *parent = nullptr);
     TTMYield(QString name, double exp_val, double exp_err,
              qint32 id1, qint32 id2 = 0, bool fit = true);
 

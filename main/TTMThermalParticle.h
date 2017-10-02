@@ -18,7 +18,7 @@ class TTMThermalParticle : public QObject
 {
     Q_OBJECT
 public:
-    explicit TTMThermalParticle(QObject *parent = 0);
+    explicit TTMThermalParticle(QObject *parent = nullptr);
 
     double                   densityBoltzmannNoWidth();
     double                   densityBoltzmannWidth();

@@ -21,7 +21,7 @@ class TTMThermalFit : public QObject
 {
     Q_OBJECT
 public:
-    explicit TTMThermalFit(QObject *parent = 0);
+    explicit TTMThermalFit(QObject *parent = nullptr);
     ~TTMThermalFit();
 
     void      addYield(TTMYield *yield);

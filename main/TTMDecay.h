@@ -19,8 +19,8 @@ class TTMDecay : public QObject
 {
     Q_OBJECT
 public:
-    explicit TTMDecay(QObject* parent = 0);
-    TTMDecay(qint32 mother, qint32 daughter, double fraction, QObject* parent = 0);
+    explicit TTMDecay(QObject* parent = nullptr);
+    TTMDecay(qint32 mother, qint32 daughter, double fraction, QObject* parent = nullptr);
      ~TTMDecay() { }
 
     double getBRatio() const {return mBRatio;}

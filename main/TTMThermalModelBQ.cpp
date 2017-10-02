@@ -14,7 +14,6 @@
 #include "functions/FncsConstrain.h"
 
 #include "TTMDensObj.h"
-#include "TTMParameterSetBQ.h"
 #include "TTMParameterSetBSQ.h"
 #include "TTMThermalModelBQ.h"
 #include "TTMThermalParticleBQ.h"
@@ -41,6 +40,7 @@ TTMThermalModelBQ::TTMThermalModelBQ(QObject *parent) : TTMThermalModel(parent),
 TTMThermalModelBQ::TTMThermalModelBQ(TTMParameterSetBQ *parameters, bool width, QObject *parent) : TTMThermalModel(parent),
     mNonStrangeQStats(true), mPar(parameters)
 {
+    // ctor
     mDescriptor = "SCanonical";
     mPar   = parameters;
     mWidth = width;
@@ -51,6 +51,54 @@ TTMThermalModelBQ::TTMThermalModelBQ(TTMParameterSetBQ *parameters, bool width, 
     mSplus   = mSminus = mBplus = mBminus = mQplus = mQminus = mCplus = mCminus = mbplus = mbminus = 0.;
     mStrange = mBaryon = mCharge = mDensity = mWroblewski = mCharm = mBeauty = 0.;
     mEnergy  = mEntropy = 0.;
+}
+
+//__________________________________________________________________________
+TTMThermalModelBQ::TTMThermalModelBQ(const TTMThermalModelBQ &model)
+{
+    // copy ctor
+    mCorrM1           = model.mCorrM1;
+    mCorrM2           = model.mCorrM2;
+    mCorrM3           = model.mCorrM3;
+    mCorrP1           = model.mCorrP1;
+    mCorrP2           = model.mCorrP2;
+    mCorrP3           = model.mCorrP3;
+    mExactMuS         = model.mExactMuS;
+    mlnZtot           = model.mlnZtot;
+    mlnZ0	          = model.mlnZ0;
+    mNonStrangeQStats = model.mNonStrangeQStats;
+
+    mPar              = model.mPar; //dangeruous ... implement copy ctor in TTMParameterSetBQ
+
+    mBaryon     = model.mBaryon;
+    mBeauty     = model.mBeauty;
+    mBminus     = model.mBminus;
+    mBplus      = model.mBplus;
+    mbminus     = model.mbminus;
+    mbplus      = model.mbplus;
+    mCharge     = model.mCharge;
+    mCharm      = model.mCharm;
+    mCminus     = model.mCminus;
+    mCplus      = model.mCplus;
+    mDensity    = model.mDensity;
+
+    qDeleteAll(mDensTable.begin(), mDensTable.end());
+    mDensTable.clear();
+    QHashIterator<int, TTMDensObj*> i(model.mDensTable);
+    while (i.hasNext())
+        mDensTable[i.key()] = i.value();
+
+    mDescriptor = model.mDescriptor + " Copy";
+    mEnergy     = model.mEnergy;
+    mEntropy    = model.mEntropy;
+    mPressure   = model.mPressure;
+    mQminus     = model.mQminus;
+    mQplus      = model.mQplus;
+    mSminus     = model.mSminus;
+    mSplus      = model.mSplus;
+    mStrange    = model.mStrange;
+    mWidth      = model.mWidth;
+    mWroblewski = model.mWroblewski;
 }
 
 //__________________________________________________________________________
@@ -367,6 +415,8 @@ void TTMThermalModelBQ::listInfo() const
 {
     // List model information
       //
+
+    qDebug() << "To be implemented";
 
 //      cout <<"  ************************************************************"
 //           <<"*****************"
@@ -796,6 +846,57 @@ bool TTMThermalModelBQ::primPartDens()
             return true;
         }
     }
+}
+
+//__________________________________________________________________________
+TTMThermalModelBQ &TTMThermalModelBQ::operator=(const TTMThermalModelBQ model)
+{
+  // assignation operator
+    TTMThermalModelBQ tmp(model);
+    mCorrM1           = model.mCorrM1;
+    mCorrM2           = model.mCorrM2;
+    mCorrM3           = model.mCorrM3;
+    mCorrP1           = model.mCorrP1;
+    mCorrP2           = model.mCorrP2;
+    mCorrP3           = model.mCorrP3;
+    mExactMuS         = model.mExactMuS;
+    mlnZtot           = model.mlnZtot;
+    mlnZ0	          = model.mlnZ0;
+    mNonStrangeQStats = model.mNonStrangeQStats;
+
+    mPar              = model.mPar; //dangeruous ... implement copy ctor in TTMParameterSetBQ
+
+    mBaryon     = model.mBaryon;
+    mBeauty     = model.mBeauty;
+    mBminus     = model.mBminus;
+    mBplus      = model.mBplus;
+    mbminus     = model.mbminus;
+    mbplus      = model.mbplus;
+    mCharge     = model.mCharge;
+    mCharm      = model.mCharm;
+    mCminus     = model.mCminus;
+    mCplus      = model.mCplus;
+    mDensity    = model.mDensity;
+
+    qDeleteAll(mDensTable.begin(), mDensTable.end());
+    mDensTable.clear();
+    QHashIterator<int, TTMDensObj*> i(model.mDensTable);
+    while (i.hasNext())
+        mDensTable[i.key()] = i.value(); // dangeruous two objects own same TTMDensObj*
+
+    mDescriptor = model.mDescriptor + " Copy";
+    mEnergy     = model.mEnergy;
+    mEntropy    = model.mEntropy;
+    mPressure   = model.mPressure;
+    mQminus     = model.mQminus;
+    mQplus      = model.mQplus;
+    mSminus     = model.mSminus;
+    mSplus      = model.mSplus;
+    mStrange    = model.mStrange;
+    mWidth      = model.mWidth;
+    mWroblewski = model.mWroblewski;
+
+    return *this;
 }
 
 //__________________________________________________________________________

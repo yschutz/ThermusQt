@@ -21,8 +21,8 @@ class TTMParticleSet : public QObject
 {
     Q_OBJECT
 public:
-    explicit TTMParticleSet(QObject* parent = 0);
-    TTMParticleSet(QString file, bool CB = true, QObject *parent = 0); // BH 26/04/2014
+    explicit TTMParticleSet(QObject* parent = nullptr);
+    TTMParticleSet(QString file, bool CB = true, QObject *parent = nullptr); // BH 26/04/2014
 //    TTMParticleSet(TDatabasePDG *pdg);
     TTMParticleSet(TTMParticleSet &obj);
     ~TTMParticleSet();
