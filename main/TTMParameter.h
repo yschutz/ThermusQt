@@ -19,6 +19,7 @@ class TTMParameter : public QObject
 public:
     explicit TTMParameter(QObject* parent = nullptr);
     TTMParameter(QString name, double value, double error = 0.);
+    TTMParameter(const TTMParameter &par);
     ~TTMParameter() {}
 
     void    constrain();

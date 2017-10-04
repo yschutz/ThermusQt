@@ -22,19 +22,19 @@ public:
     TTMThermalParticleBSQ(int part, TTMParameterSetBSQ *parm, QObject* parent = nullptr);
     TTMThermalParticleBSQ(TTMThermalParticleBSQ& obj);
 
-    double              densityQStatNoWidth();
-    double              densityQStatWidth();
-    double              energyQStatNoWidth();
-    double              energyQStatWidth();
-    double              entropyBoltzmannNoWidth();
-    double              entropyBoltzmannWidth();
-    double              entropyQStatNoWidth();
-    double              entropyQStatWidth();
+    double              densityQStatNoWidth(double exclVolPressure = 0.0);
+    double              densityQStatWidth(double exclVolPressure = 0.0);
+    double              energyQStatNoWidth(double exclVolPressure = 0.0);
+    double              energyQStatWidth(double exclVolPressure = 0.0);
+    double              entropyBoltzmannNoWidth(double exclVolPressure = 0.0);
+    double              entropyBoltzmannWidth(double exclVolPressure = 0.0);
+    double              entropyQStatNoWidth(double exclVolPressure = 0.0);
+    double              entropyQStatWidth(double exclVolPressure = 0.0);
     TTMParameterSetBSQ* getParameters() { return mParameters; }
     bool                parametersAllowed();	      // checks for Bose-Einstein Condensation
-    double              pressureQStatNoWidth();
-    double              pressureQStatWidth();
-    void                updateMembers();
+    double              pressureQStatNoWidth(double exclVolPressure = 0.0);
+    double              pressureQStatWidth(double exclVolPressure = 0.0);
+    void                updateMembers(double exclVolPressure = 0.0);
 
 private:
     TTMParameterSetBSQ *mParameters;    // pointer to thermal parameters

@@ -28,7 +28,7 @@ public:
     TTMThermalParticleBQ(TTMThermalParticleBQ& obj);
 
     TTMParameterSetBQ* getParameters() const { return mParameters; }
-    void               updateMembers();
+    void               updateMembers(double exclVolPressure = 0.0);
 
     TTMThermalParticleBQ& operator=(TTMThermalParticleBQ& obj);
 

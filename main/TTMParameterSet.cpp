@@ -17,6 +17,21 @@ TTMParameterSet::TTMParameterSet(QObject *parent) : QObject(parent),
 }
 
 //__________________________________________________________________________
+TTMParameterSet::TTMParameterSet(const TTMParameterSet &set)
+{
+    // copy ctor
+
+    mB2Q = set.mB2Q;
+
+    for (TTMParameter* par : set.mPar)
+        mPar.append(new TTMParameter(par));
+
+    mConstraintInfo = set.mConstraintInfo;
+
+    setParent((set.parent()));
+}
+
+//__________________________________________________________________________
 QString TTMParameterSet::name(TTMParameterSet::ParameterType type)
 {
     // names the parameters

@@ -29,8 +29,7 @@ class TTMParameterSetBSQ : public TTMParameterSet
 {
 
 public:
-
-
+    TTMParameterSetBSQ();
     TTMParameterSetBSQ(double temp, double mub,
                        double mus, double muq, double gs,
                        double r = 0., double muc = 0., double gc = 1., double mubeauty = 0., double gb = 1.,
@@ -40,20 +39,14 @@ public:
                        double muq_error = 0., double gs_error = 0.,
                        double r_error = 0., double muc_error = 0., double gc_error = 0.,
                        double mubeauty_error = 0., double gb_error = 0.);
-    TTMParameterSetBSQ();
-    ~TTMParameterSetBSQ() { }
+    TTMParameterSetBSQ(const TTMParameterSetBSQ& set);
 
     void   constrain(ParameterType type, double x = 0.);
     void   fit(ParameterType type, double start, double min = 0.050, double max = 0.180, double step = 0.001) { mPar[type]->fit(start, min, max, step); }
     void   fix(ParameterType type, double value, double error = 0.) { mPar[type]->fix(value, error); }
-//    double get(ParameterType type) const                            { return mPar[type]->getValue(); }
-//    double getB2Q() const                                           {return mB2Q;}
     bool   getConstrain(ParameterType type) const                   { return mConstrain[type]; }
     double getDens(ParameterType type) const                        { return mDens[type]; }
-//    double getRadius() const                                        {return mPar[kRADIUS]->getValue();}
     void   list();
-//    void   set(ParameterType type, double x)                        {mPar[type]->setValue(x);}
-//    void   setB2Q(double x)                                         {mB2Q = x;}
 
     TTMParameterSetBSQ& operator=(const TTMParameterSetBSQ& obj);
 

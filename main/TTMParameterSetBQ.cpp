@@ -12,7 +12,7 @@ TTMParameterSetBQ::TTMParameterSetBQ()
 {
     // ctor
     // Sets parameter names and values and errors to 0.
-      //
+    //
 
       mB2Q = 0.;
       mS   = 0.;
@@ -59,6 +59,25 @@ TTMParameterSetBQ::TTMParameterSetBQ(double temp, double mub, double muq, double
 }
 
 //__________________________________________________________________________
+TTMParameterSetBQ::TTMParameterSetBQ(const TTMParameterSetBQ &set)
+{
+    // copy ctor
+    mB2Q                = set.getB2Q();
+    mS                  = set.getS();
+    mConstraintInfo     = set.getConstraintInfo();
+    mMuQConstrain       = set.getMuQConstrain();
+    mCorrRConstrain     = set.getCorrRConstrain();
+    mPar[kT]            = set.getParameter(kT);
+    mPar[kMUB]          = set.getParameter(kMUB);
+    mPar[kMUQ]          = set.getParameter(kMUQ);
+    mPar[kGAMMAS]       = set.getParameter(kGAMMAS);
+    mPar[kCRADIUS]      = set.getParameter(kCRADIUS);
+    mPar[kRADIUS]       = set.getParameter(kRADIUS);
+
+    setParent(set.parent());
+}
+
+//__________________________________________________________________________
 void TTMParameterSetBQ::conserveSGlobally()
 {
     // Changes the correlation radius to a constrained type parameter.
@@ -84,16 +103,19 @@ TTMParameterSetBQ &TTMParameterSetBQ::operator=(const TTMParameterSetBQ &obj)
     // assign operator
     if (this == &obj) return *this;
 
-    mB2Q = obj.getB2Q();
-    mS = obj.getS();
+    mB2Q                = obj.getB2Q();
+    mS                  = obj.getS();
     mConstraintInfo     = obj.getConstraintInfo();
     mMuQConstrain       = obj.getMuQConstrain();
     mCorrRConstrain     = obj.getCorrRConstrain();
-    mPar[kT]       = obj.getParameter(kT);
-    mPar[kMUB]     = obj.getParameter(kMUB);
-    mPar[kMUQ]     = obj.getParameter(kMUQ);
-    mPar[kGAMMAS]  = obj.getParameter(kGAMMAS);
-    mPar[kCRADIUS] = obj.getParameter(kCRADIUS);
-    mPar[kRADIUS]  = obj.getParameter(kRADIUS);
+    mPar[kT]            = obj.getParameter(kT);
+    mPar[kMUB]          = obj.getParameter(kMUB);
+    mPar[kMUQ]          = obj.getParameter(kMUQ);
+    mPar[kGAMMAS]       = obj.getParameter(kGAMMAS);
+    mPar[kCRADIUS]      = obj.getParameter(kCRADIUS);
+    mPar[kRADIUS]       = obj.getParameter(kRADIUS);
+
+    setParent(obj.parent());
+
     return *this;
 }

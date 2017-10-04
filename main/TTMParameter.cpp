@@ -35,7 +35,23 @@ TTMParameter::TTMParameter(QString name, double value, double error)
      // making it of "FIXED" type. Use Constrain() or Fit(...) to change
      // its type
 
-     setParameter(name, value, error);
+    setParameter(name, value, error);
+}
+
+//__________________________________________________________________________
+TTMParameter::TTMParameter(const TTMParameter& par)
+{
+    // copy ctor
+    mError  = par.mError;
+    mFlag   = par.mFlag;
+    mMax    = par.mMax ;
+    mMin    = par.mMin ;
+    mStatus = par.mStatus ;
+    mStart  = par.mStart ;
+    mStep   = par.mStep ;
+    mValue  = par.mValue ;
+
+    setParent(par.parent());
 }
 
 //__________________________________________________________________________

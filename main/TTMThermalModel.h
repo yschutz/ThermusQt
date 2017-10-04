@@ -26,7 +26,6 @@ class TTMThermalModel : public QObject
 public:
     explicit TTMThermalModel(QObject *parent = nullptr);
     TTMThermalModel(const TTMThermalModel& model);
-
     ~TTMThermalModel();
 
     void                     generateDecayPartDens();
@@ -43,6 +42,10 @@ public:
     double                   getEntropy() const      { return mEntropy; }
     double                   getEnergy() const       { return mEnergy; }
     virtual TTMParameterSet* getParameterSet() const = 0;
+    double                   getPressure() const     { return mPressure; }
+    double                   getSminus() const       { return mSminus; }
+    double                   getSplus() const        { return mSplus; }
+    double                   getStrange() const      { return mStrange; }
     void                     listDecayContributions(int daughter) const;
     void                     listDecayContributions(int parent, int daughter) const;
     virtual void             listInfo() const = 0;

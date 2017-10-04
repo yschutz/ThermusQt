@@ -353,6 +353,15 @@ int ParticlesDBManager::getPDG(int id) const
 }
 
 //__________________________________________________________________________
+double ParticlesDBManager::getRadius(int pdg) const
+{
+    // gets the radius for the given particle
+    double rv = 0.0;
+    rv = getPartParameter(pdg, kRADIUS, "Thermus").toDouble();
+    return rv;
+}
+
+//__________________________________________________________________________
 double ParticlesDBManager::getS(int pdg) const
 {
     // gets the S of the given particle

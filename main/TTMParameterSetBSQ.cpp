@@ -12,6 +12,23 @@
 #include <QDebug>
 
 //__________________________________________________________________________
+TTMParameterSetBSQ::TTMParameterSetBSQ()
+{
+    // default ctor
+    mB2Q = 0.;
+
+    for (int index = 0; index < kPARTYPES; index++)
+        mPar.append(new TTMParameter);
+
+    for (qint32 type = 0; type < kPARTYPES; type++) {
+        mPar[type]->setParameter(name((ParameterType)type), 0.0, 0.0);
+        mDens[type] = 0.0;
+        mConstrain[type] = false;
+    }
+    mConstraintInfo = "Parameters unconstrained";
+}
+
+//__________________________________________________________________________
 TTMParameterSetBSQ::TTMParameterSetBSQ(double temp, double mub, double mus, double muq, double gs, double r,
                                        double muc, double gc, double mubeauty, double gb, double b2q, double s, double c, double beauty,
                                        double temp_error, double mub_error, double mus_error, double muq_error, double gs_error, double r_error,
@@ -59,20 +76,20 @@ TTMParameterSetBSQ::TTMParameterSetBSQ(double temp, double mub, double mus, doub
 }
 
 //__________________________________________________________________________
-TTMParameterSetBSQ::TTMParameterSetBSQ()
+TTMParameterSetBSQ::TTMParameterSetBSQ(const TTMParameterSetBSQ &set)
 {
-    // default ctor
-    mB2Q = 0.;
+    // copy ctor
+    mB2Q               = set.getB2Q();
 
-    for (int index = 0; index < kPARTYPES; index++)
-        mPar.append(new TTMParameter);
-
-    for (qint32 type = 0; type < kPARTYPES; type++) {
-        mPar[type]->setParameter(name((ParameterType)type), 0.0, 0.0);
-        mDens[type] = 0.0;
-        mConstrain[type] = false;
+    for (int type = 0; type < kPARTYPES; type++) {
+        mPar.append(new TTMParameter(set.mPar.at(type)));
+        mDens[(ParameterType)type]      = set.get((ParameterType)type);
+        mConstrain[(ParameterType)type] = set.getConstrain((ParameterType)type);
     }
-    mConstraintInfo = "Parameters unconstrained";
+
+    mConstraintInfo    = set.getConstraintInfo();
+
+    setParent(set.parent());
 }
 
 //__________________________________________________________________________
@@ -122,17 +139,15 @@ TTMParameterSetBSQ &TTMParameterSetBSQ::operator=(const TTMParameterSetBSQ &obj)
 
     mB2Q               = obj.getB2Q();
 
-    for (int index = 0; index < kPARTYPES; index++)
-        mPar.append(new TTMParameter);
-
     for (qint32 type = 0; type < kPARTYPES; type++) {
-        mPar[(ParameterType)type] =  obj.getParameter((ParameterType)type);
-        mDens[(ParameterType)type] = obj.get((ParameterType)type);
+        mPar.append(new TTMParameter(obj.mPar.at(type)));
+        mDens[(ParameterType)type]      = obj.get((ParameterType)type);
         mConstrain[(ParameterType)type] = obj.getConstrain((ParameterType)type);
-        mDens[(ParameterType)type] = obj.getDens((ParameterType)type);
     }
 
     mConstraintInfo    = obj.getConstraintInfo();
+
+    setParent((obj.parent()));
 
     return *this;
 }

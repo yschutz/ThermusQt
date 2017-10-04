@@ -29,6 +29,7 @@ public:
 
     explicit TTMParameterSet(QObject *parent = nullptr);
     ~TTMParameterSet() {qDeleteAll(mPar.begin(), mPar.end()); mPar.clear();}
+    TTMParameterSet(const TTMParameterSet& set);
 
     double           get(ParameterType type) const          { return mPar[type]->getValue(); }
     double           getB2Q() const                         { return mB2Q; }

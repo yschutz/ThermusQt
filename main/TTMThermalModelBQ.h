@@ -20,6 +20,7 @@ public:
     TTMThermalModelBQ(QObject* parent = nullptr);
     TTMThermalModelBQ(TTMParameterSetBQ *parameters, bool width = true, QObject* parent = nullptr);
     TTMThermalModelBQ(const TTMThermalModelBQ& model);
+    ~TTMThermalModelBQ();
 
     int                constrainEoverN(double eovern);
     int                constrainNetBaryonDensity(double nb);
@@ -52,5 +53,4 @@ private:
     TTMParameterSetBQ* mPar;                // the parameters set
 
 };
-
 #endif // TTMTHERMALMODELBQ_H

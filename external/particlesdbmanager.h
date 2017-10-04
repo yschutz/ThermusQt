@@ -37,6 +37,7 @@ public:
     int                        getPDG(QString name) const;
     int                        getPDG(int id) const;
     QString                    getPDGDBName() const { return mkPDGName; }
+    double                     getRadius(int pdg) const;
     double                     getS(int pdg) const;
     double                     getSContent(int pdg) const;
     double                     getSpin(int pdg) const;

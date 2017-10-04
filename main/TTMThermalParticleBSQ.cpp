@@ -48,12 +48,12 @@ TTMThermalParticleBSQ::TTMThermalParticleBSQ(TTMThermalParticleBSQ& obj)
 }
 
 //__________________________________________________________________________
-double TTMThermalParticleBSQ::densityQStatNoWidth()
+double TTMThermalParticleBSQ::densityQStatNoWidth(double exclVolPressure)
 {
     // Primordial Particle density assuming no width and Quantum stats
     //
 
-    updateMembers();
+    updateMembers(exclVolPressure);
     double lDensity = 0;
 
     int stat    = ParticlesDBManager::Instance().getStat(mParticle);
@@ -69,7 +69,8 @@ double TTMThermalParticleBSQ::densityQStatNoWidth()
             } else
                 lDensity = 0;
         } else {
-            QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, "T=0 analytical solution requires Quantum stats");
+            QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, Q_FUNC_INFO);
+            msg.setInformativeText("T=0 analytical solution requires Quantum stats");
             msg.exec();
             lDensity = 0;
         }
@@ -100,11 +101,11 @@ double TTMThermalParticleBSQ::densityQStatNoWidth()
 }
 
 //__________________________________________________________________________
-double TTMThermalParticleBSQ::densityQStatWidth()
+double TTMThermalParticleBSQ::densityQStatWidth(double exclVolPressure)
 {
     // Primordial Particle density assuming finite width and Quantum stats
 
-    updateMembers();
+    updateMembers(exclVolPressure);
     double lDensity = 0.0;
 
     int stat         = ParticlesDBManager::Instance().getStat(mParticle);
@@ -149,12 +150,12 @@ double TTMThermalParticleBSQ::densityQStatWidth()
 }
 
 //__________________________________________________________________________
-double TTMThermalParticleBSQ::energyQStatNoWidth()
+double TTMThermalParticleBSQ::energyQStatNoWidth(double exclVolPressure)
 {
     // Primordial Energy density contribution assuming no width and
     // Quantum stats
 
-    updateMembers();
+    updateMembers(exclVolPressure);
     double lEnergy = 0.0;
 
     int stat    = ParticlesDBManager::Instance().getStat(mParticle);
@@ -171,7 +172,8 @@ double TTMThermalParticleBSQ::energyQStatNoWidth()
             } else
                 lEnergy = 0;
         } else {
-            QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, "T=0 analytical solution requires Quantum stats");
+            QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, Q_FUNC_INFO);
+            msg.setInformativeText("T=0 analytical solution requires Quantum stats");
             msg.exec();
             lEnergy = 0;
         }
@@ -200,12 +202,12 @@ double TTMThermalParticleBSQ::energyQStatNoWidth()
 }
 
 //__________________________________________________________________________
-double TTMThermalParticleBSQ::energyQStatWidth()
+double TTMThermalParticleBSQ::energyQStatWidth(double exclVolPressure)
 {
     // Primordial Energy density contribution assuming finite width and
     // Quantum stats
 
-    updateMembers();
+    updateMembers(exclVolPressure);
     double lEnergy = 0.0;
 
     int stat         = ParticlesDBManager::Instance().getStat(mParticle);
@@ -250,12 +252,12 @@ double TTMThermalParticleBSQ::energyQStatWidth()
 }
 
 //__________________________________________________________________________
-double TTMThermalParticleBSQ::entropyBoltzmannNoWidth()
+double TTMThermalParticleBSQ::entropyBoltzmannNoWidth(double exclVolPressure)
 {
     // Primordial Entropy density contribution assuming no width and
     // Boltzmann stats
 
-    updateMembers();
+    updateMembers(exclVolPressure);
 
     return 1. / (2. * qPow(M_PI, 2)) * mG * mDeg * qPow(mM, 2) *
             mT * ((4. - mMu / mT) * gsl_sf_bessel_Kn(2, mM / mT) + mM / mT *
@@ -263,12 +265,12 @@ double TTMThermalParticleBSQ::entropyBoltzmannNoWidth()
 }
 
 //__________________________________________________________________________
-double TTMThermalParticleBSQ::entropyBoltzmannWidth()
+double TTMThermalParticleBSQ::entropyBoltzmannWidth(double exclVolPressure)
 {
     // Primordial Entropy density contribution assuming finite width and
     // Boltzmann stats
 
-    updateMembers();
+    updateMembers(exclVolPressure);
     double lEntropy  = 0.0;
     double width     = ParticlesDBManager::Instance().getWidth(mParticle);
 
@@ -298,12 +300,12 @@ double TTMThermalParticleBSQ::entropyBoltzmannWidth()
 }
 
 //__________________________________________________________________________
-double TTMThermalParticleBSQ::entropyQStatNoWidth()
+double TTMThermalParticleBSQ::entropyQStatNoWidth(double exclVolPressure)
 {
     // Primordial Entropy density contribution assuming no width and
     // Quantum stats
 
-    updateMembers();
+    updateMembers(exclVolPressure);
     double lEntropy = 0;
 
     int stat = ParticlesDBManager::Instance().getStat(mParticle);
@@ -330,12 +332,12 @@ double TTMThermalParticleBSQ::entropyQStatNoWidth()
 }
 
 //__________________________________________________________________________
-double TTMThermalParticleBSQ::entropyQStatWidth()
+double TTMThermalParticleBSQ::entropyQStatWidth(double exclVolPressure)
 {
     // Primordial Entropy density contribution assuming finite width and
     // Quantum stats
 
-    updateMembers();
+    updateMembers(exclVolPressure);
     double lEntropy = 0;
     int stat        = ParticlesDBManager::Instance().getStat(mParticle);
 
@@ -389,8 +391,8 @@ bool TTMThermalParticleBSQ::parametersAllowed()
         if (qExp((mM - mMu) / mT) > mG) {
             return true;
         } else {
-            QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO,
-                            QString("Bose-Einstein Condensation of %1").arg(ParticlesDBManager::Instance().getName(mParticle)));
+            QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, Q_FUNC_INFO);
+            msg.setInformativeText(QString("Bose-Einstein Condensation of %1").arg(ParticlesDBManager::Instance().getName(mParticle)));
             msg.exec();
             return false;
         }
@@ -399,11 +401,11 @@ bool TTMThermalParticleBSQ::parametersAllowed()
 }
 
 //__________________________________________________________________________
-double TTMThermalParticleBSQ::pressureQStatNoWidth()
+double TTMThermalParticleBSQ::pressureQStatNoWidth(double exclVolPressure)
 {
     // Pressure contribution assuming no width and Quantum stats
 
-    updateMembers();
+    updateMembers(exclVolPressure);
     double lPressure = 0.;
     int stat         = ParticlesDBManager::Instance().getStat(mParticle);
 
@@ -431,11 +433,11 @@ double TTMThermalParticleBSQ::pressureQStatNoWidth()
 }
 
 //__________________________________________________________________________
-double TTMThermalParticleBSQ::pressureQStatWidth()
+double TTMThermalParticleBSQ::pressureQStatWidth(double exclVolPressure)
 {
     // Pressure contribution assuming finite width and Quantum stats
 
-    updateMembers();
+    updateMembers(exclVolPressure);
     double lPressure = 0;
     int stat         = ParticlesDBManager::Instance().getStat(mParticle);
 
@@ -479,54 +481,70 @@ double TTMThermalParticleBSQ::pressureQStatWidth()
 }
 
 //__________________________________________________________________________
-void TTMThermalParticleBSQ::updateMembers()
+void TTMThermalParticleBSQ::updateMembers(double exclVolPressure)
 {
-    mDeg            = ParticlesDBManager::Instance().getSpin(mParticle);
-    mM              = ParticlesDBManager::Instance().getMass(mParticle);
-    double B        =  ParticlesDBManager::Instance().getBaryon(mParticle);
-    double S        = ParticlesDBManager::Instance().getS(mParticle);
-    double Q        = ParticlesDBManager::Instance().getCharge(mParticle);
-    double C        = ParticlesDBManager::Instance().getCharm(mParticle);
-    double b        = ParticlesDBManager::Instance().getBeauty(mParticle);
+    mDeg    = ParticlesDBManager::Instance().getSpin(mParticle);
+    mM      = ParticlesDBManager::Instance().getMass(mParticle);
+    mB      = ParticlesDBManager::Instance().getBaryon(mParticle);
+    mS      = ParticlesDBManager::Instance().getS(mParticle);
+    mQ      = ParticlesDBManager::Instance().getCharge(mParticle);
+    mC      = ParticlesDBManager::Instance().getCharm(mParticle);
+    mBeauty = ParticlesDBManager::Instance().getBeauty(mParticle);
 
-    mT = mParameters->getT();
+    mT        = mParameters->getT();
+    mMuB      = mParameters->getMuB();
+    mMuS      = mParameters->getMuS();
+    mMuQ      = mParameters->getMuQ();
+    mMuC      = mParameters->getMuC();
+    mMuBeauty = mParameters->getMuBeauty();
 
-
-    double muB = mParameters->getMuB();
-    double muS = mParameters->getMuS();
-    double muQ = mParameters->getMuQ();
-    double muC = mParameters->getMuC();
-    double mub = mParameters->getMuBeauty();
-
-    mMu = B * muB + S * muS + Q * muQ + C * muC + b * mub;
+    mMu = mB * mMuB + mS * mMuS + mQ * mMuQ + mC * mMuC + mBeauty * mMuBeauty;
 
     double SContent = ParticlesDBManager::Instance().getSContent(mParticle);
     double gammas = mParameters->getGammas();
     double Gs;
 
-     double CContent = ParticlesDBManager::Instance().getCContent(mParticle);
-     double gammac = mParameters->getGammac();
-     double Gc;
+    double CContent = ParticlesDBManager::Instance().getCContent(mParticle);
+    double gammac = mParameters->getGammac();
+    double Gc;
 
-     double bContent = ParticlesDBManager::Instance().getBContent(mParticle);
-     double gammab = mParameters->getGammab();
-     double Gb;
+    double bContent = ParticlesDBManager::Instance().getBContent(mParticle);
+    double gammab = mParameters->getGammab();
+    double Gb;
 
-     if (SContent != 0.0)
-       Gs = qPow(gammas, SContent);
-     else
-       Gs = 1.0;
+    if (SContent != 0.0)
+        Gs = qPow(gammas, SContent);
+    else
+        Gs = 1.0;
 
-     if (CContent != 0.0)
-       Gc = qPow(gammac, CContent);
-     else
-       Gc = 1.0;
+    if (CContent != 0.0)
+        Gc = qPow(gammac, CContent);
+    else
+        Gc = 1.0;
 
-     if (bContent != 0.0)
-       Gb = qPow(gammab, bContent);
-     else
-       Gb = 1.0;
+    if (bContent != 0.0)
+        Gb = qPow(gammab, bContent);
+    else
+        Gb = 1.0;
 
-     mG = Gs * Gc * Gb;
+    mG = Gs * Gc * Gb;
+
+    if (exclVolPressure != 0.) {
+        //         sfifts the chemical potential by an amount - (hadron volume) * P.
+        mB      = 1;
+        mS      = 0;
+        mQ      = 0;
+        mC      = 0;
+        mBeauty = 0;
+        double radius =   ParticlesDBManager::Instance().getRadius(mParticle);
+        double volume = 4. * 4./3. * M_PI * qPow(radius,3);
+        double shift = volume * exclVolPressure;
+        mMuB      = mMu - shift;
+        mMuS      = 0.0;
+        mMuQ      = 0.0;
+        mMuC      = 0.0;
+        mMuBeauty = 0.0;
+
+    }
 }
 

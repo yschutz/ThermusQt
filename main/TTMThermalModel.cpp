@@ -39,7 +39,11 @@ TTMThermalModel::TTMThermalModel(const TTMThermalModel &model)
     mCminus     = model.mCminus;
     mCplus      = model.mCplus;
     mDensity    = model.mDensity;
-    mDensTable  = model.mDensTable;
+
+    QHashIterator<int, TTMDensObj*> i(model.mDensTable);
+    while (i.hasNext())
+        mDensTable[i.key()] = new TTMDensObj(i.value());
+
     mDescriptor = model.mDescriptor + " Copy";
     mEnergy     = model.mEnergy;
     mEntropy    = model.mEntropy;
@@ -51,6 +55,8 @@ TTMThermalModel::TTMThermalModel(const TTMThermalModel &model)
     mStrange    = model.mStrange;
     mWidth      = model.mWidth;
     mWroblewski = model.mWroblewski;
+
+    setParent(model.parent());
 }
 
 //__________________________________________________________________________
@@ -246,8 +252,8 @@ void TTMThermalModel::listDecayContributions(int parent, int daughter) const
 
     double br = parents[parent];
     if (br == 0.) {
-        QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO,
-                        QString("No such decay: parent %1, daughter %2").arg(parent, daughter));
+        QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, Q_FUNC_INFO);
+        msg.setInformativeText(QString("No such decay: parent %1, daughter %2").arg(parent, daughter));
         msg.exec();
     } else {
         double contrib = getDensities(parent)->getPrimaryDensity() * br;

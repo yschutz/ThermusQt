@@ -45,7 +45,7 @@ TTMThermalParticleBQ::TTMThermalParticleBQ(TTMThermalParticleBQ &obj)
 }
 
 //__________________________________________________________________________
-void TTMThermalParticleBQ::updateMembers()
+void TTMThermalParticleBQ::updateMembers(double /*exclVolPressure*/)
 {
     mDeg = ParticlesDBManager::Instance().getSpin(mParticle);
     mM   = ParticlesDBManager::Instance().getMass(mParticle);

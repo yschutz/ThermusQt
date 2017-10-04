@@ -24,6 +24,20 @@ TTMDensObj::TTMDensObj(int pdg, QObject *parent) : QObject(parent),
 }
 
 //__________________________________________________________________________
+TTMDensObj::TTMDensObj(const TTMDensObj &dens)
+{
+    // copy ctor
+    mDecayDensity = dens.mDecayDensity;
+    mDensity      = dens.mDensity;
+    mEnergy       = dens.mEnergy;
+    mEntropy      = dens.mEntropy;
+    mID           = dens.mID;
+    mPressure     = dens.mPressure;
+
+    setParent(dens.parent());
+}
+
+//__________________________________________________________________________
 QList<QStandardItem *> TTMDensObj::list() const
 {
     // makes one row for a view in a table of the data memmbers

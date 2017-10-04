@@ -22,22 +22,22 @@ TTMThermalParticle::TTMThermalParticle(QObject *parent) : QObject(parent)
 }
 
 //__________________________________________________________________________
-double TTMThermalParticle::densityBoltzmannNoWidth()
+double TTMThermalParticle::densityBoltzmannNoWidth(double exclVolPressure)
 {
     // Primordial Particle density assuming no width and Boltzmann stats
 
-    updateMembers();
+    updateMembers(exclVolPressure);
 
     return mCorrFactor / (2. * qPow(M_PI, 2)) * mG * mDeg * qPow(mM, 2) *
             mT * gsl_sf_bessel_Kn(2, mM / mT) * qExp(mMu / mT) / kHC3;
 }
 
 //__________________________________________________________________________
-double TTMThermalParticle::densityBoltzmannWidth()
+double TTMThermalParticle::densityBoltzmannWidth(double exclVolPressure)
 {
     // Primordial Particle density assuming finite width and Boltzmann stats
 
-    updateMembers();
+    updateMembers(exclVolPressure);
     double lDensity = 0.0;
     double width = ParticlesDBManager::Instance().getWidth(mParticle);
 
@@ -69,12 +69,12 @@ double TTMThermalParticle::densityBoltzmannWidth()
 }
 
 //__________________________________________________________________________
-double TTMThermalParticle::energyBoltzmannNoWidth()
+double TTMThermalParticle::energyBoltzmannNoWidth(double exclVolPressure)
 {
     // Primordial Energy density contribution assuming no width and
     // Boltzmann stats
 
-    updateMembers();
+    updateMembers(exclVolPressure);
 
     return mCorrFactor / (2. * qPow(M_PI, 2)) * mG * mDeg * qPow(mM, 3)
             * mT * qExp(mMu / mT) * (gsl_sf_bessel_Kn(1, mM / mT) + 3. * mT / mM *
@@ -82,13 +82,13 @@ double TTMThermalParticle::energyBoltzmannNoWidth()
 }
 
 //__________________________________________________________________________
-double TTMThermalParticle::energyBoltzmannWidth()
+double TTMThermalParticle::energyBoltzmannWidth(double exclVolPressure)
 {
     // Primordial Energy density contribution assuming finite width and
     // Boltzmann stats
     //
 
-    updateMembers();
+    updateMembers(exclVolPressure);
     double lEnergy = 0;
     double width = ParticlesDBManager::Instance().getWidth(mParticle);
 
@@ -114,17 +114,17 @@ double TTMThermalParticle::energyBoltzmannWidth()
 
         lEnergy = mCorrFactor * qPow(mT, 4.) * e / norm / kHC3;
     } else
-        lEnergy = energyBoltzmannNoWidth();
+        lEnergy = energyBoltzmannNoWidth(exclVolPressure);
 
     return lEnergy;
 }
 
 //__________________________________________________________________________
-double TTMThermalParticle::pressureBoltzmannNoWidth()
+double TTMThermalParticle::pressureBoltzmannNoWidth(double exclVolPressure)
 {
     // Pressure contribution assuming no width and Boltzmann stats
 
-    updateMembers();
+    updateMembers(exclVolPressure);
 
     double dens = densityBoltzmannNoWidth();
 
@@ -132,11 +132,11 @@ double TTMThermalParticle::pressureBoltzmannNoWidth()
 }
 
 //__________________________________________________________________________
-double TTMThermalParticle::pressureBoltzmannWidth()
+double TTMThermalParticle::pressureBoltzmannWidth(double exclVolPressure)
 {
     // Pressure contribution assuming finite width and Boltzmann stat
 
-    updateMembers();
+    updateMembers(exclVolPressure);
 
     double dens = densityBoltzmannWidth();
 

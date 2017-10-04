@@ -68,7 +68,13 @@ SOURCES += main.cpp\
     functions/BQfuncQNetBDens.cpp \
     functions/BQfuncQST3.cpp \
     functions/functest.cpp \
-    functions/broyden.cpp
+    functions/broyden.cpp \
+    main/TTMThermalModelBSQ.cpp \
+    functions/BSQConstrainQ.cpp \
+    functions/BSQfuncQ.cpp \
+    functions/broydens.cpp \
+    functions/BSQConstrainS.cpp \
+    functions/BSQfuncS.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -104,7 +110,8 @@ HEADERS  += mainwindow.h \
     external/f1.h \
     main/TTMThermalParticleBQ.h \
     main/TTMThermalParticleBSQ.h \
-    external/f2.h
+    external/f2.h \
+    main/TTMThermalModelBSQ.h
 
 
 RESOURCES += \

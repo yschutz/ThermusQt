@@ -24,16 +24,13 @@ const double kLN10 = qLn(10.0);
 TTMThermalModelBQ::TTMThermalModelBQ(QObject *parent) : TTMThermalModel(parent),
     mNonStrangeQStats(true), mPar(nullptr)
 {
-    //ctor
+    // default ctor
     mDescriptor       = "SCanonical";
     mWidth            = true;
 
-    qDeleteAll(mDensTable.begin(), mDensTable.end());
-    mDensTable.clear();
-
     mSplus   = mSminus = mBplus = mBminus = mQplus = mQminus = mCplus = mCminus = mbplus = mbminus = 0.;
     mStrange = mBaryon = mCharge = mDensity = mWroblewski = mCharm = mBeauty = 0.;
-    mEnergy  = mEntropy = 0.;
+    mEnergy  = mEntropy = mPressure = 0.;
 }
 
 //__________________________________________________________________________
@@ -42,11 +39,7 @@ TTMThermalModelBQ::TTMThermalModelBQ(TTMParameterSetBQ *parameters, bool width, 
 {
     // ctor
     mDescriptor = "SCanonical";
-    mPar   = parameters;
     mWidth = width;
-
-    qDeleteAll(mDensTable.begin(), mDensTable.end());
-    mDensTable.clear();
 
     mSplus   = mSminus = mBplus = mBminus = mQplus = mQminus = mCplus = mCminus = mbplus = mbminus = 0.;
     mStrange = mBaryon = mCharge = mDensity = mWroblewski = mCharm = mBeauty = 0.;
@@ -67,26 +60,22 @@ TTMThermalModelBQ::TTMThermalModelBQ(const TTMThermalModelBQ &model)
     mlnZtot           = model.mlnZtot;
     mlnZ0	          = model.mlnZ0;
     mNonStrangeQStats = model.mNonStrangeQStats;
+    mPar              = new TTMParameterSetBQ(*(model.mPar));
+    mBaryon           = model.mBaryon;
+    mBeauty           = model.mBeauty;
+    mBminus           = model.mBminus;
+    mBplus            = model.mBplus;
+    mbminus           = model.mbminus;
+    mbplus            = model.mbplus;
+    mCharge           = model.mCharge;
+    mCharm            = model.mCharm;
+    mCminus           = model.mCminus;
+    mCplus            = model.mCplus;
+    mDensity          = model.mDensity;
 
-    mPar              = model.mPar; //dangeruous ... implement copy ctor in TTMParameterSetBQ
-
-    mBaryon     = model.mBaryon;
-    mBeauty     = model.mBeauty;
-    mBminus     = model.mBminus;
-    mBplus      = model.mBplus;
-    mbminus     = model.mbminus;
-    mbplus      = model.mbplus;
-    mCharge     = model.mCharge;
-    mCharm      = model.mCharm;
-    mCminus     = model.mCminus;
-    mCplus      = model.mCplus;
-    mDensity    = model.mDensity;
-
-    qDeleteAll(mDensTable.begin(), mDensTable.end());
-    mDensTable.clear();
     QHashIterator<int, TTMDensObj*> i(model.mDensTable);
     while (i.hasNext())
-        mDensTable[i.key()] = i.value();
+        mDensTable[i.key()] = new TTMDensObj(i.value());
 
     mDescriptor = model.mDescriptor + " Copy";
     mEnergy     = model.mEnergy;
@@ -99,6 +88,14 @@ TTMThermalModelBQ::TTMThermalModelBQ(const TTMThermalModelBQ &model)
     mStrange    = model.mStrange;
     mWidth      = model.mWidth;
     mWroblewski = model.mWroblewski;
+
+    setParent(model.parent());
+}
+
+//__________________________________________________________________________
+TTMThermalModelBQ::~TTMThermalModelBQ()
+{
+    delete mPar;
 }
 
 //__________________________________________________________________________
@@ -146,7 +143,9 @@ int TTMThermalModelBQ::constrainPercolation()
 
     if (!mPar->getMuQConstrain()) {
         check = 1;
-        QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, "Such Constraint Not Yet Coded");
+        QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, Q_FUNC_INFO);
+        msg.setInformativeText("Such Constraint Not Yet Coded");
+        msg.exec();
     } else
         check = BQConstrainQPercolation(this);
 
@@ -346,7 +345,8 @@ int TTMThermalModelBQ::generateParticleDens()
         calcWroblewski();
         generateDecayPartDens();
     } else {
-        QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "Problems");
+        QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);
+        msg.setInformativeText("Problems");
         msg.exec();
     }
     return check;
@@ -504,7 +504,8 @@ bool TTMThermalModelBQ::primPartDens()
 
     mSplus    = mSminus = mBplus = mBminus = mQplus = mQminus = mCplus = mCminus = mbplus = mbminus = 0.;
     mStrange  = mBaryon = mCharge = mDensity = mWroblewski = mCharm = mBeauty = 0.;
-    mEnergy   = mEntropy = 0.;
+    mEnergy   = mEntropy = mPressure = 0.;
+
     int check = 0;
 
     QList<int> partPDGs;
@@ -512,15 +513,12 @@ bool TTMThermalModelBQ::primPartDens()
     if (mNonStrangeQStats) {
         ParticlesDBManager::Instance().allParticles(partPDGs);
         for (int part : partPDGs) {
-            if ( check != 0)
+            if (check != 0)
                 break;
             if(ParticlesDBManager::Instance().getS(part) == 0.) {
                 TTMParameterSetBSQ pGC(mPar->getT(), mPar->getMuB(), 0., mPar->getMuQ(), mPar->getGammas());
-                QScopedPointer<TTMThermalParticleBSQ>ptr(new TTMThermalParticleBSQ(part,&pGC));
-
-                //                TTMThermalParticleBSQ *ptr = new TTMThermalParticleBSQ(part,&pGC);
-
-                if(!ptr->parametersAllowed()){
+                QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part,&pGC));
+                if(!ptr->parametersAllowed()) {
                     check = 1;
                 }
             }
@@ -528,7 +526,8 @@ bool TTMThermalModelBQ::primPartDens()
     }
 
     if (check) {
-        QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, "Chemical Potentials not allowed!");
+        QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, Q_FUNC_INFO);
+        msg.setInformativeText("Chemical Potentials not allowed!");
         msg.exec();
         return false;
     } else {
@@ -590,11 +589,13 @@ bool TTMThermalModelBQ::primPartDens()
         double xmax = 709.;		// maximum argument for Bessel fncs in ROOT
 
         if (x[0] > xmax || x[1] > xmax || x[2] > xmax ) {
-            QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "x's too large");
+            QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);
+            msg.setInformativeText("x's too large");
             msg.exec();
             return false;
         } else if (y[0] == 0 || y[1] == 0 || y[2] == 0) {
-            QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, "y's zero");
+            QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);
+            msg.setInformativeText("y's zero");
             msg.exec();
             return false;
         } else {
