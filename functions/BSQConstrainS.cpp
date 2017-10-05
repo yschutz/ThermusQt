@@ -19,6 +19,8 @@ int BSQConstrainS(TTMThermalModelBSQ *model)
     PARAMETERSS p;
     p.p0 = model;
     p.p1 = 0.0;
+    p.p2 = 0.0;
+    p.p3 = 0.0;
     broyden(x, ndim, check, p, BSQfuncS);
     if (check) {
         QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);

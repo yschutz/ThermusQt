@@ -74,7 +74,29 @@ SOURCES += main.cpp\
     functions/BSQfuncQ.cpp \
     functions/broydens.cpp \
     functions/BSQConstrainS.cpp \
-    functions/BSQfuncS.cpp
+    functions/BSQfuncS.cpp \
+    functions/BSQConstrainQQ.cpp \
+    functions/BSQfuncQQ.cpp \
+    functions/BSQConstrainSQ.cpp \
+    functions/BSQfuncSQ.cpp \
+    functions/BSQConstrainBSQ.cpp \
+    functions/BSQfuncBSQ.cpp \
+    functions/BSQConstrainSEN.cpp \
+    functions/BSQfuncSEN.cpp \
+    functions/BSQConstrainSQC.cpp \
+    functions/BSQfuncSQC.cpp \
+    functions/BSQConstrainSQCb.cpp \
+    functions/BSQfuncSQCb.cpp \
+    functions/BSQConstrainSQEN.cpp \
+    functions/BSQfuncSQEN.cpp \
+    functions/BSQConstrainSST3.cpp \
+    functions/BSQfuncSST3.cpp \
+    functions/BSQConstrainSQST3.cpp \
+    functions/BSQfuncSQST3.cpp \
+    functions/BSQConstrainSBDens.cpp \
+    functions/BSQfuncSBDens.cpp \
+    functions/BSQConstrainSQBDens.cpp \
+    functions/BSQfuncSQBDens.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \

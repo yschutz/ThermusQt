@@ -35,14 +35,24 @@ public:
     virtual int              generateParticleDens() = 0;
     virtual void             generatePressure() = 0;
     double                   getBaryon() const       { return mBaryon; }
+    double                   getBeauty() const       { return mBeauty; }
+    double                   getBminus() const       { return mBminus; }
+    double                   getBplus() const        { return mBplus; }
+    double                   getBeautyminus() const  { return mbminus; }
+    double                   getBeautyplus() const   { return mbplus; }
     double                   getCharge() const       { return mCharge; }
+    double                   getCharm() const        { return mCharm; }
     double                   getDensity() const      { return mDensity; }
+    double                   getCminus() const       { return mCminus; }
+    double                   getCplus() const        { return mCplus; }
     TTMDensObj*              getDensities(int pdg) const;
     QHash<int, TTMDensObj*>  getDensityTable() const { return mDensTable; }
     double                   getEntropy() const      { return mEntropy; }
     double                   getEnergy() const       { return mEnergy; }
     virtual TTMParameterSet* getParameterSet() const = 0;
     double                   getPressure() const     { return mPressure; }
+    double                   getQminus() const       { return mQminus; }
+    double                   getQplus() const        { return mQplus; }
     double                   getSminus() const       { return mSminus; }
     double                   getSplus() const        { return mSplus; }
     double                   getStrange() const      { return mStrange; }

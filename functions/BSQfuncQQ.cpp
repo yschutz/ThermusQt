@@ -8,20 +8,25 @@
 #include <QMessageBox>
 
 //__________________________________________________________________________
-int BSQfuncS(const gsl_vector* x, void* p, gsl_vector* f)
+int BSQfuncQQ(const gsl_vector* x, void* p, gsl_vector* f)
 {
     int rv = 0;
     TTMThermalModelBSQ* model = ((PARAMETERSS *)p)->p0;
-    (model->getParameterSet())->getParameter(TTMParameterSet::kMUS)->setValue(gsl_vector_get(x, 0));
+    (model->getParameterSet())->getParameter(TTMParameterSet::kMUQ)->setValue(gsl_vector_get(x, 0));
+
+    double vol = (model->getParameterSet())->getVolume();
 
     bool check = model->primPartDens();
 
     if (check) {
-        double densS = model->getParameterSet()->getDens(TTMParameterSet::kMUS);
-        if (densS != 0.)
-            gsl_vector_set(f, 0, (model->getStrange() - densS) / densS);
+
+        double qq = ((PARAMETERSS *)p)->p1;
+
+        if (qq != 0.)
+            gsl_vector_set(f, 0, (model->getCharge() * vol - qq) / qq);
         else
-            gsl_vector_set(f, 0, (model->getStrange() - densS) / (qAbs(model->getSplus()) + qAbs(model->getSminus())));
+            gsl_vector_set(f, 0, (model->getCharge() * vol - qq) / (vol * qAbs(model->getQplus()) + qAbs(model->getQminus())));
+
     } else {
         QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);
         msg.setInformativeText("Primary particles density problems!");

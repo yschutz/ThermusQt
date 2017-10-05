@@ -4,7 +4,7 @@
 #include "main/TTMThermalModelBSQ.h"
 
 struct PARAMETERS  { TTMThermalModelBQ* p0; double p1;};
-struct PARAMETERSS { TTMThermalModelBSQ* p0; double p1;};
+struct PARAMETERSS { TTMThermalModelBSQ* p0; double p1; double p2; double p3;};
 
 
 int BQConstrainBDens       (TTMThermalModelBQ *model, double nb);
@@ -19,7 +19,7 @@ int BQConstrainST3         (TTMThermalModelBQ *model, double SoverT3);
 int BQConstrainQBDens      (TTMThermalModelBQ *model, double nb);
 
 int BSQConstrainBSQ          (TTMThermalModelBSQ *model, double B, double S, double Q);
-int BSQConstrainQQ           (TTMThermalModelBSQ *model, double Q);
+int BSQConstrainQQ           (TTMThermalModelBSQ *model, double qq);
 int BSQConstrainS            (TTMThermalModelBSQ *model);
 int BSQConstrainSQ           (TTMThermalModelBSQ *model);
 int BSQConstrainSQC          (TTMThermalModelBSQ *model);
@@ -46,8 +46,20 @@ int BQfuncQPercolation(const gsl_vector* x, void* p, gsl_vector* f);
 int BQfuncQST3        (const gsl_vector* x, void* p, gsl_vector* f);
 int BQfuncST3         (const gsl_vector* x, void* p, gsl_vector* f);
 
+int BSQfuncBSQ        (const gsl_vector* x, void* p, gsl_vector* f);
 int BSQfuncQ          (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncQQ         (const gsl_vector* x, void* p, gsl_vector* f);
 int BSQfuncS          (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSBDens     (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSEN        (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSQ         (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSQBDens    (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSQC        (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSQCb       (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSQEN       (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSQST3      (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSST3       (const gsl_vector* x, void* p, gsl_vector* f);
+
 
 void broyden(gsl_vector* x, size_t n, int& status, PARAMETERS p, int (*f)(const gsl_vector* x, void* p, gsl_vector* f));
 void broyden(gsl_vector* x, size_t n, int& status, PARAMETERSS p, int (*f)(const gsl_vector* x, void* p, gsl_vector* f));
