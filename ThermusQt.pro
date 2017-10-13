@@ -96,7 +96,8 @@ SOURCES += main.cpp\
     functions/BSQConstrainSBDens.cpp \
     functions/BSQfuncSBDens.cpp \
     functions/BSQConstrainSQBDens.cpp \
-    functions/BSQfuncSQBDens.cpp
+    functions/BSQfuncSQBDens.cpp \
+    functions/FindExclVolPressure.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \

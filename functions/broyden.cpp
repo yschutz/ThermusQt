@@ -19,6 +19,8 @@ void broyden(gsl_vector* x, size_t ndim, int& status, PARAMETERS p, int (*myfunc
     const gsl_multiroot_fsolver_type *T;
     T = gsl_multiroot_fsolver_broyden;
 
+
+
     gsl_multiroot_fsolver *s;
     s = gsl_multiroot_fsolver_alloc(T, ndim);
     gsl_multiroot_fsolver_set (s, &function, x);
