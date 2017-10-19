@@ -16,8 +16,7 @@ RunMacro RunMacro::mInstance = RunMacro();
 
 //__________________________________________________________________________
 RunMacro::RunMacro() :
-    mParaInfo(nullptr),
-    mParaSel(nullptr), mPartInfo(nullptr)
+    mConstrainMuQ(true), mFitInfo(nullptr), mParaInfo(nullptr), mParaSel(nullptr), mQuantRes(true)
 {
     // ctor
     setObjectName("Run Macro");
@@ -33,9 +32,9 @@ RunMacro::~RunMacro()
 //__________________________________________________________________________
 void RunMacro::setConstrain()
 {
-    // option of addin constraints. b/2Q, S, C and B density
+    // option of adding constraints. b/2Q, S, C and B density
 
-  for (qint32 type = 0; type < TTMParameterSet::kPARTYPES; type++) {
+  for (int type = 0; type < TTMParameterSet::kPARTYPES; type++) {
       if (mParaSel->isConstrained((TTMParameterSet::ParameterType)type))
           mParaInfo->constrain((TTMParameterSet::ParameterType)type, mParaSel->getConstrainValue((TTMParameterSet::ParameterType)type));
   }
@@ -46,7 +45,7 @@ void RunMacro::setFitFix()
 {
     // fix/free the parameters
 
-    for (qint32 type = 0; type < TTMParameterSet::kPARTYPES; type++) {
+    for (int type = 0; type < TTMParameterSet::kPARTYPES; type++) {
         if (mParaSel->isFixed((TTMParameterSet::ParameterType)type))
             mParaInfo->fix((TTMParameterSet::ParameterType)type, mParaSel->getParaValue((TTMParameterSet::ParameterType)type));
         else
@@ -71,43 +70,59 @@ void RunMacro::setDefaultParameters()
 
     double gammaSDefault = 1.00; // 0.86
 
-    double radiusDefault = 10.5; //units = fm but no dependence for Grand Canonical.
+    double radiusDefault  = 10.5; //units = fm but no dependence for Grand Canonical.
     // R=10.9 fm give 5425 fm^3 and R=10.5 fm give 4850 fm^3
+    double cradiusDefault = 0.0;
 
     double muCDefault      = 0.0;
     double gammaCDefault   = 1.0;
     double muBeautyDefault = 0.0;
-    double gammaBeautyDefault = 0.0;
+    double gammaBeautyDefault = 1.0;
 
 //    double BDefault = 208;  // 197
 //    double QDefault  = 82;  //  79
 
     // ==== Default parameters =======
 
-    mParaSel->setParaValue(TTMParameterSet::kT, TchDefault);
-    mParaSel->setParaValue(TTMParameterSet::kMUQ, muQDefault);
-    mParaSel->setParaValue(TTMParameterSet::kMUB, muBDefault);
-    mParaSel->setParaValue(TTMParameterSet::kMUS, muSDefault);
-    mParaSel->setParaValue(TTMParameterSet::kMUC, muCDefault);
-    mParaSel->setParaValue(TTMParameterSet::kGAMMAS, gammaSDefault);
-    mParaSel->setParaValue(TTMParameterSet::kGAMMAC, gammaCDefault);
-    mParaSel->setParaValue(TTMParameterSet::kRADIUS, radiusDefault);
-    mParaSel->setParaValue(TTMParameterSet::kMUBEAUTY, muBeautyDefault);
+    mParaSel->setParaValue(TTMParameterSet::kT,           TchDefault);
+    mParaSel->setParaValue(TTMParameterSet::kMUQ,         muQDefault);
+    mParaSel->setParaValue(TTMParameterSet::kMUB,         muBDefault);
+    mParaSel->setParaValue(TTMParameterSet::kMUS,         muSDefault);
+    mParaSel->setParaValue(TTMParameterSet::kMUC,         muCDefault);
+    mParaSel->setParaValue(TTMParameterSet::kGAMMAS,      gammaSDefault);
+    mParaSel->setParaValue(TTMParameterSet::kGAMMAC,      gammaCDefault);
+    mParaSel->setParaValue(TTMParameterSet::kRADIUS,      radiusDefault);
+    mParaSel->setParaValue(TTMParameterSet::kCRADIUS,     cradiusDefault);
+    mParaSel->setParaValue(TTMParameterSet::kMUBEAUTY,    muBeautyDefault);
     mParaSel->setParaValue(TTMParameterSet::kGAMMABEAUTY, gammaBeautyDefault);
 
     double fitMin = 0.05;
     double fitMax = 0.180;
     double fitSte = 0.001;
 
-    for (qint32 type = 0; type < TTMParameterSet::kPARTYPES; type++)
+    for (int type = 0; type < TTMParameterSet::kPARTYPES; type++)
         mParaSel->setFitValues((TTMParameterSet::ParameterType)type, fitMin, fitMax, fitSte);
-   mParaSel->updateDisplay();
+    mParaSel->updateDisplay();
+}
+
+//__________________________________________________________________________
+void RunMacro::setFit()
+{
+    // sets the fit model
+
+    mFitInfo = new TTMThermalFitBSQ(mParaInfo, "prediction_yannick.txt", this);
+    // -> Turn off default quantum statistics and resonance width treatment
+    if (!mQuantRes) {
+        mFitInfo->setQStats(true);
+        mFitInfo->setWidth(true);
+    }
 }
 
 //__________________________________________________________________________
 void RunMacro::setParameters()
 {
     // set the parameters
+    qDebug() << Q_FUNC_INFO << mParaSel->getParaValue(TTMParameterSet::kMUQ);
 
     mParaInfo = new TTMParameterSetBSQ(mParaSel->getParaValue(TTMParameterSet::kT),
                                        mParaSel->getParaValue(TTMParameterSet::kMUB),
@@ -118,10 +133,18 @@ void RunMacro::setParameters()
                                        mParaSel->getParaValue(TTMParameterSet::kMUC),
                                        mParaSel->getParaValue(TTMParameterSet::kGAMMAC),
                                        mParaSel->getParaValue(TTMParameterSet::kMUBEAUTY),
-                                       mParaSel->getParaValue(TTMParameterSet::kGAMMABEAUTY)
-                                       );
+                                       mParaSel->getParaValue(TTMParameterSet::kGAMMABEAUTY),
+                                       mParaSel->getB2Q());
     mParaInfo->setParent(this);
-    mParaInfo->setB2Q(mParaSel->getB2Q());
+
+    // choice of parameter to fit or to fix
+    setFitFix();
+
+    // option of adding some constraint
+    setConstrain();
+
+    // list all settings
+    listParameters();
 }
 
 //__________________________________________________________________________
@@ -133,8 +156,8 @@ void RunMacro::setParaSel(ParaSel *val)
 }
 
 //__________________________________________________________________________
-void RunMacro::setParticlesListFile()
-{
+//void RunMacro::setParticlesListFile()
+//{
 //    // setting the particles list and particles properties
 
 //    mParticlesList = mFileSel->getFileName();
@@ -143,9 +166,9 @@ void RunMacro::setParticlesListFile()
 //    if (mDebug)
 //        qDebug() << tempo;
 
-    mPartInfo = new  TTMParticleSet(mParticlesList, true);  // here true means the decays are scaled to sum(BR) = 100%
+//    mPartInfo = new  TTMParticleSet(mParticlesList, true);  // here true means the decays are scaled to sum(BR) = 100%
 //    mPartInfo->inputDecays(":/particles/");
-}
+//}
 
 //__________________________________________________________________________
 RunMacro &RunMacro::instance()
@@ -153,6 +176,15 @@ RunMacro &RunMacro::instance()
     // returns the unique instance
 
     return mInstance;
+}
+
+//__________________________________________________________________________
+void RunMacro::run() const
+{
+    mFitInfo->generateYields();
+//    mFitInfo->listYields();
+//    TTMYield* yield = mFitInfo->getYield(211, 0, "PREDICTION");
+//    qInfo() << yield->getID1() << yield->getTMName() << yield->getModelValue();
 }
 
 //__________________________________________________________________________
@@ -185,5 +217,4 @@ RunMacro &RunMacro::instance()
 
 //    if (!selectDefaultParameters())
 //        qFatal("no parameters selected");
-
 //}

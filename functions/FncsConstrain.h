@@ -6,7 +6,6 @@
 struct PARAMETERS  { TTMThermalModelBQ* p0; double p1;};
 struct PARAMETERSS { TTMThermalModelBSQ* p0; double p1; double p2; double p3;};
 
-
 int BQConstrainBDens       (TTMThermalModelBQ *model, double nb);
 int BQConstrainEN          (TTMThermalModelBQ *model, double eovern);
 int BQConstrainQ           (TTMThermalModelBQ *model);
@@ -46,23 +45,30 @@ int BQfuncQPercolation(const gsl_vector* x, void* p, gsl_vector* f);
 int BQfuncQST3        (const gsl_vector* x, void* p, gsl_vector* f);
 int BQfuncST3         (const gsl_vector* x, void* p, gsl_vector* f);
 
-int BSQfuncBSQ        (const gsl_vector* x, void* p, gsl_vector* f);
-int BSQfuncQ          (const gsl_vector* x, void* p, gsl_vector* f);
-int BSQfuncQQ         (const gsl_vector* x, void* p, gsl_vector* f);
-int BSQfuncS          (const gsl_vector* x, void* p, gsl_vector* f);
-int BSQfuncSBDens     (const gsl_vector* x, void* p, gsl_vector* f);
-int BSQfuncSEN        (const gsl_vector* x, void* p, gsl_vector* f);
-int BSQfuncSQ         (const gsl_vector* x, void* p, gsl_vector* f);
-int BSQfuncSQBDens    (const gsl_vector* x, void* p, gsl_vector* f);
-int BSQfuncSQC        (const gsl_vector* x, void* p, gsl_vector* f);
-int BSQfuncSQCb       (const gsl_vector* x, void* p, gsl_vector* f);
-int BSQfuncSQEN       (const gsl_vector* x, void* p, gsl_vector* f);
-int BSQfuncSQST3      (const gsl_vector* x, void* p, gsl_vector* f);
-int BSQfuncSST3       (const gsl_vector* x, void* p, gsl_vector* f);
-
+int BSQfuncBSQ           (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncQ             (const gsl_vector *x, void* p, gsl_vector* f);
+int BSQfuncQQ            (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncS             (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSBDens        (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSEN           (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSPercolation  (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSQ            (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSQBDens       (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSQC           (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSQCb          (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSQEN          (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSQNetBDens    (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSQPercolation (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSQST3         (const gsl_vector* x, void* p, gsl_vector* f);
+int BSQfuncSST3          (const gsl_vector* x, void* p, gsl_vector* f);
 
 void broyden(gsl_vector* x, size_t n, int& status, PARAMETERS p, int (*f)(const gsl_vector* x, void* p, gsl_vector* f));
 void broyden(gsl_vector* x, size_t n, int& status, PARAMETERSS p, int (*f)(const gsl_vector* x, void* p, gsl_vector* f));
+
+
+double ExclVolPressureFunc(double x, void * p);
+
+double brent(double xLow, double xHigh, double step, int& status, PARAMETERSS p, double (*f)(double x, void* p));
 
 
 int funcTest(const gsl_vector* x, void* p, gsl_vector* f);

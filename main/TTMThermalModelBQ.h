@@ -33,7 +33,7 @@ public:
     void               generatePressure();
     TTMParameterSetBQ* getParameterSet() const { return mPar; }
     void               listInfo() const;
-    bool               primPartDens();
+    int                primPartDens();
 
     TTMThermalModelBQ& operator=(TTMThermalModelBQ model);
 

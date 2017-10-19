@@ -1,19 +1,20 @@
 // Author: Spencer Wheaton 14 July 2004 //
 // Adapted for Qt by Yves Schutz: October 2017
 
+#include "functions/FncsConstrain.h"
+
 #include "main/TTMThermalModelBSQ.h"
-
-Float_t zbrent(Float_t (*func)(Float_t), Float_t x1, Float_t x2, Float_t tol);
-
-Float_t ExclVolPressureFunc(Float_t x);
 
 TTMThermalModelBSQ *gModelBSQExcVol;
 
-Double_t FindExclVolPressure(TTMThermalModelBSQ *model, Double_t limit)
+double FindExclVolPressure(TTMThermalModelBSQ *model, double limit)
 {
+    PARAMETERSS params;
+    params.p0 = model;
+    params.p1 = 0.0;
+    params.p2 = 0.0;
+    params.p3 = 0.0;
 
-  gModelBSQExcVol = model;
-
-  return zbrent(ExclVolPressureFunc,0.,1.1*limit,1e-4);
-
+    int status;
+    return brent(0.0, 1.1 * limit, 1E-4, status, params, ExclVolPressureFunc);
 }

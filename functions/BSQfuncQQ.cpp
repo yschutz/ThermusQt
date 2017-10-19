@@ -16,9 +16,9 @@ int BSQfuncQQ(const gsl_vector* x, void* p, gsl_vector* f)
 
     double vol = (model->getParameterSet())->getVolume();
 
-    bool check = model->primPartDens();
+    int check = model->primPartDens();
 
-    if (check) {
+    if (!check) {
 
         double qq = ((PARAMETERSS *)p)->p1;
 

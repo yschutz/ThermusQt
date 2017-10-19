@@ -12,8 +12,8 @@
 #ifndef TTMTHERMALFITBQ_H
 #define TTMTHERMALFITBQ_H
 
-#include "main/TTMParameterSetBQ.h"
-#include "main/TTMThermalFit.h"
+#include "TTMParameterSetBQ.h"
+#include "TTMThermalFit.h"
 
 class TTMThermalFitBQ : public TTMThermalFit
 {
@@ -25,8 +25,6 @@ protected:
     bool               mNonStrangeQStats; // ?
     TTMParameterSetBQ* mParm;             // the parameters set
     bool               mWidth;            // ?
-
-
 };
 
 #endif // TTMTHERMALFITBQ_H

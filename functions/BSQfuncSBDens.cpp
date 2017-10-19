@@ -18,9 +18,9 @@ int BSQfuncSBDens(const gsl_vector* x, void* p, gsl_vector* f)
     (model->getParameterSet())->getParameter(TTMParameterSet::kMUS)->setValue(gsl_vector_get(x, 0));
     (model->getParameterSet())->getParameter(TTMParameterSet::kMUB)->setValue(gsl_vector_get(x, 1));
 
-    bool check = model->primPartDens();
+    int check = model->primPartDens();
 
-    if (check) {
+    if (!check) {
         double sb0 = ((PARAMETERSS *)p)->p1;
         if (sb0 != 0.)
             gsl_vector_set(f, 0, (model->getStrange() - sb0) / sb0);

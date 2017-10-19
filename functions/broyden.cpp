@@ -1,3 +1,5 @@
+// Y. Schutz October 2017
+
 #include <gsl/gsl_multiroots.h>
 
 #include <QDebug>
@@ -12,9 +14,6 @@ void broyden(gsl_vector* x, size_t ndim, int& status, PARAMETERS p, int (*myfunc
     function.f = myfunction;
     function.n = ndim;
     function.params = &p;
-
-    for (size_t i = 0; i < ndim; i++)
-        gsl_vector_set (x, i, 0.);
 
     const gsl_multiroot_fsolver_type *T;
     T = gsl_multiroot_fsolver_broyden;

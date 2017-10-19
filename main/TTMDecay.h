@@ -20,22 +20,23 @@ class TTMDecay : public QObject
     Q_OBJECT
 public:
     explicit TTMDecay(QObject* parent = nullptr);
-    TTMDecay(qint32 mother, qint32 daughter, double fraction, QObject* parent = nullptr);
+    TTMDecay(int mother, int daughter, double fraction, QObject* parent = nullptr);
+    TTMDecay(const TTMDecay& decay);
      ~TTMDecay() { }
 
     double getBRatio() const {return mBRatio;}
-    qint32 getDaughterID() const {return mDaughterID;}
-    qint32 getParentID() const {return mParentID;}
-    void   setParentID(qint32 a) {mParentID = a;}
-    void   setDaughterID(qint32 b) {mDaughterID = b;}
+    int    getDaughterID() const {return mDaughterID;}
+    int    getParentID() const {return mParentID;}
+    void   setParentID(int a) {mParentID = a;}
+    void   setDaughterID(int b) {mDaughterID = b;}
     void   setBRatio(double x) {mBRatio = x;}
     void   list();
 
     TTMDecay& operator=(const TTMDecay& obj);
 
 private:
-    qint32 mParentID;             // Parent ID
-    qint32 mDaughterID;           // Daughter ID
+    int mParentID;             // Parent ID
+    int mDaughterID;           // Daughter ID
     double mBRatio;               // Branching ratio (fraction i.e. NOT %!)
 };
 

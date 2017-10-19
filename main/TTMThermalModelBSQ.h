@@ -21,7 +21,7 @@ class TTMThermalModelBSQ : public TTMThermalModel
 public:
 
     TTMThermalModelBSQ(QObject* obj = nullptr);
-    TTMThermalModelBSQ(TTMParameterSetBSQ *parameters, bool qstats = true, bool width = true, QObject* obj = nullptr);
+    TTMThermalModelBSQ(TTMParameterSetBSQ *parameters, bool qstats = true, bool width = true);
     TTMThermalModelBSQ(const TTMThermalModelBSQ& model);
     ~TTMThermalModelBSQ();
 
@@ -33,6 +33,7 @@ public:
     int                 constrainQ(double charge);
     int                 constrainSoverT3(double soverT3);
     int                 constrainTotalBaryonDensity(double nb);
+    double              exclVolShiftedPressure(double x);
     int                 generateParticleDens();
     void                generateEnergyDens();
     void                generateEntropyDens();
@@ -40,15 +41,14 @@ public:
     bool                getExcludedVolume() const        { return mExclVolCorrection; }
     TTMParameterSetBSQ* getParameterSet() const          { return mPar; }
     void                listInfo() const;
-    bool                primPartDens();
+    int                 primPartDens();
     void                setExcludedVolume(bool exVolume) { mExclVolCorrection = exVolume; }
 
-    TTMThermalModelBQ& operator=(TTMThermalModelBQ model);
+    TTMThermalModelBSQ &operator=(TTMThermalModelBSQ model);
 
 private:
 
     void                   calcExclVolPressure();
-    double                 exclVolShiftedPressure(double x);
 
     bool                mExclVolCorrection;	  // true if excluded volume is to be taken into account
     double              mExclVolDenominator;  // denominator correction in n, e and s

@@ -8,7 +8,9 @@
 #include <QStandardItemModel>
 #include <QTableView>
 
+#include "TTMParameterSet.h"
 #include "TTMThermalFit.h"
+#include "TTMThermalModel.h"
 
 #include "external/particlesdbmanager.h"
 
@@ -54,6 +56,15 @@ void TTMThermalFit::generateYields()
      //
 
     mChiSquare = mQuadDev = 0.0;
+
+    TTMThermalModel* model = generateThermalModel();
+    model->generateParticleDens();
+    for (TTMYield* yield : mYields) {
+        double volume = model->getParameterSet()->getVolume();
+        int id1       = yield->getID1();
+        int id2       = yield->getID2();
+        qDebug() << Q_FUNC_INFO << volume << id1 << id2;
+    }
 }
 
 //__________________________________________________________________________
@@ -120,7 +131,7 @@ TTMYield *TTMThermalFit::getYield(int id1, int id2, const QString &descr) const
 }
 
 //__________________________________________________________________________
-void TTMThermalFit::inputExpYields(const QString &fileName)
+void TTMThermalFit::inputExpYields(QString& fileName)
 {
     // Inserts the experimental yields listed in the specified file
     // in *mYields.
@@ -140,10 +151,22 @@ void TTMThermalFit::inputExpYields(const QString &fileName)
     //
     qDeleteAll(mYields.begin(), mYields.end());
     mYields.clear();
-    QFile file(fileName);
+    QDir dataDir;
+    dataDir.setPath(QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory) + "/ThermusQt");
+    if (!dataDir.exists()) {
+        QMessageBox* msg = new QMessageBox(QMessageBox::Critical,"Wrong Installation", QString("ThermusQt installation is expected at %1").arg(dataDir.path()));
+        int ret = msg->exec();
+        if(ret ==QMessageBox::Ok)
+            exit(1);
+    }
+
+    QString fullName = fileName.prepend("/data/");
+    fullName = fullName.prepend(dataDir.path());
+
+    QFile file(fullName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QMessageBox msg(QMessageBox::Critical, "inputExpYields", Q_FUNC_INFO);
-        msg.setInformativeText(QString("Cannot open %1").arg(fileName));
+        msg.setInformativeText(QString("Cannot open %1").arg(fullName));
         msg.exec();
         return;
     }
@@ -171,7 +194,7 @@ void TTMThermalFit::inputExpYields(const QString &fileName)
                 error = sline.at(3).toDouble();
             } else {
                 QMessageBox msg(QMessageBox::Critical, "inputExpYields", Q_FUNC_INFO);
-               msg.setInformativeText("Wrong file format");
+                msg.setInformativeText("Wrong file format");
                 msg.exec();
                 return;
             }
@@ -179,7 +202,6 @@ void TTMThermalFit::inputExpYields(const QString &fileName)
             TTMYield * yield = new TTMYield(name, value, error, id1, id2);
             if (value < 1e-15)
                 yield->predict();
-//            yield->SetPartSet(fPartSet,fPartSet);
             addYield(yield);
         }
     }

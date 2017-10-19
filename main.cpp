@@ -36,11 +36,17 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-//    MainWindow w;
-//    w.show();
+    MainWindow w;
+    w.show();
 
-    ParticlesDBManager::Instance().connect("/Users/schutz/ThermusQt/particles/ThermusParticles.db");
-//    TTMThermalFit fit;
+//    ParticlesDBManager::Instance().connect("/Users/schutz/ThermusQt/particles/ThermusParticles.db");
+//    QList<int> partPDGs;
+//    ParticlesDBManager::Instance().allParticles(partPDGs);
+//     for (int part : partPDGs) {
+//         qDebug() << part;
+//     }
+
+    //    TTMThermalFit fit;
 //    fit.inputExpYields("/Users/schutz/cernbox/group/Thermus/THERMUS_v3.x_191016/simpletest/prediction_yannick.txt");
 //    fit.listYields();
 //    fit.listMinuitInfo();
@@ -124,21 +130,21 @@ int main(int argc, char *argv[])
 
     //     gsl_multiroot_fsolver_free (s);
     //     gsl_vector_free (x);
-    const size_t ndim = 2;
-    gsl_vector *x = gsl_vector_alloc(ndim);
-    gsl_vector_set (x, 0, 0.);
-    gsl_vector_set (x, 1, 0.);
-    int check = 0;
-    PARAMETERS p;
-    p.p0 = new TTMThermalModelBQ();
-    p.p1 = 333.;
-    broyden(x, 2, check, p, funcTest);
+//    const size_t ndim = 2;
+//    gsl_vector *x = gsl_vector_alloc(ndim);
+//    gsl_vector_set (x, 0, 0.);
+//    gsl_vector_set (x, 1, 0.);
+//    int check = 0;
+//    PARAMETERS p;
+//    p.p0 = new TTMThermalModelBQ();
+//    p.p1 = 333.;
+//    broyden(x, 2, check, p, funcTest);
 
-    double x0 = gsl_vector_get(x, 0);
-    double x1 = gsl_vector_get(x, 1);
-    gsl_vector_free(x);
-    qDebug() << x0 << x1;
-    qDebug() << "status = " << gsl_strerror (check) << check;
+//    double x0 = gsl_vector_get(x, 0);
+//    double x1 = gsl_vector_get(x, 1);
+//    gsl_vector_free(x);
+//    qDebug() << x0 << x1;
+//    qDebug() << "status = " << gsl_strerror (check) << check;
 
     return a.exec();
 }

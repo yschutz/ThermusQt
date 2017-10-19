@@ -18,9 +18,9 @@ int BSQfuncSQCb(const gsl_vector* x, void* p, gsl_vector* f)
     (model->getParameterSet())->getParameter(TTMParameterSet::kMUC)->setValue(gsl_vector_get(x, 2));
     (model->getParameterSet())->getParameter(TTMParameterSet::kMUBEAUTY)->setValue(gsl_vector_get(x, 3));
 
-    bool check = model->primPartDens();
+    int check = model->primPartDens();
 
-    if (check) {
+    if (!check) {
 
 
         double y0 = model->getParameterSet()->getDens(TTMParameterSet::kMUS);

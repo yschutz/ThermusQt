@@ -17,23 +17,23 @@
 TTMParameter::TTMParameter(QObject *parent) : QObject(parent)
 {
     // default ctor
-     setObjectName("unnamed");
-     mValue = 0.;
-     mError = 0.;
-     mFlag = 2;
-     mStatus = "(UNINITIALISED)";
-     mStart = 0.;
-     mMin = 0.;
-     mMax = 0.;
-     mStep = 0.;
+    setObjectName("unnamed");
+    mValue = 0.;
+    mError = 0.;
+    mFlag = 2;
+    mStatus = "(UNINITIALISED)";
+    mStart = 0.;
+    mMin = 0.;
+    mMax = 0.;
+    mStep = 0.;
 }
 
 //__________________________________________________________________________
 TTMParameter::TTMParameter(QString name, double value, double error)
 {
     // Simple constructor: sets the name, value and error of a variable,
-     // making it of "FIXED" type. Use Constrain() or Fit(...) to change
-     // its type
+    // making it of "FIXED" type. Use Constrain() or Fit(...) to change
+    // its type
 
     setParameter(name, value, error);
 }
@@ -101,9 +101,9 @@ void TTMParameter::list()
 
     QString text;
     if (mError != 0.)
-        text = QString("%1 %2 ± %3").arg(objectName(), 10, QChar('.')).arg(mValue, 5).arg(mError, 5);
+        text = QString("%1 %2 ± %3").arg(objectName(), -10, QChar('.')).arg(mValue, 5, 'f', 4).arg(mError, 5);
     else
-        text = QString("%1 %2").arg(objectName()).arg(mValue);
+        text = QString("%1: = %3").arg(objectName(), -20).arg(mValue, 5, 'f', 4);
 
     if (mFlag == 0) {
         text = text.append(" %1 start: %2; range: %3 -- %4; step: %5").arg(mStatus, -5, QChar('.')).arg(mStart, 5).arg(mMin, 5).arg(mMax, 5).arg(mStep, 5);

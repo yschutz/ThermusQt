@@ -25,18 +25,17 @@ class TTMYield : public QObject
 public:
     explicit TTMYield(QObject *parent = nullptr);
     TTMYield(QString name, double exp_val, double exp_err,
-             qint32 id1, qint32 id2 = 0, bool fit = true);
+             int id1, int id2 = 0, bool fit = true);
+    TTMYield(const TTMYield& yield);
 
     void            fit()     {mFit = true;}
     double          getExpError() const {return mExpError;}
     double          getExpValue() const {return mExpValue;}
     bool            getFit() const {return mFit;}
-    qint32          getID1() const {return mID1;}
+    int             getID1() const {return mID1;}
     double          getModelError() const {return mModelError;}
     double          getModelValue() const {return mModelValue;}
-    qint32          getID2() const {return mID2;}
-//    TTMParticleSet* getPartSet1() const {return mSet1;}
-//    TTMParticleSet* getPartSet2() const {return mSet2;}
+    int             getID2() const {return mID2;}
     double          getQuadDev() const {return (mModelValue - mExpValue) / mModelValue;}
     double          getStdDev() const {return (mModelValue - mExpValue) / mExpError;}
     QString         getTMName() {return objectName();}
@@ -45,23 +44,20 @@ public:
     void            predict() {mFit = false;}
     void            setExpError(double x) {mExpError = x;}
     void            setExpValue(double x) {mExpValue = x;}
-    void            setID(qint32 x, qint32 y) {mID1 = x; mID2 = y;}
+    void            setID(int x, int y) {mID1 = x; mID2 = y;}
     void            setModelError(double x) {mModelError = x;}
     void            setModelValue(double x) {mModelValue = x;}
-//    void            setPartSet(TTMParticleSet *x, TTMParticleSet *y = (TTMParticleSet *) 0) { mSet1 = x; mSet2 = y;}
     void            setTMName(QString x) {setObjectName(x);}
-//    TTMYield operator=(TTMYield obj);
+    TTMYield& operator=(const TTMYield& obj);
 
 private:
     double          mExpError;   // experimental error
     double          mExpValue;   // experimental value
-    qint32          mID1;        // id for yield; numerator id for ratio
-    qint32          mID2;        // denominator id for ratio
+    int             mID1;        // id for yield; numerator id for ratio
+    int             mID2;        // denominator id for ratio
     bool            mFit;        // true if yield is to be fitted (predicted if false)
     double          mModelError; // model error
     double          mModelValue; // model value
-//    TTMParticleSet* mSet1;       // particle set relevant to yield (numerator)
-//    TTMParticleSet* mSet2;       // particle set relevant to denominator
 };
 
 #endif // TTMYIELD_H

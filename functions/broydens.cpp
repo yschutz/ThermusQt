@@ -13,9 +13,6 @@ void broyden(gsl_vector* x, size_t ndim, int& status, PARAMETERSS p, int (*myfun
     function.n = ndim;
     function.params = &p;
 
-    for (size_t i = 0; i < ndim; i++)
-        gsl_vector_set (x, i, 0.);
-
     const gsl_multiroot_fsolver_type *T;
     T = gsl_multiroot_fsolver_broyden;
 

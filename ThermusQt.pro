@@ -97,7 +97,16 @@ SOURCES += main.cpp\
     functions/BSQfuncSBDens.cpp \
     functions/BSQConstrainSQBDens.cpp \
     functions/BSQfuncSQBDens.cpp \
-    functions/FindExclVolPressure.cpp
+    functions/FindExclVolPressure.cpp \
+    functions/brent.cpp \
+    functions/ExclVolPressureFunc.cpp \
+    functions/BSQConstrainSQNetBDens.cpp \
+    functions/BSQfuncSQNetBDens.cpp \
+    functions/BSQConstrainSPercolation.cpp \
+    functions/BSQfuncSPercolation.cpp \
+    functions/BSQConstrainSQPercolation.cpp \
+    functions/BSQfuncSQPercolation.cpp \
+    main/TTMThermalFitBSQ.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -134,7 +143,8 @@ HEADERS  += mainwindow.h \
     main/TTMThermalParticleBQ.h \
     main/TTMThermalParticleBSQ.h \
     external/f2.h \
-    main/TTMThermalModelBSQ.h
+    main/TTMThermalModelBSQ.h \
+    main/TTMThermalFitBSQ.h
 
 
 RESOURCES += \
@@ -145,4 +155,5 @@ unix:LIBS += -L/usr/local/lib -lgsl
 INCLUDEPATH += /usr/local/include
 
 DISTFILES += \
-    external/ManageParticleDB.py
+    external/ManageParticleDB.py \
+    data/prediction_yannick.txt

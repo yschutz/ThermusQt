@@ -20,6 +20,7 @@ int BSQConstrainQ(TTMThermalModelBSQ *model)
     } else {
         const size_t ndim = 1;
         gsl_vector *x = gsl_vector_alloc(ndim);
+        gsl_vector *f = gsl_vector_alloc(ndim);
         gsl_vector_set(x, 0, model->getParameterSet()->getMuQ());
         int check = 0;
         PARAMETERSS p;

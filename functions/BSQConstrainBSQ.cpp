@@ -17,16 +17,16 @@ int BSQConstrainBSQ(TTMThermalModelBSQ *model, double B, double S, double Q)
 
     const size_t ndim = 3;
     gsl_vector *x = gsl_vector_alloc(ndim);
-    gsl_vector_set(x, 0, model->getParameterSet()->getMuQ());
+    gsl_vector_set(x, 0, model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->getValue());
+    gsl_vector_set(x, 1, model->getParameterSet()->getParameter(TTMParameterSet::kMUS)->getValue());
+    gsl_vector_set(x, 2, model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->getValue());
+
     int check = 0;
     PARAMETERSS p;
     p.p0 = model;
     p.p1 = B;
     p.p2 = S;
     p.p3 = Q;
-    gsl_vector_set(x, 0, model->getParameterSet()->getParameter(TTMParameterSet::kMUB)->getValue());
-    gsl_vector_set(x, 1, model->getParameterSet()->getParameter(TTMParameterSet::kMUS)->getValue());
-    gsl_vector_set(x, 2, model->getParameterSet()->getParameter(TTMParameterSet::kMUQ)->getValue());
     broyden(x, ndim, check, p, BSQfuncBSQ);
     if (check) {
         QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);

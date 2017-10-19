@@ -3,7 +3,6 @@
 // Strangeness-canonical thermal fit class
 // Adapted for Qt by Yves Schutz: September 2017
 
-
 #include "TTMThermalFitBQ.h"
 
 //__________________________________________________________________________

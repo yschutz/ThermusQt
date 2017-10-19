@@ -17,11 +17,11 @@
 ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
 {
 
-    // create an interactive widow to select parametres
+    // create an interactive window to select parametres
 
     setTitle("Select parameters values and fit constrains");
 
-    for (qint32 index = 0; index < TTMParameterSet::kPARTYPES; index++) {
+    for (int index = 0; index < TTMParameterSet::kPARTYPES; index++) {
         mFitMax[index]       = nullptr;
         mFitMin[index]       = nullptr;
         mFitSte[index]       = nullptr;
@@ -40,7 +40,7 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     QGroupBox *tBox = new QGroupBox(tr("Temperature"), this);
 
     QLabel *tfix       = new QLabel(tr("Fix"), tBox);
-    QLabel *tempLabel = new QLabel(tr("T:"), tBox);
+    QLabel *tempLabel  = new QLabel(tr("T:"), tBox);
     mParameterValue[TTMParameterSet::kT] = new QLineEdit(tBox);
 
     tempLabel->setBuddy(mParameterValue[TTMParameterSet::kT]);
@@ -67,7 +67,7 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     QLabel *tmax    = new QLabel(tr("max"), mTFitBox);
     QLabel *tste    = new QLabel(tr("step"), mTFitBox);
     QLabel *blanckT = new QLabel(" ", mTFitBox);
-    mTFitBoxLayout = new QGridLayout(mTFitBox);
+    mTFitBoxLayout  = new QGridLayout(mTFitBox);
     mTFitBoxLayout->setColumnMinimumWidth(1, 50);
     mTFitBoxLayout->setColumnMinimumWidth(2, 50);
     mTFitBoxLayout->setColumnMinimumWidth(3, 50);
@@ -92,7 +92,7 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     mTFitBoxLayout->addWidget(mFitSte[TTMParameterSet::kT], 1, 3, 1, 1);
     mTFitBox->setLayout(mTFitBoxLayout);
 
-//    // the mu's
+    // the mu's
 
     QGroupBox *muBox = new QGroupBox(tr("Chemical potentials"), this);
 
@@ -104,9 +104,9 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     muQLabel->setText("<html> &mu;<sub>Q</sub>:");
     mParameterValue[TTMParameterSet::kMUQ] = new QLineEdit(muBox);
     muQLabel->setBuddy(mParameterValue[TTMParameterSet::kMUQ]);
-    mParameterFix[TTMParameterSet::kMUQ] = new QCheckBox("", muBox);
+    mParameterFix[TTMParameterSet::kMUQ]   = new QCheckBox("", muBox);
     mParameterFix[TTMParameterSet::kMUQ]->setChecked(true);
-    mParameterCon[TTMParameterSet::kMUQ] = new QCheckBox("", muBox);
+    mParameterCon[TTMParameterSet::kMUQ]   = new QCheckBox("", muBox);
     mParameterCon[TTMParameterSet::kMUQ]->setChecked(false);
     mParameterValue[TTMParameterSet::kMUQ]->setPalette(mPalette);
     mParameterValue[TTMParameterSet::kMUQ]->setReadOnly(true);
@@ -119,7 +119,7 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     muBLabel->setText("<html> &mu;<sub>B</sub>:");
     mParameterValue[TTMParameterSet::kMUB] = new QLineEdit(muBox);
     muQLabel->setBuddy(mParameterValue[TTMParameterSet::kMUB]);
-    mParameterFix[TTMParameterSet::kMUB] = new QCheckBox("", muBox);
+    mParameterFix[TTMParameterSet::kMUB]   = new QCheckBox("", muBox);
     mParameterFix[TTMParameterSet::kMUB]->setChecked(true);
     mParameterValue[TTMParameterSet::kMUB]->setPalette(mPalette);
     mParameterValue[TTMParameterSet::kMUB]->setReadOnly(true);
@@ -130,9 +130,9 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     muSLabel->setText("<html> &mu;<sub>S</sub>:");
     mParameterValue[TTMParameterSet::kMUS] = new QLineEdit(muBox);
     muQLabel->setBuddy(mParameterValue[TTMParameterSet::kMUS]);
-    mParameterFix[TTMParameterSet::kMUS] = new QCheckBox("", muBox);
+    mParameterFix[TTMParameterSet::kMUS]   = new QCheckBox("", muBox);
     mParameterFix[TTMParameterSet::kMUS]->setChecked(true);
-    mParameterCon[TTMParameterSet::kMUS] = new QCheckBox("", muBox);
+    mParameterCon[TTMParameterSet::kMUS]   = new QCheckBox("", muBox);
     mParameterCon[TTMParameterSet::kMUS]->setChecked(false);
     mParameterValue[TTMParameterSet::kMUS]->setPalette(mPalette);
     mParameterValue[TTMParameterSet::kMUS]->setReadOnly(true);
@@ -146,9 +146,9 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     muCLabel->setText("<html> &mu;<sub>C</sub>:");
     mParameterValue[TTMParameterSet::kMUC] = new QLineEdit(muBox);
     muQLabel->setBuddy(mParameterValue[TTMParameterSet::kMUC]);
-    mParameterFix[TTMParameterSet::kMUC] = new QCheckBox("", muBox);
+    mParameterFix[TTMParameterSet::kMUC]   = new QCheckBox("", muBox);
     mParameterFix[TTMParameterSet::kMUC]->setChecked(true);
-    mParameterCon[TTMParameterSet::kMUC] = new QCheckBox("", muBox);
+    mParameterCon[TTMParameterSet::kMUC]   = new QCheckBox("", muBox);
     mParameterCon[TTMParameterSet::kMUC]->setChecked(false);
     mParameterValue[TTMParameterSet::kMUC]->setPalette(mPalette);
     mParameterValue[TTMParameterSet::kMUC]->setReadOnly(true);
@@ -161,9 +161,9 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     muBeautyLabel->setText("<html> &mu;<sub>Beauty</sub>:");
     mParameterValue[TTMParameterSet::kMUBEAUTY] = new QLineEdit(muBox);
     muQLabel->setBuddy(mParameterValue[TTMParameterSet::kMUBEAUTY]);
-    mParameterFix[TTMParameterSet::kMUBEAUTY] = new QCheckBox("", muBox);
+    mParameterFix[TTMParameterSet::kMUBEAUTY]   = new QCheckBox("", muBox);
     mParameterFix[TTMParameterSet::kMUBEAUTY]->setChecked(true);
-    mParameterCon[TTMParameterSet::kMUBEAUTY] = new QCheckBox("", muBox);
+    mParameterCon[TTMParameterSet::kMUBEAUTY]   = new QCheckBox("", muBox);
     mParameterCon[TTMParameterSet::kMUBEAUTY]->setChecked(false);
     mParameterValue[TTMParameterSet::kMUBEAUTY]->setPalette(mPalette);
     mParameterValue[TTMParameterSet::kMUBEAUTY]->setReadOnly(true);
@@ -341,16 +341,14 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     mMuConBox->setLayout(mMuConBoxLayout);
 
     // the gamma's
-    QGroupBox *gammaBox = new QGroupBox(tr("Fugacities"), this);
-
-    QLabel *gammafix       = new QLabel(tr("Fix"), gammaBox);
-
+    QGroupBox *gammaBox  = new QGroupBox(tr("Fugacities"), this);
+    QLabel *gammafix     = new QLabel(tr("Fix"), gammaBox);
     QLabel  *gammaSLabel = new QLabel(gammaBox);
     gammaSLabel->setTextFormat(Qt::RichText);
     gammaSLabel->setText("<html> &gamma;<sub>S</sub>:");
     mParameterValue[TTMParameterSet::kGAMMAS] = new QLineEdit(gammaBox);
     muQLabel->setBuddy(mParameterValue[TTMParameterSet::kGAMMAS]);
-    mParameterFix[TTMParameterSet::kGAMMAS] = new QCheckBox("", gammaBox);
+    mParameterFix[TTMParameterSet::kGAMMAS]   = new QCheckBox("", gammaBox);
     mParameterFix[TTMParameterSet::kGAMMAS]->setChecked(true);
     mParameterValue[TTMParameterSet::kGAMMAS]->setPalette(mPalette);
     mParameterValue[TTMParameterSet::kGAMMAS]->setReadOnly(true);
@@ -361,7 +359,7 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     gammaCLabel->setText("<html> &gamma;<sub>C</sub>:");
     mParameterValue[TTMParameterSet::kGAMMAC] = new QLineEdit(gammaBox);
     muQLabel->setBuddy(mParameterValue[TTMParameterSet::kGAMMAC]);
-    mParameterFix[TTMParameterSet::kGAMMAC] = new QCheckBox("", gammaBox);
+    mParameterFix[TTMParameterSet::kGAMMAC]   = new QCheckBox("", gammaBox);
     mParameterFix[TTMParameterSet::kGAMMAC]->setChecked(true);
     mParameterValue[TTMParameterSet::kGAMMAC]->setPalette(mPalette);
     mParameterValue[TTMParameterSet::kGAMMAC]->setReadOnly(true);
@@ -372,7 +370,7 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     gammaBeautyLabel->setText("<html> &gamma;<sub>Beauty</sub>:");
     mParameterValue[TTMParameterSet::kGAMMABEAUTY] = new QLineEdit(gammaBox);
     muQLabel->setBuddy(mParameterValue[TTMParameterSet::kGAMMABEAUTY]);
-    mParameterFix[TTMParameterSet::kGAMMABEAUTY] = new QCheckBox("", gammaBox);
+    mParameterFix[TTMParameterSet::kGAMMABEAUTY]   = new QCheckBox("", gammaBox);
     mParameterFix[TTMParameterSet::kGAMMABEAUTY]->setChecked(true);
     mParameterValue[TTMParameterSet::kGAMMABEAUTY]->setPalette(mPalette);
     mParameterValue[TTMParameterSet::kGAMMABEAUTY]->setReadOnly(true);
@@ -467,16 +465,14 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     mCollisions[kPbPb]->setChecked(true);
 
     QVBoxLayout *collRadioBoxLayout = new QVBoxLayout(collisionsBox);
-    for (qint32 index = 0; index < kCollTypes; index ++)
+    for (int index = 0; index < kCollTypes; index ++)
         collRadioBoxLayout->addWidget(mCollisions[index]);
 
     collisionsBox->setLayout(collRadioBoxLayout);
 
     // the radius
-    QGroupBox *rBox = new QGroupBox(tr("Radius"), this);
-
-    QLabel *rfix       = new QLabel(tr("Fix"), this);
-
+    QGroupBox *rBox     = new QGroupBox(tr("Radius"), this);
+    QLabel *rfix        = new QLabel(tr("Fix"), this);
     QLabel *radiusLabel = new QLabel(tr("r:"));
     mParameterValue[TTMParameterSet::kRADIUS] = new QLineEdit(rBox);
     radiusLabel->setBuddy(mParameterValue[TTMParameterSet::kRADIUS]);
@@ -558,7 +554,7 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
 
     mRFitBox->setLayout(mRFitBoxLayout);
 
-// final layout
+    // final layout
     QGridLayout *gridLayout = new QGridLayout(this);
 
     gridLayout->addWidget(tBox,     0, 0, 1, 1, Qt::AlignTop);
@@ -597,13 +593,13 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
         text = name + "Fixs";
         registerField(text, mFitSte[type]);
     }
-    registerField(TTMParameterSet::name(TTMParameterSet::kMUQ)+"C", mParameterCon[TTMParameterSet::kMUQ]);
-    registerField(TTMParameterSet::name(TTMParameterSet::kMUQ)+"CD", mDensity[TTMParameterSet::kMUQ]);
-    registerField(TTMParameterSet::name(TTMParameterSet::kMUS)+"C", mParameterCon[TTMParameterSet::kMUS]);
-    registerField(TTMParameterSet::name(TTMParameterSet::kMUS)+"CD", mDensity[TTMParameterSet::kMUS]);
-    registerField(TTMParameterSet::name(TTMParameterSet::kMUC)+"C", mParameterCon[TTMParameterSet::kMUC]);
-    registerField(TTMParameterSet::name(TTMParameterSet::kMUC)+"CD", mDensity[TTMParameterSet::kMUC]);
-    registerField(TTMParameterSet::name(TTMParameterSet::kMUBEAUTY)+"C", mParameterCon[TTMParameterSet::kMUBEAUTY]);
+    registerField(TTMParameterSet::name(TTMParameterSet::kMUQ)+"C",       mParameterCon[TTMParameterSet::kMUQ]);
+    registerField(TTMParameterSet::name(TTMParameterSet::kMUQ)+"CD",      mDensity[TTMParameterSet::kMUQ]);
+    registerField(TTMParameterSet::name(TTMParameterSet::kMUS)+"C",       mParameterCon[TTMParameterSet::kMUS]);
+    registerField(TTMParameterSet::name(TTMParameterSet::kMUS)+"CD",      mDensity[TTMParameterSet::kMUS]);
+    registerField(TTMParameterSet::name(TTMParameterSet::kMUC)+"C",       mParameterCon[TTMParameterSet::kMUC]);
+    registerField(TTMParameterSet::name(TTMParameterSet::kMUC)+"CD",      mDensity[TTMParameterSet::kMUC]);
+    registerField(TTMParameterSet::name(TTMParameterSet::kMUBEAUTY)+"C",  mParameterCon[TTMParameterSet::kMUBEAUTY]);
     registerField(TTMParameterSet::name(TTMParameterSet::kMUBEAUTY)+"CD", mDensity[TTMParameterSet::kMUBEAUTY]);
 }
 
@@ -613,7 +609,7 @@ double ParaSel::getB2Q() const
     // calulates B / 2 * Q
     double rv = 0.0;
 
-    qint32 test = getCollision();
+    int test = getCollision();
     switch (test) {
     case kPbPb:
         rv =  208. / (2. * 82.);
@@ -634,13 +630,13 @@ double ParaSel::getB2Q() const
 }
 
 //__________________________________________________________________________
-qint32 ParaSel::getCollision() const
+int ParaSel::getCollision() const
 {
     // checks which collision system is selected
 
-    qint32 rv = 0;
+    int rv = 0;
 
-    for (qint32 index = 0; index <  kCollTypes; index++) {
+    for (int index = 0; index <  kCollTypes; index++) {
         if (mCollisions[index]->isChecked()) {
             rv = index;
             break;
@@ -652,35 +648,35 @@ qint32 ParaSel::getCollision() const
 //__________________________________________________________________________
 bool ParaSel::isConstrained(TTMParameterSet::ParameterType type) const
 {
-   bool rv = false;
-   switch (type) {
-   case TTMParameterSet::kMUQ:
-       if (mParameterCon[type]->isChecked())
-           rv = true;
-       break;
-   case TTMParameterSet::kMUS:
-       if (mParameterCon[type]->isChecked())
-           rv = true;
-       break;
-   case TTMParameterSet::kMUC:
-       if (mParameterCon[type]->isChecked())
-           rv = true;
-       break;
-   case TTMParameterSet::kMUBEAUTY:
-       if (mParameterCon[type]->isChecked())
-           rv = true;
-       break;
-   default:
-       rv = false;
-       break;
-   }
-   return rv;
+    bool rv = false;
+    switch (type) {
+    case TTMParameterSet::kMUQ:
+        if (mParameterCon[type]->isChecked())
+            rv = true;
+        break;
+    case TTMParameterSet::kMUS:
+        if (mParameterCon[type]->isChecked())
+            rv = true;
+        break;
+    case TTMParameterSet::kMUC:
+        if (mParameterCon[type]->isChecked())
+            rv = true;
+        break;
+    case TTMParameterSet::kMUBEAUTY:
+        if (mParameterCon[type]->isChecked())
+            rv = true;
+        break;
+    default:
+        rv = false;
+        break;
+    }
+    return rv;
 }
 
 //__________________________________________________________________________
 void ParaSel::setFitValues(TTMParameterSet::ParameterType type, double min, double max, double step)
 {
-  // set the fitting constrain values
+    // set the fitting constrain values
     mFitMin[type]->setText(QString("%1").arg(min));
     mFitMax[type]->setText(QString("%1").arg(max));
     mFitSte[type]->setText(QString("%1").arg(step));
@@ -689,9 +685,9 @@ void ParaSel::setFitValues(TTMParameterSet::ParameterType type, double min, doub
 //__________________________________________________________________________
 void ParaSel::updateDisplay()
 {
-   // update the display after the default parameters have been set
+    // update the display after the default parameters have been set
 
-    for (qint32 type = 0; type < TTMParameterSet::kPARTYPES; type++) {
+    for (int type = 0; type < TTMParameterSet::kPARTYPES; type++) {
         if (mParameterFix[type]) {
             mFitMin[type]->setText("Fixed");
             mFitMax[type]->setText("Fixed");
@@ -710,7 +706,7 @@ void ParaSel::conParameter(TTMParameterSet::ParameterType type)
         mPalette.setColor(QPalette::Text,Qt::green);
         read = false;
         text = "";
-     } else {
+    } else {
         mPalette.setColor(QPalette::Text,Qt::red);
         read = true;
         text = "OFF";
@@ -723,7 +719,7 @@ void ParaSel::conParameter(TTMParameterSet::ParameterType type)
 //__________________________________________________________________________
 void ParaSel::fixParameter(TTMParameterSet::ParameterType type)
 {
-   // fix/free parameters and request fitting constrains
+    // fix/free parameters and request fitting constrains
     QGroupBox *temp = NULL;
 
     switch (type) {

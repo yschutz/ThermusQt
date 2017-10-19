@@ -11,12 +11,12 @@
 int BSQfuncQ(const gsl_vector* x, void* p, gsl_vector* f)
 {
     int rv = 0;
+
     TTMThermalModelBSQ* model = ((PARAMETERSS *)p)->p0;
     (model->getParameterSet())->getParameter(TTMParameterSet::kMUQ)->setValue(gsl_vector_get(x, 0));
 
-    bool check = model->primPartDens();
-
-    if (check) {
+    int check = model->primPartDens();
+    if (!check) {
         double b2q = model->getParameterSet()->getB2Q();
         gsl_vector_set(f, 0, (model->getBaryon() / 2. / model->getCharge() - b2q) / b2q);
     } else {

@@ -392,7 +392,10 @@ bool TTMThermalParticleBSQ::parametersAllowed()
             return true;
         } else {
             QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, Q_FUNC_INFO);
-            msg.setInformativeText(QString("Bose-Einstein Condensation of %1").arg(ParticlesDBManager::Instance().getName(mParticle)));
+            msg.setInformativeText(QString("Bose-Einstein Condensation of %1 (%2): mM=%3; mMu=%4; mT=%5; mG=%6").
+                                   arg(ParticlesDBManager::Instance().getName(mParticle)).
+                                   arg(mParticle).
+                                   arg(mM).arg(mMu).arg(mT).arg(mG));
             msg.exec();
             return false;
         }
@@ -544,7 +547,6 @@ void TTMThermalParticleBSQ::updateMembers(double exclVolPressure)
         mMuQ      = 0.0;
         mMuC      = 0.0;
         mMuBeauty = 0.0;
-
     }
 }
 

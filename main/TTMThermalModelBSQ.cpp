@@ -30,7 +30,7 @@ TTMThermalModelBSQ::TTMThermalModelBSQ(QObject* parent) : TTMThermalModel(parent
 }
 
 //__________________________________________________________________________
-TTMThermalModelBSQ::TTMThermalModelBSQ(TTMParameterSetBSQ *parameters, bool qstats, bool width, QObject* obj) : TTMThermalModel(obj),
+TTMThermalModelBSQ::TTMThermalModelBSQ(TTMParameterSetBSQ *parameters, bool qstats, bool width) :
     mExclVolCorrection(false), mExclVolDenominator(1.0), mExclVolPressure(0.0), mQStats(qstats)
 {
     // ctor
@@ -91,7 +91,7 @@ TTMThermalModelBSQ::TTMThermalModelBSQ(const TTMThermalModelBSQ &model)
 TTMThermalModelBSQ::~TTMThermalModelBSQ()
 {
     // dtor
-    delete mPar;
+    // mPar does not belong to this
 }
 
 //__________________________________________________________________________
@@ -545,7 +545,7 @@ void TTMThermalModelBSQ::listInfo() const
 }
 
 //__________________________________________________________________________
-bool TTMThermalModelBSQ::primPartDens()
+int TTMThermalModelBSQ::primPartDens()
 {
     // Calculates the primordial particle densities and populates the density
     // hash table with these values. The parameters are not constrained first!
@@ -581,7 +581,7 @@ bool TTMThermalModelBSQ::primPartDens()
         QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, Q_FUNC_INFO);
         msg.setInformativeText("Chemical Potentials not allowed!");
         msg.exec();
-        return false;
+        return 1;
     } else {
         if (!mExclVolCorrection) {
             for (int part : partPDGs) {
@@ -714,6 +714,20 @@ bool TTMThermalModelBSQ::primPartDens()
 
         return 0;
     }
+}
+
+//__________________________________________________________________________
+TTMThermalModelBSQ& TTMThermalModelBSQ::operator=(TTMThermalModelBSQ model)
+{
+    // assignation operator
+    TTMThermalModelBSQ tmp(model);
+    mExclVolCorrection  = model.mExclVolCorrection;
+    mExclVolDenominator = model.mExclVolDenominator;
+    mExclVolPressure    = model.mExclVolPressure;
+    mPar                = new TTMParameterSetBSQ(*(model.mPar));
+    mQStats             = model.mQStats;
+
+    return *this;
 }
 
 

@@ -18,6 +18,15 @@ TTMDecay::TTMDecay(QObject* parent) : QObject(parent),
 }
 
 //__________________________________________________________________________
+TTMDecay::TTMDecay(const TTMDecay &decay)
+{
+    // copy ctor
+    mParentID   = decay.mParentID;
+    mDaughterID = decay.mDaughterID;
+    mBRatio     = decay.mBRatio;
+}
+
+//__________________________________________________________________________
 TTMDecay::TTMDecay(qint32 mother, qint32 daughter, double fraction, QObject* parent) :
     QObject(parent),
     mParentID(mother), mDaughterID(daughter), mBRatio(fraction)
@@ -39,9 +48,9 @@ TTMDecay &TTMDecay::operator=(const TTMDecay &obj)
     // assignation operator
 
     if (this != &obj) {
-        mParentID = obj.getParentID();
-        mDaughterID = obj.getDaughterID();
-        mBRatio = obj.getBRatio();
+        mParentID   = obj.mParentID;
+        mDaughterID = obj.mDaughterID;
+        mBRatio     = obj.mBRatio;
     }
     return *this;
 }

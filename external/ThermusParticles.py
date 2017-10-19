@@ -433,9 +433,9 @@ def createDB():
 		b         = int(data[10]) # beauty
 		t         = 0        # top
 		sc        = float(data[11]) # #s + #s-bar quarks
-		cc        = c
-		bc        = b
-		tc        = t
+		cc        = abs(c)
+		bc        = abs(b)
+		tc        = abs(t)
 		width     = float(data[12])
 		life      = HBAR / width if width != 0 else 0.
 		threshold = float(data[13])

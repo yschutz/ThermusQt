@@ -18,7 +18,7 @@ TTMYield::TTMYield(QObject *parent) : QObject(parent),
 }
 
 //__________________________________________________________________________
-TTMYield::TTMYield(QString name, double exp_val, double exp_err, qint32 id1, qint32 id2, bool fit) :
+TTMYield::TTMYield(QString name, double exp_val, double exp_err, int id1, int id2, bool fit) :
     QObject(),
     mExpError(exp_err),  mExpValue(exp_val), mID1(id1), mID2(id2),mFit(fit),
     mModelError(0.), mModelValue(0.)//, mSet1(nullptr), mSet2(nullptr)
@@ -26,6 +26,20 @@ TTMYield::TTMYield(QString name, double exp_val, double exp_err, qint32 id1, qin
     // ctor
     setObjectName(name);
 
+}
+
+//__________________________________________________________________________
+TTMYield::TTMYield(const TTMYield &yield)
+{
+    // copy ctor
+    setObjectName(yield.objectName());
+    mID1        = yield.getID1();
+    mID2        = yield.getID2();
+    mFit        = yield.getFit();
+    mExpValue   = yield.getExpValue();
+    mExpError   = yield.getExpError();
+    mModelValue = yield.getModelValue();
+    mModelError = yield.getModelError();
 }
 
 //__________________________________________________________________________
@@ -46,18 +60,19 @@ void TTMYield::list()
 }
 
 //__________________________________________________________________________
-//TTMYield TTMYield::operator=(TTMYield obj)
-//{
-//    //assignation operator
-//    setObjectName(obj.objectName());
-//    mID1        = obj.getID1();
-//    mID2        = obj.getID2();
-//    mFit        = obj.getFit();
-//    mSet1       = obj.getPartSet1();
-//    mSet2       = obj.getPartSet2();
-//    mExpValue   = obj.getExpValue();
-//    mExpError   = obj.getExpError();
-//    mModelValue = obj.getModelValue();
-//    mModelError = obj.getModelError();
-//    return *this;
-//}
+TTMYield &TTMYield::operator=(const TTMYield &obj)
+{
+    // assignation operator
+
+    if (this != &obj) {
+        setObjectName(obj.objectName());
+        mID1        = obj.getID1();
+        mID2        = obj.getID2();
+        mFit        = obj.getFit();
+        mExpValue   = obj.getExpValue();
+        mExpError   = obj.getExpError();
+        mModelValue = obj.getModelValue();
+        mModelError = obj.getModelError();
+    }
+    return *this;
+}

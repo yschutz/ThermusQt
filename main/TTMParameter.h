@@ -47,7 +47,7 @@ private:
     qint32  mFlag;    // -1:constrained ; 0:fitted ; 1:fixed ; 2:uninitialised
     double  mMax;     // upper bound of fit range
     double  mMin;     // lower bound of fit range
-    QString mStatus;  // reflects qint32ended treatment or action taken
+    QString mStatus;  // reflects intended treatment or action taken
     double  mStart;   // initial value used in fit
     double  mStep;    // step size used in fit
     double  mValue;   // value of variable

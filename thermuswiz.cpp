@@ -20,17 +20,17 @@ ThermusWiz::ThermusWiz(QString /*summaryTitle*/, QWidget *parent) : QWizard(pare
     setWindowTitle("THERMUS setting wizard");
     setWizardStyle(QWizard::ModernStyle);
 
-//    setPixmap(QWizard::WatermarkPixmap, QPixmap(":/Icons/Icons/Matrix2.jpg"));
-//    setPixmap(QWizard::LogoPixmap, QPixmap(":/Icons/Icons/RC30-icon-48x48.png"));
-//    //setPixmap(QWizard::BannerPixmap, QPixmap(":/Icons/Icons/NegativeSmile.png"));
-//    setPixmap(QWizard::BackgroundPixmap, QPixmap(":/Icons/Icons/RC30Controller.JPG"));
+    //    setPixmap(QWizard::WatermarkPixmap, QPixmap(":/Icons/Icons/Matrix2.jpg"));
+    //    setPixmap(QWizard::LogoPixmap, QPixmap(":/Icons/Icons/RC30-icon-48x48.png"));
+    //    //setPixmap(QWizard::BannerPixmap, QPixmap(":/Icons/Icons/NegativeSmile.png"));
+    //    setPixmap(QWizard::BackgroundPixmap, QPixmap(":/Icons/Icons/RC30Controller.JPG"));
 
     RunMacro& myMacro = RunMacro::instance();
 
     // page to select the particles list file
 
-//    mDialogId = addPage(new FileSel(this));
-//    myMacro.setDialog((FileSel*)page(mDialogId));
+    //    mDialogId = addPage(new FileSel(this));
+    //    myMacro.setDialog((FileSel*)page(mDialogId));
 
     // page for the parameters setting
 
@@ -39,10 +39,10 @@ ThermusWiz::ThermusWiz(QString /*summaryTitle*/, QWidget *parent) : QWizard(pare
 
     // page summarizing evrything
 
-//    mSummary->setSubTitle(summaryTitle);
-//    mSummaryId = addPage(new Summary(this));
-//    myMacro.setSummary((Summary*)page(mSummaryId));
-//    ((Summary*)page(mSummaryId))->setSubTitle(summaryTitle);
+    //    mSummary->setSubTitle(summaryTitle);
+    //    mSummaryId = addPage(new Summary(this));
+    //    myMacro.setSummary((Summary*)page(mSummaryId));
+    //    ((Summary*)page(mSummaryId))->setSubTitle(summaryTitle);
 
     show();
 

@@ -95,7 +95,7 @@ TTMThermalModelBQ::TTMThermalModelBQ(const TTMThermalModelBQ &model)
 //__________________________________________________________________________
 TTMThermalModelBQ::~TTMThermalModelBQ()
 {
-    delete mPar;
+    // mPar does not belong to this
 }
 
 //__________________________________________________________________________
@@ -492,7 +492,7 @@ void TTMThermalModelBQ::listInfo() const
 }
 
 //__________________________________________________________________________
-bool TTMThermalModelBQ::primPartDens()
+int TTMThermalModelBQ::primPartDens()
 {
     // Calculates the primordial particle densities and populates the density
     // hash table. The parameters are not constrained first!. This is the
@@ -529,7 +529,7 @@ bool TTMThermalModelBQ::primPartDens()
         QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, Q_FUNC_INFO);
         msg.setInformativeText("Chemical Potentials not allowed!");
         msg.exec();
-        return false;
+        return 1;
     } else {
         double z      = 0.;
         double k0     = 0., kp1 = 0., kp2 = 0., kp3 = 0., km1 = 0., km2 = 0., km3 = 0.;
@@ -592,12 +592,12 @@ bool TTMThermalModelBQ::primPartDens()
             QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);
             msg.setInformativeText("x's too large");
             msg.exec();
-            return false;
+            return 1;
         } else if (y[0] == 0 || y[1] == 0 || y[2] == 0) {
             QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);
             msg.setInformativeText("y's zero");
             msg.exec();
-            return false;
+            return 1;
         } else {
             double TSPartition3 = 0.0;
             double Tfactorkm1   = 0.0;
@@ -844,7 +844,7 @@ bool TTMThermalModelBQ::primPartDens()
             mCharm   = mCplus + mCminus;
             mBeauty  = mbplus + mbminus;
 
-            return true;
+            return 0;
         }
     }
 }
@@ -865,7 +865,7 @@ TTMThermalModelBQ &TTMThermalModelBQ::operator=(const TTMThermalModelBQ model)
     mlnZ0	          = model.mlnZ0;
     mNonStrangeQStats = model.mNonStrangeQStats;
 
-    mPar              = model.mPar; //dangeruous ... implement copy ctor in TTMParameterSetBQ
+    mPar                = new TTMParameterSetBQ(*(model.mPar));
 
     mBaryon     = model.mBaryon;
     mBeauty     = model.mBeauty;

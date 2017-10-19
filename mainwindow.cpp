@@ -23,6 +23,8 @@
 #include "external/particlesdbmanager.h"
 #include "external/selectdialog.h"
 
+#include "main/TTMThermalFitBSQ.h"
+
 bool MainWindow::mDebug = false;
 //__________________________________________________________________________
 MainWindow::MainWindow(QWidget *parent) :
@@ -124,7 +126,7 @@ void MainWindow::createConsol()
 
 
     // direct the log info to the console
-    qInstallMessageHandler(customMessageHandler);
+//    qInstallMessageHandler(customMessageHandler);
 }
 
 //__________________________________________________________________________
@@ -220,25 +222,18 @@ void MainWindow::runPrediction()
     // **************************************************
     // connect to the Thermus DB
     particlesDBManagement(kConnectT);
-//    myMacro.setParticlesListFile();
 
-    // Choice of starting parameters
-
+    // Choice of starting parameters, select parameters to fit or fix, add constraint
     myMacro.setParameters();
-
-    // choice of parameter to fit or to fix
-    // -> Default is fixed at zero or at unity so important to check !!
-
-    myMacro.setFitFix();
-
-    // option of adding some constraint
-
-    myMacro.setConstrain();
 
     mRunMenu->insertAction(mQuitAction, mParametersList);
 
-    // list parameters settings
-    //    myMacro.listParameters();
+    // Create the fit model
+    myMacro.setFit();
+
+    // Run the stuff
+    myMacro.run();
+
 }
 
 //__________________________________________________________________________

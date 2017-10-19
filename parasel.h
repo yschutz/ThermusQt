@@ -23,7 +23,7 @@ public:
 
            double  getB2Q() const;
            double  getConstrainValue(TTMParameterSet::ParameterType type) const
-                                    { return mDensity[type]->text().toDouble(); }
+                                    { if (type == TTMParameterSet::kMUQ) return getB2Q(); else return mDensity[type]->text().toDouble(); }
            qint32  getCollision() const;
            double  getFitMax(TTMParameterSet::ParameterType type) const
                                     { return mFitMax[type]->text().toDouble(); }

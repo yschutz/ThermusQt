@@ -29,7 +29,7 @@ class TTMParameterSetBSQ : public TTMParameterSet
 {
 
 public:
-    TTMParameterSetBSQ();
+    TTMParameterSetBSQ(QObject* parent = nullptr);
     TTMParameterSetBSQ(double temp, double mub,
                        double mus, double muq, double gs,
                        double r = 0., double muc = 0., double gc = 1., double mubeauty = 0., double gb = 1.,
@@ -44,15 +44,20 @@ public:
     void   constrain(ParameterType type, double x = 0.);
     void   fit(ParameterType type, double start, double min = 0.050, double max = 0.180, double step = 0.001) { mPar[type]->fit(start, min, max, step); }
     void   fix(ParameterType type, double value, double error = 0.) { mPar[type]->fix(value, error); }
-    bool   getConstrain(ParameterType type) const                   { return mConstrain[type]; }
-    double getDens(ParameterType type) const                        { return mDens[type]; }
+    bool   getConstrain(ParameterType type) const;
+    double getDens(ParameterType type) const;
     void   list();
 
     TTMParameterSetBSQ& operator=(const TTMParameterSetBSQ& obj);
 
 private:
-    double  mDens[kPARTYPES];      // the initial density for S, C and Beauty
-    bool    mConstrain[kPARTYPES]; // true if parameter must be constrained
-};
+    double  mBeautyDens;           // the initial beauty density
+    double  mCDens;                // the initial charm density
+    double  mSDens;                // the initial strange density
+    bool    mMuBeautyConstrain;    // true if muBeauty must be constrained
+    bool    mMuCConstrain;         // true if muC must be constrained
+    bool    mMuQConstrain;         // true if muQ must be constrained
+    bool    mMuSConstrain;         // true if muS must be constrained
+ };
 
 #endif // TTMPARAMETERsetBSQ_H

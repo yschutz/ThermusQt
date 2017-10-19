@@ -14,9 +14,9 @@ int BSQfuncS(const gsl_vector* x, void* p, gsl_vector* f)
     TTMThermalModelBSQ* model = ((PARAMETERSS *)p)->p0;
     (model->getParameterSet())->getParameter(TTMParameterSet::kMUS)->setValue(gsl_vector_get(x, 0));
 
-    bool check = model->primPartDens();
+    int check = model->primPartDens();
 
-    if (check) {
+    if (!check) {
         double densS = model->getParameterSet()->getDens(TTMParameterSet::kMUS);
         if (densS != 0.)
             gsl_vector_set(f, 0, (model->getStrange() - densS) / densS);
