@@ -63,6 +63,10 @@ void TTMThermalFit::generateYields()
         double volume = model->getParameterSet()->getVolume();
         int id1       = yield->getID1();
         int id2       = yield->getID2();
+        if (id2 == 0) { // Yield
+//======================== CONTINUE ====================
+
+        }
         qDebug() << Q_FUNC_INFO << volume << id1 << id2;
     }
 }
