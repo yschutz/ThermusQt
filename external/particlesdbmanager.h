@@ -16,7 +16,7 @@ public:
                 kSC, kCC, kBC, kTC, kWIDTH, kLIFETIME, kTHRESHOLD, kRADIUS, kNDECAY, kLAST};
     Q_ENUM(ENTRY)
 
-    bool                       allDecays(int pdg, QHash<int, double>& br) const ;
+    bool                       allDecays(int pdg, QHash<int, double>& br, bool normalize = false) const ;
     bool                       allParticles(QList<int>& list, ListOption opt = kALL) const;
     double                     br(int decayindex) const;
     bool                       connect(const QString& path);

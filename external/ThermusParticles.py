@@ -98,8 +98,12 @@ def makeADecays(part, apart):
    		dd = Decay.create(mother = apart, dtype = decay.dtype, br = decay.br, brn = decay.brn, ndaughters = decay.ndaughters)
    		dd.save()
    		for child in Daughter.select().where(Daughter.decay == decay):
-   			dodo = Daughter.create(decay = dd, pdg = -child.pdg)
-   			dodo.save() 
+   			for pp in Particle.select().where(Particle.pdg == child.pdg): 
+	   			if  not (pp.baryon == 0 and pp.charge == 0 and pp.s == 0 and pp.c == 0 and pp.b == 0 and pp.t == 0):
+   				   	dodo = Daughter.create(decay = dd, pdg = -child.pdg)
+   				else:   	
+   					dodo = Daughter.create(decay = dd, pdg = child.pdg)
+   				dodo.save() 
 #=======================================================================
 def updateMasses():
 	url = 'http://pdg.lbl.gov/2017/mcdata/mass_width_2017.mcd'
@@ -489,7 +493,7 @@ def createDB():
 				mass      = part.mass, 
 				s         = -part.s, 
 				baryon    = -part.baryon,
-	  			charge         = -part.charge,
+	  			charge    = -part.charge,
 		  		c         = -part.c,
 		  		b         = -part.b,
 		  		t         = -part.t,

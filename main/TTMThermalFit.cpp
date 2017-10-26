@@ -8,6 +8,7 @@
 #include <QStandardItemModel>
 #include <QTableView>
 
+#include "TTMDensObj.h"
 #include "TTMParameterSet.h"
 #include "TTMThermalFit.h"
 #include "TTMThermalModel.h"
@@ -49,11 +50,11 @@ void TTMThermalFit::addYield(TTMYield *yield)
 void TTMThermalFit::generateYields()
 {
     // Calculates the primordial particle densities of all particles in the
-     // set, then iterates through the list of yields, calculates
-     // their decay contributions and inserts the new model
-     // predictions into the TTMYield objects, and calculates chi-squared
-     // and the quadratic deviation.
-     //
+    // set, then iterates through the list of yields, calculates
+    // their decay contributions and inserts the new model
+    // predictions into the TTMYield objects, and calculates chi-squared
+    // and the quadratic deviation.
+    //
 
     mChiSquare = mQuadDev = 0.0;
 
@@ -63,14 +64,116 @@ void TTMThermalFit::generateYields()
         double volume = model->getParameterSet()->getVolume();
         int id1       = yield->getID1();
         int id2       = yield->getID2();
-        if (id2 == 0) { // Yield
-//======================== CONTINUE ====================
-
-        }
         qDebug() << Q_FUNC_INFO << volume << id1 << id2;
+        if (id2 == 0) { // Yield
+            //           model->SetParticleSet(yield->GetParticleSet1();
+            if (id1 == 1) {
+                yield->setModelValue(model->getBaryon() * volume);
+            } else if (id1 == 2) {
+                double hmin = 0.;
+                model->generateDecayPartDens();
+                for (TTMDensObj* dens : model->getDensityTable()) {
+                    double charge = ParticlesDBManager::Instance().getCharge(dens->getID());
+                    if(ParticlesDBManager::Instance().isStable(dens->getID()) && charge < 0)
+                        hmin += dens->getFinalDensity();
+                }
+                yield->setModelValue(hmin * volume);
+            } else if (id1 == 3) {
+                double hplus = 0.;
+                model->generateDecayPartDens();
+                for (TTMDensObj* dens : model->getDensityTable()) {
+                    double charge = ParticlesDBManager::Instance().getCharge(dens->getID());
+                    if(ParticlesDBManager::Instance().isStable(dens->getID()) && charge > 0)
+                        hplus += dens->getFinalDensity();
+                }
+                yield->setModelValue(hplus * volume);
+            } else if (id1 == 33340) {
+                model->generateDecayPartDens(3334);
+                model->generateDecayPartDens(-3334);
+                yield->setModelValue((model->getDensities(3334)->getFinalDensity() +
+                                      model->getDensities(-3334)->getFinalDensity()) * volume);
+            } else {
+                model->generateDecayPartDens(id1);
+                TTMDensObj *partDens = model->getDensities(id1);
+                qDebug() << Q_FUNC_INFO << partDens->getFinalDensity();
+                yield->setModelValue(partDens->getFinalDensity() * volume);
+            }
+        } else { // ratio
+            if (id1 == 3130) {
+                //                    model->SetParticleSet(next_yield->GetPartSet1());
+                model->generateDecayPartDens(313);
+                model->generateDecayPartDens(-313);
+                double kstar  = model->getDensities(313)->getFinalDensity();
+                double akstar = model->getDensities(-313)->getFinalDensity();
+                double num    = (kstar + akstar) / 2.;
+                //                    model->setParticleSet(next_yield->GetPartSet2());
+                model->generateDecayPartDens(id2);
+                double den = model->getDensities(id2)->getFinalDensity();
+                yield->setModelValue(num / den);
+            } else if (id1 == 33340) {
+                //                    model->setParticleSet(next_yield->GetPartSet1());
+                model->generateDecayPartDens(3334);
+                model->generateDecayPartDens(-3334);
+                double omega  = model->getDensities(3334)->getFinalDensity();
+                double aomega = model->getDensities(-3334)->getFinalDensity();
+                double num    = omega + aomega;
+                //                    model->SetParticleSet(next_yield->GetPartSet2());
+                model->generateDecayPartDens(id2);
+                double den = model->getDensities(id2)->getFinalDensity();
+                yield->setModelValue(num / den);
+            } else if (id2 == 2) {
+                //                    model->SetParticleSet(next_yield->GetPartSet1());
+                model->generateDecayPartDens(id1);
+                double num = model->getDensities(id1)->getFinalDensity();
+                //                    model->SetParticleSet(next_yield->GetPartSet2());
+                double hmin = 0.;
+                model->generateDecayPartDens();
+                for (TTMDensObj* dens : model->getDensityTable()) {
+                    double charge = ParticlesDBManager::Instance().getCharge(dens->getID());
+                    if(ParticlesDBManager::Instance().isStable(dens->getID()) && charge < 0)
+                        hmin += dens->getFinalDensity();
+                }
+                double den = hmin;
+                yield->setModelValue(num / den);
+            } else if(id2 == 3){
+//                model->SetParticleSet(next_yield->GetPartSet1());
+                model->generateDecayPartDens(id1);
+                double num = model->getDensities(id1)->getFinalDensity();
+//                model->SetParticleSet(next_yield->GetPartSet2());
+                double hplus = 0.;
+                model->generateDecayPartDens();
+                for (TTMDensObj* dens : model->getDensityTable()) {
+                    double charge = ParticlesDBManager::Instance().getCharge(dens->getID());
+                    if(ParticlesDBManager::Instance().isStable(dens->getID()) && charge > 0)
+                        hplus += dens->getFinalDensity();
+                }
+                double den = hplus;
+                yield->setModelValue(num / den);
+            } else if(id2 == 33340) {
+                //                    model->SetParticleSet(next_yield->GetPartSet1());
+                model->generateDecayPartDens(id1);
+                double num = model->getDensities(id1)->getFinalDensity();
+                //                    model->SetParticleSet(next_yield->GetPartSet2());
+                model->generateDecayPartDens(3334);
+                model->generateDecayPartDens(-3334);
+                double den = model->getDensities(3334)->getFinalDensity() + model->getDensities(-3334)->getFinalDensity();
+                yield->setModelValue(num / den);
+            } else {
+                //                    model->SetParticleSet(next_yield->GetPartSet1());
+                model->generateDecayPartDens(id1);
+                double num = model->getDensities(id1)->getFinalDensity();
+                //                    model->SetParticleSet(next_yield->GetPartSet2());
+                model->generateDecayPartDens(id2);
+                double den = model->getDensities(id2)->getFinalDensity();
+                yield->setModelValue(num / den);
+            }
+        }
+        if (yield->getFit()) {
+            mChiSquare += qPow(yield->getStdDev(), 2);
+            mQuadDev   += qPow(yield->getQuadDev(), 2);
+        }
     }
 }
-
 //__________________________________________________________________________
 QString TTMThermalFit::getTMName(int id1, int id2, const QString& descr) const
 {

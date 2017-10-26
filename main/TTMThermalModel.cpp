@@ -125,18 +125,16 @@ void TTMThermalModel::generateDecayPartDens()
     QList<int> stableParticles;
     ParticlesDBManager::Instance().allParticles(stableParticles, ParticlesDBManager::kSTABLE);
     for (int pdg : stableParticles) {
-        TTMDensObj* daughter_dens = getDensities(pdg);
         QHash<int, double> br;
-        ParticlesDBManager::Instance().allDecays(pdg, br);
+        ParticlesDBManager::Instance().allDecays(pdg, br, false);
         double decay = 0.0;
         QHash<int, double>::iterator i;
         for (i = br.begin(); i != br.end(); ++i) {
             int parent = i.key();
             double br  = i.value();
-            TTMDensObj *parent_dens = getDensities(parent);
-            decay += br * parent_dens->getPrimaryDensity();
+            decay += br * getDensities(parent)->getPrimaryDensity();
         }
-        daughter_dens->setDecayDensity(decay);
+        getDensities(pdg)->setDecayDensity(decay);
     }
 }
 
@@ -144,24 +142,26 @@ void TTMThermalModel::generateDecayPartDens()
 void TTMThermalModel::generateDecayPartDens(int pdg)
 {
     // Calculates the decay contribution to particle with ID id
-      // based on the primordial densities already in the hash table
-      // provided the particle is stable!
-      // (NB must first populate the hash table with primordial densities)
+    // based on the primordial densities already in the hash table
+    // provided the particle is stable!
+    // (NB must first populate the hash table with primordial densities)
 
     if (!ParticlesDBManager::Instance().isStable(pdg))
         return;
-    TTMDensObj* daughter_dens = getDensities(pdg);
     QHash<int, double> br;
-    ParticlesDBManager::Instance().allDecays(pdg, br);
+    ParticlesDBManager::Instance().allDecays(pdg, br, false);
     double decay = 0.0;
     QHash<int, double>::iterator i;
     for (i = br.begin(); i != br.end(); ++i) {
         int parent = i.key();
         double br  = i.value();
-        TTMDensObj *parent_dens = getDensities(parent);
-        decay += br * parent_dens->getPrimaryDensity();
+        decay += br; //* getDensities(parent)->getPrimaryDensity();
+        if (pdg == -321)
+            qDebug() << Q_FUNC_INFO << pdg << i.key() << br << getDensities(parent)->getPrimaryDensity() << decay;
     }
-    daughter_dens->setDecayDensity(decay);
+    getDensities(pdg)->setDecayDensity(decay);
+//    qDebug() << Q_FUNC_INFO << pdg << decay;
+
 }
 
 //__________________________________________________________________________
@@ -170,12 +170,10 @@ TTMDensObj* TTMThermalModel::getDensities(int pdg) const
 
     // Returns a pointer to the density object of the particle with specified
     // ID
-
-    QString name = QString::number(pdg);
-    auto dens = std::find_if(mDensTable.begin(), mDensTable.end(), [name](TTMDensObj* d) {return d->objectName() == name;});
-    if (dens != mDensTable.end()) {
-        return *dens;
-    } else {
+    TTMDensObj* dens = mDensTable[pdg];
+    if (dens)
+        return dens;
+    else {
         QMessageBox msg(QMessageBox::Critical, "getDensities", Q_FUNC_INFO);
         msg.setInformativeText(QString("Particle %1 not in density table").arg(pdg));
         msg.exec();

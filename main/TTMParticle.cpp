@@ -3,7 +3,7 @@
 
 // Stores particle properties relevant to the thermal model.
 // fName is determined from the Monte Carlo particle ID using the function
-// Int_2_String(qint32 x). fName is the key used to find objects in ROOT hash
+// Int_2_String(int x). fName is the key used to find objects in ROOT hash
 // tables (as in the TTMParticleSet class). It is important that the
 // conversion from ID to fName is consistent with that in TTMParticleSet.
 //
@@ -91,7 +91,7 @@ TTMParticle::~TTMParticle()
 }
 
 //__________________________________________________________________________
-//TTMDecay *TTMParticle::getDecay(qint32 daughter_id)
+//TTMDecay *TTMParticle::getDecay(int daughter_id)
 //{
 //    // Access to decay object of parent involving daughter with id daughter_id.
 //    // Returns 0 if daughter_id is not in the list of daughter id's.
@@ -110,14 +110,14 @@ TTMParticle::~TTMParticle()
 //}
 
 //__________________________________________________________________________
-//TTMDecayChannel *TTMParticle::getDecayChannel(qint32 channel)
+//TTMDecayChannel *TTMParticle::getDecayChannel(int channel)
 //{
 //    // Provides access to the specified decay channel. Returns 0 if the
 //    // specified channel is not in the list.
 //    //
 //    TTMDecayChannel *rv = 0;
 
-//    for( qint32 index = 0; index <= channel; index++) {
+//    for( int index = 0; index <= channel; index++) {
 //        rv = mDecayChannels.at(index);
 //        if(!rv) {
 //            qWarning() << Q_FUNC_INFO << "WARNING: Channel #" << channel << "does not exist!";
@@ -195,8 +195,8 @@ TTMParticle::~TTMParticle()
 //        qInfo() << text;
 //        mStable = true;
 //    } else {
-//        qint32    nch = 0;
-//        qint32    no_daughters[500];   //# of daughters in each decay channel of parent
+//        int    nch = 0;
+//        int    no_daughters[500];   //# of daughters in each decay channel of parent
 //        double vBRatio[100];         // BR in each channel
 //        QList<TTMIDObj*>* ld[100];
 //        double totalBRatio = 0.;
@@ -210,14 +210,14 @@ TTMParticle::~TTMParticle()
 //            vBRatio[nch] = list.at(0).toDouble();
 //            totalBRatio += list.at(0).toDouble();
 //            ld[nch] = new QList<TTMIDObj*>;
-//            for (qint32 i = 1; i < list.size(); i++) {
+//            for (int i = 1; i < list.size(); i++) {
 //                TTMIDObj* id = new TTMIDObj(list.at(i).toInt());
 //                ld[nch]->append(id);
 //            }
 //            nch++;
 //        }
 //        data.close();
-//        for (qint32 ch = 0; ch < nch; ch++) {
+//        for (int ch = 0; ch < nch; ch++) {
 //            if (!scaleBRatios)
 //                vBRatio[ch] /= 100.;
 //            else
@@ -242,7 +242,7 @@ TTMParticle::~TTMParticle()
 //}
 
 //__________________________________________________________________________
-//void TTMParticle::setDecayChannelEfficiency(qint32 channel, double eff)
+//void TTMParticle::setDecayChannelEfficiency(int channel, double eff)
 //{
 //    // Modifies the branching ratio of the specified channel according to the
 //    // given efficiency (given as a percentage).
@@ -269,7 +269,7 @@ TTMParticle::~TTMParticle()
 //}
 
 //__________________________________________________________________________
-//void TTMParticle::setID(qint32 x)
+//void TTMParticle::setID(int x)
 //{
 //    // Sets fName for retrieval from Hash Table (fName based on particle ID)
 
@@ -291,7 +291,7 @@ TTMParticle::~TTMParticle()
 //        double BRatio = (*ch)->getBRatio();
 //        QList<TTMIDObj*>::iterator daughter;
 //        for( daughter = (*ch)->getDaughterList()->begin(); daughter != (*ch)->getDaughterList()->end(); ++daughter) {
-//            qint32 d_id = (*daughter)->getID();
+//            int d_id = (*daughter)->getID();
 //            if (getDecay(d_id)) {   // daughter already in summary decay list of parent
 //                TTMDecay* decay = getDecay(d_id);
 //                decay->setBRatio(decay->getBRatio() + BRatio);

@@ -486,6 +486,7 @@ void MainWindow::particlesDBManagement(DBOPS option)
         params << kExtDir + pythonScript << soption << input;
         QProgressDialog progress;
         p.start(kPythonPath, params);
+
         int iprogress = 0;
         while (p.state() == QProcess::Running || p.state() == QProcess::Starting) {
             if (iprogress == 0 && p.state() == QProcess::Running) {
