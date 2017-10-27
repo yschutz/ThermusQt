@@ -95,16 +95,19 @@ def makeDecays(thermusName, part):
 #=======================================================================
 def makeADecays(part, apart):
 	for decay in Decay.select().join(Particle).where(Particle.pdg == part.pdg):
-   		dd = Decay.create(mother = apart, dtype = decay.dtype, br = decay.br, brn = decay.brn, ndaughters = decay.ndaughters)
-   		dd.save()
-   		for child in Daughter.select().where(Daughter.decay == decay):
-   			for pp in Particle.select().where(Particle.pdg == child.pdg): 
-	   			if  not (pp.baryon == 0 and pp.charge == 0 and pp.s == 0 and pp.c == 0 and pp.b == 0 and pp.t == 0):
-   				   	dodo = Daughter.create(decay = dd, pdg = -child.pdg)
-   				else:   	
-   					dodo = Daughter.create(decay = dd, pdg = child.pdg)
-   				dodo.save() 
-#=======================================================================
+		dd = Decay.create(mother = apart, dtype = decay.dtype, br = decay.br, brn = decay.brn, ndaughters = decay.ndaughters)
+		dd.save()
+		for child in Daughter.select().where(Daughter.decay == decay):
+#			for pp in Particle.select().where(Particle.pdg == child.pdg): 
+			pp = Particle.get(Particle.pdg == child.pdg)
+			if (part.pdg == 219) : 
+				print(decay.dtype, decay.br, child.pdg, pp.pdg)
+			if  not (pp.baryon == 0 and pp.charge == 0 and pp.s == 0 and pp.c == 0 and pp.b == 0 and pp.t == 0):
+				dodo = Daughter.create(decay = dd, pdg = -child.pdg)
+			else:   	
+				dodo = Daughter.create(decay = dd, pdg = child.pdg)
+			dodo.save() 
+ #=======================================================================
 def updateMasses():
 	url = 'http://pdg.lbl.gov/2017/mcdata/mass_width_2017.mcd'
 	filename = os.environ['PARTDIR'] + 'mass_width_2017.txt'
@@ -422,6 +425,7 @@ def createDB():
 	else: 
 		eprint ("%s does not exist" %(filename))
 		return False
+	thermusName = {}	
 	for line in f:
 		data = line.split('\t')
 		stable    = int(data[0])
@@ -448,7 +452,7 @@ def createDB():
 		if stable == 0:
 			ndecay = countDecays(name)
 		pdgName = rename(pdg) 
-		thermusName = name
+		thermusName[pdg] = name
 		#print ("Adding ", thermusName, pdgName)
 		if not pdgName == "":
 			name = pdgName
@@ -472,8 +476,8 @@ def createDB():
 	  		threshold = threshold,
 	  		radius    = radius,
 	  		ndecay    = ndecay)
-		if stable == 0:
-			makeDecays(thermusName, part)
+		# if stable == 0:
+		# 	makeDecays(thermusName, part)
 		if  not (baryon == 0 and charge == 0 and s == 0 and c == 0 and b == 0 and t == 0) :
 			aname = name + '_bar' 
 			newname = arename(-pdg)
@@ -506,8 +510,11 @@ def createDB():
 		  		threshold = part.threshold,
 	 	 		radius    = part.radius,
 	  			ndecay    = part.ndecay)
-			makeADecays(part, apart)
+			# makeADecays(part, apart)
 	f.close()	
+	default = 'none'
+	for pp in Particle.select(): 
+		print (pp.pdg, thermusName.get([pp.pdg], default))
 	return True
 #=======================================================================
 class BaseModel(Model):

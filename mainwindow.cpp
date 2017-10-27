@@ -484,6 +484,7 @@ void MainWindow::particlesDBManagement(DBOPS option)
         p.setProcessChannelMode(QProcess::SeparateChannels);
         QStringList params;
         params << kExtDir + pythonScript << soption << input;
+        qDebug() << Q_FUNC_INFO << kPythonPath << params;
         QProgressDialog progress;
         p.start(kPythonPath, params);
 
