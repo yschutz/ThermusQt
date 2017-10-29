@@ -98,10 +98,7 @@ def makeADecays(part, apart):
 		dd = Decay.create(mother = apart, dtype = decay.dtype, br = decay.br, brn = decay.brn, ndaughters = decay.ndaughters)
 		dd.save()
 		for child in Daughter.select().where(Daughter.decay == decay):
-#			for pp in Particle.select().where(Particle.pdg == child.pdg): 
 			pp = Particle.get(Particle.pdg == child.pdg)
-			if (part.pdg == 219) : 
-				print(decay.dtype, decay.br, child.pdg, pp.pdg)
 			if  not (pp.baryon == 0 and pp.charge == 0 and pp.s == 0 and pp.c == 0 and pp.b == 0 and pp.t == 0):
 				dodo = Daughter.create(decay = dd, pdg = -child.pdg)
 			else:   	
@@ -407,6 +404,15 @@ def arename(pdg):
 	db.init(dbname)
 	return partname
 #=======================================================================
+def makeBR():
+	for part in Particle.select().where(Particle.ndecay == 0): # stable particles only
+		# search particles which have part in their decay and ger the BR
+		# SELECT p.pdg, d.%1/100. FROM daughter f LEFT JOIN decay d ON d.id=f.decay_id LEFT JOIN particle p ON p.id = d.mother_id WHERE f.pdg = (:daughter)
+		for papa in Daughter.select(Particle.pdg, Decay.br).join(Decay).join(Particle).where(Daughter.pdg == part.pdg):
+			print (part.pdg, papa.pdg, decay.br )
+
+	return True
+#=======================================================================
 def createDB(): 
 	if Particle.table_exists():
 		Particle.drop_table()
@@ -414,10 +420,12 @@ def createDB():
 	if Decay.table_exists():
 		Decay.drop_table()
 	Decay.create_table()
-
 	if Daughter.table_exists():
 		Daughter.drop_table()
 	Daughter.create_table()
+	if BRatio.table_exists():
+		BRatio.drop_table()
+	BRatio.create_table()
 
 	filename = os.environ['PARTDIR'] + sys.argv[2]
 	if (os.path.isfile(filename)):
@@ -448,7 +456,8 @@ def createDB():
 		life      = HBAR / width if width != 0 else 0.
 		threshold = float(data[13])
 		radius    = 0.       # hard sphere excluded volume radius
-		ndecay = 0
+		ndecay    = 0
+
 		if stable == 0:
 			ndecay = countDecays(name)
 		pdgName = rename(pdg) 
@@ -476,8 +485,7 @@ def createDB():
 	  		threshold = threshold,
 	  		radius    = radius,
 	  		ndecay    = ndecay)
-		# if stable == 0:
-		# 	makeDecays(thermusName, part)
+
 		if  not (baryon == 0 and charge == 0 and s == 0 and c == 0 and b == 0 and t == 0) :
 			aname = name + '_bar' 
 			newname = arename(-pdg)
@@ -510,11 +518,16 @@ def createDB():
 		  		threshold = part.threshold,
 	 	 		radius    = part.radius,
 	  			ndecay    = part.ndecay)
-			# makeADecays(part, apart)
 	f.close()	
 	default = 'none'
-	for pp in Particle.select(): 
-		print (pp.pdg, thermusName.get([pp.pdg], default))
+	for part in Particle.select(): 
+		name = thermusName.get(part.pdg, default)
+		if part.ndecay != 0 and name != 'none':
+			makeDecays(name, part)
+			if  not (part.baryon == 0 and part.charge == 0 and part.s == 0 and part.c == 0 and part.b == 0 and part.t == 0) :
+				apart = Particle.get(Particle.pdg == -part.pdg)
+				makeADecays(part, apart)
+	makeBR()
 	return True
 #=======================================================================
 class BaseModel(Model):
@@ -553,6 +566,12 @@ class Decay(BaseModel):
 class Daughter(BaseModel): 
 	decay = ForeignKeyField(Decay, related_name = 'daughters')
 	pdg   = IntegerField()
+
+class BRatio(BaseModel):
+	stable   = ForeignKeyField(Particle, related_name = 'bratios')
+	pdg      = IntegerField()
+	brvalue  = DoubleField()
+	brnvalue = DoubleField()
 
 db.connect()
 
