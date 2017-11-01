@@ -168,14 +168,22 @@ void ParticlesDBManager::deleteDecay(int id) const
 QString ParticlesDBManager::getPartParameter(int pdg, ENTRY what, const QString &where) const
 {
     // retrieve given parameter for given particle
+
     QMetaEnum metaEnum = QMetaEnum::fromType<ParticlesDBManager::ENTRY>();
     QString sEntry    = metaEnum.valueToKey(what);
     sEntry = sEntry.remove(0,1).toLower();
     QString rv("");
+
+    static QSqlQuery kQuery;
+    if (kQuery.first() ) {
+        if (kQuery.record().value("pdg").toString() == QString::number(pdg)) {
+            rv = kQuery.record().value(sEntry).toString();
+            return rv;
+        }
+    }
     QString squery("SELECT * FROM particle WHERE pdg = (:val)");
-    QSqlQuery query;
-    query.prepare(squery);
-    query.bindValue(":val", pdg);
+    kQuery.prepare(squery);
+    kQuery.bindValue(":val", pdg);
     QString save = ParticlesDBManager::Instance().dbName();
     if (where.contains(mkPDGName)) {
         QString newName(save);
@@ -185,14 +193,15 @@ QString ParticlesDBManager::getPartParameter(int pdg, ENTRY what, const QString 
             return rv;
         }
     }
-    query.prepare(squery);
-    query.bindValue(":val", pdg);
-    if (query.exec()) {
-        query.next();
-        rv = query.record().value(sEntry).toString();
+    kQuery.prepare(squery);
+    kQuery.bindValue(":val", pdg);
+    if (kQuery.exec()) {
+        kQuery.next();
+        rv = kQuery.record().value(sEntry).toString();
     }
     if (where.contains(mkPDGName))
         ParticlesDBManager::Instance().connect(save);
+
     return rv;
 }
 
@@ -995,101 +1004,23 @@ int ParticlesDBManager::size() const
 bool ParticlesDBManager::allDecays(int pdg, QHash<int, double> &br, bool normalize) const
 {
     // retrieves all mother and br of stable daughter given by pdg
-    QString brtype("br");
+    QString brtype("brvalue");
     if (normalize)
-        brtype = "brn";
-    QString squery = QString("SELECT p.pdg, d.%1/100. from daughter f left join decay d on d.id=f.decay_id left join particle p on p.id = d.mother_id where f.pdg = (:daughter)").arg(brtype);
-    QSqlQuery query1;
-    query1.prepare(squery);
-    query1.bindValue(":daughter", pdg);
-    if (!query1.exec()) {
-        error(Q_FUNC_INFO, query1.lastError().text());
+        brtype = "brnvalue";
+    QString squery = QString("SELECT b.pdg, b.%1 FROM BRatio b LEFT JOIN PARTICLE p ON p.id == b.stable_id WHERE p.pdg == (:daughter)").arg(brtype);
+    QSqlQuery query;
+    query.prepare(squery);
+    query.bindValue(":daughter", pdg);
+    query.bindValue(":daughter", pdg);
+    if (!query.exec()) {
+        error(Q_FUNC_INFO, query.lastError().text());
         return false;
     }
-    while(query1.next()) { // the mother
-        int motherpdg1 = query1.record().value(0).toInt();
-        double brn1    = query1.record().value(1).toDouble();
-        br[motherpdg1] =  br[motherpdg1] + brn1;
-        QSqlQuery query2;
-        query2.prepare(squery);
-        query2.bindValue(":daughter", motherpdg1);
-        if (!query2.exec()) {
-            error(Q_FUNC_INFO, query2.lastError().text());
-            return false;
-        }
-        while(query2.next()) { // the grand mother
-            int motherpdg2 = query2.record().value(0).toInt();
-            double brn2    = query2.record().value(1).toDouble();
-            br[motherpdg2] =  br[motherpdg2] + brn1 * brn2;
-            QSqlQuery query3;
-            query3.prepare(squery);
-            query3.bindValue(":daughter", motherpdg2);
-            if (!query3.exec()) {
-                error(Q_FUNC_INFO, query3.lastError().text());
-                return false;
-            }
-            while(query3.next()) { // the grand-grand mother
-                int motherpdg3 = query3.record().value(0).toInt();
-                double brn3    = query3.record().value(1).toDouble();
-                br[motherpdg3] =  br[motherpdg3] + brn1 * brn2 * brn3;
-                QSqlQuery query4;
-                query4.prepare(squery);
-                query4.bindValue(":daughter", motherpdg3);
-                if (!query4.exec()) {
-                    error(Q_FUNC_INFO, query4.lastError().text());
-                    return false;
-                }
-                while(query4.next()) { // the grand-grand mother
-                    int motherpdg4 = query4.record().value(0).toInt();
-                    double brn4    = query4.record().value(1).toDouble();
-                    br[motherpdg4] =  br[motherpdg4] + brn1 * brn2 * brn3 * brn4;
-                    QSqlQuery query5;
-                    query5.prepare(squery);
-                    query5.bindValue(":daughter", motherpdg4);
-                    if (!query5.exec()) {
-                        error(Q_FUNC_INFO, query5.lastError().text());
-                        return false;
-                    }
-                    while(query5.next()) { // the grand-grand-grand mother
-                        int motherpdg5 = query5.record().value(0).toInt();
-                        double brn5    = query5.record().value(1).toDouble();
-                        br[motherpdg5] =  br[motherpdg5] + brn1 * brn2 * brn3 * brn4 * brn5;
-                        QSqlQuery query6;
-                        query6.prepare(squery);
-                        query6.bindValue(":daughter", motherpdg5);
-                        if (!query6.exec()) {
-                            error(Q_FUNC_INFO, query6.lastError().text());
-                            return false;
-                        }
-                        while(query6.next()) { // the grand-grand-grand-grand mother
-                            int motherpdg6 = query6.record().value(0).toInt();
-                            double brn6    = query6.record().value(1).toDouble();
-                            br[motherpdg6] =  br[motherpdg6] + brn1 * brn2 * brn3 * brn4 * brn5 * brn6;
-                            QSqlQuery query7;
-                            query7.prepare(squery);
-                            query7.bindValue(":daughter", motherpdg6);
-                            if (!query7.exec()) {
-                                error(Q_FUNC_INFO, query7.lastError().text());
-                                return false;
-                            }
-                            while(query7.next()) { // the grand-grand-grand-grand-grand mother
-                                int motherpdg7 = query7.record().value(0).toInt();
-                                double brn7    = query7.record().value(1).toDouble();
-                                br[motherpdg7] =  br[motherpdg7] + brn1 * brn2 * brn3 * brn4 * brn5 * brn6 * brn7;
-                            }
-                            query7.clear();
-                        }
-                        query6.clear();
-                    }
-                    query5.clear();
-                }
-                query4.clear();
-            }
-            query3.clear();
-        }
-        query2.clear();
+    while(query.next()) { // the mother
+        int motherpdg = query.record().value(0).toInt();
+        double brn    = query.record().value(1).toDouble();
+        br[motherpdg] =  br[motherpdg] + brn;
     }
-    query1.clear();
     return true;
 }
 

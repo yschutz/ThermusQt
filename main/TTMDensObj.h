@@ -12,6 +12,7 @@
 #define TTMDENSOBJ_H
 
 #include <QObject>
+#include <QDebug>
 
 class QStandardItem;
 

@@ -406,10 +406,93 @@ def arename(pdg):
 #=======================================================================
 def makeBR():
 	for part in Particle.select().where(Particle.ndecay == 0): # stable particles only
+	# for part in Particle.select().where(Particle.pdg == -321): # stable particles only
 		# search particles which have part in their decay and ger the BR
-		# SELECT p.pdg, d.%1/100. FROM daughter f LEFT JOIN decay d ON d.id=f.decay_id LEFT JOIN particle p ON p.id = d.mother_id WHERE f.pdg = (:daughter)
-		for papa in Daughter.select(Particle.pdg, Decay.br).join(Decay).join(Particle).where(Daughter.pdg == part.pdg):
-			print (part.pdg, papa.pdg, decay.br )
+		for do1 in Daughter.select().join(Decay).join(Particle).where(Daughter.pdg == part.pdg):
+			de1 = Decay.select().where(Decay.id == do1.decay_id).get()
+			mo1 = Particle.select().where(Particle.id == de1.mother_id).get()
+			bratio = BRatio.select().where(BRatio.pdg == mo1.pdg, BRatio.stable_id == part.id)
+			if bratio.exists():
+				bb     = BRatio.select().where(BRatio.pdg == mo1.pdg, BRatio.stable_id == part.id).get()
+				bb.brvalue  = bb.brvalue  + de1.br  / 100.
+				bb.brnvalue = bb.brnvalue + de1.brn / 100.
+				bb.save()
+			else:
+				brSum  = de1.br / 100.
+				brSumN = de1.brn / 100.
+				BRatio.create(
+					stable   = part, 
+					pdg      = mo1.pdg,
+					brvalue  = brSum,
+					brnvalue = brSumN)
+			for do2 in Daughter.select().join(Decay).join(Particle).where(Daughter.pdg == mo1.pdg):
+				de2 = Decay.select().where(Decay.id == do2.decay_id).get()
+				mo2 = Particle.select().where(Particle.id == de2.mother_id).get()
+				bratio = BRatio.select().where(BRatio.pdg == mo2.pdg, BRatio.stable_id == part.id)
+				if bratio.exists():
+					bb     = BRatio.select().where(BRatio.pdg == mo2.pdg, BRatio.stable_id == part.id).get()
+					bb.brvalue  = bb.brvalue  + de1.br  / 100. * de2.br  / 100.
+					bb.brnvalue = bb.brnvalue + de1.brn / 100. * de2.brn / 100. 
+					bb.save()
+				else:
+					brSum  = de1.br  / 100. * de2.br  / 100.
+					brSumN = de1.brn / 100. * de2.brn / 100. 					
+					BRatio.create(
+					stable   = part, 
+					pdg      = mo2.pdg,
+					brvalue  = brSum,
+					brnvalue = brSumN)
+				for do3 in Daughter.select().join(Decay).join(Particle).where(Daughter.pdg == mo2.pdg):
+					de3 = Decay.select().where(Decay.id == do3.decay_id).get()
+					mo3 = Particle.select().where(Particle.id == de3.mother_id).get()
+					bratio = BRatio.select().where(BRatio.pdg == mo3.pdg, BRatio.stable_id == part.id)
+					if bratio.exists():
+						bb     = BRatio.select().where(BRatio.pdg == mo3.pdg, BRatio.stable_id == part.id).get()
+						bb.brvalue  = bb.brvalue  + de1.br  / 100. * de2.br  / 100. * de3.br  / 100.
+						bb.brnvalue = bb.brnvalue + de1.brn / 100. * de2.brn / 100. * de3.brn / 100.
+						bb.save()
+					else:
+						brSum  = de1.br / 100.  * de2.br  / 100. * de3.br  / 100.
+						brSumN = de1.brn / 100. * de2.brn / 100. * de3.brn / 100. 					
+						BRatio.create(
+						stable   = part, 
+						pdg      = mo3.pdg,
+						brvalue  = brSum,
+						brnvalue = brSumN)
+					for do4 in Daughter.select().join(Decay).join(Particle).where(Daughter.pdg == mo3.pdg):
+						de4 = Decay.select().where(Decay.id == do4.decay_id).get()
+						mo4 = Particle.select().where(Particle.id == de4.mother_id).get()
+						bratio = BRatio.select().where(BRatio.pdg == mo4.pdg, BRatio.stable_id == part.id)
+						if bratio.exists():
+							bb     = BRatio.select().where(BRatio.pdg == mo4.pdg, BRatio.stable_id == part.id).get()
+							bb.brvalue  = bb.brvalue  + de1.br  / 100. * de2.br  / 100. * de3.br  / 100. * de4.br  / 100.
+							bb.brnvalue = bb.brnvalue + de1.brn / 100. * de2.brn / 100. * de3.brn / 100. * de4.brn / 100.
+							bb.save()
+						else:
+							brSum  = de1.br  / 100.  * de2.br  / 100. * de3.br  / 100. * de4.br  / 100.
+							brSumN = de1.brn / 100.  * de2.brn / 100. * de3.brn / 100. * de4.brn / 100.  					
+							BRatio.create(
+							stable   = part, 
+							pdg      = mo4.pdg,
+							brvalue  = brSum,
+							brnvalue = brSumN)
+						for do5 in Daughter.select().join(Decay).join(Particle).where(Daughter.pdg == mo4.pdg):
+							de5 = Decay.select().where(Decay.id == do5.decay_id).get()
+							mo5 = Particle.select().where(Particle.id == de5.mother_id).get()
+							bratio = BRatio.select().where(BRatio.pdg == mo5.pdg, BRatio.stable_id == part.id)
+							if bratio.exists():
+								bb     = BRatio.select().where(BRatio.pdg == mo5.pdg, BRatio.stable_id == part.id).get()
+								bb.brvalue  = bb.brvalue  + de1.br  / 100. * de2.br  / 100. * de3.br  / 100. * de4.br  / 100. * de5.br  / 100.
+								bb.brnvalue = bb.brnvalue + de1.brn / 100. * de2.brn / 100. * de3.brn / 100. * de4.brn / 100. * de5.brn / 100.
+								bb.save()
+							else:
+								brSum  = de1.br  / 100.  * de2.br  / 100. * de3.br  / 100. * de4.br  / 100. * de5.br   / 100.
+								brSumN = de1.brn / 100.  * de2.brn / 100. * de3.brn / 100. * de4.brn / 100. * de5.brn  / 100. 					
+								BRatio.create(
+								stable   = part, 
+								pdg      = mo5.pdg,
+								brvalue  = brSum,
+								brnvalue = brSumN)
 
 	return True
 #=======================================================================

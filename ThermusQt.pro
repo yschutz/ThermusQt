@@ -28,7 +28,6 @@ SOURCES += main.cpp\
     main/TTMYield.cpp \
     external/QMinuit.cpp \
     summary.cpp \
-    macros/runmacro.cpp \
     logger.cpp \
     external/particlesdbmanager.cpp \
     external/finddialog.cpp \
@@ -106,7 +105,9 @@ SOURCES += main.cpp\
     functions/BSQfuncSPercolation.cpp \
     functions/BSQConstrainSQPercolation.cpp \
     functions/BSQfuncSQPercolation.cpp \
-    main/TTMThermalFitBSQ.cpp
+    main/TTMThermalFitBSQ.cpp \
+    macros/predictionMacro.cpp \
+    macroparasel.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -123,7 +124,6 @@ HEADERS  += mainwindow.h \
     main/TTMYield.h \
     external/QMinuit.h \
     summary.h \
-    macros/runmacro.h \
     logger.h \
     external/particlesdbmanager.h \
     external/finddialog.h \
@@ -144,7 +144,9 @@ HEADERS  += mainwindow.h \
     main/TTMThermalParticleBSQ.h \
     external/f2.h \
     main/TTMThermalModelBSQ.h \
-    main/TTMThermalFitBSQ.h
+    main/TTMThermalFitBSQ.h \
+    macros/predictionMacro.h \
+    macroparasel.h
 
 
 RESOURCES += \

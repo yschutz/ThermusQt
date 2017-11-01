@@ -2,21 +2,22 @@
 //
 // The steering class to run a thermus prediction(aka ROOT macro)
 
-//#include "filesel.h"
+#include "macroparasel.h"
 #include "mainwindow.h"
 #include "parasel.h"
-#include "runmacro.h"
+#include "predictionMacro.h"
 
 #include "main/TTMParticleSet.h"
 
 #include <QDebug>
 #include <QDir>
+#include <QMessageBox>
 
-RunMacro RunMacro::mInstance = RunMacro();
+PredictionMacro PredictionMacro::mInstance = PredictionMacro();
 
 //__________________________________________________________________________
-RunMacro::RunMacro() :
-    mConstrainMuQ(true), mFitInfo(nullptr), mParaInfo(nullptr), mParaSel(nullptr), mQuantRes(true)
+PredictionMacro::PredictionMacro() :
+    mConstrainMuQ(true), mFitInfo(nullptr), mParaInfo(nullptr), mParaSel(nullptr)
 {
     // ctor
     setObjectName("Run Macro");
@@ -24,13 +25,13 @@ RunMacro::RunMacro() :
 }
 
 //__________________________________________________________________________
-RunMacro::~RunMacro()
+PredictionMacro::~PredictionMacro()
 {
     // dtor
 }
 
 //__________________________________________________________________________
-void RunMacro::setConstrain()
+void PredictionMacro::setConstrain()
 {
     // option of adding constraints. b/2Q, S, C and B density
 
@@ -41,7 +42,7 @@ void RunMacro::setConstrain()
 }
 
 //__________________________________________________________________________
-void RunMacro::setFitFix()
+void PredictionMacro::setFitFix()
 {
     // fix/free the parameters
 
@@ -58,7 +59,24 @@ void RunMacro::setFitFix()
 }
 
 //__________________________________________________________________________
-void RunMacro::setDefaultParameters()
+void PredictionMacro::setMacroDefaultParameters()
+{
+    // set the default values for the macro parameters
+    mMacroParaSel->setModelBSQ();
+    mMacroParaSel->setQstat();
+}
+
+//__________________________________________________________________________
+void PredictionMacro::setMacroParaSel(MacroParaSel *val)
+{
+    // set the MacroParasel wizard page and set default parameters
+    mMacroParaSel = val;
+    setMacroDefaultParameters();
+    mMacroParaSel->updateDisplay();
+}
+
+//__________________________________________________________________________
+void PredictionMacro::setDefaultParameters()
 {
     // Select parameters from an interactive window
 
@@ -106,35 +124,50 @@ void RunMacro::setDefaultParameters()
 }
 
 //__________________________________________________________________________
-void RunMacro::setFit()
+void PredictionMacro::setFit()
 {
     // sets the fit model
 
-    mFitInfo = new TTMThermalFitBSQ(mParaInfo, "prediction_yannick.txt", this);
-    // -> Turn off default quantum statistics and resonance width treatment
-    if (!mQuantRes) {
+    QString name = mMacroParaSel->dataFileName();
+    if (name.isEmpty()) {
+        QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);
+        msg.setInformativeText(tr("You did not provide a data file name. Bye!"));
+        msg.exec();
+        exit(1);
+    }
+    mFitInfo = new TTMThermalFitBSQ(mParaInfo, name, this);
+    if (!mMacroParaSel->isQstat()) {
         mFitInfo->setQStats(true);
         mFitInfo->setWidth(true);
     }
 }
 
 //__________________________________________________________________________
-void RunMacro::setParameters()
+void PredictionMacro::setParameters()
 {
     // set the parameters
-    qDebug() << Q_FUNC_INFO << mParaSel->getParaValue(TTMParameterSet::kMUQ);
+    if (mMacroParaSel->isModelBSQ())
+        mParaInfo = new TTMParameterSetBSQ(mParaSel->getParaValue(TTMParameterSet::kT),
+                                           mParaSel->getParaValue(TTMParameterSet::kMUB),
+                                           mParaSel->getParaValue(TTMParameterSet::kMUS),
+                                           mParaSel->getParaValue(TTMParameterSet::kMUQ),
+                                           mParaSel->getParaValue(TTMParameterSet::kGAMMAS),
+                                           mParaSel->getParaValue(TTMParameterSet::kRADIUS),
+                                           mParaSel->getParaValue(TTMParameterSet::kMUC),
+                                           mParaSel->getParaValue(TTMParameterSet::kGAMMAC),
+                                           mParaSel->getParaValue(TTMParameterSet::kMUBEAUTY),
+                                           mParaSel->getParaValue(TTMParameterSet::kGAMMABEAUTY),
+                                           mParaSel->getB2Q());
+    else
+        mParaInfo = new TTMParameterSetBSQ(mParaSel->getParaValue(TTMParameterSet::kT),
+                                           mParaSel->getParaValue(TTMParameterSet::kMUB),
+                                           mParaSel->getParaValue(TTMParameterSet::kMUQ),
+                                           mParaSel->getParaValue(TTMParameterSet::kGAMMAS),
+                                           mParaSel->getParaValue(TTMParameterSet::kRADIUS),
+                                           mParaSel->getParaValue(TTMParameterSet::kRADIUS),
+                                           mParaSel->getB2Q());
 
-    mParaInfo = new TTMParameterSetBSQ(mParaSel->getParaValue(TTMParameterSet::kT),
-                                       mParaSel->getParaValue(TTMParameterSet::kMUB),
-                                       mParaSel->getParaValue(TTMParameterSet::kMUS),
-                                       mParaSel->getParaValue(TTMParameterSet::kMUQ),
-                                       mParaSel->getParaValue(TTMParameterSet::kGAMMAS),
-                                       mParaSel->getParaValue(TTMParameterSet::kRADIUS),
-                                       mParaSel->getParaValue(TTMParameterSet::kMUC),
-                                       mParaSel->getParaValue(TTMParameterSet::kGAMMAC),
-                                       mParaSel->getParaValue(TTMParameterSet::kMUBEAUTY),
-                                       mParaSel->getParaValue(TTMParameterSet::kGAMMABEAUTY),
-                                       mParaSel->getB2Q());
+
     mParaInfo->setParent(this);
 
     // choice of parameter to fit or to fix
@@ -148,7 +181,7 @@ void RunMacro::setParameters()
 }
 
 //__________________________________________________________________________
-void RunMacro::setParaSel(ParaSel *val)
+void PredictionMacro::setParaSel(ParaSel *val)
 {
     // set the Parasel wizard page and set default parameters
     mParaSel = val;
@@ -156,22 +189,7 @@ void RunMacro::setParaSel(ParaSel *val)
 }
 
 //__________________________________________________________________________
-//void RunMacro::setParticlesListFile()
-//{
-//    // setting the particles list and particles properties
-
-//    mParticlesList = mFileSel->getFileName();
-//    mParticlesList.prepend(":/particles/");
-//    QString tempo(QString("The selected particles lis file is: %1").arg(mParticlesList));
-//    if (mDebug)
-//        qDebug() << tempo;
-
-//    mPartInfo = new  TTMParticleSet(mParticlesList, true);  // here true means the decays are scaled to sum(BR) = 100%
-//    mPartInfo->inputDecays(":/particles/");
-//}
-
-//__________________________________________________________________________
-RunMacro &RunMacro::instance()
+PredictionMacro &PredictionMacro::instance()
 {
     // returns the unique instance
 
@@ -179,42 +197,14 @@ RunMacro &RunMacro::instance()
 }
 
 //__________________________________________________________________________
-void RunMacro::run() const
+void PredictionMacro::run() const
 {
     mFitInfo->generateYields();
-//    mFitInfo->listYields();
-//    TTMYield* yield = mFitInfo->getYield(211, 0, "PREDICTION");
-//    qInfo() << yield->getID1() << yield->getTMName() << yield->getModelValue();
+    mFitInfo->listYields();
+    for (TTMYield* yield : mFitInfo->getYields())
+        qInfo() << Q_FUNC_INFO << "; PREDICTION: ;" <<
+                   yield->getID1() << ";" <<
+                   yield->getID2() << ";" <<
+                   yield->getTMName() << ";" <<
+                   yield->getModelValue();
 }
-
-//__________________________________________________________________________
-//void RunMacro::init(QString name)
-//{
-//    // Equivalent to root macro to prediction Thermus
-//    setObjectName(name);
-
-//    // **************************************************
-//    // First, definition the particle list
-//    // and their properties (and decays):
-//    // open the particles list file
-
-//    if (!selectParticlesListFile())
-//        qFatal("no particles list file selected");
-
-//    qDebug() << Q_FUNC_INFO << "INFO:" << mParticlesList << "selected";
-//    TTMParticleSet set(mParticlesList, true);
-//    set.inputDecays(":/particles/");
-
-//    // **************************************************
-//    // Second, choice of formalism:
-//    // - We want here a Grand Canonical Treatment so we use
-//    //  a TTMThermalFitBSQ as a FIT instance with starting parameters
-//    //  other FIT classes are:
-//    // -> TTMThermalFitBQ for Strangeness Canonical;
-//    // -> TTMThermalFitCanBSQ for Full Canonical \n");
-//    //
-//    // Third, choice of starting parameters (nucl-ex/0403014)
-
-//    if (!selectDefaultParameters())
-//        qFatal("no parameters selected");
-//}

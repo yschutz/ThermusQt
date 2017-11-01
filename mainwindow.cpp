@@ -14,7 +14,7 @@
 #include <QtWidgets>
 #include <QVBoxLayout>
 
-#include "macros/runmacro.h"
+#include "macros/predictionMacro.h"
 #include "logger.h"
 #include "thermuswiz.h"
 
@@ -195,7 +195,7 @@ QString MainWindow::getDBPath(const QString &opt)
 //__________________________________________________________________________
 void MainWindow::listParameters()
 {
-    RunMacro::instance().listParameters();
+    PredictionMacro::instance().listParameters();
 }
 
 //__________________________________________________________________________
@@ -210,7 +210,7 @@ void MainWindow::runPrediction()
     if (mDebug)
         qDebug() << info;
 
-    RunMacro& myMacro = RunMacro::instance();
+    PredictionMacro& myMacro = PredictionMacro::instance();
     myMacro.setDebug(mDebug);
     myMacro.objectName() + ": test";
 

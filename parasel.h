@@ -19,7 +19,7 @@ class ParaSel : public QWizardPage
 public:
     enum CollSysType {kPbPb, kAuAu, kpp, kpPb, kCollTypes };
 
-    explicit ParaSel(QWidget *parent = 0);
+    explicit ParaSel(QWidget* parent = nullptr);
 
            double  getB2Q() const;
            double  getConstrainValue(TTMParameterSet::ParameterType type) const

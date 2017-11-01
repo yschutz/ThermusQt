@@ -30,6 +30,7 @@ public:
     void                     generateYields();
     QString                  getTMName(int id1, int id2, const QString& descr) const;
     TTMYield*                getYield(int id1, int id2, const QString& descr) const;
+    QList<TTMYield*>         getYields() const { return mYields; }
     void                     inputExpYields(QString &fileName);
     void                     listMinuitInfo() const;
     void                     listYields() const;

@@ -146,8 +146,10 @@ void TTMThermalModel::generateDecayPartDens(int pdg)
     // provided the particle is stable!
     // (NB must first populate the hash table with primordial densities)
 
-    if (!ParticlesDBManager::Instance().isStable(pdg))
+    if (!ParticlesDBManager::Instance().isStable(pdg)) {
+        getDensities(pdg)->setDecayDensity(0.0);
         return;
+    }
     QHash<int, double> br;
     ParticlesDBManager::Instance().allDecays(pdg, br, false);
     double decay = 0.0;
@@ -155,13 +157,9 @@ void TTMThermalModel::generateDecayPartDens(int pdg)
     for (i = br.begin(); i != br.end(); ++i) {
         int parent = i.key();
         double br  = i.value();
-        decay += br; //* getDensities(parent)->getPrimaryDensity();
-        if (pdg == -321)
-            qDebug() << Q_FUNC_INFO << pdg << i.key() << br << getDensities(parent)->getPrimaryDensity() << decay;
+        decay += br * getDensities(parent)->getPrimaryDensity();
     }
     getDensities(pdg)->setDecayDensity(decay);
-//    qDebug() << Q_FUNC_INFO << pdg << decay;
-
 }
 
 //__________________________________________________________________________

@@ -16,9 +16,7 @@
 //__________________________________________________________________________
 ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
 {
-
     // create an interactive window to select parametres
-
     setTitle("Select parameters values and fit constrains");
 
     for (int index = 0; index < TTMParameterSet::kPARTYPES; index++) {
@@ -27,7 +25,7 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
         mFitSte[index]       = nullptr;
     }
 
-    QString *collSysNames = new QString[kCollTypes];
+    QString* collSysNames = new QString[kCollTypes];
     collSysNames[kPbPb]  = "PbPb";
     collSysNames[kAuAu] = "AuAu";
     collSysNames[kpp]    = "pp";
@@ -37,14 +35,14 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     mPalette.setColor(QPalette::Text,Qt::red);
 
     // the temperature
-    QGroupBox *tBox = new QGroupBox(tr("Temperature"), this);
+    QGroupBox* tBox = new QGroupBox(tr("Temperature"), this);
 
-    QLabel *tfix       = new QLabel(tr("Fix"), tBox);
-    QLabel *tempLabel  = new QLabel(tr("T:"), tBox);
+    QLabel* tfix       = new QLabel(tr("Fix"), tBox);
+    QLabel* tempLabel  = new QLabel(tr("T:"), tBox);
     mParameterValue[TTMParameterSet::kT] = new QLineEdit(tBox);
 
     tempLabel->setBuddy(mParameterValue[TTMParameterSet::kT]);
-    QLabel *tempUnitLabel = new QLabel(tr("GeV"));
+    QLabel* tempUnitLabel = new QLabel(tr("GeV"));
     mParameterFix[TTMParameterSet::kT] = new QCheckBox(" ", tBox);
 
     registerField("temp", mParameterFix[TTMParameterSet::kT]);
@@ -54,7 +52,7 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
     mParameterValue[TTMParameterSet::kT]->setReadOnly(true);
     connect(mParameterFix[TTMParameterSet::kT], &QCheckBox::stateChanged, this, [this]{ fixParameter(TTMParameterSet::kT); });
 
-    QGridLayout *tLayout = new QGridLayout(tBox);
+    QGridLayout* tLayout = new QGridLayout(tBox);
     tLayout->addWidget(tfix, 0, 3, 1, 1, Qt::AlignTop | Qt::AlignHCenter);
     tLayout->addWidget(tempLabel, 1, 0, 1, 1);
     tLayout->addWidget(mParameterValue[TTMParameterSet::kT], 1, 1, 1, 1);

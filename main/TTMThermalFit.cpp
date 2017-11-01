@@ -64,7 +64,6 @@ void TTMThermalFit::generateYields()
         double volume = model->getParameterSet()->getVolume();
         int id1       = yield->getID1();
         int id2       = yield->getID2();
-        qDebug() << Q_FUNC_INFO << volume << id1 << id2;
         if (id2 == 0) { // Yield
             //           model->SetParticleSet(yield->GetParticleSet1();
             if (id1 == 1) {
@@ -95,7 +94,6 @@ void TTMThermalFit::generateYields()
             } else {
                 model->generateDecayPartDens(id1);
                 TTMDensObj *partDens = model->getDensities(id1);
-                qDebug() << Q_FUNC_INFO << partDens->getFinalDensity();
                 yield->setModelValue(partDens->getFinalDensity() * volume);
             }
         } else { // ratio
@@ -175,7 +173,7 @@ void TTMThermalFit::generateYields()
     }
 }
 //__________________________________________________________________________
-QString TTMThermalFit::getTMName(int id1, int id2, const QString& descr) const
+QString TTMThermalFit::getTMName(int id1, int id2, const QString& /*descr*/) const
 {
     // ??
     QString name;
@@ -214,9 +212,9 @@ QString TTMThermalFit::getTMName(int id1, int id2, const QString& descr) const
          name = name.append("/").append(ParticlesDBManager::Instance().getName(id2, "ThermusParticles"));
        }
      }
-     if(!descr.isEmpty()) {
-       name.append(" ").append(descr);
-     }
+//     if(!descr.isEmpty()) {
+//       name.append(" ").append(descr);
+//     }
      return name;
 }
 
@@ -360,11 +358,12 @@ void TTMThermalFit::listMinuitInfo() const
 void TTMThermalFit::listYields() const
 {
     // Lists the experimental values and model predictions
+
     QStandardItemModel* model = new QStandardItemModel();
     QStringList header;
     header.append("Name");
-    header.append("Predicted Yield");
-    header.append("Predicted Error");
+    header.append("Experimental Yield");
+    header.append("Experimental Error");
     header.append("Fit Yield");
     header.append("Fit Error");
     header.append("Model Yield");
@@ -378,22 +377,110 @@ void TTMThermalFit::listYields() const
         double value = yield->getExpValue();
         double error = yield->getExpError();
         if (yield->isFitted()) {
-            onerow << new QStandardItem("-") << new QStandardItem("-") <<
-                      new QStandardItem(QString::number(value)) << new QStandardItem(QString::number(error)) <<
-                      new QStandardItem("-") << new QStandardItem("-") << new QStandardItem("-") << new QStandardItem("-");
+            QStandardItem* dash1Item = new QStandardItem();
+            dash1Item->setText("-");
+            dash1Item->setTextAlignment(Qt::AlignCenter);
+            onerow << dash1Item;
+
+            QStandardItem* dash2Item = new QStandardItem();
+            dash2Item->setText("-");
+            dash2Item->setTextAlignment(Qt::AlignCenter);
+            onerow << dash2Item;
+
+            QStandardItem* valueItem = new QStandardItem();
+            valueItem->setText(QString::number(value));
+            valueItem->setTextAlignment(Qt::AlignRight);
+            onerow << valueItem;
+
+            QStandardItem* errorItem = new QStandardItem();
+            errorItem->setText(QString("+/- %1").arg(error));
+            errorItem->setTextAlignment(Qt::AlignRight);
+            onerow << errorItem;
+
+            QStandardItem* dash3Item = new QStandardItem();
+            dash3Item->setText("-");
+            dash3Item->setTextAlignment(Qt::AlignCenter);
+            onerow << dash3Item;
+
+            QStandardItem* dash4Item = new QStandardItem();
+            dash4Item->setText("-");
+            dash4Item->setTextAlignment(Qt::AlignCenter);
+            onerow << dash4Item;
+
+            QStandardItem* dash5Item = new QStandardItem();
+            dash5Item->setText("-");
+            dash5Item->setTextAlignment(Qt::AlignCenter);
+            onerow << dash5Item;
+
+            QStandardItem* dash6Item = new QStandardItem();
+            dash6Item->setText("-");
+            dash6Item->setTextAlignment(Qt::AlignCenter);
+            onerow << dash6Item;
         } else {
-            onerow << new QStandardItem(QString::number(value)) << new QStandardItem(QString::number(error)) <<
-                      new QStandardItem("-") << new QStandardItem("-") <<
-                      new QStandardItem("-") << new QStandardItem("-") << new QStandardItem("-") << new QStandardItem("-");
+            QStandardItem* valueItem = new QStandardItem();
+            valueItem->setText(QString::number(value));
+            valueItem->setTextAlignment(Qt::AlignRight);
+            onerow << valueItem;
+
+            QStandardItem* errorItem = new QStandardItem();
+            errorItem->setText(QString("+/- %1").arg(error));
+            errorItem->setTextAlignment(Qt::AlignRight);
+            onerow << errorItem;
+
+            QStandardItem* dash1Item = new QStandardItem();
+            dash1Item->setText("-");
+            dash1Item->setTextAlignment(Qt::AlignCenter);
+            onerow << dash1Item;
+
+            QStandardItem* dash2Item = new QStandardItem();
+            dash2Item->setText("-");
+            dash2Item->setTextAlignment(Qt::AlignCenter);
+            onerow << dash2Item;
         }
         value = yield->getModelValue();
         if (value != 0.) {
             error       = yield->getModelError();
             double std  = yield->getStdDev();
             double quad = yield->getQuadDev();
-            onerow << new QStandardItem("-") << new QStandardItem("-") << new QStandardItem("-") << new QStandardItem("-");
-            onerow << new QStandardItem(QString::number(value)) << new QStandardItem(QString::number(error)) <<
-                      new QStandardItem(QString::number(std)) << new QStandardItem(QString::number(quad));
+            QStandardItem* valueItem = new QStandardItem();
+            valueItem->setText(QString::number(value));
+            valueItem->setTextAlignment(Qt::AlignRight);
+            onerow << valueItem;
+
+            QStandardItem* errorItem = new QStandardItem();
+            errorItem->setText(QString("+/- %1").arg(error));
+            errorItem->setTextAlignment(Qt::AlignRight);
+            onerow << errorItem;
+
+            QStandardItem* stdItem = new QStandardItem();
+            stdItem->setText(QString::number(std));
+            stdItem->setTextAlignment(Qt::AlignRight);
+            onerow << stdItem;
+
+            QStandardItem* quadItem = new QStandardItem();
+            quadItem->setText(QString::number(quad));
+            quadItem->setTextAlignment(Qt::AlignRight);
+            onerow << quadItem;
+        } else {
+            QStandardItem* dash1Item = new QStandardItem();
+            dash1Item->setText("-");
+            dash1Item->setTextAlignment(Qt::AlignCenter);
+            onerow << dash1Item;
+
+            QStandardItem* dash2Item = new QStandardItem();
+            dash2Item->setText("-");
+            dash2Item->setTextAlignment(Qt::AlignCenter);
+            onerow << dash2Item;
+
+            QStandardItem* dash3Item = new QStandardItem();
+            dash3Item->setText("-");
+            dash3Item->setTextAlignment(Qt::AlignCenter);
+            onerow << dash3Item;
+
+            QStandardItem* dash4Item = new QStandardItem();
+            dash4Item->setText("-");
+            dash4Item->setTextAlignment(Qt::AlignCenter);
+            onerow << dash4Item;
         }
         model->appendRow(onerow);
     }
@@ -401,6 +488,8 @@ void TTMThermalFit::listYields() const
     view->setAttribute(Qt::WA_DeleteOnClose);
     view->setModel(model);
     view->resize(1000, 200);
+    view->resizeColumnsToContents();
+    view->setAlternatingRowColors(true);
     view->show();
 }
 

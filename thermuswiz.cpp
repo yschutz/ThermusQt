@@ -2,8 +2,9 @@
 //
 // The wizard to setp up various things
 
-#include "macros/runmacro.h"
-//#include "filesel.h"
+#include "macros/predictionMacro.h"
+
+#include "macroparasel.h"
 #include "mainwindow.h"
 #include "parasel.h"
 #include "summary.h"
@@ -25,17 +26,17 @@ ThermusWiz::ThermusWiz(QString /*summaryTitle*/, QWidget *parent) : QWizard(pare
     //    //setPixmap(QWizard::BannerPixmap, QPixmap(":/Icons/Icons/NegativeSmile.png"));
     //    setPixmap(QWizard::BackgroundPixmap, QPixmap(":/Icons/Icons/RC30Controller.JPG"));
 
-    RunMacro& myMacro = RunMacro::instance();
-
-    // page to select the particles list file
-
-    //    mDialogId = addPage(new FileSel(this));
-    //    myMacro.setDialog((FileSel*)page(mDialogId));
+    PredictionMacro& myMacro = PredictionMacro::instance();
 
     // page for the parameters setting
 
     mParaSelId = addPage(new ParaSel(this));
     myMacro.setParaSel((ParaSel*)page(mParaSelId));
+
+    // page for the macro parameters setting
+
+    mMacrooParaSelId = addPage(new MacroParaSel(this));
+    myMacro.setMacroParaSel((MacroParaSel*)page(mMacrooParaSelId));
 
     // page summarizing evrything
 
@@ -50,7 +51,7 @@ ThermusWiz::ThermusWiz(QString /*summaryTitle*/, QWidget *parent) : QWizard(pare
 }
 
 //__________________________________________________________________________
-void ThermusWiz::cleanupPage(qint32 /*id*/)
+void ThermusWiz::cleanupPage(int /*id*/)
 {
     // called when back button is hit
     // implemented here to prevent clearing the fields of the page
@@ -58,15 +59,16 @@ void ThermusWiz::cleanupPage(qint32 /*id*/)
 }
 
 //__________________________________________________________________________
-void ThermusWiz::initializePage(qint32 id)
+void ThermusWiz::initializePage(int id)
 {
     // called when the next button is hit
 
-    Summary * summary = (Summary*)page(mSummaryId);
+    //Summary * summary = (Summary*)page(mSummaryId);
+    MacroParaSel* macropara = (MacroParaSel*)page(mMacrooParaSelId);
 
     //    if (id - 1 == mDialogId) {
     //        FileSel * file = qobject_cast<FileSel*>(page(mDialogId));
-    //        for (qint32 index = 0; index < file->getRadioButtons().size(); index++) {
+    //        for (int index = 0; index < file->getRadioButtons().size(); index++) {
     //            QRadioButton * but = file->getRadioButtons().at(index);
     //            if (but->isChecked())
     //                file->setFileName(but->text());
@@ -76,7 +78,7 @@ void ThermusWiz::initializePage(qint32 id)
     //        summary->updateParameters();
     //    }
     if (id - 1 == mParaSelId)
-        summary->updateParameters();
+        macropara->updateDisplay();
 
 }
 

@@ -18,12 +18,13 @@
 #include "main/TTMParameterSetBSQ.h"
 #include "main/TTMThermalFitBSQ.h"
 
-class RunMacro : public QObject
+class MacroParaSel;
+class PredictionMacro : public QObject
 {
     Q_OBJECT
 
 public:
-    static      RunMacro& instance();
+    static      PredictionMacro& instance();
 
     TTMParameterSetBSQ* getParametersSet() const  { return mParaInfo; }
     bool                isDebug() const           { return mDebug; }
@@ -34,24 +35,25 @@ public:
     void                setDefaultParameters();
     void                setFit();
     void                setFitFix() ;
+    void                setMacroDefaultParameters();
+    void                setMacroParaSel(MacroParaSel* val);
     void                setParameters();
     void                setParaSel(ParaSel* val);
     void                setSummary(Summary * val) { mSummary = val; }
 
 private:
-    RunMacro();
-    ~RunMacro();
-    RunMacro (const RunMacro&) { }
-//    prediction& operator = (const prediction&) { }
+    PredictionMacro();
+    ~PredictionMacro();
+    PredictionMacro (const PredictionMacro&) { }
 
-    bool                mConstrainMuQ;     // true if B/2Q to be constrained
-    bool                mDebug;            // true if debug mode on
-    TTMThermalFitBSQ*   mFitInfo;          // the fit model to be used
-    static RunMacro     mInstance;         // unique instance of the object
-    TTMParameterSetBSQ* mParaInfo;         // holds the information on parameters
-    ParaSel*            mParaSel;          // window for parameters selection
-    bool                mQuantRes;
-    Summary*            mSummary;          // summary wizard page
+    bool                   mConstrainMuQ;     // true if B/2Q to be constrained
+    bool                   mDebug;            // true if debug mode on
+    TTMThermalFitBSQ*      mFitInfo;          // the fit model to be used
+    static PredictionMacro mInstance;         // unique instance of the object
+    MacroParaSel*          mMacroParaSel;     // window for parameters selection
+    TTMParameterSetBSQ*    mParaInfo;         // holds the information on parameters
+    ParaSel*               mParaSel;          // window for parameters selection
+    Summary*               mSummary;          // summary wizard page
 };
 
 #endif // PREDICTION_H
