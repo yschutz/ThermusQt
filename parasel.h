@@ -21,33 +21,37 @@ public:
 
     explicit ParaSel(QWidget* parent = nullptr);
 
-           double  getB2Q() const;
-           double  getConstrainValue(TTMParameterSet::ParameterType type) const
-                                    { if (type == TTMParameterSet::kMUQ) return getB2Q(); else return mDensity[type]->text().toDouble(); }
-           qint32  getCollision() const;
-           double  getFitMax(TTMParameterSet::ParameterType type) const
-                                    { return mFitMax[type]->text().toDouble(); }
-           double  getFitMin(TTMParameterSet::ParameterType type) const
-                                    { return mFitMin[type]->text().toDouble(); }
-           double  getFitSte(TTMParameterSet::ParameterType type) const
-                                    { return mFitSte[type]->text().toDouble(); }
-           double  getParaValue(TTMParameterSet::ParameterType type) const
-                                    { return mParameterValue[type]->text().toDouble(); }
-           bool    isConstrained(TTMParameterSet::ParameterType type) const;
-           bool    isFixed(QCheckBox* box)
-                                    { if (box->isChecked()) return true; else return false;}
-           bool    isFixed(TTMParameterSet::ParameterType type)
-                                    { return isFixed(mParameterFix[type]); }
-           void    setFitValues(TTMParameterSet::ParameterType type, double min, double max, double step);
-           void    setParaValue(TTMParameterSet::ParameterType type, double val)
-                                    { mParameterValue[type]->setText(QString("%1").arg(val)); }
-           void    updateDisplay();
+
+    void    constrainParameter(TTMParameterSet::ParameterType type);
+    double  getB2Q() const;
+    double  getConstrainValue(TTMParameterSet::ParameterType type) const
+            { if (type == TTMParameterSet::kMUQ) return getB2Q(); else return mDensity[type]->text().toDouble(); }
+    qint32  getCollision() const;
+    double  getFitMax(TTMParameterSet::ParameterType type) const
+            { return mFitMax[type]->text().toDouble(); }
+    double  getFitMin(TTMParameterSet::ParameterType type) const
+            { return mFitMin[type]->text().toDouble(); }
+    double  getFitSte(TTMParameterSet::ParameterType type) const
+            { return mFitSte[type]->text().toDouble(); }
+    double  getParaValue(TTMParameterSet::ParameterType type) const
+            { return mParameterValue[type]->text().toDouble(); }
+    bool    isConstrained(TTMParameterSet::ParameterType type) const;
+    bool    isFixed(QCheckBox* box)
+            { if (box->isChecked()) return true; else return false;}
+    bool    isFixed(TTMParameterSet::ParameterType type)
+            { return isFixed(mParameterFix[type]); }
+    void    setFitValues(TTMParameterSet::ParameterType type, double min, double max, double step);
+    void    setParaValue(TTMParameterSet::ParameterType type, double val)
+            { mParameterValue[type]->setText(QString("%1").arg(val)); }
+    void    updateDisplay();
 
 public slots:
     void fixParameter(TTMParameterSet::ParameterType type);
     void conParameter(TTMParameterSet::ParameterType type);
 
 private:
+    void    fit(TTMParameterSet::ParameterType type, bool check)
+            { mParameterFix[type]->setChecked(!check); fixParameter(type);}
 
     QRadioButton*  mCollisions[kCollTypes];                       // the list of possible of collision systems
     bool           mConstrain[TTMParameterSet::kPARTYPES];        // if true parameter is constrained

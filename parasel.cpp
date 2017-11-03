@@ -602,6 +602,13 @@ ParaSel::ParaSel(QWidget *parent) : QWizardPage(parent)
 }
 
 //__________________________________________________________________________
+void ParaSel::constrainParameter(TTMParameterSet::ParameterType type)
+{
+   // set the given parameter constrained
+     mParameterCon[type]->setChecked(true);
+}
+
+//__________________________________________________________________________
 double ParaSel::getB2Q() const
 {
     // calulates B / 2 * Q
@@ -678,6 +685,7 @@ void ParaSel::setFitValues(TTMParameterSet::ParameterType type, double min, doub
     mFitMin[type]->setText(QString("%1").arg(min));
     mFitMax[type]->setText(QString("%1").arg(max));
     mFitSte[type]->setText(QString("%1").arg(step));
+    fit(type, true);
 }
 
 //__________________________________________________________________________
@@ -686,7 +694,7 @@ void ParaSel::updateDisplay()
     // update the display after the default parameters have been set
 
     for (int type = 0; type < TTMParameterSet::kPARTYPES; type++) {
-        if (mParameterFix[type]) {
+        if (mParameterFix[type]->isChecked()) {
             mFitMin[type]->setText("Fixed");
             mFitMax[type]->setText("Fixed");
             mFitSte[type]->setText("Fixed");
@@ -771,14 +779,18 @@ void ParaSel::fixParameter(TTMParameterSet::ParameterType type)
         mParameterValue[type]->setReadOnly(true);
         mPalette.setColor(QPalette::Text,Qt::green);
         mParameterValue[type]->setReadOnly(false);
-        mFitMin[type]->setText(QString("%1").arg(0.05));
-        mFitMax[type]->setText(QString("%1").arg(0.180));
+        if (mFitMin[type]->text() == "Fixed")
+            mFitMin[type]->setText("?");
+        if (mFitMax[type]->text() == "Fixed")
+            mFitMax[type]->setText("?");
         mFitMin[type]->setReadOnly(false);
         mFitMax[type]->setReadOnly(false);
         mFitSte[type]->setReadOnly(false);
-        mFitSte[type]->setText(QString("%1").arg(0.001));
-
+        if (mFitSte[type]->text() == "Fixed")
+            mFitSte[type]->setText("?");
     }
+
+
     mParameterValue[type]->setPalette(mPalette);
     mFitMin[type]->setPalette(mPalette);
     mFitMax[type]->setPalette(mPalette);

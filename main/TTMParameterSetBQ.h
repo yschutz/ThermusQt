@@ -23,6 +23,7 @@
 #ifndef TTMPARAMETERSETBQ_H
 #define TTMPARAMETERSETBQ_H
 
+#include <QDebug>
 #include "TTMParameterSet.h"
 
 class TTMParameter;
@@ -40,6 +41,7 @@ public:
                        double can_r_error = 0., double r_error = 0.);
     TTMParameterSetBQ(const TTMParameterSetBQ& set);
 
+    void           constrain(ParameterType /*type*/, double /*x = 0.*/) { qDebug() << "To be implemented";} // NEEDED ??
     void           conserveSGlobally();
     void           constrainMuQ(double b2q);
     void           fitCanRadius(double start, double min = 0.1, double max = 15., double step = 0.01)
@@ -69,6 +71,7 @@ public:
     bool           getMuQConstrain() const  {return mMuQConstrain;}
     bool           getCorrRConstrain() const{return mCorrRConstrain;}
     double         getS() const             {return mS;}
+    void           list() const {;}
 
     TTMParameterSetBQ& operator=(const TTMParameterSetBQ& obj);
 

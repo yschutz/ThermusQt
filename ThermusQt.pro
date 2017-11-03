@@ -106,8 +106,10 @@ SOURCES += main.cpp\
     functions/BSQConstrainSQPercolation.cpp \
     functions/BSQfuncSQPercolation.cpp \
     main/TTMThermalFitBSQ.cpp \
-    macros/predictionMacro.cpp \
-    macroparasel.cpp
+    macroparasel.cpp \
+    macros/macro.cpp \
+    macros/fitmacro.cpp \
+    macros/predictionmacro.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -145,8 +147,10 @@ HEADERS  += mainwindow.h \
     external/f2.h \
     main/TTMThermalModelBSQ.h \
     main/TTMThermalFitBSQ.h \
-    macros/predictionMacro.h \
-    macroparasel.h
+    macroparasel.h \
+    macros/macro.h \
+    macros/fitmacro.h \
+    macros/predictionmacro.h
 
 
 RESOURCES += \

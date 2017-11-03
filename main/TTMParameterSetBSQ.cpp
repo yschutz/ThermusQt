@@ -12,7 +12,7 @@
 #include <QDebug>
 
 //__________________________________________________________________________
-TTMParameterSetBSQ::TTMParameterSetBSQ(QObject *parent) : TTMParameterSet(parent),
+TTMParameterSetBSQ::TTMParameterSetBSQ() : TTMParameterSet(),
     mBeautyDens(0.0), mCDens(0.0), mSDens(0.0),
     mMuBeautyConstrain(false), mMuCConstrain(false), mMuQConstrain(false), mMuSConstrain(false)
 {
@@ -33,7 +33,7 @@ TTMParameterSetBSQ::TTMParameterSetBSQ(double temp, double mub, double mus, doub
                                        double muc, double gc, double mubeauty, double gb, double b2q, double s, double c, double beauty,
                                        double temp_error, double mub_error, double mus_error, double muq_error, double gs_error, double r_error,
                                        double muc_error, double gc_error, double mubeauty_error, double gb_error) :
-    mBeautyDens(beauty), mCDens(c), mSDens(s),
+    TTMParameterSet(), mBeautyDens(beauty), mCDens(c), mSDens(s),
     mMuBeautyConstrain(false), mMuCConstrain(false), mMuQConstrain(false), mMuSConstrain(false)
 {
     // Sets all parameters and their errors as well as B/2Q, S/V, C/V and b/V.
@@ -158,7 +158,7 @@ double TTMParameterSetBSQ::getDens(TTMParameterSet::ParameterType type) const
 }
 
 //__________________________________________________________________________
-void TTMParameterSetBSQ::list()
+void TTMParameterSetBSQ::list() const
 {
     // list all the parameters
 

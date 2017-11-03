@@ -36,11 +36,11 @@ public:
 protected:
     TTMThermalModel* generateThermalModel();
 
-    bool                mExclVol;
-    TTMThermalModelBSQ* mModel;
-    TTMParameterSetBSQ* mParm;  // the parameters set
-    bool                mQStats;
-    bool                mWidth;
+    bool                mExclVol;  // exclusion volume applied or not
+    TTMThermalModelBSQ* mModel;    // the grand canonical model
+    TTMParameterSetBSQ* mParm;     // the parameters set
+    bool                mQStats;   // quantum statistics applied or not
+    bool                mWidth;    // resonance width applied or not
 };
 
 #endif // TTMTHERMALFITBSQ_H

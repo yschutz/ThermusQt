@@ -14,7 +14,7 @@ class ThermusWiz : public QWizard
     Q_OBJECT
 
 public:
-    ThermusWiz(QString Title = " ", QWidget *parent = 0);
+    ThermusWiz(const QString& what, QWidget *parent = 0);
 
     void    cleanupPage(int id);
     int     getSummaryId() const { return mSummaryId; }

@@ -27,9 +27,10 @@
 
 class TTMParameterSetBSQ : public TTMParameterSet
 {
+    Q_OBJECT
 
 public:
-    TTMParameterSetBSQ(QObject* parent = nullptr);
+    TTMParameterSetBSQ();
     TTMParameterSetBSQ(double temp, double mub,
                        double mus, double muq, double gs,
                        double r = 0., double muc = 0., double gc = 1., double mubeauty = 0., double gb = 1.,
@@ -42,11 +43,11 @@ public:
     TTMParameterSetBSQ(const TTMParameterSetBSQ& set);
 
     void   constrain(ParameterType type, double x = 0.);
-    void   fit(ParameterType type, double start, double min = 0.050, double max = 0.180, double step = 0.001) { mPar[type]->fit(start, min, max, step); }
-    void   fix(ParameterType type, double value, double error = 0.) { mPar[type]->fix(value, error); }
+//    void   fit(ParameterType type, double start, double min = 0.050, double max = 0.180, double step = 0.001) { mPar[type]->fit(start, min, max, step); }
+//    void   fix(ParameterType type, double value, double error = 0.) { mPar[type]->fix(value, error); }
     bool   getConstrain(ParameterType type) const;
     double getDens(ParameterType type) const;
-    void   list();
+    void   list() const;
 
     TTMParameterSetBSQ& operator=(const TTMParameterSetBSQ& obj);
 

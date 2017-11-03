@@ -40,8 +40,12 @@ public:
     QString     getDBPath(const QString& opt);
     void        listParameters();
     void        particlesDBManagement(DBOPS option);
+    void        runFit();
     void        runPrediction();
     void        quit();
+
+public slots:
+    void run(const QString& what);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -61,6 +65,7 @@ private:
     QAction*           mDebugOffAction;        // Action for debug mode off
     QAction*           mDebugOnAction;         // Action for debug mode on
     FindDialog*        mFd;                    // the dialog box for particle search
+    QAction*           mFitAction;             // Action for the Fit macro
     QMenu*             mListMenu;              // to list all the particles db from Root or Thermus Data
     QAction*           mListPDG;               // to list the particles Root db
     QAction*           mListThermus;           // to list the particles Thermus db

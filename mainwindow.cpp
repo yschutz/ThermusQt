@@ -14,7 +14,8 @@
 #include <QtWidgets>
 #include <QVBoxLayout>
 
-#include "macros/predictionMacro.h"
+#include "macros/fitmacro.h"
+#include "macros/predictionmacro.h"
 #include "logger.h"
 #include "thermuswiz.h"
 
@@ -199,41 +200,87 @@ void MainWindow::listParameters()
 }
 
 //__________________________________________________________________________
+void MainWindow::runFit()
+{
+    // runs the fit macro
+//    FitMacro& myMacro = FitMacro::instance();
+
+//    QString message = mFitAction->statusTip() + ": macro " + myMacro.objectName();
+//    statusBar()->showMessage(message);
+
+//    myMacro.start(mDebug);
+
+//    new ThermusWiz(this);
+
+//    // **************************************************
+//    // connect to the Thermus DB
+//    particlesDBManagement(kConnectT);
+}
+
+//__________________________________________________________________________
 void MainWindow::runPrediction()
 {
     // runs the prediction macro
-    QDateTime start = QDateTime::currentDateTime();
-    QDate date = start.date();
-    QTime time = start.time();
 
-    QString info = QString(" *** Start at Date : %1 Time : %2").arg(date.toString("dd MMMM yyyy")).arg(time.toString());
-    if (mDebug)
-        qDebug() << info;
+//    PredictionMacro& myMacro = PredictionMacro::instance();
+//    QString message = mPredictionAction->statusTip() + ": macro " + myMacro.objectName();
+//    statusBar()->showMessage(message);
 
-    PredictionMacro& myMacro = PredictionMacro::instance();
-    myMacro.setDebug(mDebug);
-    myMacro.objectName() + ": test";
+//    myMacro.start(mDebug);
 
-    QString message = mPredictionAction->statusTip() + ": macro " + myMacro.objectName();
+//    new ThermusWiz(this);
+
+//    // **************************************************
+//    // connect to the Thermus DB
+//    particlesDBManagement(kConnectT);
+
+//    // Choice of starting parameters, select parameters to fit or fix, add constraint
+//    myMacro.setParameters();
+
+//    mRunMenu->insertAction(mQuitAction, mParametersList);
+
+//    // Create the fit model
+//    myMacro.setFit();
+
+//    // Run the stuff
+//    myMacro.run();
+
+}
+
+//__________________________________________________________________________
+void MainWindow::run(const QString &what)
+{
+    Macro* myMacro = nullptr;
+    QString message;
+    if (what == "Prediction") {
+        myMacro = &PredictionMacro::instance();
+        message = mPredictionAction->statusTip();
+    }
+    else if (what == "Fit") {
+        myMacro = &FitMacro::instance();
+        message = mFitAction->statusTip();
+    }
+
+    message += ": macro " + myMacro->objectName();
     statusBar()->showMessage(message);
 
-    new ThermusWiz(info, this);
+    myMacro->start(mDebug);
+    new ThermusWiz(what, this);
 
     // **************************************************
     // connect to the Thermus DB
     particlesDBManagement(kConnectT);
 
     // Choice of starting parameters, select parameters to fit or fix, add constraint
-    myMacro.setParameters();
+    myMacro->setParameters();
 
     mRunMenu->insertAction(mQuitAction, mParametersList);
 
     // Create the fit model
-    myMacro.setFit();
+    myMacro->setFit();
 
     // Run the stuff
-    myMacro.run();
-
+    myMacro->run();
 }
 
 //__________________________________________________________________________
@@ -244,6 +291,7 @@ void MainWindow::quit()
     close();
     exit(0);
 }
+
 //__________________________________________________________________________
 void MainWindow::paintEvent(QPaintEvent *event)
 {
@@ -329,12 +377,15 @@ void MainWindow::createActions()
     mPdgSelectAction = new QAction(QIcon(":/selecticon.png"), tr("&Select"), this);
     connect(mPdgSelectAction, &QAction::triggered, this, [this]{ particlesDBManagement(kSelect); });
 
-    // run prediction macro
+    // run  macro
 
     mPredictionAction = new QAction(tr("&Prediction"), this);
-    mPredictionAction->setShortcuts(QKeySequence::New);
     mPredictionAction->setStatusTip(tr("Makes a Thermus prediction"));
-    connect(mPredictionAction, &QAction::triggered, this, &MainWindow::runPrediction);
+    connect(mPredictionAction, &QAction::triggered, this, [this] { run(mPredictionAction->text().remove(0,1)); });
+
+    mFitAction = new QAction(tr("&Fit"), this);
+    mFitAction->setStatusTip(tr("Makes a Thermus Fit"));
+    connect(mFitAction, &QAction::triggered, this, [this] { run(mFitAction->text().remove(0,1)); });
 
     // Parameters list action
 
@@ -384,6 +435,7 @@ void MainWindow::createMenus()
     // select the macro to run or quit
     mRunMenu = menuBar()->addMenu(tr("&Run"));
     mRunMenu->addAction(mPredictionAction);
+    mRunMenu->addAction(mFitAction);
     mRunMenu->addAction(mQuitAction);
 
 }

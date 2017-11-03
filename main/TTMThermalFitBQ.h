@@ -22,9 +22,9 @@ public:
 
 
 protected:
-    bool               mNonStrangeQStats; // ?
+    bool               mNonStrangeQStats; // Quantum statistics applied or not
     TTMParameterSetBQ* mParm;             // the parameters set
-    bool               mWidth;            // ?
+    bool               mWidth;            // resonance with applied or not
 };
 
 #endif // TTMTHERMALFITBQ_H

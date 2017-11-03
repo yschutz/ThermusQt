@@ -2,7 +2,8 @@
 //
 // The wizard to setp up various things
 
-#include "macros/predictionMacro.h"
+#include "macros/predictionmacro.h"
+#include "macros/fitmacro.h"
 
 #include "macroparasel.h"
 #include "mainwindow.h"
@@ -13,10 +14,9 @@
 #include <QDesktopServices>
 
 //__________________________________________________________________________
-ThermusWiz::ThermusWiz(QString /*summaryTitle*/, QWidget *parent) : QWizard(parent)
+ThermusWiz::ThermusWiz(const QString &what, QWidget *parent) : QWizard(parent)
 {
     // ctor
-
     setGeometry(200, 400, 1000, 100);
     setWindowTitle("THERMUS setting wizard");
     setWizardStyle(QWizard::ModernStyle);
@@ -26,17 +26,21 @@ ThermusWiz::ThermusWiz(QString /*summaryTitle*/, QWidget *parent) : QWizard(pare
     //    //setPixmap(QWizard::BannerPixmap, QPixmap(":/Icons/Icons/NegativeSmile.png"));
     //    setPixmap(QWizard::BackgroundPixmap, QPixmap(":/Icons/Icons/RC30Controller.JPG"));
 
-    PredictionMacro& myMacro = PredictionMacro::instance();
+    Macro* myMacro = nullptr;
+    if (what == "Prediction")
+        myMacro = &PredictionMacro::instance();
+    else if (what == "Fit")
+        myMacro = &FitMacro::instance();
 
     // page for the parameters setting
 
     mParaSelId = addPage(new ParaSel(this));
-    myMacro.setParaSel((ParaSel*)page(mParaSelId));
+    myMacro->setParaSel((ParaSel*)page(mParaSelId));
 
     // page for the macro parameters setting
 
     mMacrooParaSelId = addPage(new MacroParaSel(this));
-    myMacro.setMacroParaSel((MacroParaSel*)page(mMacrooParaSelId));
+    myMacro->setMacroParaSel((MacroParaSel*)page(mMacrooParaSelId));
 
     // page summarizing evrything
 
@@ -90,5 +94,4 @@ void ThermusWiz::accept()
     mLoop.exit(0);
     close();
     qobject_cast<MainWindow*>(parentWidget())->createConsol();
-    qDebug() << parentWidget();
 }

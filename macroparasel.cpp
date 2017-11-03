@@ -10,13 +10,15 @@
 #include <QGroupBox>
 #include <QInputDialog>
 #include <QLabel>
+#include <QLineEdit>
 #include <QMessageBox>
 #include <QVBoxLayout>
 #include <QRadioButton>
 #include <QStandardPaths>
 
 //__________________________________________________________________________
-MacroParaSel::MacroParaSel(QWidget* parent)
+MacroParaSel::MacroParaSel(QWidget* parent) :
+    mExclVol(0.3), mModelBQ(false), mModelBSQ(true), mQstat(false), mWidth(false)
 {
     // create an interactive window to set parameters for the macro
     setTitle("Macro parameters setting");
@@ -33,17 +35,24 @@ MacroParaSel::MacroParaSel(QWidget* parent)
     modelBoxLayout->addWidget(mRadBSQ);
     modelBox->setLayout(modelBoxLayout);
 
-    // Q statistics
-    QGroupBox* qstaBox     = new QGroupBox(tr("Quantum statistics and resonance width treatement"));
-    mRadQsOn               = new QRadioButton(tr("ON"));
-    mRadQsOff              = new QRadioButton(tr("OFF"));
-    connect(mRadQsOn,  &QRadioButton::toggled, this, [this] { setQS(); });
-    connect(mRadQsOff, &QRadioButton::toggled, this, [this] { setQS(); });
+    // Q statistics, resonance width and exclusion volume
+    QGroupBox* qstaBox     = new QGroupBox(tr("Quantum statistics, resonance width and exclusion volumetreatement"));
+    mQstatBut              = new QCheckBox(tr("Quantum statistics on"));
+    mWidthBut              = new QCheckBox(tr("Resonance width on"));
+    QHBoxLayout* eVoLayout = new QHBoxLayout();
+    mExclVolBut            = new QCheckBox(tr("Exclusion volume on"));
+    mExclVolLE             = new QLineEdit(QString::number(mExclVol));
+    eVoLayout->addWidget(mExclVolBut);
+    eVoLayout->addWidget(mExclVolLE);
+    connect(mQstatBut,    &QCheckBox::clicked, this, [this] { setQS(); });
+    connect(mWidthBut,    &QCheckBox::clicked, this, [this] { setW(); });
+    connect(mExclVolBut,  &QCheckBox::clicked, this, [this] { setEV(); });
 
 
     QVBoxLayout* qstaBoxLayout = new QVBoxLayout();
-    qstaBoxLayout->addWidget(mRadQsOn);
-    qstaBoxLayout->addWidget(mRadQsOff);
+    qstaBoxLayout->addWidget(mQstatBut);
+    qstaBoxLayout->addWidget(mWidthBut);
+    qstaBoxLayout->addLayout(eVoLayout);
     qstaBox->setLayout(qstaBoxLayout);
 
 
@@ -81,7 +90,6 @@ MacroParaSel::MacroParaSel(QWidget* parent)
     mainLayout->addWidget(dataBox);
 
     setLayout(mainLayout);
-
 }
 
 //__________________________________________________________________________
@@ -97,15 +105,12 @@ void MacroParaSel::updateDisplay()
         mRadBSQ->setChecked(true);
     }
 
-    if (mQstat) {
-        mRadQsOn->setChecked(true);
-        mRadQsOff->setChecked(false);
-    }
-    else {
-        mRadQsOn->setChecked(false);
-        mRadQsOff->setChecked(true);
-    }
-
+    if (mQstat)
+        mQstatBut->setChecked(true);
+    if (mWidth)
+        mWidthBut->setChecked(true);
+    if (mExclVol)
+        mExclVolBut->setChecked(true);
 }
 
 //__________________________________________________________________________
@@ -122,6 +127,17 @@ void MacroParaSel::setData()
         mDataFileName = QInputDialog::getText(this, tr("Enter file name (full path"), tr("name?"), QLineEdit::Normal);
         if (!mDataFileName.isEmpty())
             rad->setText(mDataFileName);
+    }
+}
+
+//__________________________________________________________________________
+void MacroParaSel::setEV()
+{
+    if (mExclVolBut->isChecked())
+       mExclVol = mExclVolLE->text().toDouble();
+    else {
+        mExclVol = 0.0;
+        mExclVolLE->setText(QString::number(mExclVol));
     }
 }
 
@@ -143,11 +159,13 @@ void MacroParaSel::setModel()
 //__________________________________________________________________________
 void MacroParaSel::setQS()
 {
-    // sets Q stat on/off
-    if (mRadQsOn->isChecked()) {
-        mQstat = true;
-    }
-    else if (mRadQsOff->isChecked()) {
-        mQstat = false;
-    }
+    // sets Q stat
+    mQstat =  mQstatBut->isChecked();
+}
+
+//__________________________________________________________________________
+void MacroParaSel::setW()
+{
+    // sets Width
+    mWidth = mWidthBut->isChecked();
 }

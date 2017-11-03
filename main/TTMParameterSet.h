@@ -31,6 +31,9 @@ public:
     ~TTMParameterSet() {qDeleteAll(mPar.begin(), mPar.end()); mPar.clear();}
     TTMParameterSet(const TTMParameterSet& set);
 
+    virtual void     constrain(ParameterType type, double x = 0.) = 0;
+    void             fit(ParameterType type, double start, double min = 0.050, double max = 0.180, double step = 0.001) { mPar[type]->fit(start, min, max, step); }
+    void             fix(ParameterType type, double value, double error = 0.) { mPar[type]->fix(value, error); }
     double           get(ParameterType type) const          { return mPar[type]->getValue(); }
     double           getB2Q() const                         { return mB2Q; }
     double           getCanRadius() const                   { return mPar[kCRADIUS]->getValue(); }
@@ -58,6 +61,7 @@ public:
     double           getT() const                           { return mPar[kT]->getValue(); }
     TTMParameter*    getTPar()                              { return mPar[kT]; }
     double           getVolume() const                      { return 4. * M_PI / 3. * qPow(getRadius(), 3); }
+    virtual void     list() const         = 0;
     static QString   name(ParameterType type);
     void             set(ParameterType type, double x)      { mPar[type]->setValue(x); }
     void             setB2Q(double x)                       { mB2Q = x; }
