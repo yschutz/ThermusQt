@@ -17,7 +17,7 @@ public:
 
     void                setDefaultParameters();
     void                setMacroDefaultParameters();
-    void                run() const {;}
+    void                run() const;
 
 private:
     FitMacro(QObject* parent = nullptr);

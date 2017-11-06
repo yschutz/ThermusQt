@@ -81,8 +81,8 @@ void ThermusWiz::initializePage(int id)
     //    } else if (id - 1 == mParaSelId) {
     //        summary->updateParameters();
     //    }
-    if (id - 1 == mParaSelId)
-        macropara->updateDisplay();
+//    if (id - 1 == mParaSelId)
+//        macropara->list();
 
 }
 

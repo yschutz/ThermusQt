@@ -65,14 +65,23 @@ void FitMacro::setDefaultParameters()
 void FitMacro::setMacroDefaultParameters()
 {
     // set additional parameters
+    bool   bsq    = true;    // thermodynamical model bq (canonical) or bsq (grand canonical)
+    bool   qstat  = true;    // apply quantum statistics
+    bool   width  = true;    // apply resonance width
+    double radius = 0.3;     // radius for the exclusion volume
 
     // set the default values for the macro parameters
-    mMacroParaSel->setModelBSQ();
-    mMacroParaSel->setQstat();
-    mMacroParaSel->setWidth();
-    mMacroParaSel->setExclVol();
 
-    mMacroParaSel->updateDisplay();
+    mMacroParaSel->setModelBSQ(bsq);
+    mMacroParaSel->setQstat(qstat);
+    mMacroParaSel->setWidth(width);
+    mMacroParaSel->setExclVol(radius);
+}
+
+//__________________________________________________________________________
+void FitMacro::run() const
+{
+
 }
 
 //__________________________________________________________________________

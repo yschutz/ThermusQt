@@ -53,8 +53,8 @@ void Macro::setFit()
         mFitInfo->setQStats(true);
     if (mMacroParaSel->isWidth())
         mFitInfo->setWidth(true);
-
-    mFitInfo->setExclVol(true);
+    if (mMacroParaSel->isExclVol())
+        mFitInfo->setExclVol(true);
 }
 
 //__________________________________________________________________________
@@ -79,7 +79,6 @@ void Macro::setMacroParaSel(MacroParaSel *val)
 {
     mMacroParaSel = val;
     setMacroDefaultParameters();
-    mMacroParaSel->updateDisplay();
 }
 
 //__________________________________________________________________________
@@ -117,6 +116,7 @@ void Macro::setParameters()
 
     // list all settings
     listParameters();
+    mMacroParaSel->list();
 }
 
 //__________________________________________________________________________

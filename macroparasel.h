@@ -1,56 +1,52 @@
 #ifndef MACROPARASEL_H
 #define MACROPARASEL_H
 
+#include <QCheckBox>
+#include <QLineEdit>
 #include <QObject>
+#include <QRadioButton>
 #include <QWizardPage>
 
-class QRadioButton;
-class QCheckBox;
-class QLineEdit;
 class MacroParaSel : public QWizardPage
 {
 public:
     MacroParaSel(QWidget* parent = nullptr);
 
-    QString dataFileName() const { return mDataFileName; }
-    bool    isExclVol() const    { if (mExclVol == 0.) return false; else return true; }
-    bool    isModelBQ() const    { return mModelBQ; }
-    bool    isModelBSQ() const   { return mModelBSQ; }
-    bool    isQstat() const      { return mQstat; }
-    bool    isWidth() const      { return mWidth; }
-    void    setModelBQ()         { mModelBQ  = true; mModelBSQ = false; }
-    void    setModelBSQ()        { mModelBSQ = true; mModelBQ  = false; }
-    void    setExclVol(double v) { mExclVol  = v; }
-    void    setQstat()           { mQstat    = true; }
-    void    setWidth()           { mWidth    = true; }
-    void    unsetModelBQ()       { mModelBQ  = false; mModelBSQ = true; }
-    void    unsetModelBSQ()      { mModelBSQ = false; mModelBQ  = true; }
-    void    unsetExclVol()       { mExclVol  = 0.; }
-    void    unsetQstat()         { mQstat    = false; }
-    void    unsetWidth()         { mWidth    = false; }
-    void    updateDisplay();
+    QString dataFileName() const;
+    double  getExclVol() const         { return mExclVolLE->text().toDouble(); }
+    bool    isExclVol() const          { return mExclVolBut->isChecked(); }
+    bool    isHyperonsFitted() const   { return mFitHyperons->isChecked(); }
+    bool    isNucleiFitted() const     { return mFitNuclei->isChecked(); }
+    bool    isModelBQ() const          { return mRadBQ->isChecked(); }
+    bool    isModelBSQ() const         { return mRadBSQ->isChecked(); }
+    bool    isProtonFitted() const     { return mFitProton->isChecked(); }
+    bool    isQstat() const            { return mQstatBut->isChecked(); }
+    bool    isResonancesFitted() const { return mFitResonances->isChecked(); }
+    bool    isWidth() const            { return mWidthBut->isChecked(); }
+    bool    isYields() const           { return mYieldRatio->isChecked(); }
+    void    setModelBQ(bool opt)       { mRadBQ->setChecked(opt); mRadBSQ->setChecked(!opt); }
+    void    setModelBSQ(bool opt)      { mRadBSQ->setChecked(opt); mRadBQ->setChecked(!opt); }
+    void    setExclVol(double v)       { mExclVolLE->setText(QString::number(v)); }
+    void    setQstat(bool opt)         { mQstatBut->setChecked(opt); }
+    void    setWidth(bool opt)         { mWidthBut->setChecked(opt); }
+    void    list();
 
 public slots:
     void    setData();
-    void    setEV();
-    void    setModel();
-    void    setQS();
-    void    setW();
 
 private:
-    QString              mDataFileName; // name of the data file
-    double               mExclVol ;     // value exclusion volume to be considered
     QCheckBox*           mExclVolBut;   // check button to switch on exclusion volume
     QLineEdit*           mExclVolLE;    // Line Editto enter exclusion volume value
-    bool                 mModelBQ;      // true if canonical model to apply
-    bool                 mModelBSQ;     // true if grand canonical model to apply
-    bool                 mQstat ;       // true if quantum stat
+    QCheckBox*           mFitHyperons;  // to exclude hyperons from the fit
+    QCheckBox*           mFitNuclei;    // to exclude nuclei from the fit
+    QCheckBox*           mFitProton;    // to exclude proton from the fit
+    QCheckBox*           mFitResonances;// to exclude resonances from the fit
     QCheckBox*           mQstatBut;     // check button to switch on Q stat
     QRadioButton*        mRadBQ;        // radio button to select canonical model
     QRadioButton*        mRadBSQ;       // radio button to select grand canonical model
     QList<QRadioButton*> mRadFiles;     // radio button to switch on Q stat and resonance width
-    bool                 mWidth ;       // true if resonance width to be considered
     QCheckBox*           mWidthBut;     // check button to switch on resonance width
+    QCheckBox*           mYieldRatio;   // data is yields or ratios
 };
 
 #endif // MACROPARASEL_H
