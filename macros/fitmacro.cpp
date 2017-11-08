@@ -4,6 +4,8 @@
 
 #include "fitmacro.h"
 #include "macroparasel.h"
+#include "main/TTMThermalFitBSQ.h"
+
 
 FitMacro FitMacro::mInstance = FitMacro();
 
@@ -27,7 +29,7 @@ void FitMacro::setDefaultParameters()
 
     double gammaSStart =  1.0;   // 0.86
 
-    double radiusStart  = 10.5;    // units = fm but no dependence for Grand Canonical.
+    double radiusStart  = 3.0;    // units = fm but no dependence for Grand Canonical.
     double cradiusStart = 0.0;
 
     double muCStart         = 0.0;
@@ -81,7 +83,18 @@ void FitMacro::setMacroDefaultParameters()
 //__________________________________________________________________________
 void FitMacro::run() const
 {
+    qInfo() << "******* Fitting:" << mMacroParaSel->getTitle() << "******* ";
 
+    mFitInfo->generateYields();
+    mFitInfo->listYields();
+
+    for (TTMYield* yield : mFitInfo->getYields())
+        qInfo() << Q_FUNC_INFO << "; PREDICTION: ;" <<
+                   yield->getID1() << ";" <<
+                   yield->getID2() << ";" <<
+                   yield->getTMName() << ";" <<
+                   yield->getModelValue();
+    mFitInfo->fitData(0);
 }
 
 //__________________________________________________________________________

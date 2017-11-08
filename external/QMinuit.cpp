@@ -112,26 +112,26 @@ QMinuit::QMinuit(QObject *parent) : QObject(parent)
     mPlot         = 0;
     mGraphicsMode = true;
 
-    BuildArrays(25);
+    buildArrays(25);
 
     setMaxIterations();
 
     qmninit(5,6,7);
 
-    fFCN = 0;
+    mFCN = 0;
 
  //   gMinuit = this;
 }
 
 //__________________________________________________________________________
-QMinuit::QMinuit(qint32 maxpar)
+QMinuit::QMinuit(int maxpar)
 {
     // Minuit normal constructor
     // maxpar is the maximum number of parameters used with this QMinuit object
 
-    fFCN = 0;
+    mFCN = 0;
 
-    BuildArrays(maxpar);
+    buildArrays(maxpar);
 
     mStatus       = 0;
     mEmpty        = 0;
@@ -152,7 +152,7 @@ QMinuit::~QMinuit()
 {
     // Minuit default destructor
 
-    DeleteArrays();
+    deleteArrays();
     delete mPlot;
 //    delete mMethodCall;
 //    if (gMinuit == this)
@@ -160,7 +160,7 @@ QMinuit::~QMinuit()
 }
 
 //__________________________________________________________________________
-void QMinuit::BuildArrays(qint32 maxpar)
+void QMinuit::buildArrays(int maxpar)
 {
     // Create internal Minuit arrays for the maxpar parameters*
     mMaxPar = 25;
@@ -241,14 +241,14 @@ void QMinuit::BuildArrays(qint32 maxpar)
     mCOMDplist = new double[mMaxPar];
     mPARSplist = new double[mMaxPar];
 
-    for (qint32 i = 0; i < mMaxPar; i++) {
+    for (int i = 0; i < mMaxPar; i++) {
        mErp[i] = 0;
        mErn[i] = 0;
     }
 }
 
 //__________________________________________________________________________
-QObject *QMinuit::Clone(const char */*newname*/) const
+QObject *QMinuit::clone(const char */*newname*/) const
 {
     //  Make a clone of an object using the Streamer facility.
     // Function pointer is copied to Clone
@@ -261,7 +261,7 @@ QObject *QMinuit::Clone(const char */*newname*/) const
 }
 
 //__________________________________________________________________________
-qint32 QMinuit::Command(const char *command)
+int QMinuit::command(const char *command)
 {
     //  execute a Minuit command
     //      Equivalent to MNEXCM except that the command is given as a
@@ -285,13 +285,13 @@ qint32 QMinuit::Command(const char *command)
     //     11: EXIT or STOP command
     //     12: RETURN command
 
-    qint32 status = 0;
+    int status = 0;
     qmncomd(command, status);
     return status;
 }
 
 //__________________________________________________________________________
-QObject *QMinuit::Contour(qint32 npoints, qint32 pa1, qint32 pa2)
+QObject *QMinuit::contour(int npoints, int pa1, int pa2)
 {
     //  Creates a TGraph object describing the n-sigma contour of a
     //  QMinuit fit. The contour of the parameters pa1 and pa2 is calculated
@@ -308,57 +308,55 @@ QObject *QMinuit::Contour(qint32 npoints, qint32 pa1, qint32 pa2)
     //
     //  The TGraph object is created via the interpreter. The user must cast it
     //  to a TGraph*. Note that the TGraph is created with npoints+1 in order to
-    //  close the contour (setting last poqint32equal to first point).
+    //  close the contour (setting last pointequal to first point).
     //
     //  You can find an example in $ROOTSYS/tutorials/fit/fitcont.C
 
-    qWarning() << Q_FUNC_INFO << "NOT IMPLEMENTED" << npoints << pa1 << pa2 ;
-    qFatal("88");
-//    if (npoints<4) {
-//       // we need at least 4 points
-//       mStatus= 2;
-//       return (TObject *)0;
-//    }
-//    qint32   npfound;
-//    double *xcoor = new double[npoints+1];
-//    double *ycoor = new double[npoints+1];
-//    qmncont(pa1,pa2,npoints,xcoor,ycoor,npfound);
-//    if (npfound<4) {
-//       // mncont did go wrong
-//       Warning("Contour","Cannot find more than 4 points, no TGraph returned");
-//       mStatus= (npfound==0 ? 1 : npfound);
-//       delete [] xcoor;
-//       delete [] ycoor;
-//       return (TObject *)0;
-//    }
-//    if (npfound!=npoints) {
-//       // mncont did go wrong
-//       Warning("Contour","Returning a TGraph with %d points only",npfound);
-//       npoints = npfound;
-//    }
-//    mStatus=0;
-//    // create graph via the  PluginManager
-//    xcoor[npoints] = xcoor[0];  // add first poqint32at end to get closed polyline
-//    ycoor[npoints] = ycoor[0];
+    if (npoints<4) {
+       // we need at least 4 points
+       mStatus= 2;
+       return (QObject *)0;
+    }
+    int   npfound;
+    double *xcoor = new double[npoints+1];
+    double *ycoor = new double[npoints+1];
+    qmncont(pa1,pa2,npoints,xcoor,ycoor,npfound);
+    if (npfound<4) {
+       // mncont did go wrong
+       qWarning() << Q_FUNC_INFO << "Contour" << "Cannot find more than 4 points, no TGraph returned";
+       mStatus= (npfound==0 ? 1 : npfound);
+       delete [] xcoor;
+       delete [] ycoor;
+       return (QObject *)0;
+    }
+    if (npfound!=npoints) {
+       // mncont did go wrong
+       qWarning() << Q_FUNC_INFO << "Contour" << QString("Returning a TGraph with %1 points only").arg(npfound);
+       npoints = npfound;
+    }
+    mStatus=0;
+    // create graph via the  PluginManager
+    xcoor[npoints] = xcoor[0];  // add first pointat end to get closed polyline
+    ycoor[npoints] = ycoor[0];
 //    TObject *gr = 0;
 //    TPluginHandler *h;
 //    if ((h = gROOT->GetPluginManager()->FindHandler("QMinuitGraph"))) {
 //       if (h->LoadPlugin() != -1)
 //       gr = (TObject*)h->ExecPlugin(3,npoints+1,xcoor,ycoor);
 //    }
-//    delete [] xcoor;
-//    delete [] ycoor;
+    qWarning() << Q_FUNC_INFO << "Need to implement the equivalent of TGraph";
+    delete [] xcoor;
+    delete [] ycoor;
 //    return gr;
-    qWarning() << Q_FUNC_INFO << "This is a root specific method";
     return nullptr;
 }
 
 //__________________________________________________________________________
-qint32 QMinuit::DefineParameter(qint32 parNo, const char *name, double initVal, double initErr, double lowerLimit, double upperLimit)
+int QMinuit::defineParameter(int parNo, const char *name, double initVal, double initErr, double lowerLimit, double upperLimit)
 {
     // Define a parameter
 
-    qint32 err;
+    int err;
 
     QString sname = name;
     qmNParm(parNo, sname, initVal, initErr, lowerLimit, upperLimit, err);
@@ -367,7 +365,7 @@ qint32 QMinuit::DefineParameter(qint32 parNo, const char *name, double initVal, 
 }
 
 //__________________________________________________________________________
-void QMinuit::DeleteArrays()
+void QMinuit::deleteArrays()
 {
     // Delete internal Minuit arrays*
 
@@ -441,7 +439,7 @@ void QMinuit::DeleteArrays()
 }
 
 //__________________________________________________________________________
-qint32 QMinuit::Eval(qint32 npar, double *grad, double &fval, double *par, qint32 flag)
+int QMinuit::eval(int npar, double *grad, double &fval, double *par, int flag)
 {
     // Evaluate the minimisation function
     //   Input parameters:
@@ -482,15 +480,15 @@ qint32 QMinuit::Eval(qint32 npar, double *grad, double &fval, double *par, qint3
     */
     //  See concrete examples in TH1::H1FitChisquare, H1FitLikelihood
 
-    if (fFCN) (*fFCN)(npar,grad,fval,par,flag);
+    if (mFCN) (*mFCN)(npar,grad,fval,par,flag);
     return 0;
 }
 
 //__________________________________________________________________________
-qint32 QMinuit::FixParameter( qint32 parNo)
+int QMinuit::fixParameter( int parNo)
 {
     // fix a parameter
-    qint32 err;
+    int err;
     double tmp[1];
     tmp[0] = parNo + 1; //set internal Minuit numbering
 
@@ -500,10 +498,10 @@ qint32 QMinuit::FixParameter( qint32 parNo)
 }
 
 //__________________________________________________________________________
-qint32 QMinuit::GetParameter( qint32 parNo, double &currentValue, double &currentError ) const
+int QMinuit::getParameter( int parNo, double &currentValue, double &currentError ) const
 {
     // return parameter value and error
-    qint32   err;
+    int   err;
     QString  name; // ignored
     double bnd1, bnd2; // ignored
 
@@ -513,10 +511,10 @@ qint32 QMinuit::GetParameter( qint32 parNo, double &currentValue, double &curren
 }
 
 //__________________________________________________________________________
-qint32 QMinuit::Migrad()
+int QMinuit::migrad()
 {
     // invokes the MIGRAD minimizer
-    qint32 err;
+    int err;
     double tmp[1];
     tmp[0] = 0;
 
@@ -531,7 +529,7 @@ void QMinuit::qmnamin()
     // *-*-*-*-*-*-*-*-*-*-*-*-*Initialize AMIN*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     //        Called  from many places.  Initializes the value of AMIN by
     //       calling the user function. Prints out the function value and
-    //      parameter values if Prqint32Flag value is high enough.
+    //      parameter values if PrintFlag value is high enough.
 
     /* Local variables */
     double fnew;
@@ -540,14 +538,14 @@ void QMinuit::qmnamin()
        qInfo() << Q_FUNC_INFO << "INFO: FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.";
     }
     qmnexin(mX);
-    Eval(mNPar, mGin, fnew, mU, 4);
+    eval(mNPar, mGin, fnew, mU, 4);
     ++mNfcn;
     mAmin = fnew;
     mEDM  = mBigedm;
 }
 
 //__________________________________________________________________________
-void QMinuit::qmnbins(double a1, double a2, qint32 naa, double &bl, double &bh, qint32 &nb, double &bwid)
+void QMinuit::qmnbins(double a1, double a2, int naa, double &bl, double &bh, int &nb, double &bwid)
 {
     // *-*-*-*-*-*-*Compute reasonable histogram intervals*-*-*-*-*-*-*-*-*
     //              ======================================
@@ -558,7 +556,7 @@ void QMinuit::qmnbins(double a1, double a2, qint32 naa, double &bl, double &bh, 
     //        F. JAMES,   AUGUST, 1974 , stolen for Minuit, 1988
     /* Local variables */
     double awid, ah, al, sigfig,  sigrnd, alb;
-    qint32 kwid, lwid, na = 0, log_;
+    int kwid, lwid, na = 0, log_;
 
     al = qMin(a1, a2);
     ah = qMax(a1, a2);
@@ -634,20 +632,20 @@ void QMinuit::qmncalf(double *pvec, double &ycalf)
 
     double f;
 
-    Eval(mNPar, mGin, f, mU, 4);    ++mNfcn;
+    eval(mNPar, mGin, f, mU, 4);    ++mNfcn;
 
-    for (qint32 i = 1; i <= mNPar; ++i) {
+    for (int i = 1; i <= mNPar; ++i) {
        mGrd[i-1] = 0;
-       for (qint32 j = 1; j <= mNPar; ++j) {
-          qint32 m = qMax(i, j);
-          qint32 n = qMin(i, j);
-          qint32 ndex = m * (m - 1) / 2 + n;
+       for (int j = 1; j <= mNPar; ++j) {
+          int m = qMax(i, j);
+          int n = qMin(i, j);
+          int ndex = m * (m - 1) / 2 + n;
           mGrd[i - 1] += mVthmat[ndex - 1] * (mXt[j - 1] - pvec[j - 1]);
        }
     }
 
     double denom = 0.0;
-    for (qint32 i = 1; i <= mNPar; ++i)
+    for (int i = 1; i <= mNPar; ++i)
         denom += mGrd[i - 1] * (mXt[i - 1] - pvec[i - 1]);
     if (denom <= 0) {
        mDcovar = 1;
@@ -672,7 +670,7 @@ void QMinuit::qmncler()
     mNwrmes[0] = 0;
     mNwrmes[1] = 0;
 
-    for (qint32 i = 1; i <= mMaxExtr; ++i) {
+    for (int i = 1; i <= mMaxExtr; ++i) {
        mU[i-1]      = 0;
        mCpnam[i-1]  = mCundef;
        mNvarl[i-1]  = -1;
@@ -688,7 +686,7 @@ void QMinuit::qmncler()
 
 
 //__________________________________________________________________________
-void QMinuit::qmncntr(qint32 ike1, qint32 ike2, qint32 &ierrf)
+void QMinuit::qmncntr(int ike1, int ike2, int &ierrf)
 {
 
     //*-*-*-*-*Printfunction contours in two variables, on line printer*-*-*-*-*
@@ -704,11 +702,11 @@ void QMinuit::qmncntr(qint32 ike1, qint32 ike2, qint32 &ierrf)
     double fcna[115], fcnb[115], contur[20];
     double  ylabel, fmn, fmx, xlo, ylo, xup, yup;
     double devs, xsav, ysav,  bwidx,  bwidy, unext, ff, xb4;
-    qint32 ngrid, ixmid, nparx, nx, ny, ki1, ki2, ixzero, ics;
+    int ngrid, ixmid, nparx, nx, ny, ki1, ki2, ixzero, ics;
     QString chmid, chln, chzero;
 
-    qint32 ke1 = ike1 + 1;
-    qint32 ke2 = ike2 + 1;
+    int ke1 = ike1 + 1;
+    int ke2 = ike2 + 1;
     if (ke1 <= 0 || ke2 <= 0)   goto L1350;
     if (ke1 > mNu || ke2 > mNu) goto L1350;
     ki1 = mNiofex[ke1 - 1];
@@ -759,7 +757,7 @@ void QMinuit::qmncntr(qint32 ike1, qint32 ike2, qint32 &ierrf)
     if (ixmid < 1) ixmid = 1;
     if (mAmin == mUndefi) qmnamin();
 
-    for (qint32 i = 1; i <= 20; ++i)
+    for (int i = 1; i <= 20; ++i)
         contur[i - 1] = mAmin + mUp * (i - 1)*(i - 1);
     contur[0] += mUp * 0.01;
  //*-*-               fill FCNB to prepare first row, and find column zero/
@@ -770,9 +768,9 @@ void QMinuit::qmncntr(qint32 ike1, qint32 ike2, qint32 &ierrf)
     chmid.resize(nx + 1);
     chzero.resize(nx + 1);
     chln.resize(nx + 1);
-    for (qint32 ix = 1; ix <= nx + 1; ++ix) {
+    for (int ix = 1; ix <= nx + 1; ++ix) {
        mU[ke1 - 1] = xlo + double(ix - 1) * bwidx;
-       Eval(nparx, mGin, ff, mU, 4);
+       eval(nparx, mGin, ff, mU, 4);
        fcnb[ix-1] = ff;
        if (xb4 < 0 && mU[ke1 - 1] > 0) ixzero = ix - 1;
        xb4            = mU[ke1-1];
@@ -786,7 +784,7 @@ void QMinuit::qmncntr(qint32 ike1, qint32 ike2, qint32 &ierrf)
        qInfo() << Q_FUNC_INFO << "             X=0";
     }
  //*-*-                loop over rows
-    for (qint32 iy = 1; iy <= ny; ++iy) {
+    for (int iy = 1; iy <= ny; ++iy) {
        unext = mU[ke2-1] - bwidy;
  //*-*-                prepare this line background pattern for contour
        chln = " ";
@@ -799,14 +797,14 @@ void QMinuit::qmncntr(qint32 ike1, qint32 ike2, qint32 &ierrf)
        mU[ke2 - 1] = unext;
        ylabel = mU[ke2 - 1] + bwidy * .5;
  //*-*-                move FCNB to FCNA and fill FCNB with next row
-       for (qint32 ix = 1; ix <= nx + 1; ++ix) {
+       for (int ix = 1; ix <= nx + 1; ++ix) {
           fcna[ix - 1] = fcnb[ix - 1];
           mU[ke1 - 1] = xlo + double(ix - 1) * bwidx;
-          Eval(nparx, mGin, ff, mU, 4);
+          eval(nparx, mGin, ff, mU, 4);
           fcnb[ix - 1] = ff;
        }
  //*-*-                look for contours crossing the FCNxy squares
-       for (qint32 ix = 1; ix <= nx; ++ix) {
+       for (int ix = 1; ix <= nx; ++ix) {
           d__1 = qMax(fcna[ix - 1], fcnb[ix - 1]),
           d__2 = qMax(fcna[ix], fcnb[ix]);
           fmx  = qMax(d__1, d__2);
@@ -820,7 +818,7 @@ void QMinuit::qmncntr(qint32 ike1, qint32 ike2, qint32 &ierrf)
  L240:
           if (contur[ics - 1] < fmx) chln[ix - 1] = clabel[ics - 1];
        }
- //*-*-                prqint32a row of the contour plot
+ //*-*-                printa row of the contour plot
        qInfo() << ylabel  << chln;
     }
  //*-*-                contours printed, label x-axis
@@ -851,7 +849,7 @@ void QMinuit::qmncntr(qint32 ike1, qint32 ike2, qint32 &ierrf)
 }
 
 //__________________________________________________________________________
-void QMinuit::qmncomd(const char *crdbin, qint32&icondn)
+void QMinuit::qmncomd(const char *crdbin, int&icondn)
 {
     //-*-*-*-*-*-*-*-*-*-*Reads a command string and executes*-*-*-*-*-*-*-*-*-*
     // *-*                  ===================================
@@ -873,7 +871,7 @@ void QMinuit::qmncomd(const char *crdbin, qint32&icondn)
     // *-*             11: EXIT or STOP command
     // *-*             12: RETURN command
 
-    qint32 ierr, ipos, llist, lenbuf, lnc;
+    int ierr, ipos, llist, lenbuf, lnc;
     bool leader;
     QString comand, ctemp;
 
@@ -884,7 +882,7 @@ void QMinuit::qmncomd(const char *crdbin, qint32&icondn)
     //*-*-    record not case-sensitive, get upper case, strip leading blanks
     leader = true;
     ipos = 1;
-    for (qint32 i = 1; i <= qMin(20,lenbuf); ++i) {
+    for (int i = 1; i <= qMin(20,lenbuf); ++i) {
         if (crdbuf[i - 1] == '\'') break;
         if (crdbuf[i - 1] == ' ') {
             if (leader) ++ipos;
@@ -943,7 +941,7 @@ void QMinuit::qmncomd(const char *crdbin, qint32&icondn)
 }
 
 //__________________________________________________________________________
-void QMinuit::qmncont(qint32 ike1, qint32 ike2, qint32 nptu, double *xptu, double *yptu, qint32 &ierrf)
+void QMinuit::qmncont(int ike1, int ike2, int nptu, double *xptu, double *yptu, int &ierrf)
 {
     // *-*-*-*-*-*-*Find points along a contour where FCN is minimum*-*-*-*-*-*-*
     // *-*          ================================================
@@ -959,21 +957,21 @@ void QMinuit::qmncont(qint32 ike1, qint32 ike2, qint32 nptu, double *xptu, doubl
     // *-*
     // *-*                 input arguments: parx, pary, devs, ngrid
 
-    qint32 i__1;
+    int i__1;
 
      /* Local variables */
      double d__1, d__2;
      double dist, xdir, ydir, aopt,  u1min, u2min;
      double abest, scalx, scaly;
      double a1, a2, val2mi, val2pl, dc, sclfac, bigdis, sigsav;
-     qint32 nall, iold, line, mpar, ierr, inew, move, next, i, j, nfcol, iercr;
-     qint32 idist=0, npcol, kints, i2, i1, lr, nfcnco=0, ki1, ki2, ki3, ke3;
-     qint32 nowpts, istrav, nfmxin, isw2, isw4;
+     int nall, iold, line, mpar, ierr, inew, move, next, i, j, nfcol, iercr;
+     int idist=0, npcol, kints, i2, i1, lr, nfcnco=0, ki1, ki2, ki3, ke3;
+     int nowpts, istrav, nfmxin, isw2, isw4;
      bool ldebug;
 
      /* Function Body */
-     qint32 ke1 = ike1 + 1;
-     qint32 ke2 = ike2 + 1;
+     int ke1 = ike1 + 1;
+     int ke2 = ike2 + 1;
      ldebug = mIdbg[6] >= 1;
      if (ke1 <= 0 || ke2 <= 0)   goto L1350;
      if (ke1 > mNu || ke2 > mNu) goto L1350;
@@ -1115,14 +1113,14 @@ void QMinuit::qmncont(qint32 ike1, qint32 ike2, qint32 nptu, double *xptu, doubl
         mYdircr = ydir / sclfac;
         mKe1cr  = ke1;
         mKe2cr  = ke2;
-  //*-*-               Find the contour crossing poqint32along DIR
+  //*-*-               Find the contour crossing pointalong DIR
         mAmin = abest;
         qmncros(aopt, iercr);
         if (iercr > 1) {
-  //*-*-             If cannot find mid-point, try closer to poqint321
+  //*-*-             If cannot find mid-point, try closer to point1
            if (a1 > .5) {
               if (mISW[4] >= 0) {
-                 qInfo() << " MNCONT CANNOT FIND NEXT POqint32ON CONTOUR.  ONLY" << nowpts << "POINTS FOUND.";
+                 qInfo() << " MNCONT CANNOT FIND NEXT POintON CONTOUR.  ONLY" << nowpts << "POINTS FOUND.";
               }
               goto L950;
            }
@@ -1131,7 +1129,7 @@ void QMinuit::qmncont(qint32 ike1, qint32 ike2, qint32 nptu, double *xptu, doubl
            a2 = .25;
            goto L300;
         }
-  //*-*-               Contour has been located, insert new poqint32in list
+  //*-*-               Contour has been located, insert new pointin list
         for (move = nowpts; move >= i1 + 1; --move) {
            xptu[move] = xptu[move-1];
            yptu[move] = yptu[move-1];
@@ -1164,7 +1162,7 @@ void QMinuit::qmncont(qint32 ike1, qint32 ike2, qint32 nptu, double *xptu, doubl
 
         qInfo() << "                         X-AXIS: PARAMETER" << ke1 << mCpnam[ke1-1];
      }
-  //*-*-                prqint32out the coordinates around the contour
+  //*-*-                printout the coordinates around the contour
      if (mISW[4] >= 1) {
         npcol = (nowpts + 1) / 2;
         nfcol = nowpts / 2;
@@ -1236,7 +1234,7 @@ void QMinuit::qmncont(qint32 ike1, qint32 ike2, qint32 nptu, double *xptu, doubl
 ///*-*
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmncrck(QString cardbuf, qint32 maxcwd, QString &comand, qint32 &lnc, qint32 mxp, double *plist, qint32 &llist, qint32 &ierr, qint32 /*isyswr*/)
+void QMinuit::qmncrck(QString cardbuf, int maxcwd, QString &comand, int &lnc, int mxp, double *plist, int &llist, int &ierr, int /*isyswr*/)
 {
     /* Initialized data */
 
@@ -1244,8 +1242,8 @@ void QMinuit::qmncrck(QString cardbuf, qint32 maxcwd, QString &comand, qint32 &l
     const char *cnumer = "123456789-.0+";
 
     /* Local variables */
-    qint32 ifld, iend, lend, left, nreq, ipos, kcmnd, nextb, ic, ibegin, ltoadd;
-    qint32 ielmnt, lelmnt[25], nelmnt;
+    int ifld, iend, lend, left, nreq, ipos, kcmnd, nextb, ic, ibegin, ltoadd;
+    int ielmnt, lelmnt[25], nelmnt;
 //    QString ctemp;
     char *celmnt[25];
     char command[25];
@@ -1359,15 +1357,15 @@ void QMinuit::qmncrck(QString cardbuf, qint32 maxcwd, QString &comand, qint32 &l
 ///*-*
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmncros(double &aopt, qint32 &iercr)
+void QMinuit::qmncros(double &aopt, int &iercr)
 {
     /* Local variables */
       double alsb[3], flsb[3], bmin, bmax, zmid, sdev, zdir, zlim;
       double coeff[3], aleft, aulim, fdist, adist, aminsv;
       double anext, fnext, slope, s1, s2, x1, x2, ecarmn, ecarmx;
       double determ, rt, smalla, aright, aim, tla, tlf, dfda,ecart;
-      qint32 iout=0, i, ileft, ierev, maxlk, ibest, ik, it;
-      qint32 noless, iworst=0, iright, itoohi, kex, ipt;
+      int iout=0, i, ileft, ierev, maxlk, ibest, ik, it;
+      int noless, iworst=0, iright, itoohi, kex, ipt;
       bool ldebug;
       const char *chsign;
       x2 = 0;
@@ -1697,7 +1695,7 @@ void QMinuit::qmncuve()
 {
     /* Local variables */
       double dxdi, wint;
-      qint32 ndex, iext, i, j;
+      int ndex, iext, i, j;
 
       if (mISW[3] < 1) {
          qInfo() << " FUNCTION MUST BE MINIMIZED BEFORE CALLING" << mCfrom;
@@ -1748,7 +1746,7 @@ void QMinuit::qmnderi()
     /* Local variables */
       double step, dfmin, stepb4, dd, df, fs1;
       double tlrstp, tlrgrd, epspri, optstp, stpmax, stpmin, fs2, grbfor=0, d1d2, xtf;
-      qint32 icyc, ncyc, iint, iext, i, nparx;
+      int icyc, ncyc, iint, iext, i, nparx;
       bool ldebug;
 
       nparx = mNPar;
@@ -1760,7 +1758,7 @@ void QMinuit::qmnderi()
    //*-*-                      make sure starting at the right place
          qmninex(mX);
          nparx = mNPar;
-         Eval(nparx, mGin, fs1, mU, 4);        ++mNfcn;
+         eval(nparx, mGin, fs1, mU, 4);        ++mNfcn;
          if (fs1 != mAmin) {
             df    = mAmin - fs1;
             QString tempo = QString("function value differs from AMIN by %1").arg(df);
@@ -1814,11 +1812,11 @@ void QMinuit::qmnderi()
             stepb4  = step;
             mX[i-1] = xtf + step;
             qmninex(mX);
-            Eval(nparx, mGin, fs1, mU, 4);            ++mNfcn;
+            eval(nparx, mGin, fs1, mU, 4);            ++mNfcn;
    //*-*-        take step negative
             mX[i-1] = xtf - step;
             qmninex(mX);
-            Eval(nparx, mGin, fs2, mU, 4);            ++mNfcn;
+            eval(nparx, mGin, fs2, mU, 4);            ++mNfcn;
             grbfor = mGrd[i-1];
             mGrd[i-1] = (fs1 - fs2) / (step*2);
             mG2[i-1]  = (fs1 + fs2 - mAmin*2) / (step*step);
@@ -1864,9 +1862,9 @@ void QMinuit::qmnderi()
 ///*-*        parameters which are not limited.     called from MNEMAT.
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmndxdi(double pint, qint32 ipar, double &dxdi)
+void QMinuit::qmndxdi(double pint, int ipar, double &dxdi)
 {
-    qint32 i = mNexofi[ipar];
+    int i = mNexofi[ipar];
     dxdi = 1;
     if (mNvarl[i-1] > 1) {
        dxdi = qAbs((mBlim[i-1] - mAlim[i-1])*qCos(pint))*.5;
@@ -1878,15 +1876,15 @@ void QMinuit::qmndxdi(double pint, qint32 ipar, double &dxdi)
 ///*-*-*-*-*-*-*-*-*-*-*-*Compute matrix eigen values*-*-*-*-*-*-*-*-*-*-*-*-*
 ///*-*                    ===========================
 
-void QMinuit::qmneig(double *a, qint32 ndima, qint32 n, qint32 mits, double *work, double precis, qint32 &ifault)
+void QMinuit::qmneig(double *a, int ndima, int n, int mits, double *work, double precis, int &ifault)
 {
     /* System generated locals */
-    qint32 a_offset;
+    int a_offset;
     double d__1;
 
     /* Local variables */
     double b, c, f, h, r, s, hh, gl, pr, pt;
-    qint32 i, j, k, l, m=0, i0, i1, j1, m1, n1;
+    int i, j, k, l, m=0, i0, i1, j1, m1, n1;
 
  //*-*-         PRECIS is the machine precision EPSMAC
     /* Parameter adjustments */
@@ -2073,14 +2071,14 @@ void QMinuit::qmneig(double *a, qint32 ndima, qint32 n, qint32 mits, double *wor
 /// in the calling program, one has to call mnemat with, eg
 ///     gMinuit->mnemat(&matrix[0][0],5);
 
-void QMinuit::qmnemat(double *emat, qint32 ndim)
+void QMinuit::qmnemat(double *emat, int ndim)
 {
     /* System generated locals */
-    qint32 emat_dim1, emat_offset;
+    int emat_dim1, emat_offset;
 
     /* Local variables */
     double dxdi, dxdj;
-    qint32 i, j, k, npard, k2, kk, iz, nperln, kga, kgb;
+    int i, j, k, npard, k2, kk, iz, nperln, kga, kgb;
     QString ctemp;
 
     /* Parameter adjustments */
@@ -2149,10 +2147,10 @@ void QMinuit::qmnemat(double *emat, qint32 ndim)
 ///*-*       GCC is global correlation coefficient from error matrix
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnerrs(qint32 number, double &eplus, double &eminus, double &eparab, double &gcc)
+void QMinuit::qmnerrs(int number, double &eplus, double &eminus, double &eparab, double &gcc)
 {
     double dxdi;
-    qint32 ndiag, iin, iex;
+    int ndiag, iin, iex;
 
     iex = number+1;
 
@@ -2193,15 +2191,15 @@ void QMinuit::qmnerrs(qint32 number, double &eplus, double &eminus, double &epar
 ///*-*      and (if KE2CR .NE. 0)  U(KE2CR) = YMIDCR + ANEXT*YDIRCR
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmneval(double anext, double &fnext, qint32 &ierev)
+void QMinuit::qmneval(double anext, double &fnext, int &ierev)
 {
-    qint32 nparx;
+    int nparx;
 
     mU[mKe1cr-1] = mXmidcr + anext*mXdircr;
     if (mKe2cr != 0) mU[mKe2cr-1] = mYmidcr + anext*mYdircr;
     qmninex(mX);
     nparx = mNPar;
-    Eval(nparx, mGin, fnext, mU, 4);    ++mNfcn;
+    eval(nparx, mGin, fnext, mU, 4);    ++mNfcn;
     ierev = 0;
     if (mNPar > 0) {
        mItaur = 1;
@@ -2239,7 +2237,7 @@ void QMinuit::qmneval(double anext, double &fnext, qint32 &ierev)
 ///*-*
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnexcm(const char *command, double *plist, qint32 llist, qint32 &ierflg)
+void QMinuit::qmnexcm(const char *command, double *plist, int llist, int &ierflg)
 {
     /* Initialized data */
 
@@ -2286,13 +2284,13 @@ void QMinuit::qmnexcm(const char *command, double *plist, qint32 llist, qint32 &
          "LIMITS    ",
          "PUNCH     "};
 
-      qint32 nntot = 40;
+      int nntot = 40;
 
       /* Local variables */
       double step, xptu[101], yptu[101], f, rno;
-      qint32 icol, kcol, ierr, iint, iext, lnow, nptu, i, iflag, ierrf;
-      qint32 ilist, nparx, izero, nf, lk, it, iw, inonde, nsuper;
-      qint32 it2, ke1, ke2, nowprt, kll, krl;
+      int icol, kcol, ierr, iint, iext, lnow, nptu, i, iflag, ierrf;
+      int ilist, nparx, izero, nf, lk, it, iw, inonde, nsuper;
+      int it2, ke1, ke2, nowprt, kll, krl;
       QString chwhy, c26, cvblnk, cneway, comd;
       QString ctemp;
       bool lfreed, ltofix, lfixed;
@@ -2593,7 +2591,7 @@ void QMinuit::qmnexcm(const char *command, double *plist, qint32 llist, qint32 &
       iflag = int(mWord7[0]);
       nparx = mNPar;
       f = mUndefi;
-      Eval(nparx, mGin, f, mU, iflag);    ++mNfcn;
+      eval(nparx, mGin, f, mU, iflag);    ++mNfcn;
       nowprt = 0;
       if (f != mUndefi) {
          if (mAmin == mUndefi) {
@@ -2621,7 +2619,7 @@ void QMinuit::qmnexcm(const char *command, double *plist, qint32 llist, qint32 &
          iflag = 3;
          if (mISW[4] >= 0) qInfo() << " CALL TO USER FUNCTION WITH IFLAG = 3";
          nparx = mNPar;
-         Eval(nparx, mGin, f, mU, iflag);        ++mNfcn;
+         eval(nparx, mGin, f, mU, iflag);        ++mNfcn;
       }
       ierflg = 11;
       if (mCword.left(3) == "END") ierflg = 10;
@@ -2737,7 +2735,7 @@ void QMinuit::qmnexcm(const char *command, double *plist, qint32 llist, qint32 &
 void QMinuit::qmnexin(double *pint)
 {
     double pinti;
-    qint32 iint, iext;
+    int iint, iext;
 
     mLimset = false;
     for (iint = 1; iint <= mNPar; ++iint) {
@@ -2753,15 +2751,15 @@ void QMinuit::qmnexin(double *pint)
 ///*-*        and arranges the rest of the list to fill the hole.
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnfixp(qint32 iint1, qint32 &ierr)
+void QMinuit::qmnfixp(int iint1, int &ierr)
 {
  // * Local variables *
     double yyover;
-    qint32 kold, nold, ndex, knew, iext, i, j, m, n, lc, ik;
+    int kold, nold, ndex, knew, iext, i, j, m, n, lc, ik;
 
  // *-*-                          first see if it can be done
     ierr = 0;
-    qint32 iint = iint1+1;
+    int iint = iint1+1;
     if (iint > mNPar || iint <= 0) {
        ierr = 1;
        qInfo() << " MINUIT ERROR.  ARGUMENT TO MNFIXP=" << iint;
@@ -2841,11 +2839,11 @@ void QMinuit::qmnfixp(qint32 iint1, qint32 &ierr)
 ///*-*        IS = internal number of parameter being restored
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnfree(qint32 k)
+void QMinuit::qmnfree(int k)
 {
     /* Local variables */
     double grdv, xv, dirinv, g2v, gstepv, xtv;
-    qint32 i, ipsav, ka, lc, ik, iq, ir, is;
+    int i, ipsav, ka, lc, ik, iq, ir, is;
 
     if (k > 1) {
        qInfo() << " CALL TO MNFREE IGNORED.  ARGUMENT GREATER THAN ONE";
@@ -2951,7 +2949,7 @@ void QMinuit::qmngrad()
 {
     /* Local variables */
     double fzero, err;
-    qint32 i, nparx, lc, istsav;
+    int i, nparx, lc, istsav;
     bool lnone;
     static QString cwd = "    ";
 
@@ -2962,7 +2960,7 @@ void QMinuit::qmngrad()
  //*-*-                 get user-calculated first derivatives from FCN
     for (i = 1; i <= mNu; ++i) { mGin[i-1] = mUndefi; }
     qmninex(mX);
-    Eval(nparx, mGin, fzero, mU, 2);    ++mNfcn;
+    eval(nparx, mGin, fzero, mU, 2);    ++mNfcn;
     qmnderi();
     for (i = 1; i <= mNPar; ++i) { mGRADgf[i-1] = mGrd[i-1]; }
  //*-*-                   get MINUIT-calculated first derivatives
@@ -3610,7 +3608,7 @@ void QMinuit::qmnhess()
     /* Local variables */
     double dmin_, dxdi, elem, wint, tlrg2, d, dlast, ztemp, g2bfor;
     double df, aimsag, fs1, tlrstp, fs2, stpinm, g2i, sag=0, xtf, xti, xtj;
-    qint32 icyc, ncyc, ndex, idrv, iext, npar2, i, j, ifail, npard, nparx, id, multpy;
+    int icyc, ncyc, ndex, idrv, iext, npar2, i, j, ifail, npard, nparx, id, multpy;
     bool ldebug;
 
     ldebug = mIdbg[3] >= 1;
@@ -3640,7 +3638,7 @@ void QMinuit::qmnhess()
  //*-*-                make sure starting at the right place
     qmninex(mX);
     nparx = mNPar;
-    Eval(nparx, mGin, fs1, mU, 4);    ++mNfcn;
+    eval(nparx, mGin, fs1, mU, 4);    ++mNfcn;
     if (fs1 != mAmin) {
        df    = mAmin - fs1;
        QString ctempo = QString("function value differs from AMIN %1").arg(df);
@@ -3689,10 +3687,10 @@ void QMinuit::qmnhess()
              mX[i-1] = xtf + d;
              qmninex(mX);
              nparx = mNPar;
-             Eval(nparx, mGin, fs1, mU, 4);    ++mNfcn;
+             eval(nparx, mGin, fs1, mU, 4);    ++mNfcn;
              mX[i-1] = xtf - d;
              qmninex(mX);
-             Eval(nparx, mGin, fs2, mU, 4);    ++mNfcn;
+             eval(nparx, mGin, fs2, mU, 4);    ++mNfcn;
              mX[i-1] = xtf;
              sag = (fs1 + fs2 - mAmin*2)*.5;
              if (sag != 0) goto L30;
@@ -3758,7 +3756,7 @@ void QMinuit::qmnhess()
           mX[i-1] = xti + mDirin[i-1];
           mX[j-1] = xtj + mDirin[j-1];
           qmninex(mX);
-          Eval(nparx, mGin, fs1, mU, 4);            ++mNfcn;
+          eval(nparx, mGin, fs1, mU, 4);            ++mNfcn;
           mX[i-1] = xti;
           mX[j-1] = xtj;
           elem = (fs1 + mAmin - mHESSyy[i-1] - mHESSyy[j-1]) / (
@@ -3839,7 +3837,7 @@ void QMinuit::qmnhes1()
     /* Local variables */
     double dmin_, d, dfmin, dgmin=0, change, chgold, grdold=0, epspri;
     double fs1, optstp, fs2, grdnew=0, sag, xtf;
-    qint32 icyc, ncyc=0, idrv, i, nparx;
+    int icyc, ncyc=0, idrv, i, nparx;
     bool ldebug;
 
     ldebug = mIdbg[5] >= 1;
@@ -3863,10 +3861,10 @@ void QMinuit::qmnhes1()
        for (icyc = 1; icyc <= ncyc; ++icyc) {
           mX[i-1] = xtf + d;
           qmninex(mX);
-          Eval(nparx, mGin, fs1, mU, 4);            ++mNfcn;
+          eval(nparx, mGin, fs1, mU, 4);            ++mNfcn;
           mX[i-1] = xtf - d;
           qmninex(mX);
-          Eval(nparx, mGin, fs2, mU, 4);            ++mNfcn;
+          eval(nparx, mGin, fs2, mU, 4);            ++mNfcn;
           mX[i-1] = xtf;
  //*-*-                                      check if step sizes appropriate
           sag    = (fs1 + fs2 - mAmin*2)*.5;
@@ -3920,8 +3918,8 @@ void QMinuit::qmnimpr()
      /* Local variables */
      double amax, ycalf, ystar, ystst;
      double pb, ep, wg, xi, sigsav, reg, sig2;
-     qint32 npfn, ndex, loop=0, i, j, ifail, iseed=0;
-     qint32 jhold, nloop, nparx, nparp1, jh, jl, iswtr;
+     int npfn, ndex, loop=0, i, j, ifail, iseed=0;
+     int jhold, nloop, nparx, nparp1, jh, jl, iswtr;
 
      if (mNPar <= 0) return;
      if (mAmin == mUndefi) qmnamin();
@@ -3929,7 +3927,7 @@ void QMinuit::qmnimpr()
      mItaur  = 1;
      mEpsi   = mUp*.1;
      npfn    = mNfcn;
-     nloop   = qint32(mWord7[1]);
+     nloop   = int(mWord7[1]);
      if (nloop <= 0) nloop = mNPar + 4;
      nparx  = mNPar;
      nparp1 = mNPar + 1;
@@ -4054,7 +4052,7 @@ void QMinuit::qmnimpr()
   //*-*-                                       . . . . . ask if point is new
   L100:
      qmninex(mX);
-     Eval(nparx, mGin, mAmin, mU, 4);    ++mNfcn;
+     eval(nparx, mGin, mAmin, mU, 4);    ++mNfcn;
      for (i = 1; i <= mNPar; ++i) {
         mDirin[i-1] = reg*mIMPRdsav[i-1];
         if (qAbs(mX[i-1] - mXt[i-1]) > mDirin[i-1])     goto L150;
@@ -4125,7 +4123,7 @@ void QMinuit::qmnimpr()
 
 void QMinuit::qmninex(double *pint)
 {
-    qint32 i, j;
+    int i, j;
 
     for (j = 0; j < mNPar; ++j) {
        i = mNexofi[j]-1;
@@ -4145,12 +4143,12 @@ void QMinuit::qmninex(double *pint)
 ///*-*                (including the logical I/O unit nos.),
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmninit(qint32 i1, qint32 i2, qint32 i3)
+void QMinuit::qmninit(int i1, int i2, int i3)
 {
     /* Local variables */
     volatile double epsp1;
     double piby2, epstry, epsbak, distnn;
-    qint32 i, idb;
+    int i, idb;
 
  //*-*-           I/O unit numbers
     mIsysrd = i1;
@@ -4221,7 +4219,7 @@ void QMinuit::qmninit(qint32 i1, qint32 i2, qint32 i3)
     mEpsmac = epstry*8;
     mEpsma2 = qSqrt(mEpsmac)*2;
  //*-*-                the vlims are a non-negligible distance from pi/2
- //*-*-        used by MNPqint32to set variables "near" the physical limits
+ //*-*-        used by MNPintto set variables "near" the physical limits
     piby2   = qAtan(1.)*2;
     distnn  = qSqrt(mEpsma2)*8;
     mVlimhi =  piby2 - distnn;
@@ -4240,12 +4238,12 @@ void QMinuit::qmnlims()
 {
     /* Local variables */
     double dxdi, snew;
-    qint32 kint, i2, newcod, ifx=0, inu;
+    int kint, i2, newcod, ifx=0, inu;
 
     mCfrom  = "SET LIM ";
     mNfcnfr = mNfcn;
     mCstatu = "NO CHANGE ";
-    i2 = qint32(mWord7[0]);
+    i2 = int(mWord7[0]);
     if (i2 > mMaxExtr || i2 < 0) goto L900;
     if (i2 > 0) goto L30;
  //*-*-                                    set limits on all parameters
@@ -4363,7 +4361,7 @@ void QMinuit::qmnline(double *start, double fstart, double *step, double slope, 
     double xpq[12], ypq[12], slam, sdev, coeff[3], denom, flast;
     double fvals[3], xvals[3], f1, fvmin, xvmin, ratio, f2, f3 = 0., fvmax;
     double toler8, toler9, overal, undral, slamin, slamax, slopem;
-    qint32 i, nparx=0, nvmax=0, nxypt, kk, ipt;
+    int i, nparx=0, nvmax=0, nxypt, kk, ipt;
     bool ldebug;
     QString cmess;
     char chpq[13];
@@ -4378,7 +4376,7 @@ void QMinuit::qmnline(double *start, double fstart, double *step, double slope, 
  //*-*-                             debug check if start is ok
     if (ldebug) {
        qmninex(&start[0]);
-       Eval(nparx, mGin, f1, mU, 4);        ++mNfcn;
+       eval(nparx, mGin, f1, mU, 4);        ++mNfcn;
        if (f1 != fstart) {
           qInfo() << " MNLINE start point not consistent, F values, parameters=";
           for (kk = 1; kk <= mNPar; ++kk) {
@@ -4408,7 +4406,7 @@ void QMinuit::qmnline(double *start, double fstart, double *step, double slope, 
     nparx = mNPar;
 
     qmninex(mX);
-    Eval(nparx, mGin, f1, mU, 4);    ++mNfcn;
+    eval(nparx, mGin, f1, mU, 4);    ++mNfcn;
     ++nxypt;
     chpq[nxypt-1] = charal[nxypt-1];
     xpq[nxypt-1] = 1;
@@ -4447,7 +4445,7 @@ void QMinuit::qmnline(double *start, double fstart, double *step, double slope, 
        for (i = 1; i <= mNPar; ++i) { mX[i-1] = start[i-1] + slam*step[i-1]; }
        qmninex(mX);
        nparx = mNPar;
-       Eval(nparx, mGin, f2, mU, 4);    ++mNfcn;
+       eval(nparx, mGin, f2, mU, 4);    ++mNfcn;
        ++nxypt;
        chpq[nxypt-1] = charal[nxypt-1];
        xpq[nxypt-1]  = slam;
@@ -4509,7 +4507,7 @@ void QMinuit::qmnline(double *start, double fstart, double *step, double slope, 
              }
              for (i = 1; i <= mNPar; ++i) { mX[i-1] = start[i-1] + slam*step[i-1]; }
              qmninex(mX);
-             Eval(nparx, mGin, f3, mU, 4);    ++mNfcn;
+             eval(nparx, mGin, f3, mU, 4);    ++mNfcn;
              ++nxypt;
              chpq[nxypt-1] = charal[nxypt-1];
              xpq[nxypt-1]  = slam;
@@ -4592,11 +4590,11 @@ void QMinuit::qmnline(double *start, double fstart, double *step, double slope, 
 ///*-*        calculates and prints the individual correlation coefficients
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnmatu(qint32 kode)
+void QMinuit::qmnmatu(int kode)
 {
     /* Local variables */
-    qint32 ndex, i, j, m, n, ncoef, nparm, id, it, ix;
-    qint32 nsofar, ndi, ndj, iso, isw2, isw5;
+    int ndex, i, j, m, n, ncoef, nparm, id, it, ix;
+    int nsofar, ndi, ndj, iso, isw2, isw5;
     QString ctemp;
 
     isw2 = mISW[1];
@@ -4680,8 +4678,8 @@ void QMinuit::qmnmigr()
     double gdel, gami, vlen, dsum, gssq, vsum, d;
     double fzero, fs, ri, delgam, rhotol;
     double gdgssq, gvg, vgi;
-    qint32 npfn, ndex, iext, i, j, m, n, npsdf, nparx;
-    qint32 iswtr, lined2, kk, nfcnmg, nrstrt,iter;
+    int npfn, ndex, iext, i, j, m, n, npsdf, nparx;
+    int iswtr, lined2, kk, nfcnmg, nrstrt,iter;
     bool ldebug;
     double toler = 0.05;
 
@@ -4722,7 +4720,7 @@ void QMinuit::qmnmigr()
  L2:
     qmninex(mX);
     if (mISW[2] == 1) {
-       Eval(nparx, mGin, fzero, mU, 2);        ++mNfcn;
+       eval(nparx, mGin, fzero, mU, 2);        ++mNfcn;
     }
     qmnderi();
     if (mISW[1] >= 1) goto L10;
@@ -4763,7 +4761,7 @@ void QMinuit::qmnmigr()
     mDcovar = 1;
     if (ldebug) {
        qDebug() << " DEBUG MNMIGR, STARTING MATRIX DIAGONAL,  VHMAT=";
-       for (kk = 1; kk <= qint32(vlen); ++kk) {
+       for (kk = 1; kk <= int(vlen); ++kk) {
           qDebug() << mVhmat[kk-1];
        }
     }
@@ -4839,7 +4837,7 @@ void QMinuit::qmnmigr()
  //*-*-                                       . get gradient at new point
     qmninex(mX);
     if (mISW[2] == 1) {
-       Eval(nparx, mGin, fzero, mU, 2);        ++mNfcn;
+       eval(nparx, mGin, fzero, mU, 2);        ++mNfcn;
     }
     qmnderi();
  //*-*-                                        . calculate new EDM
@@ -5019,7 +5017,7 @@ void QMinuit::qmnmnos()
 {
     /* Local variables */
     double val2mi, val2pl;
-    qint32 nbad, ilax, ilax2, ngood, nfcnmi, iin, knt;
+    int nbad, ilax, ilax2, ngood, nfcnmi, iin, knt;
 
     if (mNPar <= 0) goto L700;
     ngood = 0;
@@ -5027,11 +5025,11 @@ void QMinuit::qmnmnos()
     nfcnmi = mNfcn;
  //*-*-                                     . loop over parameters requested
     for (knt = 1; knt <= mNPar; ++knt) {
-       if (qint32(mWord7[1]) == 0) {
+       if (int(mWord7[1]) == 0) {
           ilax = mNexofi[knt-1];
        } else {
           if (knt >= 7) break;
-          ilax = qint32(mWord7[knt]);
+          ilax = int(mWord7[knt]);
           if (ilax == 0) break;
           if (ilax > 0 && ilax <= mNu) {
              if (mNiofex[ilax-1] > 0) goto L565;
@@ -5092,17 +5090,17 @@ void QMinuit::qmnmnos()
 ///*-*        until it crosses the value FMIN+UP.
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnmnot(qint32 ilax, qint32 ilax2, double &val2pl, double &val2mi)
+void QMinuit::qmnmnot(int ilax, int ilax2, double &val2pl, double &val2mi)
 {
     /* System generated locals */
-    qint32 i__1;
+    int i__1;
 
     /* Local variables */
     double delu, aopt, eros;
     double abest, xunit, dc, ut, sigsav, du1;
     double fac, sig, sav;
-    qint32 marc, isig, mpar, ndex, imax, indx, ierr, i, j;
-    qint32 iercr, it, istrav, nfmxin, nlimit, isw2, isw4;
+    int marc, isig, mpar, ndex, imax, indx, ierr, i, j;
+    int iercr, it, istrav, nfmxin, nlimit, isw2, isw4;
     QString csig;
 
  //*-*-                                       . . save and prepare start vals
@@ -5284,14 +5282,14 @@ void QMinuit::qmnmnot(qint32 ilax, qint32 ilax2, double &val2pl, double &val2mi)
 ///*-*                  >0 if mNParM unable to implement definition
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmNParm(qint32 k1, QString cnamj, double uk, double wk, double a, double b, qint32 &ierflg)
+void QMinuit::qmNParm(int k1, QString cnamj, double uk, double wk, double a, double b, int &ierflg)
 {
     /* Local variables */
     double vplu, a_small, gsmin, pinti, vminu, danger, sav, sav2;
-    qint32 ierr, kint, in, ix, ktofix, lastin, kinfix, nvl;
+    int ierr, kint, in, ix, ktofix, lastin, kinfix, nvl;
     QString cnamk, chbufi;
 
-    qint32 k = k1+1;
+    int k = k1+1;
     cnamk   = cnamj;
     kint   = mNPar;
     if (k < 1 || k > mMaxExtr) {
@@ -5319,7 +5317,7 @@ void QMinuit::qmNParm(qint32 k1, QString cnamj, double uk, double wk, double a, 
     if (mNiofex[k-1] > 0) kint= mNPar - 1;
  L50:
 
- //*-*-                                     . . .prqint32heading
+ //*-*-                                     . . .printheading
     if (mLphead && mISW[4] >= 0) {
        qInfo() << " PARAMETER DEFINITIONS:";
        qInfo() << "    NO.   NAME         VALUE      STEP SIZE      LIMITS";
@@ -5396,7 +5394,7 @@ void QMinuit::qmNParm(qint32 k1, QString cnamj, double uk, double wk, double a, 
  //*-*-          LASTIN is the number of var. params with ext. param. no.< K
     lastin = 0;
     for (ix = 1; ix <= k-1; ++ix) { if (mNiofex[ix-1] > 0) ++lastin; }
- //*-*-                Kqint32is new number of variable params, NPAR is old
+ //*-*-                Kintis new number of variable params, NPAR is old
     if (kint== mNPar) goto L280;
     if (kint> mNPar) {
  //*-*-                         insert new variable parameter in list
@@ -5489,12 +5487,12 @@ void QMinuit::qmNParm(qint32 k1, QString cnamj, double uk, double wk, double a, 
 ///*-*        ICONDN = 2    end of parameter definitions
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmNPars(QString &crdbuf, qint32 &icondn)
+void QMinuit::qmNPars(QString &crdbuf, int &icondn)
 {
     /* Local variables */
     double a=0, b=0, fk=0, uk=0, wk=0, xk=0;
-    qint32 ierr, kapo1, kapo2;
-    qint32 k, llist, ibegin, lenbuf, istart, lnc, icy;
+    int ierr, kapo1, kapo2;
+    int k, llist, ibegin, lenbuf, istart, lnc, icy;
     QString cnamk, comand, celmnt, ctemp;
     char stmp[128];
 
@@ -5515,7 +5513,7 @@ void QMinuit::qmNPars(QString &crdbuf, qint32 &icondn)
  //*-*-                              parameter number integer
     celmnt = QString(crdbuf.midRef(istart-1, kapo1-istart).toString().data());
     if (scanf(celmnt.toStdString().data(),&fk)) {;}
-    k = qint32(fk);
+    k = int(fk);
     if (k <= 0) goto L210;
     cnamk = "PARAM " + celmnt;
     if (kapo2 - kapo1 > 1) {
@@ -5550,7 +5548,7 @@ void QMinuit::qmNPars(QString &crdbuf, qint32 &icondn)
  L150:
     if (scanf(crdbuf.toStdString().data(),&xk,stmp,&uk,&wk,&a,&b)) {;}
     cnamk = stmp;
-    k = qint32(xk);
+    k = int(xk);
     if (k == 0)    goto L210;
  //*-*-         parameter format cracked, implement parameter definition
  L170:
@@ -5579,12 +5577,12 @@ void QMinuit::qmNPars(QString &crdbuf, qint32 &icondn)
 ///*-*   method : chi**2 = min equation solved explicitly
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnpfit(double *parx2p, double *pary2p, qint32 npar2p, double *coef2p, double &sdev2p)
+void QMinuit::qmnpfit(double *parx2p, double *pary2p, int npar2p, double *coef2p, double &sdev2p)
 {
     /* Local variables */
     double a, f, s, t, y, s2, x2, x3, x4, y2, cz[3], xm, xy, x2y;
     x2 = x3 = 0;
-    qint32 i;
+    int i;
 
     /* Parameter adjustments */
     --coef2p;
@@ -5642,14 +5640,14 @@ void QMinuit::qmnpfit(double *parx2p, double *pary2p, qint32 npar2p, double *coe
 ///*-*        corresponding  to the external value PEXTI for parameter I.
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnpint(double &pexti, qint32 i1, double &pinti)
+void QMinuit::qmnpint(double &pexti, int i1, double &pinti)
 {
     /* Local variables */
     double a, alimi, blimi, yy, yy2;
-    qint32 igo;
+    int igo;
     QString chbuf2, chbufi;
 
-    qint32 i = i1+1;
+    int i = i1+1;
     pinti   = pexti;
     igo     = mNvarl[i-1];
     if (igo == 4) {
@@ -5694,7 +5692,7 @@ void QMinuit::qmnpint(double &pexti, qint32 i1, double &pinti)
 ///*-*
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnplot(double *xpt, double *ypt, char *chpt, qint32 nxypt, qint32 npagwd, qint32 npagln)
+void QMinuit::qmnplot(double *xpt, double *ypt, char *chpt, int nxypt, int npagwd, int npagln)
 {
     ypt = nullptr;
     xpt = nullptr;
@@ -5717,8 +5715,8 @@ void QMinuit::qmnplot(double *xpt, double *ypt, char *chpt, qint32 nxypt, qint32
 //    double xmin, ymin, xmax, ymax, savx, savy, yprt;
 //    double bwidx, bwidy, xbest, ybest, ax, ay, bx, by;
 //    double xvalus[12], any, dxx, dyy;
-//    qint32 iten, i, j, k, maxnx, maxny, iquit, ni, linodd;
-//    qint32 nxbest, nybest, km1, ibk, isp1, nx, ny, ks, ix;
+//    int iten, i, j, k, maxnx, maxny, iquit, ni, linodd;
+//    int nxbest, nybest, km1, ibk, isp1, nx, ny, ks, ix;
 //    QString chmess, ctemp;
 //    Bool_t overpr;
 //    char cline[120];
@@ -5788,8 +5786,8 @@ void QMinuit::qmnplot(double *xpt, double *ypt, char *chpt, qint32 nxypt, qint32
 //       xpt[i-1] = ax*xpt[i-1] + bx;
 //       ypt[i-1] = any - ay*ypt[i-1] - by;
 //    }
-//    nxbest = qint32((ax*xbest + bx));
-//    nybest = qint32((any - ay*ybest - by));
+//    nxbest = int((ax*xbest + bx));
+//    nybest = int((any - ay*ybest - by));
 //  //*-*-        print the points
 //    ny += 2;
 //    nx += 2;
@@ -5811,9 +5809,9 @@ void QMinuit::qmnplot(double *xpt, double *ypt, char *chpt, qint32 nxypt, qint32
 //       if (isp1 > nxypt) goto L350;
 //  //*-*-        find the points to be plotted on this line
 //       for (k = isp1; k <= nxypt; ++k) {
-//          ks = qint32(ypt[k-1]);
+//          ks = int(ypt[k-1]);
 //          if (ks > i) goto L345;
-//          ix = qint32(xpt[k-1]);
+//          ix = int(xpt[k-1]);
 //          if (cline[ix-1] == '.')   goto L340;
 //          if (cline[ix-1] == ' ') goto L340;
 //          if (cline[ix-1] == chpt[k-1])   continue;
@@ -5879,12 +5877,12 @@ void QMinuit::qmnplot(double *xpt, double *ypt, char *chpt, qint32 nxypt, qint32
 ///*-*     User-called
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnpout(qint32 iuext1, QString &chnam, double &val, double &err, double &xlolim, double &xuplim, qint32 &iuint) const
+void QMinuit::qmnpout(int iuext1, QString &chnam, double &val, double &err, double &xlolim, double &xuplim, int &iuint) const
 {
     /* Local variables */
-    qint32 iint, iext, nvl;
+    int iint, iext, nvl;
 
-    qint32 iuext = iuext1 + 1;
+    int iuext = iuext1 + 1;
     xlolim = 0;
     xuplim = 0;
     err    = 0;
@@ -5935,7 +5933,7 @@ void QMinuit::qmnpout(qint32 iuext1, QString &chnam, double &val, double &err, d
 ///*-*    when INKODE=5, MNPRIN chooses IKODE=1,2, or 3, according to mISW[1]
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnprin(qint32 inkode, double fval)
+void QMinuit::qmnprin(int inkode, double fval)
 {
     /* Initialized data */
 
@@ -5945,7 +5943,7 @@ void QMinuit::qmnprin(qint32 inkode, double fval)
     /* Local variables */
     double dcmax, x1, x2, x3, dc;
     x2 = x3 = 0;
-    qint32 nadd, i, k, l, m, ikode, ic, nc, ntrail, lbl;
+    int nadd, i, k, l, m, ikode, ic, nc, ntrail, lbl;
     QString chedm;
     QString colhdl[6], colhdu[6], cx2, cx3, cheval;
 
@@ -6117,7 +6115,7 @@ void QMinuit::qmnpsdf()
 {
     /* Local variables */
     double dgmin, padd, pmin, pmax, dg, epspdf, epsmin;
-    qint32 ndex, i, j, ndexd, ip, ifault;
+    int ndex, i, j, ndexd, ip, ifault;
     QString chbuff, ctemp;
 
     epsmin = 1e-6;
@@ -6189,11 +6187,11 @@ void QMinuit::qmnpsdf()
 ///*-*        estimated distance to minimum.
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnrazz(double ynew, double *pnew, double *y, qint32 &jh, qint32 &jl)
+void QMinuit::qmnrazz(double ynew, double *pnew, double *y, int &jh, int &jl)
 {
     /* Local variables */
     double pbig, plit;
-    qint32 i, j, nparp1;
+    int i, j, nparp1;
 
     /* Function Body */
     for (i = 1; i <= mNPar; ++i) { mP[i + jh*mMaxPar - mMaxPar-1] = pnew[i-1]; }
@@ -6238,13 +6236,13 @@ void QMinuit::qmnrazz(double ynew, double *pnew, double *y, qint32 &jh, qint32 &
 ///*-*                    Set Default Starting Seed
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnrn15(double &val, qint32 &inseed)
+void QMinuit::qmnrn15(double &val, int &inseed)
 {
     /* Initialized data */
 
-    static qint32 iseed = 12345;
+    static int iseed = 12345;
 
-    qint32 k;
+    int k;
 
     if (val == 3) goto L100;
     inseed = iseed;
@@ -6267,9 +6265,9 @@ void QMinuit::qmnrn15(double &val, qint32 &inseed)
 ///*-*        after SET LIMITS, SET PARAM, CALL FCN 6
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnrset(qint32 iopt)
+void QMinuit::qmnrset(int iopt)
 {
-    qint32 iext, i;
+    int iext, i;
 
     mCstatu = "RESET     ";
     if (iopt >= 1) {
@@ -6320,17 +6318,17 @@ void QMinuit::qmnscan()
 {
     /* Local variables */
     double step, uhigh, xhreq, xlreq, ubest, fnext, unext, xh, xl;
-    qint32 ipar, iint, icall, ncall, nbins, nparx;
-    qint32 nxypt, nccall, iparwd;
+    int ipar, iint, icall, ncall, nbins, nparx;
+    int nxypt, nccall, iparwd;
 
     xlreq = qMin(mWord7[2],mWord7[3]);
     xhreq = qMax(mWord7[2],mWord7[3]);
-    ncall = qint32((mWord7[1] + .01));
+    ncall = int((mWord7[1] + .01));
     if (ncall <= 1)  ncall = 41;
     if (ncall > 98) ncall = 98;
     nccall = ncall;
     if (mAmin == mUndefi) qmnamin();
-    iparwd  = qint32((mWord7[0] + .1));
+    iparwd  = int((mWord7[0] + .1));
     ipar    = qMax(iparwd,0);
     mCstatu = "NO CHANGE";
     if (iparwd > 0) goto L200;
@@ -6384,7 +6382,7 @@ void QMinuit::qmnscan()
     for (icall = 1; icall <= nccall; ++icall) {
        mU[ipar-1] = unext;
        nparx = mNPar;
-       Eval(nparx, mGin, fnext, mU, 4);        ++mNfcn;
+       eval(nparx, mGin, fnext, mU, 4);        ++mNfcn;
        ++nxypt;
        mXpt[nxypt-1]  = unext;
        mYpt[nxypt-1]  = fnext;
@@ -6431,9 +6429,9 @@ void QMinuit::qmnseek()
     /* Local variables */
     double dxdi, rnum, ftry, rnum1, rnum2, alpha;
     double flast, bar;
-    qint32 ipar, iext, j, ifail, iseed=0, nparx, istep, ib, mxfail, mxstep;
+    int ipar, iext, j, ifail, iseed=0, nparx, istep, ib, mxfail, mxstep;
 
-    mxfail = qint32(mWord7[0]);
+    mxfail = int(mWord7[0]);
     if (mxfail <= 0) mxfail = mNPar*20 + 100;
     mxstep = mxfail*10;
     if (mAmin == mUndefi) qmnamin();
@@ -6478,7 +6476,7 @@ void QMinuit::qmnseek()
           mX[ipar-1] = mSEEKxmid[ipar-1] + (rnum1 + rnum2 - 1)*.5*mDirin[ipar-1];
        }
        qmninex(mX);
-       Eval(nparx, mGin, ftry, mU, 4);        ++mNfcn;
+       eval(nparx, mGin, ftry, mU, 4);        ++mNfcn;
        if (ftry < flast) {
           if (ftry < mAmin) {
              mCstatu = "IMPROVEMNT";
@@ -6558,8 +6556,8 @@ void QMinuit::qmnset()
        "SHOw      ",
        "SET       "};
 
-    static qint32 nname = 25;
-    static qint32 nntot = 30;
+    static int nname = 25;
+    static int nntot = 30;
     static QString cprlev[5] = {
        "-1: NO OUTPUT EXCEPT FROM SHOW    ",
        " 0: REDUCED OUTPUT                ",
@@ -6582,12 +6580,12 @@ void QMinuit::qmnset()
        "MNCONT: MNCONTOUR PLOT (MNCROS SEARCH) "};
 
     /* System generated locals */
-    //qint32 f_inqu();
+    //int f_inqu();
 
     /* Local variables */
     double val;
-    qint32 iset, iprm, i, jseed, kname, iseed, iunit, id, ii, kk;
-    qint32 ikseed, idbopt, igrain=0, iswsav, isw2;
+    int iset, iprm, i, jseed, kname, iseed, iunit, id, ii, kk;
+    int ikseed, idbopt, igrain=0, iswsav, isw2;
     QString  cfname, cmode, ckind,  cwarn, copt, ctemp, ctemp2;
     bool lname=false;
 
@@ -6646,7 +6644,7 @@ void QMinuit::qmnset()
 
  //*-*-                                       . . . . . . . . . . set param
  L20:
-    iprm = qint32(mWord7[0]);
+    iprm = int(mWord7[0]);
     if (iprm > mNu) goto L25;
     if (iprm <= 0) goto L25;
     if (mNvarl[iprm-1] < 0) goto L25;
@@ -6673,7 +6671,7 @@ void QMinuit::qmnset()
     goto L3000;
  //*-*-                                       . . . . . . . . . . set print
  L60:
-    mISW[4] = qint32(mWord7[0]);
+    mISW[4] = int(mWord7[0]);
     return;
  //*-*-                                       . . . . . . . . . . set nograd
  L70:
@@ -6705,12 +6703,12 @@ void QMinuit::qmnset()
     goto L3000;
  //*-*-                                       . . . . . . . . . . set width
  L110:
-    mNpagwd = qint32(mWord7[0]);
+    mNpagwd = int(mWord7[0]);
     mNpagwd = qMax(mNpagwd,50);
     return;
 
  L120:
-    mNpagln = qint32(mWord7[0]);
+    mNpagln = int(mWord7[0]);
     return;
  //*-*-                                       . . . . . . . . . . set nowarn
 
@@ -6724,7 +6722,7 @@ void QMinuit::qmnset()
     return;
  //*-*-                                       . . . . . . . . . . set random
  L150:
-    jseed = qint32(mWord7[0]);
+    jseed = int(mWord7[0]);
     val = 3;
     qmnrn15(val, jseed);
     if (mISW[4] > 0) {
@@ -6737,14 +6735,14 @@ void QMinuit::qmnset()
     goto L3000;
  //*-*-                                       . . . . . . . . . set strategy
  L170:
-    mIstrat = qint32(mWord7[0]);
+    mIstrat = int(mWord7[0]);
     mIstrat = qMax(mIstrat,0);
     mIstrat = qMin(mIstrat,2);
     if (mISW[4] > 0) goto L1172;
     return;
  //*-*-                                      . . . . . . . . . set page throw
  L190:
-    mNewpag = qint32(mWord7[0]);
+    mNewpag = int(mWord7[0]);
     goto L1190;
  //*-*-                                       . . . . . . . . . . set epsmac
  L210:
@@ -6755,7 +6753,7 @@ void QMinuit::qmnset()
     goto L1210;
  //*-*-                                      . . . . . . . . . . set outputfile
  L220:
-    iunit = qint32(mWord7[0]);
+    iunit = int(mWord7[0]);
     mIsyswr = iunit;
     mIstkwr[0] = iunit;
     if (mISW[4] >= 0) goto L1220;
@@ -6778,7 +6776,7 @@ void QMinuit::qmnset()
  L280:
     iset = 1;
  L281:
-    idbopt = qint32(mWord7[0]);
+    idbopt = int(mWord7[0]);
     if (idbopt > 6) goto L288;
     if (idbopt >= 0) {
        mIdbg[idbopt] = iset;
@@ -7052,8 +7050,8 @@ void QMinuit::qmnsimp()
     double dmin_, dxdi, yrho, f, ynpp1, aming, ypbar;
     double bestx, ystar, y1, y2, ystst, pb, wg;
     double absmin, rho, sig2, rho1, rho2;
-    qint32 npfn, i, j, k, jhold, ncycl, nparx;
-    qint32 nparp1, kg, jh, nf, jl, ns;
+    int npfn, i, j, k, jhold, ncycl, nparx;
+    int nparp1, kg, jh, nf, jl, ns;
 
     if (mNPar <= 0) return;
     if (mAmin == mUndefi) qmnamin();
@@ -7092,7 +7090,7 @@ void QMinuit::qmnsimp()
  L4:
        mX[i-1] = bestx + mDirin[i-1];
        qmninex(mX);
-       Eval(nparx, mGin, f, mU, 4);        ++mNfcn;
+       eval(nparx, mGin, f, mU, 4);        ++mNfcn;
        if (f <= aming) goto L6;
  //*-*-        failure
        if (kg == 1) goto L8;
@@ -7141,14 +7139,14 @@ void QMinuit::qmnsimp()
        mPstar[i-1] = (alpha + 1)*mPbar[i-1] - alpha*mP[i + jh*mMaxPar - mMaxPar-1];
     }
     qmninex(mPstar);
-    Eval(nparx, mGin, ystar, mU, 4);    ++mNfcn;
+    eval(nparx, mGin, ystar, mU, 4);    ++mNfcn;
     if (ystar >= mAmin) goto L70;
  //*-*-        point * better than jl, calculate new point **
     for (i = 1; i <= mNPar; ++i) {
        mPstst[i-1] = gamma*mPstar[i-1] + (1 - gamma)*mPbar[i-1];
     }
     qmninex(mPstst);
-    Eval(nparx, mGin, ystst, mU, 4);    ++mNfcn;
+    eval(nparx, mGin, ystst, mU, 4);    ++mNfcn;
  //*-*-        try a parabola through ph, pstar, pstst.  min = prho
     y1 = (ystar - mSIMPy[jh-1])*rho2;
     y2 = (ystst - mSIMPy[jh-1])*rho1;
@@ -7159,7 +7157,7 @@ void QMinuit::qmnsimp()
        mPrho[i-1] = rho*mPbar[i-1] + (1 - rho)*mP[i + jh*mMaxPar - mMaxPar-1];
     }
     qmninex(mPrho);
-    Eval(nparx, mGin, yrho, mU, 4);    ++mNfcn;
+    eval(nparx, mGin, yrho, mU, 4);    ++mNfcn;
     if (yrho  < mSIMPy[jl-1] && yrho < ystst) goto L65;
     if (ystst < mSIMPy[jl-1]) goto L67;
     if (yrho  > mSIMPy[jl-1]) goto L66;
@@ -7192,7 +7190,7 @@ void QMinuit::qmnsimp()
        mPstst[i-1] = beta*mP[i + jh*mMaxPar - mMaxPar-1] + (1 - beta)*mPbar[i-1];
     }
     qmninex(mPstst);
-    Eval(nparx, mGin, ystst, mU, 4);    ++mNfcn;
+    eval(nparx, mGin, ystst, mU, 4);    ++mNfcn;
     if (ystst > mSIMPy[jh-1]) goto L1;
  //*-*-    point ** is better than jh
     if (ystst < mAmin) goto L67;
@@ -7219,7 +7217,7 @@ void QMinuit::qmnsimp()
        mPbar[i-1] = pb - wg*mP[i + jh*mMaxPar - mMaxPar-1];
     }
     qmninex(mPbar);
-    Eval(nparx, mGin, ypbar, mU, 4);    ++mNfcn;
+    eval(nparx, mGin, ypbar, mU, 4);    ++mNfcn;
     if (ypbar < mAmin)         qmnrazz(ypbar, mPbar, mSIMPy, jh, jl);
     qmninex(mX);
     if (mNfcnmx + npfn - mNfcn < mNPar*3) goto L90;
@@ -7245,7 +7243,7 @@ void QMinuit::qmnsimp()
 ///*-*                    3= full accurate covariance matrix
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnstat(double &fmin, double &fedm, double &errdef, qint32 &npari, qint32 &nparx, qint32 &istat)
+void QMinuit::qmnstat(double &fmin, double &fedm, double &errdef, int &npari, int &nparx, int &istat)
 {
     fmin   = mAmin;
     fedm   = mEDM;
@@ -7281,7 +7279,7 @@ void QMinuit::qmntiny(volatile double epsp1, double &epsbak)
 
 bool QMinuit::qmnunpt(QString &cfname)
 {
-    qint32 i, l, ic;
+    int i, l, ic;
     bool ret_val;
     static QString cpt = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890./;:[]$%*_!@#&+()";
 
@@ -7306,14 +7304,14 @@ bool QMinuit::qmnunpt(QString &cfname)
 ///*-*        but no pivoting is done since matrix is positive-definite.
 ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-void QMinuit::qmnvert(double *a, qint32 l, qint32 /*m*/, qint32 n, qint32 &ifail)
+void QMinuit::qmnvert(double *a, int l, int /*m*/, int n, int &ifail)
 {
     /* System generated locals */
-    qint32 a_offset;
+    int a_offset;
 
     /* Local variables */
     double si;
-    qint32 i, j, k, kp1, km1;
+    int i, j, k, kp1, km1;
 
     /* Parameter adjustments */
     a_offset = l + 1;
@@ -7401,8 +7399,8 @@ void QMinuit::qmnwarn(const char *copt1, const char *corg1, const char *cmes1)
     QString corg = corg1;
     QString cmes = cmes1;
 
-    const qint32 kMAXMES = 10;
-    qint32 ityp, i, ic, nm;
+    const int kMAXMES = 10;
+    int ityp, i, ic, nm;
     QString englsh, ctyp;
 
     if (corg.left(3) != "SHO" || cmes.left(3) != "SHO") {
@@ -7476,7 +7474,7 @@ void QMinuit::qmnwarn(const char *copt1, const char *corg1, const char *cmes1)
 void QMinuit::qmnwerr()
 {
     double denom, ba, al, dx, du1, du2;
-    qint32 ndex, ierr, i, j, k, l, ndiag, k1, iin;
+    int ndex, ierr, i, j, k, l, ndiag, k1, iin;
 
  //*-*-                        calculate external error if v exists
     if (mISW[1] >= 1) {
@@ -7521,9 +7519,9 @@ void QMinuit::qmnwerr()
 ////////////////////////////////////////////////////////////////////////////////
 /// release a parameter
 
-qint32 QMinuit::release(qint32 parNo)
+int QMinuit::release(int parNo)
 {
-    qint32 err;
+    int err;
     double tmp[1];
     tmp[0] = parNo+1; //set internal Minuit numbering
 
@@ -7535,63 +7533,52 @@ qint32 QMinuit::release(qint32 parNo)
 ////////////////////////////////////////////////////////////////////////////////
 /// To get the n-sigma contour the error def parameter "up" has to set to n^2.
 
-qint32 QMinuit::setErrorDef(double up)
+int QMinuit::setErrorDef(double up)
 {
-    qint32 err;
+    int err;
 
     qmnexcm( "SET ERRDEF", &up, 1, err );
 
     return err;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-///*-*-*-*-*-*-*To set the address of the minimization function*-*-*-*-*-*-*-*
-///*-*          ===============================================
-///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-
-//void QMinuit::setFCN(void */*fcn*/)
-//{
-////    fFCN = fcn;
-//}
-
 //////////////////////////////////////////////////////////////////////////////////
 /////*-*-*-*-*-*-*Static function called when setFCN is called in interactive mode
 /////*-*          ===============================================
+void QMinuit::setFCN(void (*fcn)(int &, double *, double &, double *, int))
+{
+//    TMethodCall *m  = gMinuit->GetMethodCall();
+//    if (!m) return;
 
-//void QMinuit::setFCN(void /*(*fcn)(qint32 &, double *, double &, double *, int)*/)
-//{
-////    TMethodCall *m  = gMinuit->GetMethodCall();
-////    if (!m) return;
+//    long args[5];
+//    args[0] = (long)&npar;
+//    args[1] = (long)gin;
+//    args[2] = (long)&f;
+//    args[3] = (long)u;
+//    args[4] = (long)flag;
+//    m->SetParamPtrs(args);
+//    double result;
+//    m->Execute(result);
+    mFCN = fcn;
+}
 
-////    Long_t args[5];
-////    args[0] = (Long_t)&npar;
-////    args[1] = (Long_t)gin;
-////    args[2] = (Long_t)&f;
-////    args[3] = (Long_t)u;
-////    args[4] = (Long_t)flag;
-////    m->SetParamPtrs(args);
-////    Double_t result;
-////    m->Execute(result);
-//// }
-
-// ////////////////////////////////////////////////////////////////////////////////
-// ///*-*-*-*-*-*-*To set the address of the minimization function*-*-*-*-*-*-*-*
-// ///*-*          ===============================================
-// ///     this function is called by CINT instead of the function above
-// ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-
-// void QMinuit::setFCN(void *fcn)
-// {
+ ////////////////////////////////////////////////////////////////////////////////
+ ///*-*-*-*-*-*-*To set the address of the minimization function*-*-*-*-*-*-*-*
+ ///*-*          ===============================================
+ ///     this function is called by CINT instead of the function above
+ ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+void QMinuit::setFCN(void */*fcn*/)
+{
 //    if (!fcn) return;
-
-//    const char *funcname = gCling->Getp2f2funcname(fcn);
-//    if (funcname) {
-//       mMethodCall = new TMethodCall();
-//       mMethodCall->InitWithPrototype(funcname,"Int_t&,Double_t*,Double_t&,Double_t*,Int_t");
-//    }
-//    fFCN = InteractiveFCNm;
-    //    gMinuit = this; //required by InteractiveFCN
-//}
+//    mFCN = fcn;
+//    //    const char *funcname = gCling->Getp2f2funcname(fcn);
+//    //    if (funcname) {
+//    //       mMethodCall = new TMethodCall();
+//    //       mMethodCall->InitWithPrototype(funcname,"Int_t&,double*,double&,double*,Int_t");
+//    //    }
+//    //    mFCN = InteractiveFCNm;
+//    gMinuit = this; //required by InteractiveFCN
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ///set Minuit print level
@@ -7599,9 +7586,9 @@ qint32 QMinuit::setErrorDef(double up)
 ///            =  0  normal
 ///            =  1  verbose
 
-qint32 QMinuit::setPrintLevel(qint32 printLevel)
+int QMinuit::setPrintLevel(int printLevel)
 {
-    qint32    err;
+    int    err;
     double tmp[1];
     tmp[0] = printLevel;
 

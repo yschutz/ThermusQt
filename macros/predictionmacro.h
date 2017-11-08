@@ -10,10 +10,6 @@
 #include <QDebug>
 #include <QObject>
 
-#include "main/TTMParticleSet.h"
-#include "main/TTMParameterSetBSQ.h"
-#include "main/TTMThermalFitBSQ.h"
-
 #include "macros/macro.h"
 
 class ParaSel;

@@ -109,7 +109,9 @@ SOURCES += main.cpp\
     macroparasel.cpp \
     macros/macro.cpp \
     macros/fitmacro.cpp \
-    macros/predictionmacro.cpp
+    macros/predictionmacro.cpp \
+    functions/fit_function.cpp \
+    functions/minuit_fcn.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \

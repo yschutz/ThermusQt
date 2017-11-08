@@ -22,6 +22,11 @@ MacroParaSel::MacroParaSel(QWidget* parent) : QWizardPage(parent)
     // create an interactive window to set parameters for the macro
     setTitle("Macro parameters setting");
 
+    QPalette palette;
+    palette.setColor(QPalette::Base,Qt::white);
+    palette.setColor(QPalette::Text,Qt::green);
+
+
     // choice of model
     QGroupBox* modelBox  = new QGroupBox(tr("Model"));
     mRadBQ               = new QRadioButton(tr("Canonical (BQ)"));
@@ -39,6 +44,7 @@ MacroParaSel::MacroParaSel(QWidget* parent) : QWizardPage(parent)
     QHBoxLayout* eVoLayout = new QHBoxLayout();
     mExclVolBut            = new QCheckBox(tr("Exclusion volume on"));
     mExclVolLE             = new QLineEdit(QString::number(0.0));
+    mExclVolLE->setPalette(palette);
     eVoLayout->addWidget(mExclVolBut);
     eVoLayout->addWidget(mExclVolLE);
 
@@ -95,12 +101,22 @@ MacroParaSel::MacroParaSel(QWidget* parent) : QWizardPage(parent)
     dataBoxLayout->addLayout(radFilesLayout);
     dataBox->setLayout(dataBoxLayout);
 
+    // title
+    QGroupBox* titleBox  = new QGroupBox(tr("Enter an informative title"));
+    mTitle               = new QLineEdit(tr("centrality class - collision system  - other"));
+    mTitle->setReadOnly(false);
+    mTitle->setPalette(palette);
+    QVBoxLayout* titleBoxLayout = new QVBoxLayout();
+    titleBoxLayout->addWidget(mTitle);
+    titleBox->setLayout(titleBoxLayout);
+
     // main layout
     QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->addWidget(modelBox);
     mainLayout->addWidget(qstaBox);
     mainLayout->addWidget(fitBox);
     mainLayout->addWidget(dataBox);
+    mainLayout->addWidget(titleBox);
 
     setLayout(mainLayout);
 }

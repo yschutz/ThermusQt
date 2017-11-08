@@ -545,7 +545,7 @@ void MainWindow::particlesDBManagement(DBOPS option)
                 progress.setLabelText(QString("%1 particles DB (%2)").arg(soption, sourceName));
                 progress.setCancelButtonText("Cancel");
                 progress.setMinimum(0);
-                progress.setMaximum(200);
+                progress.setMaximum(400);
                 progress.setWindowModality(Qt::WindowModal);
                 progress.resize(progress.width() * 1.5, progress.height());
                 progress.show();

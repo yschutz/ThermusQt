@@ -15,6 +15,8 @@
 
 #include "external/particlesdbmanager.h"
 
+void fit_function(TTMThermalFit *fit, int flag = 0);
+
 //__________________________________________________________________________
 TTMThermalFit::TTMThermalFit(QObject *parent) : QObject(parent),
     mChiSquare(0.0), mMinuit(nullptr), mQuadDev(0.0)
@@ -47,6 +49,12 @@ void TTMThermalFit::addYield(TTMYield *yield)
 }
 
 //__________________________________________________________________________
+void TTMThermalFit::fitData(int flag)
+{
+    fit_function(this, flag);
+}
+
+//__________________________________________________________________________
 void TTMThermalFit::generateYields()
 {
     // Calculates the primordial particle densities of all particles in the
@@ -60,12 +68,11 @@ void TTMThermalFit::generateYields()
 
     TTMThermalModel* model = generateThermalModel();
     model->generateParticleDens();
+    double volume = model->getParameterSet()->getVolume();
     for (TTMYield* yield : mYields) {
-        double volume = model->getParameterSet()->getVolume();
         int id1       = yield->getID1();
         int id2       = yield->getID2();
         if (id2 == 0) { // Yield
-            //           model->SetParticleSet(yield->GetParticleSet1();
             if (id1 == 1) {
                 yield->setModelValue(model->getBaryon() * volume);
             } else if (id1 == 2) {
@@ -94,6 +101,7 @@ void TTMThermalFit::generateYields()
             } else {
                 model->generateDecayPartDens(id1);
                 TTMDensObj *partDens = model->getDensities(id1);
+//                qDebug() << Q_FUNC_INFO << ";" << partDens->getID() << ";" << partDens->getFinalDensity();
                 yield->setModelValue(partDens->getFinalDensity() * volume);
             }
         } else { // ratio
@@ -376,17 +384,47 @@ void TTMThermalFit::listYields() const
         onerow << new QStandardItem(yield->objectName());
         double value = yield->getExpValue();
         double error = yield->getExpError();
-        if (yield->isFitted()) {
-            QStandardItem* dash1Item = new QStandardItem();
-            dash1Item->setText("-");
-            dash1Item->setTextAlignment(Qt::AlignCenter);
-            onerow << dash1Item;
+//        if (yield->isFitted()) {
+//            QStandardItem* dash1Item = new QStandardItem();
+//            dash1Item->setText("-");
+//            dash1Item->setTextAlignment(Qt::AlignCenter);
+//            onerow << dash1Item;
 
-            QStandardItem* dash2Item = new QStandardItem();
-            dash2Item->setText("-");
-            dash2Item->setTextAlignment(Qt::AlignCenter);
-            onerow << dash2Item;
+//            QStandardItem* dash2Item = new QStandardItem();
+//            dash2Item->setText("-");
+//            dash2Item->setTextAlignment(Qt::AlignCenter);
+//            onerow << dash2Item;
 
+//            QStandardItem* valueItem = new QStandardItem();
+//            valueItem->setText(QString::number(value));
+//            valueItem->setTextAlignment(Qt::AlignRight);
+//            onerow << valueItem;
+
+//            QStandardItem* errorItem = new QStandardItem();
+//            errorItem->setText(QString("+/- %1").arg(error));
+//            errorItem->setTextAlignment(Qt::AlignRight);
+//            onerow << errorItem;
+
+//            QStandardItem* dash3Item = new QStandardItem();
+//            dash3Item->setText("-");
+//            dash3Item->setTextAlignment(Qt::AlignCenter);
+//            onerow << dash3Item;
+
+//            QStandardItem* dash4Item = new QStandardItem();
+//            dash4Item->setText("-");
+//            dash4Item->setTextAlignment(Qt::AlignCenter);
+//            onerow << dash4Item;
+
+//            QStandardItem* dash5Item = new QStandardItem();
+//            dash5Item->setText("-");
+//            dash5Item->setTextAlignment(Qt::AlignCenter);
+//            onerow << dash5Item;
+
+//            QStandardItem* dash6Item = new QStandardItem();
+//            dash6Item->setText("-");
+//            dash6Item->setTextAlignment(Qt::AlignCenter);
+//            onerow << dash6Item;
+//        } else {
             QStandardItem* valueItem = new QStandardItem();
             valueItem->setText(QString::number(value));
             valueItem->setTextAlignment(Qt::AlignRight);
@@ -397,36 +435,6 @@ void TTMThermalFit::listYields() const
             errorItem->setTextAlignment(Qt::AlignRight);
             onerow << errorItem;
 
-            QStandardItem* dash3Item = new QStandardItem();
-            dash3Item->setText("-");
-            dash3Item->setTextAlignment(Qt::AlignCenter);
-            onerow << dash3Item;
-
-            QStandardItem* dash4Item = new QStandardItem();
-            dash4Item->setText("-");
-            dash4Item->setTextAlignment(Qt::AlignCenter);
-            onerow << dash4Item;
-
-            QStandardItem* dash5Item = new QStandardItem();
-            dash5Item->setText("-");
-            dash5Item->setTextAlignment(Qt::AlignCenter);
-            onerow << dash5Item;
-
-            QStandardItem* dash6Item = new QStandardItem();
-            dash6Item->setText("-");
-            dash6Item->setTextAlignment(Qt::AlignCenter);
-            onerow << dash6Item;
-        } else {
-            QStandardItem* valueItem = new QStandardItem();
-            valueItem->setText(QString::number(value));
-            valueItem->setTextAlignment(Qt::AlignRight);
-            onerow << valueItem;
-
-            QStandardItem* errorItem = new QStandardItem();
-            errorItem->setText(QString("+/- %1").arg(error));
-            errorItem->setTextAlignment(Qt::AlignRight);
-            onerow << errorItem;
-
             QStandardItem* dash1Item = new QStandardItem();
             dash1Item->setText("-");
             dash1Item->setTextAlignment(Qt::AlignCenter);
@@ -436,7 +444,7 @@ void TTMThermalFit::listYields() const
             dash2Item->setText("-");
             dash2Item->setTextAlignment(Qt::AlignCenter);
             onerow << dash2Item;
-        }
+//        }
         value = yield->getModelValue();
         if (value != 0.) {
             error       = yield->getModelError();

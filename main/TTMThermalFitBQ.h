@@ -20,6 +20,7 @@ class TTMThermalFitBQ : public TTMThermalFit
 public:
     TTMThermalFitBQ(QObject* parent = nullptr);
 
+    TTMParameterSetBQ* getParameterSet() const { return mParm; }
 
 protected:
     bool               mNonStrangeQStats; // Quantum statistics applied or not

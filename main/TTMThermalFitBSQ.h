@@ -24,6 +24,7 @@ public:
     TTMThermalFitBSQ(TTMParameterSetBSQ* par, QString file, QObject* parent = nullptr);
     ~TTMThermalFitBSQ();
 
+    TTMThermalModel*    generateThermalModel();
     bool                getExclVol() const                       { return mExclVol; }
     TTMParameterSetBSQ* getParameterSet() const                  { return mParm; }
     bool                getQStats() const                        { return mQStats; }
@@ -34,8 +35,6 @@ public:
     void                setWidth(bool width)                     { mWidth   = width; }
 
 protected:
-    TTMThermalModel* generateThermalModel();
-
     bool                mExclVol;  // exclusion volume applied or not
     TTMThermalModelBSQ* mModel;    // the grand canonical model
     TTMParameterSetBSQ* mParm;     // the parameters set

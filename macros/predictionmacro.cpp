@@ -6,6 +6,7 @@
 #include "mainwindow.h"
 #include "predictionmacro.h"
 
+#include "main/TTMThermalFitBSQ.h"
 #include "main/TTMParticleSet.h"
 
 #include <QDebug>
@@ -103,3 +104,4 @@ void PredictionMacro::run() const
                    yield->getTMName() << ";" <<
                    yield->getModelValue();
 }
+

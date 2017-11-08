@@ -626,7 +626,7 @@ double ParaSel::getB2Q() const
         rv = 1.;
         break;
     case kpPb:
-        rv =  208. / (2. * 82.);
+        rv =  209. / (2. * 83.);
         break;
     default:
         break;

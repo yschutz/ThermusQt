@@ -55,6 +55,30 @@ void Macro::setFit()
         mFitInfo->setWidth(true);
     if (mMacroParaSel->isExclVol())
         mFitInfo->setExclVol(true);
+
+    QList<int> hyperons({3122, -3122, 3312, -3312, 3334, -3334});
+    QList<int> nuclei({1000010020, -1000010020, 1000020030, 1010010030, -1010010030});
+    QList<int> proton({2212, -2212});
+    QList<int> resonances({313, 333, 3124});
+
+    if (mMacroParaSel->isYields()) {
+        if (!mMacroParaSel->isNucleiFitted()) {
+            for (int id : nuclei)
+               mFitInfo->getYield(id,  0, "ALICE")->predict();
+        }
+        if (!mMacroParaSel->isHyperonsFitted()) {
+            for (int id : hyperons)
+               mFitInfo->getYield(id,  0, "ALICE")->predict();
+        }
+        if (!mMacroParaSel->isProtonFitted()) {
+            for (int id : proton)
+               mFitInfo->getYield(id,  0, "ALICE")->predict();
+        }
+        if (!mMacroParaSel->isResonancesFitted()) {
+            for (int id : resonances)
+               mFitInfo->getYield(id,  0, "ALICE")->predict();
+        }
+    }
 }
 
 //__________________________________________________________________________
@@ -136,6 +160,5 @@ void Macro::start(bool debug)
     QTime time = start.time();
 
     QString info = QString(" *** Start at Date : %1 Time : %2").arg(date.toString("dd MMMM yyyy")).arg(time.toString());
-    if (isDebug())
-        qDebug() << info;
+    qInfo() << info;
 }

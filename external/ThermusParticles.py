@@ -55,6 +55,12 @@ def normDecay(decays):
 #=======================================================================
 def countDecays(name):
 	filename = os.environ['PARTDIR'] + name + "_decay.txt"
+	index = filename.find('*')
+	if index != -1:
+		tempo = list(filename)
+		tempo[index] = '_'
+		filename = "".join(tempo) 
+
 	if (os.path.isfile(filename)):
 		f = open(filename, 'r')
 	else: 
@@ -67,6 +73,12 @@ def countDecays(name):
 #=======================================================================
 def makeDecays(thermusName, part):
 	filename = os.environ['PARTDIR'] + thermusName + "_decay.txt"
+	index = filename.find('*')
+	if index != -1:
+		tempo = list(filename)
+		tempo[index] = '_'
+		filename = "".join(tempo) 
+
 	if (os.path.isfile(filename)):
 		f = open(filename, 'r')
 	else: 

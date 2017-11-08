@@ -14,6 +14,7 @@ public:
 
     QString dataFileName() const;
     double  getExclVol() const         { return mExclVolLE->text().toDouble(); }
+    QString getTitle() const           { return mTitle->text(); }
     bool    isExclVol() const          { return mExclVolBut->isChecked(); }
     bool    isHyperonsFitted() const   { return mFitHyperons->isChecked(); }
     bool    isNucleiFitted() const     { return mFitNuclei->isChecked(); }
@@ -45,6 +46,7 @@ private:
     QRadioButton*        mRadBQ;        // radio button to select canonical model
     QRadioButton*        mRadBSQ;       // radio button to select grand canonical model
     QList<QRadioButton*> mRadFiles;     // radio button to switch on Q stat and resonance width
+    QLineEdit*           mTitle;        // a title for the fit
     QCheckBox*           mWidthBut;     // check button to switch on resonance width
     QCheckBox*           mYieldRatio;   // data is yields or ratios
 };
