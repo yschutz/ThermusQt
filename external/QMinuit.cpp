@@ -2317,11 +2317,11 @@ void QMinuit::qmnexcm(const char *command, double *plist, int llist, int &ierflg
             lnow = llist;
             if (lnow > 4) lnow = 4;
             qInfo() << " **********";
-            ctemp = QString(" **%1 **%2").arg(mIcomnd).arg(mCword);
+            ctemp = QString(" **   %1 **%2").arg(mIcomnd).arg(mCword);
 //            ctemp.Form(" **%5d **%s",mIcomnd,(const char*)mCword);
             for (i = 1; i <= lnow; ++i) {
 //                ctemp += QString::Format("%12.4g",plist[i-1]);
-                ctemp += QString("%s").arg(plist[i-1]);
+                ctemp += QString("   %1").arg(plist[i-1]);
             }
             qInfo() << ctemp;
             inonde = 0;
@@ -5320,13 +5320,24 @@ void QMinuit::qmNParm(int k1, QString cnamj, double uk, double wk, double a, dou
  //*-*-                                     . . .printheading
     if (mLphead && mISW[4] >= 0) {
        qInfo() << " PARAMETER DEFINITIONS:";
-       qInfo() << "    NO.   NAME         VALUE      STEP SIZE      LIMITS";
+       QString pr = QString("%1 %2 %3 %4 %5 %6").arg("No.", -3).
+               arg("NAME", -20).
+               arg("VALUE", -10).
+               arg("STEP",  -10).
+               arg("SIZE",  -10).
+               arg("LIMITS", -20);
+       qInfo() << pr;
+
        mLphead = false;
     }
     if (wk > 0) goto L122;
  //*-*-                                       . . .constant parameter . . . .
     if (mISW[4] >= 0) {
-       qInfo() << k << cnamk << uk << "constant";
+        QString pr = QString("%1 %2 %3 %4 %5 %6").arg(k, 3).
+                arg(cnamk, -20).
+                arg(uk, 10, 'e', 5).
+                arg("constant", 30);
+        qInfo() << pr;
     }
     nvl = 0;
     goto L200;
@@ -5335,14 +5346,25 @@ void QMinuit::qmNParm(int k1, QString cnamj, double uk, double wk, double a, dou
  //*-*-                                     variable parameter without limits
        nvl = 1;
        if (mISW[4] >= 0) {
-          qInfo() << k << cnamk << uk << wk << "     no limits";
+           QString pr = QString("%1 %2 %3 %4 %5 %6").arg(k, 3).
+                   arg(cnamk, -20).
+                   arg(uk, 10, 'e', 5).
+                   arg(wk, 10, 'e', 5).
+                   arg("no limits", 20);
+           qInfo() << pr;
        }
     } else {
  //*-*-                                        variable parameter with limits
        nvl = 4;
        mLnolim = false;
        if (mISW[4] >= 0) {
-          qInfo() << k << cnamk << uk << wk << a << b;
+           QString pr = QString("%1 %2 %3 %4 %5 %6").arg(k, 3).
+                   arg(cnamk, -20).
+                   arg(uk, 10, 'e', 5).
+                   arg(wk, 10, 'e', 5).
+                   arg(a, 10, 'e', 5).
+                   arg(b, 10, 'e', 5);
+           qInfo() << pr;
        }
     }
  //*-*-                            . . request for another variable parameter

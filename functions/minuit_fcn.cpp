@@ -13,7 +13,6 @@ extern bool           gQDev;                 // true if quad deviation fit
 //__________________________________________________________________________
 void Minuit_fcn(int & /*npar*/, double * /*gin*/, double & f, double * par, int /*iflag*/)
 {
-
     // Change fit parameters //
 
     //  int imax = 0;
@@ -45,28 +44,32 @@ void Minuit_fcn(int & /*npar*/, double * /*gin*/, double & f, double * par, int 
 
     for (int i = TTMParameterSet::kT; i < TTMParameterSet::kPARTYPES; i++) {
         TTMParameter* current = (gFit->getParameterSet())->getParameter(static_cast<TTMParameterSet::ParameterType>(i));
-        qInfo() << current->objectName() << current->getValue() << current->getStatus();
+        QString pr = QString("%1 = %2 %3").arg(current->objectName(), 20).
+                arg(current->getValue(), 10, 'e', 5).
+                arg(current->getStatus(), 20);
+        qInfo() << pr;
     }
-    qInfo() << (gFit->getParameterSet())->getConstraintInfo();
+    qInfo() << QString("%1").arg(gFit->getParameterSet()->getConstraintInfo(), 40);
     qInfo() <<"  ******************************************************************************";
     // *** //
 
-    qInfo() <<"  **********************";
+    QString pr("********************** ");
     if (gChi) {
         f = gFit->getChiSquare();
-        qInfo() << "ChiSquare = " << f;
+        pr = pr + QString("ChiSquare = %1").arg(f, 10, 'g', 7);
     } else if (gQDev) {
         f = gFit->getQuadDev();
-        qInfo() << "Quad Dev  = " << f;
+        pr = pr + QString("Quad Dev  = %1").arg(f, 10, 'g', 7);
     }
-    qInfo() <<"  **********************";
+    pr = pr + " **********************";
+    qInfo() << pr;
 
     TTMThermalModel *model = gFit->generateThermalModel();
     model->generateParticleDens();
-    qInfo() << "\t\t S/V \t  = \t" << model->getStrange();
-    qInfo() << "\t\t B/2Q \t = \t" << model->getBaryon() / 2. / model->getCharge();
-    qInfo() << "\t\t C/V \t  = \t" << model->getCharm();
-    qInfo() << "\t\t b/V \t  = \t" << model->getBeauty();
+    qInfo() << QString("     S/V  = %1").arg(model->getStrange(), 12, 'e', 6);
+    qInfo() << QString("    B/2Q  = %1").arg(model->getBaryon() / 2. / model->getCharge(), 12, 'e', 6);
+    qInfo() << QString("     C/V  = %1").arg(model->getCharm(), 12, 'e', 6);
+    qInfo() << QString("     b/V  = %1").arg(model->getBeauty(), 12, 'e', 6);
 
     // Check for minimum and display //
 
@@ -75,9 +78,12 @@ void Minuit_fcn(int & /*npar*/, double * /*gin*/, double & f, double * par, int 
         qInfo() << "\t New Minimum!";
         for (int i = TTMParameterSet::kT; i < TTMParameterSet::kPARTYPES; i++) {
             TTMParameter* current = (gFit->getParameterSet())->getParameter(static_cast<TTMParameterSet::ParameterType>(i));
-            qInfo() << current->objectName() << current->getValue() << current->getStatus();
+            QString pr = QString("%1 = %2 %3").arg(current->objectName(), 20).
+                    arg(current->getValue(), 10, 'e', 5).
+                    arg(current->getStatus(), 20);
+            qInfo() << pr;
         }
-        qInfo() << (gFit->getParameterSet())->getConstraintInfo();
+        qInfo() << QString("%1").arg(gFit->getParameterSet()->getConstraintInfo(), 40);
         qInfo() <<"  ******************************************************************************";
         gFit->listYields();
     } else {

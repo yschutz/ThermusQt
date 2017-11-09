@@ -5,6 +5,8 @@
 #include "main/TTMParameterSet.h"
 #include "main/TTMThermalFit.h"
 
+#include <QDebug>
+
 TTMThermalFit* gFit;
 int            gFitParameters;        // number of fit parameters
 double         gMinF = 10000000.;     // minimum chi-square or quad-deviation
@@ -84,46 +86,46 @@ void fit_function(TTMThermalFit * fit, int flag = 0)
      // lMinuit->mnexcm("MIGRAD", &temp, 0, error_flag);
      // (uses defaults)
 
-     double arglist[10];
+     double arglist[10] = {0.0};
      arglist[0] = 15000;
      arglist[1] = 1;
 
      lMinuit->qmnexcm("MIGRAD", arglist, 2, error_flag);
-     // ************************************************ //
+//     // ************************************************ //
 
-      // Return the current status of the minimization
-      // Check icstat for state of covariance matrix
+//      // Return the current status of the minimization
+//      // Check icstat for state of covariance matrix
 
-      double amin, edm, errdef;
-      int nvpar, nparx, icstat;
-      lMinuit->qmnstat(amin, edm, errdef, nvpar, nparx, icstat);
+//      double amin, edm, errdef;
+//      int nvpar, nparx, icstat;
+//      lMinuit->qmnstat(amin, edm, errdef, nvpar, nparx, icstat);
 
-      // ************************************************ //
+//      // ************************************************ //
 
-      // Outputs the results depending on the first flag
+//      // Outputs the results depending on the first flag
 
-      lMinuit->qmnprin(1, amin);
+//      lMinuit->qmnprin(1, amin);
 
-      // ************************************************ //
-      // ************************************************ //
+//      // ************************************************ //
+//      // ************************************************ //
 
-      // Now after fit update parameter set with best-fit //
-      // values, re-calculate densities and display       //
+//      // Now after fit update parameter set with best-fit //
+//      // values, re-calculate densities and display       //
 
-      int kk = 0;
+//      int kk = 0;
 
-      for (int i = TTMParameterSet::kT; i < TTMParameterSet::kPARTYPES; i++) {
-        TTMParameter* current = (gFit->getParameterSet())->getParameter(static_cast<TTMParameterSet::ParameterType>(i));
-        if (current->getFlag() == 0) {
-          double val, error;
-          lMinuit->getParameter(kk, val, error);
-          current->setValue(val);
-          current->setError(error);
-          current->setStatus("(FITTED!)");
-          kk++;
-        }
-      }
+//      for (int i = TTMParameterSet::kT; i < TTMParameterSet::kPARTYPES; i++) {
+//        TTMParameter* current = (gFit->getParameterSet())->getParameter(static_cast<TTMParameterSet::ParameterType>(i));
+//        if (current->getFlag() == 0) {
+//          double val, error;
+//          lMinuit->getParameter(kk, val, error);
+//          current->setValue(val);
+//          current->setError(error);
+//          current->setStatus("(FITTED!)");
+//          kk++;
+//        }
+//      }
 
-      gFit->generateYields();
-      gFit->setMinuit(lMinuit);
+//      gFit->generateYields();
+//      gFit->setMinuit(lMinuit);
 }
