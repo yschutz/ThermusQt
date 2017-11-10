@@ -86,7 +86,7 @@ void FitMacro::run() const
     qInfo() << "******* Fitting:" << mMacroParaSel->getTitle() << "******* ";
 
     mFitInfo->generateYields();
-    mFitInfo->listYields();
+//    mFitInfo->listYields();
 //    for (TTMYield* yield : mFitInfo->getYields())
 //        qInfo() << Q_FUNC_INFO << "; PREDICTION: ;" <<
 //                   yield->getID1() << ";" <<
@@ -94,6 +94,7 @@ void FitMacro::run() const
 //                   yield->getTMName() << ";" <<
 //                   yield->getModelValue();
     mFitInfo->fitData(0);
+    mFitInfo->listYields();
 }
 
 //__________________________________________________________________________

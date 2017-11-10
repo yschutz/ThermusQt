@@ -16,7 +16,7 @@ void broyden(gsl_vector* x, size_t ndim, int& status, PARAMETERS p, int (*myfunc
     function.params = &p;
 
     const gsl_multiroot_fsolver_type *T;
-    T = gsl_multiroot_fsolver_broyden;
+    T = gsl_multiroot_fsolver_hybrid;
 
 
 
@@ -32,10 +32,9 @@ void broyden(gsl_vector* x, size_t ndim, int& status, PARAMETERS p, int (*myfunc
         if (status)   /* check if solver is stuck */
             break;
         status = gsl_multiroot_test_residual (s->f, 1e-7);
+        for (size_t i = 0; i < ndim; i++)
+           gsl_vector_set(x, i, gsl_vector_get(s->x, i));
     } while (status == GSL_CONTINUE && iter < 10);
-
-    for (size_t i = 0; i < ndim; i++)
-       gsl_vector_set(x, i, gsl_vector_get(s->x, i));
 
     gsl_multiroot_fsolver_free (s);
 }

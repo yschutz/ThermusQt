@@ -24,7 +24,7 @@ public slots:
     void accept();
 
 private:
-    QEventLoop  mLoop;            // waiting for done button to be pushed
+    QEventLoop  mLoop;         // waiting for done button to be pushed
     int      mParaSelId;       // Id of the parameter selection page
     int      mMacrooParaSelId; // Id of the parameter selection page
     int      mSummaryId;       // Id of the summary page

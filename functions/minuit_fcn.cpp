@@ -85,7 +85,7 @@ void Minuit_fcn(int & /*npar*/, double * /*gin*/, double & f, double * par, int 
         }
         qInfo() << QString("%1").arg(gFit->getParameterSet()->getConstraintInfo(), 40);
         qInfo() <<"  ******************************************************************************";
-        gFit->listYields();
+        gFit->listYields(true);
     } else {
         qInfo() <<"  ******************************************************************************";
     }

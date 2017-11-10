@@ -6,12 +6,11 @@
 #include "main/TTMThermalModelBSQ.h"
 
 #include <QMessageBox>
-
+#include <QDebug>
 //__________________________________________________________________________
 int BSQfuncQ(const gsl_vector* x, void* p, gsl_vector* f)
 {
     int rv = 0;
-
     TTMThermalModelBSQ* model = ((PARAMETERSS *)p)->p0;
     (model->getParameterSet())->getParameter(TTMParameterSet::kMUQ)->setValue(gsl_vector_get(x, 0));
 

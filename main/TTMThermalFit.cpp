@@ -363,10 +363,9 @@ void TTMThermalFit::listMinuitInfo() const
 }
 
 //__________________________________________________________________________
-void TTMThermalFit::listYields() const
+void TTMThermalFit::listYields(bool debug) const
 {
     // Lists the experimental values and model predictions
-
     QStandardItemModel* model = new QStandardItemModel();
     QStringList header;
     header.append("Name");
@@ -381,50 +380,16 @@ void TTMThermalFit::listYields() const
     model->setHorizontalHeaderLabels(header);
     for (TTMYield* yield : mYields) {
         QList<QStandardItem*> onerow;
-        onerow << new QStandardItem(yield->objectName());
-        double value = yield->getExpValue();
-        double error = yield->getExpError();
-//        if (yield->isFitted()) {
-//            QStandardItem* dash1Item = new QStandardItem();
-//            dash1Item->setText("-");
-//            dash1Item->setTextAlignment(Qt::AlignCenter);
-//            onerow << dash1Item;
-
-//            QStandardItem* dash2Item = new QStandardItem();
-//            dash2Item->setText("-");
-//            dash2Item->setTextAlignment(Qt::AlignCenter);
-//            onerow << dash2Item;
-
-//            QStandardItem* valueItem = new QStandardItem();
-//            valueItem->setText(QString::number(value));
-//            valueItem->setTextAlignment(Qt::AlignRight);
-//            onerow << valueItem;
-
-//            QStandardItem* errorItem = new QStandardItem();
-//            errorItem->setText(QString("+/- %1").arg(error));
-//            errorItem->setTextAlignment(Qt::AlignRight);
-//            onerow << errorItem;
-
-//            QStandardItem* dash3Item = new QStandardItem();
-//            dash3Item->setText("-");
-//            dash3Item->setTextAlignment(Qt::AlignCenter);
-//            onerow << dash3Item;
-
-//            QStandardItem* dash4Item = new QStandardItem();
-//            dash4Item->setText("-");
-//            dash4Item->setTextAlignment(Qt::AlignCenter);
-//            onerow << dash4Item;
-
-//            QStandardItem* dash5Item = new QStandardItem();
-//            dash5Item->setText("-");
-//            dash5Item->setTextAlignment(Qt::AlignCenter);
-//            onerow << dash5Item;
-
-//            QStandardItem* dash6Item = new QStandardItem();
-//            dash6Item->setText("-");
-//            dash6Item->setTextAlignment(Qt::AlignCenter);
-//            onerow << dash6Item;
-//        } else {
+        QString name  = yield->objectName();
+        double  value = yield->getExpValue();
+        double  error = yield->getExpError();
+        if (debug) {
+            qInfo() << QString("%1").arg(name, 20);
+            qInfo() << QString("%1: %2 +/- %3").arg("experiment", 30).
+                       arg(value, 12, 'e', 6).
+                       arg(error, 12, 'e', 6);
+        } else {
+            onerow << new QStandardItem(yield->objectName());
             QStandardItem* valueItem = new QStandardItem();
             valueItem->setText(QString::number(value));
             valueItem->setTextAlignment(Qt::AlignRight);
@@ -444,31 +409,40 @@ void TTMThermalFit::listYields() const
             dash2Item->setText("-");
             dash2Item->setTextAlignment(Qt::AlignCenter);
             onerow << dash2Item;
-//        }
+        }
         value = yield->getModelValue();
         if (value != 0.) {
             error       = yield->getModelError();
             double std  = yield->getStdDev();
             double quad = yield->getQuadDev();
-            QStandardItem* valueItem = new QStandardItem();
-            valueItem->setText(QString::number(value));
-            valueItem->setTextAlignment(Qt::AlignRight);
-            onerow << valueItem;
+            if (debug) {
+                qInfo() << QString("%1: %2 +/- %3").arg("model", 30).
+                           arg(value, 12, 'e', 6).
+                           arg(error, 12, 'e', 6);
+                qInfo() << QString("%1: %2  %3: %4").arg("Std.Dev.", 30).arg(std, 5).
+                           arg("Quad.Dev", 30).arg(quad, 5);
+                return;
+            } else {
+                QStandardItem* valueItem = new QStandardItem();
+                valueItem->setText(QString::number(value));
+                valueItem->setTextAlignment(Qt::AlignRight);
+                onerow << valueItem;
 
-            QStandardItem* errorItem = new QStandardItem();
-            errorItem->setText(QString("+/- %1").arg(error));
-            errorItem->setTextAlignment(Qt::AlignRight);
-            onerow << errorItem;
+                QStandardItem* errorItem = new QStandardItem();
+                errorItem->setText(QString("+/- %1").arg(error));
+                errorItem->setTextAlignment(Qt::AlignRight);
+                onerow << errorItem;
 
-            QStandardItem* stdItem = new QStandardItem();
-            stdItem->setText(QString::number(std));
-            stdItem->setTextAlignment(Qt::AlignRight);
-            onerow << stdItem;
+                QStandardItem* stdItem = new QStandardItem();
+                stdItem->setText(QString::number(std));
+                stdItem->setTextAlignment(Qt::AlignRight);
+                onerow << stdItem;
 
-            QStandardItem* quadItem = new QStandardItem();
-            quadItem->setText(QString::number(quad));
-            quadItem->setTextAlignment(Qt::AlignRight);
-            onerow << quadItem;
+                QStandardItem* quadItem = new QStandardItem();
+                quadItem->setText(QString::number(quad));
+                quadItem->setTextAlignment(Qt::AlignRight);
+                onerow << quadItem;
+            }
         } else {
             QStandardItem* dash1Item = new QStandardItem();
             dash1Item->setText("-");

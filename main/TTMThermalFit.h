@@ -41,7 +41,7 @@ public:
     QList<TTMYield*>         getYields() const { return mYields; }
     void                     inputExpYields(QString &fileName);
     void                     listMinuitInfo() const;
-    void                     listYields() const;
+    void                     listYields(bool debug = false) const;
     void                     removeYield(int id1, int id2, const QString& descr);
     void                     setMinuit(QMinuit* minuit)                               { mMinuit = minuit; }
 

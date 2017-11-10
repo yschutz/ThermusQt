@@ -68,7 +68,7 @@ void fit_function(TTMThermalFit * fit, int flag = 0)
     }
     // List Experimental Yields //
 
-     gFit->listYields();
+     gFit->listYields(true);
 
      // ************************************************ //
      // ************************************************ //

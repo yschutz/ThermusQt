@@ -63,12 +63,12 @@ void ThermusWiz::cleanupPage(int /*id*/)
 }
 
 //__________________________________________________________________________
-void ThermusWiz::initializePage(int id)
+void ThermusWiz::initializePage(int /*id*/)
 {
     // called when the next button is hit
 
     //Summary * summary = (Summary*)page(mSummaryId);
-    MacroParaSel* macropara = (MacroParaSel*)page(mMacrooParaSelId);
+    //MacroParaSel* macropara = (MacroParaSel*)page(mMacrooParaSelId);
 
     //    if (id - 1 == mDialogId) {
     //        FileSel * file = qobject_cast<FileSel*>(page(mDialogId));

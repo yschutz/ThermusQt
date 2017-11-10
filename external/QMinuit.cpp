@@ -6059,8 +6059,14 @@ void QMinuit::qmnprin(int inkode, double fval)
        if (mISW[1] < 3) colhdu[0] = "  APPROXIMATE ";
        if (mISW[1] < 1) colhdu[0] = " CURRENT GUESS";
     }
-    qInfo() << "  EXT PARAMETER              " << colhdu[0] << colhdu[1] << colhdu[2];
-    qInfo() << "  NO.   NAME      VALUE      " << colhdl[0] << colhdl[1] << colhdl[2];
+    QString pr = QString("%1 %2 %3 %4 %5 %6").arg("EXT", 3).
+            arg("PARAMETER", 20).arg("", 20).arg(colhdu[0], 20).arg(colhdu[1], 20).arg(colhdu[2], 20);
+    qInfo() << pr;
+    pr = QString("%1 %2 %3 %4 %5 %6").arg("NO.", 3).
+            arg("NAME", 20).arg("VALUE", 20).arg(colhdl[0], 20).arg(colhdl[1], 20).arg(colhdl[2], 20);
+    qInfo() << pr;
+//    qInfo() << "  EXT PARAMETER              " << colhdu[0] << colhdu[1] << colhdu[2];
+//    qInfo() << "  NO.   NAME      VALUE      " << colhdl[0] << colhdl[1] << colhdl[2];
  //*-*-                                       . . . loop over parameters . .
     for (i = 1; i <= mNu; ++i) {
        if (mNvarl[i-1] < 0) continue;
@@ -6101,7 +6107,10 @@ void QMinuit::qmnprin(int inkode, double fval)
        }
        if (cx2 == "PLEASE GET X..")  cx2 = QString("%1").arg(x2);
        if (cx3 == "PLEASE GET X..")  cx3 = QString("%1").arg(x3);
-       qInfo() << i << cnambf << mU[i-1] << x1 << cx2 << cx3;
+       pr = QString("%1 %2 %3 %4 %5 %6").arg(i, 3).
+               arg(cnambf, 20).arg(mU[i-1], 20).arg(x1, 20).arg(cx2, 20).arg(cx3, 20);
+       qInfo() << pr;
+//       qInfo() << i << cnambf << mU[i-1] << x1 << cx2 << cx3;
 
  //*-*-              check if parameter is at limit
        if (mNvarl[i-1] <= 1 || ikode == 3) continue;
