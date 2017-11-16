@@ -1,6 +1,7 @@
 #include "main/TTMParameterSet.h"
 #include "main/TTMThermalFit.h"
 #include "main/TTMThermalModel.h"
+#include "mainwindow.h"
 
 #include <QDebug>
 
@@ -38,7 +39,7 @@ void Minuit_fcn(int & /*npar*/, double * /*gin*/, double & f, double * par, int 
 
     gFit->generateYields();
 
-    qInfo() <<"  *********************************** FITTING **********************************";
+    MainWindow::verbosePrint("  *********************************** FITTING **********************************");
 
     // *** //
 
@@ -47,10 +48,10 @@ void Minuit_fcn(int & /*npar*/, double * /*gin*/, double & f, double * par, int 
         QString pr = QString("%1 = %2 %3").arg(current->objectName(), 20).
                 arg(current->getValue(), 10, 'e', 5).
                 arg(current->getStatus(), 20);
-        qInfo() << pr;
+        MainWindow::verbosePrint(pr);
     }
-    qInfo() << QString("%1").arg(gFit->getParameterSet()->getConstraintInfo(), 40);
-    qInfo() <<"  ******************************************************************************";
+    MainWindow::verbosePrint(QString("%1").arg(gFit->getParameterSet()->getConstraintInfo(), 40));
+    MainWindow::verbosePrint("  ******************************************************************************");
     // *** //
 
     QString pr("********************** ");
@@ -62,31 +63,32 @@ void Minuit_fcn(int & /*npar*/, double * /*gin*/, double & f, double * par, int 
         pr = pr + QString("Quad Dev  = %1").arg(f, 10, 'g', 7);
     }
     pr = pr + " **********************";
-    qInfo() << pr;
+    MainWindow::verbosePrint(pr);
 
     TTMThermalModel *model = gFit->generateThermalModel();
     model->generateParticleDens();
-    qInfo() << QString("     S/V  = %1").arg(model->getStrange(), 12, 'e', 6);
-    qInfo() << QString("    B/2Q  = %1").arg(model->getBaryon() / 2. / model->getCharge(), 12, 'e', 6);
-    qInfo() << QString("     C/V  = %1").arg(model->getCharm(), 12, 'e', 6);
-    qInfo() << QString("     b/V  = %1").arg(model->getBeauty(), 12, 'e', 6);
-
+    //    if (MainWindow::isVerbose()) {
+    MainWindow::verbosePrint(QString("     S/V  = %1").arg(model->getStrange(), 12, 'e', 6));
+    MainWindow::verbosePrint(QString("    B/2Q  = %1").arg(model->getBaryon() / 2. / model->getCharge(), 12, 'e', 6));
+    MainWindow::verbosePrint(QString("     C/V  = %1").arg(model->getCharm(), 12, 'e', 6));
+    MainWindow::verbosePrint(QString("     b/V  = %1").arg(model->getBeauty(), 12, 'e', 6));
+    //    }
     // Check for minimum and display //
 
     if (f < gMinF) {
         gMinF = f;
-        qInfo() << "\t New Minimum!";
+        MainWindow::verbosePrint("\t New Minimum!");
         for (int i = TTMParameterSet::kT; i < TTMParameterSet::kPARTYPES; i++) {
             TTMParameter* current = (gFit->getParameterSet())->getParameter(static_cast<TTMParameterSet::ParameterType>(i));
             QString pr = QString("%1 = %2 %3").arg(current->objectName(), 20).
                     arg(current->getValue(), 10, 'e', 5).
                     arg(current->getStatus(), 20);
-            qInfo() << pr;
+            MainWindow::verbosePrint(pr);
         }
-        qInfo() << QString("%1").arg(gFit->getParameterSet()->getConstraintInfo(), 40);
-        qInfo() <<"  ******************************************************************************";
-        gFit->listYields(true);
-    } else {
-        qInfo() <<"  ******************************************************************************";
-    }
+        MainWindow::verbosePrint(QString("%1").arg(gFit->getParameterSet()->getConstraintInfo(), 40));
+        MainWindow::verbosePrint("  ******************************************************************************");
+        if (MainWindow::isVerbose())
+            gFit->listYields(true);
+    } else
+        MainWindow::verbosePrint("  ******************************************************************************");
 }

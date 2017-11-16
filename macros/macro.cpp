@@ -13,12 +13,15 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QMessageBox>
+#include <QTimer>
 
 //__________________________________________________________________________
 Macro::Macro(QObject *parent) : QObject(parent),
    mFitInfo(nullptr), mMacroParaSel(nullptr), mParaInfo(nullptr), mParaSel(nullptr)
 {
     // ctor
+    mTimer = new QTimer(this);
+    connect(mTimer, SIGNAL(timeout()), this, SLOT(timeout()));
 }
 
 //__________________________________________________________________________

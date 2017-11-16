@@ -9,6 +9,7 @@
 
 #include <QObject>
 
+class FittingThread;
 class FitMacro : public Macro
 {
     Q_OBJECT
@@ -17,16 +18,19 @@ public:
 
     void                setDefaultParameters();
     void                setMacroDefaultParameters();
-    void                run() const;
+    void                run();
+
+public slots:
+    void wrapUp();
+    void timeout();
 
 private:
     FitMacro(QObject* parent = nullptr);
     ~FitMacro();
     FitMacro (const FitMacro&) {;}
 
+    FittingThread*  mFT;               // the thread where the fitting process is running
     static FitMacro mInstance;         // unique instance of the object
-
-
 };
 
 #endif // FITMACRO_H

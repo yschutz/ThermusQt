@@ -22,9 +22,12 @@ public:
     static      PredictionMacro& instance();
 
     TTMParameterSet*    getParametersSet() const  { return mParaInfo; }
-    void                run() const;
+    void                run();
     void                setDefaultParameters();
     void                setMacroDefaultParameters();
+
+public slots:
+    void timeout() {;}
 
 private:
     PredictionMacro(QObject* parent = nullptr);

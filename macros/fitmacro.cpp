@@ -2,7 +2,11 @@
 //
 // The steering class to run a thermus fit (aka ROOT macro)
 
+#include <QMessageBox>
+#include <QTimer>
+
 #include "fitmacro.h"
+#include "fittingthread.h"
 #include "macroparasel.h"
 #include "main/TTMThermalFitBSQ.h"
 
@@ -81,7 +85,7 @@ void FitMacro::setMacroDefaultParameters()
 }
 
 //__________________________________________________________________________
-void FitMacro::run() const
+void FitMacro::run()
 {
     qInfo() << "******* Fitting:" << mMacroParaSel->getTitle() << "******* ";
 
@@ -93,12 +97,46 @@ void FitMacro::run() const
 //                   yield->getID2() << ";" <<
 //                   yield->getTMName() << ";" <<
 //                   yield->getModelValue();
-    mFitInfo->fitData(0);
-    mFitInfo->listYields();
+    mFT = new FittingThread(mFitInfo);
+    connect(mFT, &FittingThread::resultReady, this, [this]{wrapUp();});
+    mBusy = new QMessageBox(QMessageBox::Information, Q_FUNC_INFO, "FIT");
+    mBusy->setAttribute(Qt::WA_DeleteOnClose);
+    mBusy->setText(QString("%1: is fitting").arg(Q_FUNC_INFO));
+    mBusy->setStandardButtons(QMessageBox::Abort);
+    mBusy->setInformativeText("Busy");
+    mTimer->start(2500);
+    int ret = mBusy->exec();
+    switch (ret) {
+    case QMessageBox::Abort:
+        mFT->blockSignals(true);
+        mFT->terminate();
+        mTimer->stop();
+        break;
+    default:
+        break;
+    }
+    mFT->start();
 }
 
 //__________________________________________________________________________
-FitMacro::FitMacro(QObject* parent) : Macro(parent)
+void FitMacro::wrapUp()
+{
+    // todo list when fitting process ended
+    mFitInfo->listYields();
+    delete mFT;
+    mBusy->close();
+    mTimer->stop();
+}
+
+//__________________________________________________________________________
+void FitMacro::timeout()
+{
+    // refresh mBusy
+    mBusy->setInformativeText(mBusy->informativeText() + '.');
+}
+
+//__________________________________________________________________________
+FitMacro::FitMacro(QObject* parent) : Macro(parent), mFT(nullptr)
 {
     // ctor
     setObjectName("Fit Macro");

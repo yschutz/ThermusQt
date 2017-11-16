@@ -11,5 +11,10 @@
         <file>thermusicon.png</file>
         <file>pdglogo.jpg</file>
         <file>searchicon.png</file>
+        <file>predictionicon.png</file>
+        <file>fiticon.png</file>
+        <file>noverboseicone.png</file>
+        <file>verboseicone.png</file>
+        <file>busyicon.png</file>
     </qresource>
 </RCC>

@@ -333,8 +333,8 @@ void MainWindow::createActions()
 
     // Debug mode on/off
 
-    mDebugOnAction = new QAction(this);
-    mDebugOffAction = new QAction(this);
+    mDebugOnAction = new QAction(QIcon(":/verboseicone.png"), "", this);
+    mDebugOffAction = new QAction(QIcon(":/noverboseicone.png"), "", this);
 
     if (mDebug) {
         mDebugOnAction->setText("✓ On");
@@ -344,8 +344,8 @@ void MainWindow::createActions()
         mDebugOnAction->setText("On");
         mDebugOffAction->setText("✓ Off");
     }
-    mDebugOnAction->setStatusTip(tr("Set debug mode on"));
-    mDebugOffAction->setStatusTip(tr("Set debug mode off"));
+    mDebugOnAction->setStatusTip(tr("Set verbose mode on"));
+    mDebugOffAction->setStatusTip(tr("Set verbose mode off"));
     connect(mDebugOnAction, &QAction::triggered, this, [this]{ setDebugMode(true); });
     connect(mDebugOffAction, &QAction::triggered, this, [this]{ setDebugMode(false); });
 
@@ -379,11 +379,11 @@ void MainWindow::createActions()
 
     // run  macro
 
-    mPredictionAction = new QAction(tr("&Prediction"), this);
+    mPredictionAction = new QAction(QIcon(":/predictionicon.png"), tr("&Prediction"), this);
     mPredictionAction->setStatusTip(tr("Makes a Thermus prediction"));
     connect(mPredictionAction, &QAction::triggered, this, [this] { run(mPredictionAction->text().remove(0,1)); });
 
-    mFitAction = new QAction(tr("&Fit"), this);
+    mFitAction = new QAction(QIcon(":/fiticon.png"), tr("&Fit"), this);
     mFitAction->setStatusTip(tr("Makes a Thermus Fit"));
     connect(mFitAction, &QAction::triggered, this, [this] { run(mFitAction->text().remove(0,1)); });
 
@@ -407,7 +407,7 @@ void MainWindow::createMenus()
     // creates the menus
 
     // Debug
-    mDebugMenu = menuBar()->addMenu(tr("&Debug"));
+    mDebugMenu = menuBar()->addMenu(QIcon(":/verboseicon.png"), tr("&Verbosity"));
     mDebugMenu->addAction(mDebugOnAction);
     mDebugMenu->addAction(mDebugOffAction);
 

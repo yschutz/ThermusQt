@@ -18,6 +18,8 @@
 
 #include "QMinuit.h"
 
+#include "mainwindow.h"
+
 const char charal[29] = " .ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 //__________________________________________________________________________
@@ -535,7 +537,7 @@ void QMinuit::qmnamin()
     double fnew;
 
     if (mISW[4] >= 1) {
-       qInfo() << Q_FUNC_INFO << "INFO: FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.";
+       MainWindow::verbosePrint(QString("%1--INFO: FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.").arg(Q_FUNC_INFO));
     }
     qmnexin(mX);
     eval(mNPar, mGin, fnew, mU, 4);
@@ -777,11 +779,11 @@ void QMinuit::qmncntr(int ike1, int ike2, int &ierrf)
        chmid[ix - 1]  = '*';
        chzero[ix - 1] = '-';
     }
-    qInfo() << Q_FUNC_INFO << " Y-AXIS: PARAMETER:" << ke2 << mCpnam[ke2-1];
+    MainWindow::verbosePrint(QString("%1-- Y-AXIS: PARAMETER: %2 %3").arg(Q_FUNC_INFO).arg(ke2).arg(mCpnam[ke2-1]));
     if (ixzero > 0) {
        chzero[ixzero-1] = '+';
        chln = " ";
-       qInfo() << Q_FUNC_INFO << "             X=0";
+       MainWindow::verbosePrint(QString("%1--             X=0").arg(Q_FUNC_INFO));
     }
  //*-*-                loop over rows
     for (int iy = 1; iy <= ny; ++iy) {
@@ -818,7 +820,7 @@ void QMinuit::qmncntr(int ike1, int ike2, int &ierrf)
  L240:
           if (contur[ics - 1] < fmx) chln[ix - 1] = clabel[ics - 1];
        }
- //*-*-                printa row of the contour plot
+ //*-*-                print row of the contour plot
        qInfo() << ylabel  << chln;
     }
  //*-*-                contours printed, label x-axis
@@ -2089,7 +2091,10 @@ void QMinuit::qmnemat(double *emat, int ndim)
     /* Function Body */
     if (mISW[1] < 1) return;
     if (mISW[4] >= 2) {
-       qInfo() << " EXTERNAL ERROR MATRIX.    NDIM=" << ndim << "NPAR=" << mNPar <<  "ERR DEF=" << mUp;
+        MainWindow::verbosePrint(QString(" EXTERNAL ERROR MATRIX.    NDIM = %1 NPAR = %2 ERR DEF = %3").
+                                 arg(ndim).
+                                 arg(mNPar).
+                                 arg(mUp));
     }
  //*-*-                   size of matrix to be printed
     npard = mNPar;
@@ -2129,7 +2134,7 @@ void QMinuit::qmnemat(double *emat, int ndim)
              for (kk = k; kk <= k2; ++kk) {
                 ctemp += QString("%1").arg(emat[i + kk*emat_dim1]);
              }
-             qInfo() << ctemp;
+             MainWindow::verbosePrint(ctemp);
           }
        }
     }
@@ -2316,14 +2321,14 @@ void QMinuit::qmnexcm(const char *command, double *plist, int llist, int &ierflg
          if (mISW[4] >= 0) {
             lnow = llist;
             if (lnow > 4) lnow = 4;
-            qInfo() << " **********";
+            MainWindow::verbosePrint(" **********");
             ctemp = QString(" **   %1 **%2").arg(mIcomnd).arg(mCword);
 //            ctemp.Form(" **%5d **%s",mIcomnd,(const char*)mCword);
             for (i = 1; i <= lnow; ++i) {
 //                ctemp += QString::Format("%12.4g",plist[i-1]);
                 ctemp += QString("   %1").arg(plist[i-1]);
             }
-            qInfo() << ctemp;
+            MainWindow::verbosePrint(ctemp);
             inonde = 0;
             if (llist > lnow) {
                kll = llist;
@@ -2331,12 +2336,12 @@ void QMinuit::qmnexcm(const char *command, double *plist, int llist, int &ierflg
                   inonde = 1;
                   kll = mMaxPar;
                }
-               qInfo() << " ***********";
+               MainWindow::verbosePrint(" **********");
                for (i = lnow + 1; i <= kll; ++i) {
                   qInfo() << plist[i-1];
                }
             }
-            qInfo() << " **********";
+            MainWindow::verbosePrint(" **********");
             if (inonde > 0) {
                qWarning() << "  ERROR: ABOVE CALL TO MNEXCM TRIED TO PASS MORE THAN" << mMaxPar << "PARAMETERS.";
             }
@@ -3799,7 +3804,7 @@ void QMinuit::qmnhess()
        mEDM += mP[i + i*mMaxPar - mMaxPar-1]*(mGrd[i-1]*mGrd[i-1]);
     }
     if (mISW[4] >= 1 && mISW[1] == 3 && mItaur == 0) {
-       qInfo() << " COVARIANCE MATRIX CALCULATED SUCCESSFULLY";
+       MainWindow::verbosePrint(" COVARIANCE MATRIX CALCULATED SUCCESSFULLY");
     }
     goto L900;
  //*-*-                             failure to invert 2nd deriv matrix
@@ -4625,12 +4630,12 @@ void QMinuit::qmnmatu(int kode)
     ncoef = (mNpagwd - 19) / 6;
     ncoef = qMin(ncoef,20);
     nparm = qMin(mNPar,ncoef);
-    qInfo() << " PARAMETER  CORRELATION COEFFICIENTS  ";
+    MainWindow::verbosePrint(" PARAMETER  CORRELATION COEFFICIENTS  ");
     ctemp = "       NO.  GLOBAL";
     for (id = 1; id <= nparm; ++id) {
        ctemp += QString(" %1").arg(mNexofi[id-1]);
     }
-    qInfo() << ctemp;
+    MainWindow::verbosePrint(ctemp);
     for (i = 1; i <= mNPar; ++i) {
        ix  = mNexofi[i-1];
        ndi = i*(i + 1) / 2;
@@ -4646,7 +4651,7 @@ void QMinuit::qmnmatu(int kode)
        for (it = 1; it <= nparm; ++it) {
           ctemp += QString(" %1").arg(mMATUvline[it-1]);
        }
-       qInfo() << ctemp;
+       MainWindow::verbosePrint(ctemp);
        if (i <= nparm) continue;
        ctemp = "                   ";
        for (iso = 1; iso <= 10; ++iso) {
@@ -4655,13 +4660,12 @@ void QMinuit::qmnmatu(int kode)
           for (it = nsofar + 1; it <= nparm; ++it) {
              ctemp = ctemp + QString(" %1").arg(mMATUvline[it-1]);
           }
-          qInfo() << ctemp;
+          MainWindow::verbosePrint(ctemp);
           if (i <= nparm) break;
        }
     }
-    if (isw2 < 3) {
-       qInfo() << mCovmes[isw2];
-    }
+    if (isw2 < 3)
+       MainWindow::verbosePrint(QString("%1").arg(mCovmes[isw2]));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -4700,7 +4704,8 @@ void QMinuit::qmnmigr()
     mISW[3] = -1;
     rhotol  = mApsi*.001;
     if (iswtr >= 1) {
-       qInfo() << " START MIGRAD MINIMIZATION.  STRATEGY " << mIstrat << " CONVERGENCE WHEN EDM .LT." << rhotol;
+       MainWindow::verbosePrint(QString(" START MIGRAD MINIMIZATION.  STRATEGY %1 CONVERGENCE WHEN EDM .LT. %2").
+                                arg(mIstrat).arg(rhotol));
     }
  //*-*-                                          initialization strategy
     if (mIstrat < 2 || mISW[1] >= 3) goto L2;
@@ -4980,12 +4985,12 @@ void QMinuit::qmnmigr()
  //*-*-                                        . . apparent convergence
  L300:
     if (iswtr >= 0) {
-       qDebug() << " MIGRAD MINIMIZATION HAS CONVERGED.";
+       MainWindow::verbosePrint(" MIGRAD MINIMIZATION HAS CONVERGED.");
     }
     if (mItaur == 0) {
        if (mIstrat >= 2 || (mIstrat == 1 && mISW[1] < 3)) {
           if (mISW[4] >= 0) {
-             qDebug() << " MIGRAD WILL VERIFY CONVERGENCE AND ERROR MATRIX.";
+             MainWindow::verbosePrint(" MIGRAD WILL VERIFY CONVERGENCE AND ERROR MATRIX.");
           }
           qmnhess();
           qmnwerr();
@@ -5319,14 +5324,14 @@ void QMinuit::qmNParm(int k1, QString cnamj, double uk, double wk, double a, dou
 
  //*-*-                                     . . .printheading
     if (mLphead && mISW[4] >= 0) {
-       qInfo() << " PARAMETER DEFINITIONS:";
+       MainWindow::verbosePrint(" PARAMETER DEFINITIONS:");
        QString pr = QString("%1 %2 %3 %4 %5 %6").arg("No.", -3).
                arg("NAME", -20).
                arg("VALUE", -10).
                arg("STEP",  -10).
                arg("SIZE",  -10).
                arg("LIMITS", -20);
-       qInfo() << pr;
+       MainWindow::verbosePrint(pr);
 
        mLphead = false;
     }
@@ -5337,7 +5342,7 @@ void QMinuit::qmNParm(int k1, QString cnamj, double uk, double wk, double a, dou
                 arg(cnamk, -20).
                 arg(uk, 10, 'e', 5).
                 arg("constant", 30);
-        qInfo() << pr;
+        MainWindow::verbosePrint(pr);
     }
     nvl = 0;
     goto L200;
@@ -5351,7 +5356,7 @@ void QMinuit::qmNParm(int k1, QString cnamj, double uk, double wk, double a, dou
                    arg(uk, 10, 'e', 5).
                    arg(wk, 10, 'e', 5).
                    arg("no limits", 20);
-           qInfo() << pr;
+           MainWindow::verbosePrint(pr);
        }
     } else {
  //*-*-                                        variable parameter with limits
@@ -5364,7 +5369,7 @@ void QMinuit::qmNParm(int k1, QString cnamj, double uk, double wk, double a, dou
                    arg(wk, 10, 'e', 5).
                    arg(a, 10, 'e', 5).
                    arg(b, 10, 'e', 5);
-           qInfo() << pr;
+           MainWindow::verbosePrint(pr);
        }
     }
  //*-*-                            . . request for another variable parameter
@@ -5998,14 +6003,25 @@ void QMinuit::qmnprin(int inkode, double fval)
     else                 chedm = QString("%1").arg(mEDM);
 
     nc = mNfcn - mNfcnfr;
-    qInfo() << " FCN=" << cheval << "FROM " << mCfrom << "STATUS=" << mCstatu << nc <<  "CALLS" << mNfcn << "TOTAL";
+    MainWindow::verbosePrint(QString(" FCN = %1 FROM %2 STATUS = %3 %4 CALLS %5 TOTAL").
+                             arg(cheval).
+                             arg(mCfrom).
+                             arg(mCstatu).
+                             arg(nc).
+                             arg(mNfcn));
     m = mISW[1];
     if (m == 0 || m == 2 || mDcovar == 0) {
-       qInfo() << "                     EDM=" << chedm << "    STRATEGY=" << mIstrat << "      " << mCovmes[m];
+        MainWindow::verbosePrint(QString("                     EDM = %1    STRATEGY = %2       %3").
+                                 arg(chedm).
+                                 arg(mIstrat).
+                                 arg(mCovmes[m]));
     } else {
        dcmax = 1;
        dc    = qMin(mDcovar,dcmax)*100;
-       qInfo() << "                     EDM=" << chedm << "    STRATEGY=" << mIstrat << "  ERROR MATRIX UNCERTAINTY " << dc << "per cent";
+       MainWindow::verbosePrint(QString("                     EDM = %1    STRATEGY = %2   ERROR MATRIX UNCERTAINTY %3 per cent").
+                                arg(chedm).
+                                arg(mIstrat).
+                                arg(dc));
     }
 
     if (ikode == 0) return;
@@ -6061,12 +6077,10 @@ void QMinuit::qmnprin(int inkode, double fval)
     }
     QString pr = QString("%1 %2 %3 %4 %5 %6").arg("EXT", 3).
             arg("PARAMETER", 20).arg("", 20).arg(colhdu[0], 20).arg(colhdu[1], 20).arg(colhdu[2], 20);
-    qInfo() << pr;
+    MainWindow::verbosePrint(pr);
     pr = QString("%1 %2 %3 %4 %5 %6").arg("NO.", 3).
             arg("NAME", 20).arg("VALUE", 20).arg(colhdl[0], 20).arg(colhdl[1], 20).arg(colhdl[2], 20);
-    qInfo() << pr;
-//    qInfo() << "  EXT PARAMETER              " << colhdu[0] << colhdu[1] << colhdu[2];
-//    qInfo() << "  NO.   NAME      VALUE      " << colhdl[0] << colhdl[1] << colhdl[2];
+    MainWindow::verbosePrint(pr);
  //*-*-                                       . . . loop over parameters . .
     for (i = 1; i <= mNu; ++i) {
        if (mNvarl[i-1] < 0) continue;
@@ -7426,6 +7440,9 @@ void QMinuit::qmnvert(double *a, int l, int /*m*/, int n, int &ifail)
 
 void QMinuit::qmnwarn(const char *copt1, const char *corg1, const char *cmes1)
 {
+    if (!MainWindow::isVerbose())
+        return;
+
     QString copt = copt1;
     QString corg = corg1;
     QString cmes = cmes1;

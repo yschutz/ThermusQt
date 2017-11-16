@@ -7,6 +7,7 @@
 #define MAINWINDOW_H
 
 #include <QAction>
+#include <QDebug>
 #include <QDir>
 #include <QLabel>
 #include <QMainWindow>
@@ -35,14 +36,15 @@ public:
 
     void        createConsol();
     static void customMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
-    void        setDebugMode(bool val);
-
     QString     getDBPath(const QString& opt);
+    static bool isVerbose()                          { return mDebug; }
     void        listParameters();
     void        particlesDBManagement(DBOPS option);
+    void        quit();
+    void        setDebugMode(bool val);
     void        runFit();
     void        runPrediction();
-    void        quit();
+    static void verbosePrint(const QString& str) { if (isVerbose()) qInfo() << str;}
 
 public slots:
     void run(const QString& what);

@@ -14,12 +14,14 @@
 #include "TTMThermalModel.h"
 
 #include "external/particlesdbmanager.h"
+#include "external/QMinuit.h"
+#include "mainwindow.h"
 
 void fit_function(TTMThermalFit *fit, int flag = 0);
 
 //__________________________________________________________________________
 TTMThermalFit::TTMThermalFit(QObject *parent) : QObject(parent),
-    mChiSquare(0.0), mMinuit(nullptr), mQuadDev(0.0)
+    mChiSquare(0.0), mMinuit(nullptr), mQuadDev(0.0), mYieldView(nullptr)
 {
     // ctor
 }
@@ -31,6 +33,7 @@ TTMThermalFit::~TTMThermalFit()
     qDeleteAll(mYields.begin(), mYields.end());
     mYields.clear();
     delete mMinuit; //carefull in case QMinuit becomes a singleton
+//    delete mYieldView;
 }
 
 //__________________________________________________________________________
@@ -363,7 +366,7 @@ void TTMThermalFit::listMinuitInfo() const
 }
 
 //__________________________________________________________________________
-void TTMThermalFit::listYields(bool debug) const
+void TTMThermalFit::listYields(bool debug)
 {
     // Lists the experimental values and model predictions
     QStandardItemModel* model = new QStandardItemModel();
@@ -384,10 +387,10 @@ void TTMThermalFit::listYields(bool debug) const
         double  value = yield->getExpValue();
         double  error = yield->getExpError();
         if (debug) {
-            qInfo() << QString("%1").arg(name, 20);
-            qInfo() << QString("%1: %2 +/- %3").arg("experiment", 30).
+            MainWindow::verbosePrint(QString("%1").arg(name, 20));
+            MainWindow::verbosePrint(QString("%1: %2 +/- %3").arg("experiment", 30).
                        arg(value, 12, 'e', 6).
-                       arg(error, 12, 'e', 6);
+                       arg(error, 12, 'e', 6));
         } else {
             onerow << new QStandardItem(yield->objectName());
             QStandardItem* valueItem = new QStandardItem();
@@ -416,12 +419,12 @@ void TTMThermalFit::listYields(bool debug) const
             double std  = yield->getStdDev();
             double quad = yield->getQuadDev();
             if (debug) {
-                qInfo() << QString("%1: %2 +/- %3").arg("model", 30).
+                MainWindow::verbosePrint(QString("%1: %2 +/- %3").arg("model", 30).
                            arg(value, 12, 'e', 6).
-                           arg(error, 12, 'e', 6);
-                qInfo() << QString("%1: %2  %3: %4").arg("Std.Dev.", 30).arg(std, 5).
-                           arg("Quad.Dev", 30).arg(quad, 5);
-                return;
+                           arg(error, 12, 'e', 6));
+                MainWindow::verbosePrint(QString("%1: %2  %3: %4").arg("Std.Dev.", 30).arg(std, 5).
+                           arg("Quad.Dev", 30).arg(quad, 5));
+                continue;
             } else {
                 QStandardItem* valueItem = new QStandardItem();
                 valueItem->setText(QString::number(value));
@@ -466,13 +469,16 @@ void TTMThermalFit::listYields(bool debug) const
         }
         model->appendRow(onerow);
     }
-    QTableView* view = new QTableView;
-    view->setAttribute(Qt::WA_DeleteOnClose);
-    view->setModel(model);
-    view->resize(1000, 200);
-    view->resizeColumnsToContents();
-    view->setAlternatingRowColors(true);
-    view->show();
+    if (!debug) {
+        if (mYieldView == nullptr)
+            mYieldView = new QTableView;
+        mYieldView->setAttribute(Qt::WA_DeleteOnClose);
+        mYieldView->setModel(model);
+        mYieldView->resize(1000, 200);
+        mYieldView->resizeColumnsToContents();
+        mYieldView->setAlternatingRowColors(true);
+        mYieldView->show();
+    }
 }
 
 //__________________________________________________________________________

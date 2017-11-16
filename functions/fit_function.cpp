@@ -4,6 +4,7 @@
 #include "external/QMinuit.h"
 #include "main/TTMParameterSet.h"
 #include "main/TTMThermalFit.h"
+#include "mainwindow.h"
 
 #include <QDebug>
 
@@ -19,16 +20,6 @@ void Minuit_fcn(int & npar, double * gin, double & f, double * par, int iflag);
 void fit_function(TTMThermalFit * fit, int flag = 0)
 {
     gFit     = fit;
-
-    QString fitDescr = gFit->getDescriptor();
-
-//    int imax = 0;
-//    if (fitDescr == "GCanonical")
-//        imax = 9;
-//    else if (fitDescr == "SCanonical")
-//        imax = 5;
-//    else if (fitDescr == "BSQCanonical")
-//        imax = 5;
 
     if (flag == 0) {
         gChi  = true;
@@ -68,7 +59,8 @@ void fit_function(TTMThermalFit * fit, int flag = 0)
     }
     // List Experimental Yields //
 
-     gFit->listYields(true);
+     if (MainWindow::isVerbose())
+         gFit->listYields(true);
 
      // ************************************************ //
      // ************************************************ //

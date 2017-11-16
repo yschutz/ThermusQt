@@ -93,15 +93,17 @@ PredictionMacro &PredictionMacro::instance()
 }
 
 //__________________________________________________________________________
-void PredictionMacro::run() const
+void PredictionMacro::run()
 {
     mFitInfo->generateYields();
     mFitInfo->listYields();
-    for (TTMYield* yield : mFitInfo->getYields())
-        qInfo() << Q_FUNC_INFO << "; PREDICTION: ;" <<
-                   yield->getID1() << ";" <<
-                   yield->getID2() << ";" <<
-                   yield->getTMName() << ";" <<
-                   yield->getModelValue();
+    if (MainWindow::isVerbose()) {
+        for (TTMYield* yield : mFitInfo->getYields())
+            qInfo() << Q_FUNC_INFO << "; PREDICTION: ;" <<
+                       yield->getID1() << ";" <<
+                       yield->getID2() << ";" <<
+                       yield->getTMName() << ";" <<
+                       yield->getModelValue();
+    }
 }
 

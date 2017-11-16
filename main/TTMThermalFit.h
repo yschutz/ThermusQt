@@ -11,13 +11,13 @@
 #ifndef TTMTHERMALFIT_H
 #define TTMTHERMALFIT_H
 
-//#include "TTMParticleSet.h"
 #include "TTMYield.h"
-#include "external/QMinuit.h"
 
 #include <QObject>
 
 class QMinuit;
+class QTableView;
+
 class TTMParameterSet;
 class TTMThermalModel;
 
@@ -41,7 +41,7 @@ public:
     QList<TTMYield*>         getYields() const { return mYields; }
     void                     inputExpYields(QString &fileName);
     void                     listMinuitInfo() const;
-    void                     listYields(bool debug = false) const;
+    void                     listYields(bool debug = false);
     void                     removeYield(int id1, int id2, const QString& descr);
     void                     setMinuit(QMinuit* minuit)                               { mMinuit = minuit; }
 
@@ -51,6 +51,7 @@ protected:
     QMinuit*         mMinuit;      // pointer to QMinuit obj
     double           mQuadDev;     // quadratic deviation
     QList<TTMYield*> mYields;      // Container for yields of interest
+    QTableView*      mYieldView;   // to display the yields
 };
 
 #endif // TTMTHERMALFIT_H

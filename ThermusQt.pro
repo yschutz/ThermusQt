@@ -111,7 +111,8 @@ SOURCES += main.cpp\
     macros/fitmacro.cpp \
     macros/predictionmacro.cpp \
     functions/fit_function.cpp \
-    functions/minuit_fcn.cpp
+    functions/minuit_fcn.cpp \
+    fittingthread.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -152,7 +153,8 @@ HEADERS  += mainwindow.h \
     macroparasel.h \
     macros/macro.h \
     macros/fitmacro.h \
-    macros/predictionmacro.h
+    macros/predictionmacro.h \
+    fittingthread.h
 
 
 RESOURCES += \
