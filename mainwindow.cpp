@@ -113,6 +113,10 @@ void MainWindow::createConsol()
 {
     // creates an area where to display subwindows for log infos, plots, etcc
 
+    static bool firstCall = true;
+    if (!firstCall)
+        return;
+    firstCall = false;
     QMainWindow *outputAreaWindow = new QMainWindow(this);
     QMdiArea *mdiArea = new QMdiArea(outputAreaWindow);
 

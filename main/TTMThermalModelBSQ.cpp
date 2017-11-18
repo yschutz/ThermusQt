@@ -565,11 +565,11 @@ int TTMThermalModelBSQ::primPartDens()
 
     int check = 0;
 
-    QList<int> partPDGs;
-    ParticlesDBManager::Instance().allParticles(partPDGs);
+    if (mPartPDGs.isEmpty())
+        ParticlesDBManager::Instance().allParticles(mPartPDGs);
 
     if (mQStats) {
-        for (int part : partPDGs) {
+        for (int part : mPartPDGs) {
             if (check != 0)
                 break;
             QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part, mPar));
@@ -584,7 +584,7 @@ int TTMThermalModelBSQ::primPartDens()
         return 1;
     } else {
         if (!mExclVolCorrection) {
-            for (int part : partPDGs) {
+            for (int part : mPartPDGs) {
                 QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part, mPar));
                 double partDens;
                 double width = ParticlesDBManager::Instance().getWidth(part);
@@ -638,7 +638,7 @@ int TTMThermalModelBSQ::primPartDens()
         } else {
             calcExclVolPressure();
             double correction = 1.;
-            for (int part : partPDGs) {
+            for (int part : mPartPDGs) {
                 QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part, mPar));
                 double partDens;
                 double width = ParticlesDBManager::Instance().getWidth(part);

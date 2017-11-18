@@ -508,11 +508,11 @@ int TTMThermalModelBQ::primPartDens()
 
     int check = 0;
 
-    QList<int> partPDGs;
 
     if (mNonStrangeQStats) {
-        ParticlesDBManager::Instance().allParticles(partPDGs);
-        for (int part : partPDGs) {
+        if (mPartPDGs.isEmpty())
+            ParticlesDBManager::Instance().allParticles(mPartPDGs);
+        for (int part : mPartPDGs) {
             if (check != 0)
                 break;
             if(ParticlesDBManager::Instance().getS(part) == 0.) {
@@ -536,7 +536,7 @@ int TTMThermalModelBQ::primPartDens()
         double r      = mPar->getCanRadius();
         double volume = 4. * M_PI / 3. * r * r * r;
 
-        for (int part : partPDGs) {
+        for (int part : mPartPDGs) {
             double width = ParticlesDBManager::Instance().getWidth(part);
             double s     = ParticlesDBManager::Instance().getS(part);
             if (s == 0. && mNonStrangeQStats){
@@ -765,7 +765,7 @@ int TTMThermalModelBQ::primPartDens()
             mlnZ0     = k0;
             mExactMuS = mPar->getT() * qLn(mCorrP1);
 
-            for (int part : partPDGs) {
+            for (int part : mPartPDGs) {
                 double S = ParticlesDBManager::Instance().getS(part);
                 double CorrFactor;
                 if (S == 1)

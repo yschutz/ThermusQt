@@ -22,6 +22,7 @@ TTMThermalModel::TTMThermalModel(QObject *parent) : QObject(parent),
     mStrange(0.0), mWidth(true), mWroblewski(0.0)
 {
     // ctor
+    mPartPDGs.clear();
 }
 
 //__________________________________________________________________________

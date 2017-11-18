@@ -2338,7 +2338,7 @@ void QMinuit::qmnexcm(const char *command, double *plist, int llist, int &ierflg
                }
                MainWindow::verbosePrint(" **********");
                for (i = lnow + 1; i <= kll; ++i) {
-                  qInfo() << plist[i-1];
+                  MainWindow::verbosePrint(QString::number(plist[i-1]));
                }
             }
             MainWindow::verbosePrint(" **********");
@@ -2989,7 +2989,13 @@ void QMinuit::qmngrad()
           mGRADgf[lc-1] = 0;
        }
        if (cwd != "GOOD") mISW[2] = 0;
-       qInfo() << i << mCpnam[i-1] << mGRADgf[lc-1] << mGrd[lc-1] << err << cwd;
+       MainWindow::verbosePrint(QString("%1 %2 %3 %4 %5 %6").
+                                arg(i).
+                                arg(mCpnam[i-1]).
+                                arg(mGRADgf[lc-1]).
+                                arg(mGrd[lc-1]).
+                                arg(err).
+                                arg(cwd));
     }
     if (lnone) {
        qInfo() << "  AGREEMENT=NONE  MEANS FCN DID NOT CALCULATE THE DERIVATIVE";
@@ -6123,8 +6129,7 @@ void QMinuit::qmnprin(int inkode, double fval)
        if (cx3 == "PLEASE GET X..")  cx3 = QString("%1").arg(x3);
        pr = QString("%1 %2 %3 %4 %5 %6").arg(i, 3).
                arg(cnambf, 20).arg(mU[i-1], 20).arg(x1, 20).arg(cx2, 20).arg(cx3, 20);
-       qInfo() << pr;
-//       qInfo() << i << cnambf << mU[i-1] << x1 << cx2 << cx3;
+       MainWindow::verbosePrint(pr);
 
  //*-*-              check if parameter is at limit
        if (mNvarl[i-1] <= 1 || ikode == 3) continue;
