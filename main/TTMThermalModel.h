@@ -60,10 +60,12 @@ public:
     void                     listDecayContributions(int parent, int daughter) const;
     virtual void             listInfo() const = 0;
     void                     listStableDensities() const;
+    void                     setWidth(bool val)      { mWidth = val; }
 
 protected:
     void                     calcWroblewski();
     virtual int              primPartDens() = 0;
+    virtual void             reset() = 0;
 
     double                  mBaryon;	   // total baryon density in model
     double                  mBeauty;	   // total beauty density in model
@@ -81,6 +83,8 @@ protected:
     double                  mEnergy;	   // total energy density in model
     double                  mEntropy;	   // total entropy density in model
     QList<int>              mPartPDGs;     // list of pdg number of all particles (from DB)
+    QList<int>              mPartPDGsS;    // list of pdg number of all stable particles (from DB)
+    QList<int>              mPartPDGsU;    // list of pdg number of all unstable particles (from DB)
     double                  mPressure;	   // total pressure in model
     double                  mQminus;
     double                  mQplus;

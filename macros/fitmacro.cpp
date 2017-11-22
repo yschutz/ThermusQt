@@ -100,7 +100,6 @@ void FitMacro::run()
     mFT = new FittingThread(mFitInfo);
     connect(mFT, &FittingThread::resultReady, this, [this]{wrapUp();});
     mBusy = new QMessageBox(QMessageBox::Information, Q_FUNC_INFO, "FIT");
-//    mBusy->setAttribute(Qt::WA_DeleteOnClose);
     mBusy->setText(QString("%1: is fitting").arg(Q_FUNC_INFO));
     mBusy->setStandardButtons(QMessageBox::Abort);
     mBusy->setInformativeText("Busy");
@@ -127,7 +126,7 @@ void FitMacro::wrapUp()
     // todo list when fitting process ended
     mTimer->stop();
     delete mFT;
-    mBusy->setInformativeText("Done");
+    mBusy->setInformativeText(QString("Done in %1 s").arg(mBusytics * mTimer->interval() / 1000.));
     mBusy->setStandardButtons(QMessageBox::Ok);
     mFitInfo->listYields();
     mFitInfo->getParameterSet()->list();
@@ -138,6 +137,7 @@ void FitMacro::timeout()
 {
     // refresh mBusy
     mBusy->setInformativeText(mBusy->informativeText() + '.');
+    mBusytics++;
 }
 
 //__________________________________________________________________________

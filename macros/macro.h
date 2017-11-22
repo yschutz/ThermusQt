@@ -39,7 +39,8 @@ public slots:
     virtual void timeout() = 0;
 
 protected:
-    QMessageBox*           mBusy;              // displayed when process going on
+    QMessageBox*           mBusy;             // displayed when process going on
+    int                    mBusytics;         // timer ticks
     bool                   mDebug;            // true if debug mode on
     TTMThermalFitBSQ*      mFitInfo;          // the fit model to be used
     MacroParaSel*          mMacroParaSel;     // window for parameters selection

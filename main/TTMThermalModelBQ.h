@@ -34,6 +34,7 @@ public:
     TTMParameterSetBQ* getParameterSet() const { return mPar; }
     void               listInfo() const;
     int                primPartDens();
+    void               reset();
 
     TTMThermalModelBQ& operator=(TTMThermalModelBQ model);
 

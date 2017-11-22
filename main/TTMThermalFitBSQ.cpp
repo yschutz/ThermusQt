@@ -28,10 +28,15 @@ TTMThermalFitBSQ::TTMThermalFitBSQ(TTMParameterSetBSQ *par, QString file, QObjec
 //__________________________________________________________________________
 TTMThermalModel *TTMThermalFitBSQ::generateThermalModel()
 {
-    if (mModel)
-        delete mModel;
-    mModel = new TTMThermalModelBSQ(mParm, mQStats, mWidth);
-    mModel->setExcludedVolume(mExclVol);
+    if (mModel) {
+        mModel->reset();
+        mModel->setParameters(mParm);
+        mModel->setQStats(mQStats);
+        mModel->setWidth(mWidth);
+        mModel->setExcludedVolume(mExclVol);
+    } else
+        mModel = new TTMThermalModelBSQ(mParm, mQStats, mWidth);
+
     return mModel;
 }
 

@@ -206,47 +206,71 @@ QString ParticlesDBManager::getPartParameter(int pdg, ENTRY what, const QString 
 }
 
 //__________________________________________________________________________
-int ParticlesDBManager::getBaryon(int pdg) const
+double ParticlesDBManager::getBaryon(int pdg)
 {
     // gets the baryon number of the given particle
     double rv = 0.0;
-    rv = getPartParameter(pdg, kBARYON, "Thermus").toInt();
+    if (mBaryonHash.contains(pdg))
+        rv = mBaryonHash[pdg];
+    else {
+        rv = getPartParameter(pdg, kBARYON, "Thermus").toInt();
+        mBaryonHash[pdg] = rv;
+    }
     return rv;
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getBContent(int pdg) const
+double ParticlesDBManager::getBContent(int pdg)
 {
     // gets the beauty content of the given particle
     double rv = 0.0;
-    rv = getPartParameter(pdg, kBC, "Thermus").toDouble();
+    if (mBContentHash.contains(pdg))
+        rv = mBContentHash[pdg];
+    else {
+        rv = getPartParameter(pdg, kBC, "Thermus").toDouble();
+        mBContentHash[pdg] = rv;
+    }
     return rv;
-
 }
 
 //__________________________________________________________________________
-int ParticlesDBManager::getBeauty(int pdg) const
+int ParticlesDBManager::getBeauty(int pdg)
 {
     double rv = 0.0;
-    rv = getPartParameter(pdg, kB, "Thermus").toDouble();
+    if (mBeautyHash.contains(pdg))
+        rv = mBeautyHash[pdg];
+    else {
+        rv = getPartParameter(pdg, kB, "Thermus").toDouble();
+        mBeautyHash[pdg] = rv;
+    }
     return rv;
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getCharge(int pdg, const QString &where) const
+double ParticlesDBManager::getCharge(int pdg, const QString &where)
 {
     // gets the charge of the given particle
     double rv = 0.0;
-    rv = getPartParameter(pdg, kCHARGE, where).toDouble();
+    if (mChargeHash.contains(pdg))
+        rv = mChargeHash[pdg];
+    else {
+        rv = getPartParameter(pdg, kCHARGE, where).toDouble();
+        mChargeHash[pdg] = rv;
+    }
     return rv;
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getCContent(int pdg) const
+double ParticlesDBManager::getCContent(int pdg)
 {
     // gets the charm content of the given particle
     double rv = 0.0;
-    rv = getPartParameter(pdg, kCC, "Thermus").toDouble();
+    if (mCContentHash.contains(pdg))
+        rv = mCContentHash[pdg];
+    else {
+        rv = getPartParameter(pdg, kCC, "Thermus").toDouble();
+        mCContentHash[pdg] = rv;
+    }
     return rv;
 }
 
@@ -260,10 +284,15 @@ double ParticlesDBManager::getLifetime(int pdg, const QString &where) const
 }
 
 //__________________________________________________________________________
-int ParticlesDBManager::getCharm(int pdg) const
+double ParticlesDBManager::getCharm(int pdg)
 {
     double rv = 0.0;
-    rv = getPartParameter(pdg, kC, "Thermus").toDouble();
+    if (mCharmHash.contains(pdg))
+        rv = mCharmHash[pdg];
+    else {
+        rv = getPartParameter(pdg, kC, "Thermus").toDouble();
+        mCharmHash[pdg] = rv;
+    }
     return rv;
 }
 
@@ -362,57 +391,87 @@ int ParticlesDBManager::getPDG(int id) const
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getRadius(int pdg) const
+double ParticlesDBManager::getRadius(int pdg)
 {
     // gets the radius for the given particle
     double rv = 0.0;
-    rv = getPartParameter(pdg, kRADIUS, "Thermus").toDouble();
+    if (mRadiusHash.contains(pdg))
+        rv = mRadiusHash[pdg];
+    else {
+        rv = getPartParameter(pdg, kRADIUS, "Thermus").toDouble();
+        mRadiusHash[pdg] = rv;
+    }
     return rv;
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getS(int pdg) const
+double ParticlesDBManager::getS(int pdg)
 {
     // gets the S of the given particle
     double rv = 0.0;
-    rv = getPartParameter(pdg, kS, "Thermus").toDouble();
+    if (mSHash.contains(pdg))
+        rv = mSHash[pdg];
+    else {
+        rv = getPartParameter(pdg, kS, "Thermus").toDouble();
+        mSHash[pdg] = rv;
+    }
     return rv;
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getSContent(int pdg) const
+double ParticlesDBManager::getSContent(int pdg)
 {
     // gets the strangeness content of the given particle
     double rv = 0.0;
-    rv = getPartParameter(pdg, kSC, "Thermus").toDouble();
+    if (mSContentHash.contains(pdg))
+        rv = mSContentHash[pdg];
+    else {
+        rv = getPartParameter(pdg, kSC, "Thermus").toDouble();
+        mSContentHash[pdg] = rv;
+    }
     return rv;
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getSpin(int pdg) const
+double ParticlesDBManager::getSpin(int pdg)
 {
     // gets the spin degeneracy of the given particle
     double rv = 0.0;
-    rv = getPartParameter(pdg, kSPIN, "Thermus").toDouble();
+    if (mSpinHash.contains(pdg))
+        rv = mSpinHash[pdg];
+    else {
+        rv = getPartParameter(pdg, kSPIN, "Thermus").toDouble();
+        mSpinHash[pdg] = rv;
+    }
     return rv;
 }
 
 //__________________________________________________________________________
-int ParticlesDBManager::getStat(int pdg) const
+int ParticlesDBManager::getStat(int pdg)
 {
     // gets the typ of statististics of the given particle
     double rv = 0.0;
-    rv = getPartParameter(pdg, kSTATISTIC, "Thermus").toInt();
+    if (mStatHash.contains(pdg))
+        rv = mStatHash[pdg];
+    else {
+        rv = getPartParameter(pdg, kSTATISTIC, "Thermus").toInt();
+        mStatHash[pdg] = rv;
+    }
     return rv;
 
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getThreshold(int pdg, const QString &where) const
+double ParticlesDBManager::getThreshold(int pdg, const QString &where)
 {
     // gets the width of the given particle
     double rv = 0.0;
-    rv = getPartParameter(pdg, kTHRESHOLD, where).toDouble();
+    if (mThresholdHash.contains(pdg))
+        rv = mThresholdHash[pdg];
+    else {
+        rv = getPartParameter(pdg, kTHRESHOLD, where).toDouble();
+        mThresholdHash[pdg] = rv;
+    }
     return rv;
 }
 
@@ -442,11 +501,16 @@ ParticlesDBManager &ParticlesDBManager::Instance()
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getWidth(int pdg, const QString &where) const
+double ParticlesDBManager::getWidth(int pdg, const QString &where)
 {
     // gets the width of the given particle
     double rv = 0.0;
-    rv = getPartParameter(pdg, kWIDTH, where).toDouble();
+    if (mWidthHash.contains(pdg))
+        rv = mWidthHash[pdg];
+    else {
+        rv = getPartParameter(pdg, kWIDTH, where).toDouble();
+        mWidthHash[pdg] = rv;
+    }
     return rv;
 }
 
@@ -841,11 +905,16 @@ QStringList ParticlesDBManager::listProperties(const QString &partPDG) const
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getMass(int pdg, const QString &where) const
+double ParticlesDBManager::getMass(int pdg, const QString &where)
 {
     // gets the mass of the given particle
     double rv = 0.0;
-    rv = getPartParameter(pdg, kMASS, where).toDouble();
+    if (mMassHash.contains(pdg))
+        rv = mMassHash[pdg];
+    else {
+     rv = getPartParameter(pdg, kMASS, where).toDouble();
+     mMassHash[pdg] = rv;
+    }
     return rv;
 }
 
@@ -1028,6 +1097,7 @@ bool ParticlesDBManager::allDecays(int pdg, QHash<int, double> &br, bool normali
 bool ParticlesDBManager::allParticles(QList<int>& list, ListOption opt) const
 {
     // retrieves all particles in the Thermus DB
+
     QString squery;
     switch (opt) {
     case kALL:

@@ -38,11 +38,14 @@ public:
     void                generateEnergyDens();
     void                generateEntropyDens();
     void                generatePressure();
-    bool                getExcludedVolume() const        { return mExclVolCorrection; }
-    TTMParameterSetBSQ* getParameterSet() const          { return mPar; }
+    bool                getExcludedVolume() const                     { return mExclVolCorrection; }
+    TTMParameterSetBSQ* getParameterSet() const                       { return mPar; }
     void                listInfo() const;
     int                 primPartDens();
-    void                setExcludedVolume(bool exVolume) { mExclVolCorrection = exVolume; }
+    void                reset();
+    void                setExcludedVolume(bool exVolume)              { mExclVolCorrection = exVolume; }
+    void                setParameters(TTMParameterSetBSQ* parameters) { mPar = parameters; }
+    void                setQStats(bool val)                           { mQStats = val; }
 
     TTMThermalModelBSQ &operator=(TTMThermalModelBSQ model);
 

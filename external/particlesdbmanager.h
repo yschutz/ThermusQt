@@ -24,27 +24,27 @@ public:
     QString                    dbName() const { return mDB.databaseName(); } //mDBName; }
     void                       deleteDecays(int motherid) const;
     void                       deleteDecay(int id) const;
-    int                        getBaryon(int pdg) const;
-    double                     getBContent(int pdg) const;
-    int                        getBeauty(int pdg) const;
-    double                     getCharge(int pdg, const QString& where = "Thermus") const;
-    double                     getCContent(int pdg) const;
+    double                     getBaryon(int pdg);
+    double                     getBContent(int pdg);
+    int                        getBeauty(int pdg);
+    double                     getCharge(int pdg, const QString& where = "Thermus");
+    double                     getCContent(int pdg);
     double                     getLifetime(int pdg, const QString& where = "Thermus") const;
-    int                        getCharm(int pdg) const;
-    double                     getMass(int pdg, const QString& where = "Thermus") const;
+    double                     getCharm(int pdg);
+    double                     getMass(int pdg, const QString& where = "Thermus");
     QString                    getName(int pdg, const QString& where = "all") const;
     QString                    getPartParameter(int pdg, ParticlesDBManager::ENTRY what, const QString& where = "Thermus") const;
     int                        getPDG(QString name) const;
     int                        getPDG(int id) const;
     QString                    getPDGDBName() const { return mkPDGName; }
-    double                     getRadius(int pdg) const;
-    double                     getS(int pdg) const;
-    double                     getSContent(int pdg) const;
-    double                     getSpin(int pdg) const;
-    int                        getStat(int pdg) const;
+    double                     getRadius(int pdg);
+    double                     getS(int pdg);
+    double                     getSContent(int pdg);
+    double                     getSpin(int pdg);
+    int                        getStat(int pdg);
     QString                    getThermusDBName() const { return mkThermusName; }
-    double                     getThreshold(int pdg, const QString& where = "Thermus") const;
-    double                     getWidth(int pdg, const QString& where = "Thermus") const;
+    double                     getThreshold(int pdg, const QString& where = "Thermus");
+    double                     getWidth(int pdg, const QString& where = "Thermus");
     int                        id(QString name) const;
     static ParticlesDBManager& Instance();
     void                       insertDecay(int mother, int dtype, double br, QStringList &daughters) const;
@@ -70,11 +70,25 @@ private:
     QString  makeQuery(ParticlesDBManager::ENTRY en, const QString &para, QString& squery) const;
 
 private:
-    QString                   mCurrentPart; // the current particle
-    QSqlDatabase              mDB;          // the data base
-    static ParticlesDBManager mPDBM;        // the unique instance
+    QHash<int, double>        mBaryonHash;   // buffer containing baryon of all particles
+    QHash<int, double>        mBContentHash; // buffer containing B Content of all particles
+    QHash<int, double>        mBeautyHash;   // buffer containing beauty of all particles
+    QHash<int, double>        mCContentHash; // buffer containing C content of all particles
+    QHash<int, double>        mChargeHash;   // buffer containing charge of all particles
+    QHash<int, double>        mCharmHash;    // buffer containing charm of all particles
+    QString                   mCurrentPart;  // the current particle
+    QSqlDatabase              mDB;           // the data base
     const QString             mkThermusName = "ThermusParticles";
     const QString             mkPDGName     = "PDGParticles";
+    QHash<int, double>        mMassHash;     // buffer containing mass of all particles
+    static ParticlesDBManager mPDBM;         // the unique instance
+    QHash<int, double>        mRadiusHash;   // buffer containing radius of all particles
+    QHash<int, double>        mSHash;        // buffer containing S of all particles
+    QHash<int, double>        mSContentHash; // buffer containing S content of all particles
+    QHash<int, double>        mSpinHash;     // buffer containing spin of all particles
+    QHash<int, double>        mStatHash;     // buffer containing stat of all particles
+    QHash<int, double>        mThresholdHash;// buffer containing threshold of all particles
+    QHash<int, double>        mWidthHash;    // buffer containing width of all particles
 
 };
 

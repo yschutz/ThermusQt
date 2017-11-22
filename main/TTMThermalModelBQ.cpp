@@ -850,6 +850,24 @@ int TTMThermalModelBQ::primPartDens()
 }
 
 //__________________________________________________________________________
+void TTMThermalModelBQ::reset()
+{
+    // reset everything except mPartPDGs;
+    // from the base class
+
+    mBaryon = mBeauty = mBminus = mBplus = mbminus = mbplus = mCharge = mCharm = mCminus = mCplus = mDensity = 0;
+
+    mEnergy = mEntropy = mPressure = mQminus = mQplus = mSminus = mSplus = mStrange = mWidth = mWroblewski = 0;
+
+    qDeleteAll(mDensTable.begin(), mDensTable.end());
+    mDensTable.clear();
+
+    // from this class
+    mNonStrangeQStats = true;
+    mPar = nullptr;
+}
+
+//__________________________________________________________________________
 TTMThermalModelBQ &TTMThermalModelBQ::operator=(const TTMThermalModelBQ model)
 {
   // assignation operator

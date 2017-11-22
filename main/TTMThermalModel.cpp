@@ -23,6 +23,8 @@ TTMThermalModel::TTMThermalModel(QObject *parent) : QObject(parent),
 {
     // ctor
     mPartPDGs.clear();
+    mPartPDGsS.clear();
+    mPartPDGsU.clear();
 }
 
 //__________________________________________________________________________
@@ -66,6 +68,9 @@ TTMThermalModel::~TTMThermalModel()
     //dtor
     qDeleteAll(mDensTable.begin(), mDensTable.end());
     mDensTable.clear();
+    mPartPDGs.clear();
+    mPartPDGsS.clear();
+    mPartPDGsU.clear();
 }
 
 //__________________________________________________________________________
@@ -78,16 +83,14 @@ void TTMThermalModel::calcWroblewski()
     //
 
     double absstrange, str, nstrange, nstr;
-    double absstrangemesons, absstrangebaryons, nstrangemesons,
-            nstrangebaryons;
-    absstrangemesons = absstrangebaryons = nstrangemesons
-            = nstrangebaryons = 0.;
+    double absstrangemesons, absstrangebaryons, nstrangemesons, nstrangebaryons;
 
-    QList<int> particles;
-    if (!ParticlesDBManager::Instance().allParticles(particles))
-        return;
+    absstrangemesons = absstrangebaryons = nstrangemesons = nstrangebaryons = 0.;
 
-    for (int pdg : particles) {
+    if (mPartPDGs.isEmpty())
+        ParticlesDBManager::Instance().allParticles(mPartPDGs);
+
+    for (int pdg : mPartPDGs) {
         TTMDensObj *dens = getDensities(pdg);
         if (!dens)
             return;
@@ -123,9 +126,9 @@ void TTMThermalModel::generateDecayPartDens()
     // decay contributions to the densities of the particles considered
     // stable in the particle set.
 
-    QList<int> stableParticles;
-    ParticlesDBManager::Instance().allParticles(stableParticles, ParticlesDBManager::kSTABLE);
-    for (int pdg : stableParticles) {
+    if (mPartPDGsS.isEmpty())
+        ParticlesDBManager::Instance().allParticles(mPartPDGsS, ParticlesDBManager::kSTABLE);
+    for (int pdg : mPartPDGsS) {
         QHash<int, double> br;
         ParticlesDBManager::Instance().allDecays(pdg, br, false);
         double decay = 0.0;
