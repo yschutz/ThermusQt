@@ -27,7 +27,7 @@ int BQfuncQBDens(const gsl_vector *x, void *p, gsl_vector *f)
         for (TTMDensObj* dens : model->getDensityTable()) {
             int id          = dens->getID();
             double partdens = dens->getPrimaryDensity();
-            if(ParticlesDBManager::Instance().getBaryon(id) != 0.)
+            if(ParticlesDBManager::instance().getBaryon(id) != 0.)
                 nb += partdens;
         }
         double dens = ((PARAMETERS*)p)->p1;

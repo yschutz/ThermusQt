@@ -42,8 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     QString partDir = mThermusDir.path() + "/particles/";
-    QString thermusDBName(QString(ParticlesDBManager::Instance().getThermusDBName()).append(".db"));
-    QString pdgDBName(QString(ParticlesDBManager::Instance().getPDGDBName()).append(".db"));
+    QString thermusDBName(QString(ParticlesDBManager::instance().getThermusDBName()).append(".db"));
+    QString pdgDBName(QString(ParticlesDBManager::instance().getPDGDBName()).append(".db"));
 
     mThermusDBPath = thermusDBName.prepend(partDir);
     mPdgDBPath     = pdgDBName.prepend(partDir);
@@ -477,9 +477,9 @@ void MainWindow::particlesDBManagement(DBOPS option)
     // connect
     if (soption.contains("Connect")) {
         if (thermus)
-            ParticlesDBManager::Instance().connect(mThermusDBPath);
+            ParticlesDBManager::instance().connect(mThermusDBPath);
         else if (pdg)
-            ParticlesDBManager::Instance().connect(mPdgDBPath);
+            ParticlesDBManager::instance().connect(mPdgDBPath);
         return;
     }
     // ======================
@@ -592,7 +592,7 @@ void MainWindow::particlesDBManagement(DBOPS option)
     // ======================
     // search a particle with its decay channels
     if (soption.contains("Search")) {
-        if (ParticlesDBManager::Instance().connect(kPartDir + dbName)) {
+        if (ParticlesDBManager::instance().connect(kPartDir + dbName)) {
             mFd = new FindDialog(sourceName, this);
             mFd->exec();
         }
@@ -602,8 +602,8 @@ void MainWindow::particlesDBManagement(DBOPS option)
     // ======================
     // List all particles
     if (soption.contains("List")) {
-        if (ParticlesDBManager::Instance().connect(kPartDir + dbName)) {
-            ParticlesDBManager::Instance().listParticles(ParticlesDBManager::kALL);
+        if (ParticlesDBManager::instance().connect(kPartDir + dbName)) {
+            ParticlesDBManager::instance().listParticles(ParticlesDBManager::kALL);
         }
         return;
     }
@@ -611,7 +611,7 @@ void MainWindow::particlesDBManagement(DBOPS option)
     // ======================
     // Insert a new particle into Thermus DB
     if (option == kInsert) {
-        bool connected = ParticlesDBManager::Instance().connect(kPartDir + dbName);
+        bool connected = ParticlesDBManager::instance().connect(kPartDir + dbName);
         if (!connected) {
             QMessageBox msg(QMessageBox::Critical, "DB connection",
                             QString("Could not connect to particles DB: %1").arg(kPartDir + dbName));

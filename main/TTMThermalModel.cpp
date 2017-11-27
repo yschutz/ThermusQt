@@ -82,7 +82,7 @@ void TTMThermalModel::calcWroblewski()
 
     absstrangemesons = absstrangebaryons = nstrangemesons = nstrangebaryons = 0.;
 
-    QHashIterator<int, TTMParticle*> particles(ParticlesDBManager::Instance().allParticles());
+    QHashIterator<int, TTMParticle*> particles(ParticlesDBManager::instance().allParticles());
     while (particles.hasNext()) {
         particles.next();
         int pdg           = particles.key();
@@ -119,7 +119,7 @@ void TTMThermalModel::generateDecayPartDens()
     // decay contributions to the densities of the particles considered
     // stable in the particle set.
 
-    QHashIterator<int, TTMParticle*> particles(ParticlesDBManager::Instance().allParticles());
+    QHashIterator<int, TTMParticle*> particles(ParticlesDBManager::instance().allParticles());
     while (particles.hasNext()) {
         particles.next();
         int pdg               = particles.key();
@@ -127,7 +127,7 @@ void TTMThermalModel::generateDecayPartDens()
         if (!particle->isStable())
             continue;
         QHash<int, double> br;
-        ParticlesDBManager::Instance().allDecays(pdg, br, false);
+        ParticlesDBManager::instance().allDecays(pdg, br, false);
         double decay = 0.0;
         QHash<int, double>::iterator i;
         for (i = br.begin(); i != br.end(); ++i) {
@@ -147,12 +147,12 @@ void TTMThermalModel::generateDecayPartDens(int pdg)
     // provided the particle is stable!
     // (NB must first populate the hash table with primordial densities)
 
-    if (!ParticlesDBManager::Instance().isStable(pdg)) {
+    if (!ParticlesDBManager::instance().isStable(pdg)) {
         getDensities(pdg)->setDecayDensity(0.0);
         return;
     }
     QHash<int, double> br;
-    ParticlesDBManager::Instance().allDecays(pdg, br, false);
+    ParticlesDBManager::instance().allDecays(pdg, br, false);
     double decay = 0.0;
     QHash<int, double>::iterator i;
     for (i = br.begin(); i != br.end(); ++i) {
@@ -193,7 +193,7 @@ void TTMThermalModel::listDecayContributions(int daughter) const
     model->setHorizontalHeaderLabels(headers);
 
     QHash<int, double> parents;
-    if (!ParticlesDBManager::Instance().allDecays(daughter, parents))
+    if (!ParticlesDBManager::instance().allDecays(daughter, parents))
         return;
 
     TTMDensObj* dens = getDensities(daughter);
@@ -212,7 +212,7 @@ void TTMThermalModel::listDecayContributions(int daughter) const
         total += contrib;
         QList<QStandardItem*> onerow;
         onerow << new QStandardItem(QString::number(parent)) <<
-                  new QStandardItem(ParticlesDBManager::Instance().getName(parent)) <<
+                  new QStandardItem(ParticlesDBManager::instance().getName(parent)) <<
                   new QStandardItem(QString::number(n_decay * 100)) <<
                   new QStandardItem(QString::number(contrib)) <<
                   new QStandardItem(QString::number(total));
@@ -238,7 +238,7 @@ void TTMThermalModel::listDecayContributions(int parent, int daughter) const
     model->setHorizontalHeaderLabels(headers);
 
     QHash<int, double> parents;
-    if (!ParticlesDBManager::Instance().allDecays(daughter, parents))
+    if (!ParticlesDBManager::instance().allDecays(daughter, parents))
         return;
 
     TTMDensObj* dens = getDensities(daughter);
@@ -256,7 +256,7 @@ void TTMThermalModel::listDecayContributions(int parent, int daughter) const
         double contrib = getDensities(parent)->getPrimaryDensity() * br;
         QList<QStandardItem*> onerow;
         onerow << new QStandardItem(QString::number(parent)) <<
-                  new QStandardItem(ParticlesDBManager::Instance().getName(parent)) <<
+                  new QStandardItem(ParticlesDBManager::instance().getName(parent)) <<
                   new QStandardItem(QString::number(n_decay * 100)) <<
                   new QStandardItem(QString::number(contrib));
         model->appendRow(onerow);
@@ -277,7 +277,7 @@ void TTMThermalModel::listStableDensities() const
     headers << "parent pdg" << "particle name" << "primordial density" << "decay contribution";
     model->setHorizontalHeaderLabels(headers);
 
-    QHashIterator<int, TTMParticle*> part(ParticlesDBManager::Instance().allParticles());
+    QHashIterator<int, TTMParticle*> part(ParticlesDBManager::instance().allParticles());
     while (part.hasNext()) {
         part.next();
         int pdg               = part.key();
@@ -290,7 +290,7 @@ void TTMThermalModel::listStableDensities() const
             return;
         }
         QList<QStandardItem*> onerow;
-        onerow << new QStandardItem(ParticlesDBManager::Instance().getName(pdg)) <<
+        onerow << new QStandardItem(ParticlesDBManager::instance().getName(pdg)) <<
                   new QStandardItem(QString::number(dens->getPrimaryDensity())) <<
                   new QStandardItem(QString::number(dens->getDecayDensity()));
         model->appendRow(onerow);

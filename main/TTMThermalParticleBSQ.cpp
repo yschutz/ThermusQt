@@ -57,8 +57,8 @@ double TTMThermalParticleBSQ::densityQStatNoWidth(double exclVolPressure)
     updateMembers(exclVolPressure);
     double lDensity = 0;
 
-    int stat    = ParticlesDBManager::Instance().getStat(mParticle);
-    double mass = ParticlesDBManager::Instance().getMass(mParticle);
+    int stat    = ParticlesDBManager::instance().getStat(mParticle);
+    double mass = ParticlesDBManager::instance().getMass(mParticle);
 
     if (mT==0.) {
         if (stat == -1.)
@@ -109,9 +109,9 @@ double TTMThermalParticleBSQ::densityQStatWidth(double exclVolPressure)
     updateMembers(exclVolPressure);
     double lDensity = 0.0;
 
-    int stat         = ParticlesDBManager::Instance().getStat(mParticle);
-    double width     = ParticlesDBManager::Instance().getWidth(mParticle);
-    double threshold = ParticlesDBManager::Instance().getThreshold(mParticle);
+    int stat         = ParticlesDBManager::instance().getStat(mParticle);
+    double width     = ParticlesDBManager::instance().getWidth(mParticle);
+    double threshold = ParticlesDBManager::instance().getThreshold(mParticle);
 
     if (stat == 0)
         lDensity = densityBoltzmannWidth();
@@ -159,8 +159,8 @@ double TTMThermalParticleBSQ::energyQStatNoWidth(double exclVolPressure)
     updateMembers(exclVolPressure);
     double lEnergy = 0.0;
 
-    int stat    = ParticlesDBManager::Instance().getStat(mParticle);
-    double mass = ParticlesDBManager::Instance().getMass(mParticle);
+    int stat    = ParticlesDBManager::instance().getStat(mParticle);
+    double mass = ParticlesDBManager::instance().getMass(mParticle);
 
     if (mT==0.) {
         if(stat == -1.)
@@ -211,9 +211,9 @@ double TTMThermalParticleBSQ::energyQStatWidth(double exclVolPressure)
     updateMembers(exclVolPressure);
     double lEnergy = 0.0;
 
-    int stat         = ParticlesDBManager::Instance().getStat(mParticle);
-    double width     = ParticlesDBManager::Instance().getWidth(mParticle);
-    double threshold = ParticlesDBManager::Instance().getThreshold(mParticle);
+    int stat         = ParticlesDBManager::instance().getStat(mParticle);
+    double width     = ParticlesDBManager::instance().getWidth(mParticle);
+    double threshold = ParticlesDBManager::instance().getThreshold(mParticle);
 
     if (stat == 0.)
         lEnergy = energyBoltzmannWidth();
@@ -273,10 +273,10 @@ double TTMThermalParticleBSQ::entropyBoltzmannWidth(double exclVolPressure)
 
     updateMembers(exclVolPressure);
     double lEntropy  = 0.0;
-    double width     = ParticlesDBManager::Instance().getWidth(mParticle);
+    double width     = ParticlesDBManager::instance().getWidth(mParticle);
 
     if (width != 0) {
-        double threshold = ParticlesDBManager::Instance().getThreshold(mParticle);
+        double threshold = ParticlesDBManager::instance().getThreshold(mParticle);
         double a = qMax(mM - 2. * width, threshold);
 
         double (*pFcnEntropyBoltzmannWidth)(double*, double*);
@@ -309,7 +309,7 @@ double TTMThermalParticleBSQ::entropyQStatNoWidth(double exclVolPressure)
     updateMembers(exclVolPressure);
     double lEntropy = 0;
 
-    int stat = ParticlesDBManager::Instance().getStat(mParticle);
+    int stat = ParticlesDBManager::instance().getStat(mParticle);
 
     if (!parametersAllowed())
         lEntropy = 0;
@@ -340,16 +340,16 @@ double TTMThermalParticleBSQ::entropyQStatWidth(double exclVolPressure)
 
     updateMembers(exclVolPressure);
     double lEntropy = 0;
-    int stat        = ParticlesDBManager::Instance().getStat(mParticle);
+    int stat        = ParticlesDBManager::instance().getStat(mParticle);
 
     if (stat == 0.)
         lEntropy = entropyBoltzmannWidth();
     else if (!parametersAllowed())
         lEntropy = 0;
     else {
-        double width = ParticlesDBManager::Instance().getWidth(mParticle);
+        double width = ParticlesDBManager::instance().getWidth(mParticle);
         if (width != 0) {
-            double threshold = ParticlesDBManager::Instance().getThreshold(mParticle);
+            double threshold = ParticlesDBManager::instance().getThreshold(mParticle);
             double a = qMax(mM - 2. * width, threshold);
 
             double (*pFcnEntropyDensWidth)(double*, double*);
@@ -387,14 +387,14 @@ bool TTMThermalParticleBSQ::parametersAllowed()
     // Checks for Bosons that
     // e^{(m_i-mu_i)/T}>Gammas^{|S_i|}*Gammac^{|C_i|}*Gammab^{|b_i|}
 
-    if (ParticlesDBManager::Instance().getStat(mParticle) == -1) {
+    if (ParticlesDBManager::instance().getStat(mParticle) == -1) {
         updateMembers();
         if (qExp((mM - mMu) / mT) > mG) {
             return true;
         } else {
             QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, Q_FUNC_INFO);
             msg.setInformativeText(QString("Bose-Einstein Condensation of %1 (%2): mM=%3; mMu=%4; mT=%5; mG=%6").
-                                   arg(ParticlesDBManager::Instance().getName(mParticle)).
+                                   arg(ParticlesDBManager::instance().getName(mParticle)).
                                    arg(mParticle).
                                    arg(mM).arg(mMu).arg(mT).arg(mG));
             msg.exec();
@@ -411,7 +411,7 @@ double TTMThermalParticleBSQ::pressureQStatNoWidth(double exclVolPressure)
 
     updateMembers(exclVolPressure);
     double lPressure = 0.;
-    int stat         = ParticlesDBManager::Instance().getStat(mParticle);
+    int stat         = ParticlesDBManager::instance().getStat(mParticle);
 
     if (!parametersAllowed())
         lPressure = 0;
@@ -443,16 +443,16 @@ double TTMThermalParticleBSQ::pressureQStatWidth(double exclVolPressure)
 
     updateMembers(exclVolPressure);
     double lPressure = 0;
-    int stat         = ParticlesDBManager::Instance().getStat(mParticle);
+    int stat         = ParticlesDBManager::instance().getStat(mParticle);
 
     if (stat == 0.)
         lPressure = pressureBoltzmannWidth();
     else if (!parametersAllowed())
         lPressure = 0;
     else {
-        double width = ParticlesDBManager::Instance().getWidth(mParticle);
+        double width = ParticlesDBManager::instance().getWidth(mParticle);
         if (width != 0) {
-            double threshold = ParticlesDBManager::Instance().getThreshold(mParticle);
+            double threshold = ParticlesDBManager::instance().getThreshold(mParticle);
             double a = qMax(mM - 2. * width, threshold);
 
             double (*pFcnPressureWidth)(double*, double*);
@@ -487,13 +487,13 @@ double TTMThermalParticleBSQ::pressureQStatWidth(double exclVolPressure)
 //__________________________________________________________________________
 void TTMThermalParticleBSQ::updateMembers(double exclVolPressure)
 {
-    mDeg    = ParticlesDBManager::Instance().getSpin(mParticle);
-    mM      = ParticlesDBManager::Instance().getMass(mParticle);
-    mB      = ParticlesDBManager::Instance().getBaryon(mParticle);
-    mS      = ParticlesDBManager::Instance().getS(mParticle);
-    mQ      = ParticlesDBManager::Instance().getCharge(mParticle);
-    mC      = ParticlesDBManager::Instance().getCharm(mParticle);
-    mBeauty = ParticlesDBManager::Instance().getBeauty(mParticle);
+    mDeg    = ParticlesDBManager::instance().getSpin(mParticle);
+    mM      = ParticlesDBManager::instance().getMass(mParticle);
+    mB      = ParticlesDBManager::instance().getBaryon(mParticle);
+    mS      = ParticlesDBManager::instance().getS(mParticle);
+    mQ      = ParticlesDBManager::instance().getCharge(mParticle);
+    mC      = ParticlesDBManager::instance().getCharm(mParticle);
+    mBeauty = ParticlesDBManager::instance().getBeauty(mParticle);
 
     mT        = mParameters->getT();
     mMuB      = mParameters->getMuB();
@@ -504,15 +504,15 @@ void TTMThermalParticleBSQ::updateMembers(double exclVolPressure)
 
     mMu = mB * mMuB + mS * mMuS + mQ * mMuQ + mC * mMuC + mBeauty * mMuBeauty;
 
-    double SContent = ParticlesDBManager::Instance().getSContent(mParticle);
+    double SContent = ParticlesDBManager::instance().getSContent(mParticle);
     double gammas = mParameters->getGammas();
     double Gs;
 
-    double CContent = ParticlesDBManager::Instance().getCContent(mParticle);
+    double CContent = ParticlesDBManager::instance().getCContent(mParticle);
     double gammac = mParameters->getGammac();
     double Gc;
 
-    double bContent = ParticlesDBManager::Instance().getBContent(mParticle);
+    double bContent = ParticlesDBManager::instance().getBContent(mParticle);
     double gammab = mParameters->getGammab();
     double Gb;
 
@@ -540,7 +540,7 @@ void TTMThermalParticleBSQ::updateMembers(double exclVolPressure)
         mQ      = 0;
         mC      = 0;
         mBeauty = 0;
-        double radius =   ParticlesDBManager::Instance().getRadius(mParticle);
+        double radius =   ParticlesDBManager::instance().getRadius(mParticle);
         double volume = 4. * 4./3. * M_PI * qPow(radius,3);
         double shift = volume * exclVolPressure;
         mMuB      = mMu - shift;

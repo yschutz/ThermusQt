@@ -34,7 +34,7 @@ int BSQfuncSBDens(const gsl_vector* x, void* p, gsl_vector* f)
             int id           = next.key();
             TTMDensObj* dens = next.value();
             double partdens =  dens->getPrimaryDensity();
-            if (ParticlesDBManager::Instance().getBaryon(id) != 0)
+            if (ParticlesDBManager::instance().getBaryon(id) != 0)
                 nb += partdens;
         }
         double sb1 = ((PARAMETERSS *)p)->p2;

@@ -39,11 +39,11 @@ double TTMThermalParticle::densityBoltzmannWidth(double exclVolPressure)
 
     updateMembers(exclVolPressure);
     double lDensity = 0.0;
-    double width = ParticlesDBManager::Instance().getWidth(mParticle);
+    double width = ParticlesDBManager::instance().getWidth(mParticle);
 
     if (width != 0) {
 
-        double threshold = ParticlesDBManager::Instance().getThreshold(mParticle);
+        double threshold = ParticlesDBManager::instance().getThreshold(mParticle);
 
         double a = qMax(mM - 2. * width, threshold);
 
@@ -90,11 +90,11 @@ double TTMThermalParticle::energyBoltzmannWidth(double exclVolPressure)
 
     updateMembers(exclVolPressure);
     double lEnergy = 0;
-    double width = ParticlesDBManager::Instance().getWidth(mParticle);
+    double width = ParticlesDBManager::instance().getWidth(mParticle);
 
     if(width != 0){
 
-        double threshold = ParticlesDBManager::Instance().getThreshold(mParticle);
+        double threshold = ParticlesDBManager::instance().getThreshold(mParticle);
 
         double a = qMax(mM - 2. * width, threshold);
 

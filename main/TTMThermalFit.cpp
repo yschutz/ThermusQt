@@ -32,8 +32,6 @@ TTMThermalFit::~TTMThermalFit()
     // dtor
     qDeleteAll(mYields.begin(), mYields.end());
     mYields.clear();
-    //delete mMinuit; //carefull in case QMinuit becomes a singleton
-//    delete mYieldView;
 }
 
 //__________________________________________________________________________
@@ -83,8 +81,8 @@ void TTMThermalFit::generateYields()
                 double hmin = 0.;
                 model->generateDecayPartDens();
                 for (TTMDensObj* dens : model->getDensityTable()) {
-                    double charge = ParticlesDBManager::Instance().getCharge(dens->getID());
-                    if(ParticlesDBManager::Instance().isStable(dens->getID()) && charge < 0)
+                    double charge = ParticlesDBManager::instance().getCharge(dens->getID());
+                    if(ParticlesDBManager::instance().isStable(dens->getID()) && charge < 0)
                         hmin += dens->getFinalDensity();
                 }
                 yield->setModelValue(hmin * volume);
@@ -92,8 +90,8 @@ void TTMThermalFit::generateYields()
                 double hplus = 0.;
                 model->generateDecayPartDens();
                 for (TTMDensObj* dens : model->getDensityTable()) {
-                    double charge = ParticlesDBManager::Instance().getCharge(dens->getID());
-                    if(ParticlesDBManager::Instance().isStable(dens->getID()) && charge > 0)
+                    double charge = ParticlesDBManager::instance().getCharge(dens->getID());
+                    if(ParticlesDBManager::instance().isStable(dens->getID()) && charge > 0)
                         hplus += dens->getFinalDensity();
                 }
                 yield->setModelValue(hplus * volume);
@@ -138,40 +136,34 @@ void TTMThermalFit::generateYields()
                 double hmin = 0.;
                 model->generateDecayPartDens();
                 for (TTMDensObj* dens : model->getDensityTable()) {
-                    double charge = ParticlesDBManager::Instance().getCharge(dens->getID());
-                    if(ParticlesDBManager::Instance().isStable(dens->getID()) && charge < 0)
+                    double charge = ParticlesDBManager::instance().getCharge(dens->getID());
+                    if(ParticlesDBManager::instance().isStable(dens->getID()) && charge < 0)
                         hmin += dens->getFinalDensity();
                 }
                 double den = hmin;
                 yield->setModelValue(num / den);
             } else if(id2 == 3){
-//                model->SetParticleSet(next_yield->GetPartSet1());
                 model->generateDecayPartDens(id1);
                 double num = model->getDensities(id1)->getFinalDensity();
-//                model->SetParticleSet(next_yield->GetPartSet2());
                 double hplus = 0.;
                 model->generateDecayPartDens();
                 for (TTMDensObj* dens : model->getDensityTable()) {
-                    double charge = ParticlesDBManager::Instance().getCharge(dens->getID());
-                    if(ParticlesDBManager::Instance().isStable(dens->getID()) && charge > 0)
+                    double charge = ParticlesDBManager::instance().getCharge(dens->getID());
+                    if(ParticlesDBManager::instance().isStable(dens->getID()) && charge > 0)
                         hplus += dens->getFinalDensity();
                 }
                 double den = hplus;
                 yield->setModelValue(num / den);
             } else if(id2 == 33340) {
-                //                    model->SetParticleSet(next_yield->GetPartSet1());
                 model->generateDecayPartDens(id1);
                 double num = model->getDensities(id1)->getFinalDensity();
-                //                    model->SetParticleSet(next_yield->GetPartSet2());
                 model->generateDecayPartDens(3334);
                 model->generateDecayPartDens(-3334);
                 double den = model->getDensities(3334)->getFinalDensity() + model->getDensities(-3334)->getFinalDensity();
                 yield->setModelValue(num / den);
             } else {
-                //                    model->SetParticleSet(next_yield->GetPartSet1());
                 model->generateDecayPartDens(id1);
                 double num = model->getDensities(id1)->getFinalDensity();
-                //                    model->SetParticleSet(next_yield->GetPartSet2());
                 model->generateDecayPartDens(id2);
                 double den = model->getDensities(id2)->getFinalDensity();
                 yield->setModelValue(num / den);
@@ -199,28 +191,28 @@ QString TTMThermalFit::getTMName(int id1, int id2, const QString& /*descr*/) con
        } else if (id1 == 33340) {
          name = name.append("Omega + anti-Omega");
        } else {
-         name = ParticlesDBManager::Instance().getName(id1, "ThermusParticles");
+         name = ParticlesDBManager::instance().getName(id1, "ThermusParticles");
        }
      } else {
        if(id1 == 3130) {
          name = "<";
-         name = name.append(ParticlesDBManager::Instance().getName(313, "ThermusParticles"));
-         name = name.append(">").append("/").append(ParticlesDBManager::Instance().getName(id2, "ThermusParticles"));
+         name = name.append(ParticlesDBManager::instance().getName(313, "ThermusParticles"));
+         name = name.append(">").append("/").append(ParticlesDBManager::instance().getName(id2, "ThermusParticles"));
        } else if(id1 == 33340){
          name = name.append("Omega + anti-Omega");
-         name = name.append("/").append(ParticlesDBManager::Instance().getName(id2, "ThermusParticles"));
+         name = name.append("/").append(ParticlesDBManager::instance().getName(id2, "ThermusParticles"));
        } else if(id2 == 2) {
-         name = ParticlesDBManager::Instance().getName(id1, "ThermusParticles");
+         name = ParticlesDBManager::instance().getName(id1, "ThermusParticles");
          name = name.append("/").append("h-");
        } else if(id2 == 3){
-         name = ParticlesDBManager::Instance().getName(id1, "ThermusParticles");
+         name = ParticlesDBManager::instance().getName(id1, "ThermusParticles");
          name = name.append("/").append("h+");
        } else if(id2 == 33340){
-         name = ParticlesDBManager::Instance().getName(id1, "ThermusParticles");
+         name = ParticlesDBManager::instance().getName(id1, "ThermusParticles");
          name = name.append("/").append("Omega + anti-Omega");
        } else {
-         name = ParticlesDBManager::Instance().getName(id1, "ThermusParticles");
-         name = name.append("/").append(ParticlesDBManager::Instance().getName(id2, "ThermusParticles"));
+         name = ParticlesDBManager::instance().getName(id1, "ThermusParticles");
+         name = name.append("/").append(ParticlesDBManager::instance().getName(id2, "ThermusParticles"));
        }
      }
 //     if(!descr.isEmpty()) {
@@ -327,42 +319,35 @@ void TTMThermalFit::inputExpYields(QString& fileName)
 //__________________________________________________________________________
 void TTMThermalFit::listMinuitInfo() const
 {
-//    if(mMinuit){
+    double amin, edm, errdef;
+    int nvpar, nparx, icstat;
+    QMinuit::instance().qmnstat(amin, edm, errdef, nvpar, nparx, icstat);
 
-        double amin, edm, errdef;
-        int nvpar, nparx, icstat;
-        QMinuit::instance().qmnstat(amin, edm, errdef, nvpar, nparx, icstat);
+    QString comment;
+    if(icstat == 0)
+        comment = "Covariance matrix not calculated";
+    else if(icstat == 1)
+        comment ="Covariance matrix approximated only - not accurate";
+    else if(icstat == 2)
+        comment = "Full covariance matrix calculated but forced positive definite";
+    else if(icstat == 3)
+        comment = "Full accurate covariance matrix calculated";
 
-        QString comment;
-        if(icstat == 0)
-            comment = "Covariance matrix not calculated";
-        else if(icstat == 1)
-            comment ="Covariance matrix approximated only - not accurate";
-        else if(icstat == 2)
-            comment = "Full covariance matrix calculated but forced positive definite";
-        else if(icstat == 3)
-            comment = "Full accurate covariance matrix calculated";
-
-        QStandardItemModel* model = new QStandardItemModel;
-        QStringList headers;
-        headers << "FCN" << "EDM" << "Errdef" << comment;
-        model->setHorizontalHeaderLabels(headers);
-        QList<QStandardItem*> onerow;
-        onerow << new QStandardItem(QString::number(amin)) <<
-                  new QStandardItem(QString::number(edm))  <<
-                  new QStandardItem(QString::number(errdef));
-        model->appendRow(onerow);
-        QMinuit::instance().qmnprin(2, amin);
-        QMinuit::instance().qmnmatu(1);
-        QTableView* view = new QTableView;
-        view->setAttribute(Qt::WA_DeleteOnClose);
-        view->setModel(model);
-        view->show();
-//      } else {
-//        QMessageBox msg(QMessageBox::Warning, "ListMinuitInfo", Q_FUNC_INFO);
-//        msg.setInformativeText("Run FitData() to instantiate a QMinuit object");
-//        msg.exec();
-//      }
+    QStandardItemModel* model = new QStandardItemModel;
+    QStringList headers;
+    headers << "FCN" << "EDM" << "Errdef" << comment;
+    model->setHorizontalHeaderLabels(headers);
+    QList<QStandardItem*> onerow;
+    onerow << new QStandardItem(QString::number(amin)) <<
+              new QStandardItem(QString::number(edm))  <<
+              new QStandardItem(QString::number(errdef));
+    model->appendRow(onerow);
+    QMinuit::instance().qmnprin(2, amin);
+    QMinuit::instance().qmnmatu(1);
+    QTableView* view = new QTableView;
+    view->setAttribute(Qt::WA_DeleteOnClose);
+    view->setModel(model);
+    view->show();
 }
 
 //__________________________________________________________________________

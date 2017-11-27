@@ -186,11 +186,11 @@ QString ParticlesDBManager::getPartParameter(int pdg, ENTRY what, const QString&
     QString squery("SELECT * FROM particle WHERE pdg = (:val)");
     kQuery.prepare(squery);
     kQuery.bindValue(":val", pdg);
-    QString save = ParticlesDBManager::Instance().dbName();
+    QString save = ParticlesDBManager::instance().dbName();
     if (where.contains(mkPDGName)) {
         QString newName(save);
         newName.replace(mkThermusName, mkPDGName);
-        bool connected = ParticlesDBManager::Instance().connect(newName);
+        bool connected = ParticlesDBManager::instance().connect(newName);
         if (!connected) {
             return rv;
         }
@@ -202,7 +202,7 @@ QString ParticlesDBManager::getPartParameter(int pdg, ENTRY what, const QString&
         rv = kQuery.record().value(sEntry).toString();
     }
     if (where.contains(mkPDGName))
-        ParticlesDBManager::Instance().connect(save);
+        ParticlesDBManager::instance().connect(save);
 
     return rv;
 }
@@ -276,10 +276,10 @@ QString ParticlesDBManager::getName(int pdg, const QString& where) const
     }
 
     if (name.isEmpty() && (where.contains("all") || where.contains(mkPDGName))) { // try to find it in PDG DB
-        QString save = ParticlesDBManager::Instance().dbName();
+        QString save = ParticlesDBManager::instance().dbName();
         QString newName(save);
         newName.replace(mkThermusName, mkPDGName);
-        if (!ParticlesDBManager::Instance().connect(newName)) {
+        if (!ParticlesDBManager::instance().connect(newName)) {
             return "";
         }  else {
             query.clear();
@@ -292,7 +292,7 @@ QString ParticlesDBManager::getName(int pdg, const QString& where) const
             query.next();
             name = query.record().value("name").toString();
         }
-        ParticlesDBManager::Instance().connect(save);
+        ParticlesDBManager::instance().connect(save);
     }
 
     return name;
@@ -313,11 +313,11 @@ int ParticlesDBManager::getPDG(QString name) const
     query.next();
     int pdg = query.record().value(0).toInt();
     if (pdg == 0) { // try to find it in PDG DB
-        QString save = ParticlesDBManager::Instance().dbName();
+        QString save = ParticlesDBManager::instance().dbName();
         QString newName(save);
         newName.replace(mkThermusName, mkPDGName);
-//        bool connected = ParticlesDBManager::Instance().connect(newName);
-        if (ParticlesDBManager::Instance().connect(newName)) {
+//        bool connected = ParticlesDBManager::instance().connect(newName);
+        if (ParticlesDBManager::instance().connect(newName)) {
             query.clear();
             query.prepare(squery);
             query.bindValue(":val", name);
@@ -328,7 +328,7 @@ int ParticlesDBManager::getPDG(QString name) const
             query.next();
             pdg = query.record().value(0).toInt();
         }
-        ParticlesDBManager::Instance().connect(save);
+        ParticlesDBManager::instance().connect(save);
     }
     return pdg;
 }
@@ -409,7 +409,7 @@ int ParticlesDBManager::id(QString name) const
 }
 
 //__________________________________________________________________________
-ParticlesDBManager &ParticlesDBManager::Instance()
+ParticlesDBManager &ParticlesDBManager::instance()
 {
     // return the unique instance
 
@@ -626,7 +626,7 @@ void ParticlesDBManager::insertParticle(const QList<QString> &parameters)
 //            QStringList pdgs = decay.split('>').last().split(',');
 //            for (QString sdpdg : pdgs) {
 //                int dpdg = sdpdg.trimmed().toInt();
-//                QString name = ParticlesDBManager::Instance().name(dpdg);
+//                QString name = ParticlesDBManager::instance().name(dpdg);
 //                output.append(QString("%1, ").arg(name));
 //            }
 //            output.remove(output.lastIndexOf(','), 2);
@@ -741,7 +741,7 @@ QStringList ParticlesDBManager::listDecays(const QString &partPDG, qreal thr) co
                 QStringList pdgs = decay.split('>').last().split(',');
                 for (QString sdpdg : pdgs) {
                     int dpdg = sdpdg.trimmed().toInt();
-                    QString name = ParticlesDBManager::Instance().getName(dpdg);
+                    QString name = ParticlesDBManager::instance().getName(dpdg);
                     output.append(QString("%1, ").arg(name));
                 }
                 output.remove(output.lastIndexOf(','), 2);
@@ -992,7 +992,7 @@ bool ParticlesDBManager::allDecays(int pdg, QHash<int, double> &br, bool normali
 }
 
 //__________________________________________________________________________
-QHash<int, TTMParticle*> ParticlesDBManager::allParticles(ListOption opt)
+QHash<int, TTMParticle*> ParticlesDBManager::allParticles()
 {
     // retrieves all particles in the Thermus DB
 
@@ -1000,20 +1000,6 @@ QHash<int, TTMParticle*> ParticlesDBManager::allParticles(ListOption opt)
         return mParticles;
 
     QString squery;
-    //    switch (opt) {
-    //    case kALL:
-    //        squery = "SELECT pdg FROM particle";
-    //        break;
-    //    case kSTABLE:
-    //        squery = "SELECT pdg FROM particle WHERE ndecay = 0";
-    //        break;
-    //    case kUNSTABLE:
-    //        squery = "SELECT pdg FROM particle WHERE ndecay != 0";
-    //        break;
-    //    default:
-    //        break;
-    //    }
-
     squery = "SELECT pdg, name, spin, statistic, mass, s, baryon, charge, c, b, t, sc, cc, bc, tc, width, lifetime, threshold, radius, ndecay FROM particle";
     QSqlQuery query(squery);
     if (!query.exec()) {

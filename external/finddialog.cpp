@@ -70,7 +70,7 @@ void FindDialog::remove()
 {
     // remove the selected particle and decays from DB
 
-    ParticlesDBManager::Instance().removeParticle(mPDG->text());
+    ParticlesDBManager::instance().removeParticle(mPDG->text());
 }
 
 //__________________________________________________________________________
@@ -80,7 +80,7 @@ void FindDialog::go()
 
     QString name = mFindText->text();
 
-    QStringList properties = ParticlesDBManager::Instance().listProperties(name);
+    QStringList properties = ParticlesDBManager::instance().listProperties(name);
     if (properties.size() == 0)
         return;
     mPDG->setText(properties.at(0));
@@ -90,7 +90,7 @@ void FindDialog::go()
     mProperties->setVisible(true);
     mDelete->setVisible(true);
 
-    ParticlesDBManager::Instance().setCurrentParticle(name);
+    ParticlesDBManager::instance().setCurrentParticle(name);
     showDecays();
 }
 

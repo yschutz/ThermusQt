@@ -47,13 +47,13 @@ TTMThermalParticleBQ::TTMThermalParticleBQ(TTMThermalParticleBQ &obj)
 //__________________________________________________________________________
 void TTMThermalParticleBQ::updateMembers(double /*exclVolPressure*/)
 {
-    mDeg = ParticlesDBManager::Instance().getSpin(mParticle);
-    mM   = ParticlesDBManager::Instance().getMass(mParticle);
+    mDeg = ParticlesDBManager::instance().getSpin(mParticle);
+    mM   = ParticlesDBManager::instance().getMass(mParticle);
     mT   = mParameters->getT();
 
-    double B        = ParticlesDBManager::Instance().getBaryon(mParticle);
-    double Q        = ParticlesDBManager::Instance().getCharge(mParticle);
-    double SContent = ParticlesDBManager::Instance().getSContent(mParticle);
+    double B        = ParticlesDBManager::instance().getBaryon(mParticle);
+    double Q        = ParticlesDBManager::instance().getCharge(mParticle);
+    double SContent = ParticlesDBManager::instance().getSContent(mParticle);
 
     double muB    = mParameters->getMuB();
     double muQ    = mParameters->getMuQ();

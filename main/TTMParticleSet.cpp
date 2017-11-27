@@ -51,7 +51,7 @@ TTMParticleSet::TTMParticleSet(QString /*file*/, bool /*CB*/, QObject *parent)  
 
 //    mPartTable      = new QHash<QString, TTMParticle*>;
 //    mFilename       = file;
-    mParticleNumber = ParticlesDBManager::Instance().size();
+    mParticleNumber = ParticlesDBManager::instance().size();
 
 //    QFile data(file);
 //    if (!data.open(QFile::ReadOnly)) {

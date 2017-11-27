@@ -24,7 +24,7 @@ ListDialog::ListDialog(QWidget *parent) : QDialog(parent)
     setAttribute(Qt::WA_DeleteOnClose);
 
     // decode the string list
-    QString partName = ParticlesDBManager::Instance().currentPart();
+    QString partName = ParticlesDBManager::instance().currentPart();
 
     QGridLayout* decayLayout = new QGridLayout;
 
@@ -34,7 +34,7 @@ ListDialog::ListDialog(QWidget *parent) : QDialog(parent)
                            );
     QFontMetrics metrics(QApplication::font());
 
-    QStringList decays = ParticlesDBManager::Instance().listDecays(partName, 0.);
+    QStringList decays = ParticlesDBManager::instance().listDecays(partName, 0.);
 
     for (int index = 1; index < decays.size(); index++) {
         QString decay = decays.at(index);
@@ -106,12 +106,12 @@ void ListDialog::add()
 {
     // add a decay: firs check if  decays are found in PDGParticles.db
 
-    QString save = ParticlesDBManager::Instance().dbName();
+    QString save = ParticlesDBManager::instance().dbName();
     QString newName(save);
-    newName.replace(ParticlesDBManager::Instance().getThermusDBName(), ParticlesDBManager::Instance().getPDGDBName());
-    if (ParticlesDBManager::Instance().connect(newName)) {
-        QStringList list = ParticlesDBManager::Instance().listDecays(ParticlesDBManager::Instance().currentPart());
-        ParticlesDBManager::Instance().connect(save);
+    newName.replace(ParticlesDBManager::instance().getThermusDBName(), ParticlesDBManager::instance().getPDGDBName());
+    if (ParticlesDBManager::instance().connect(newName)) {
+        QStringList list = ParticlesDBManager::instance().listDecays(ParticlesDBManager::instance().currentPart());
+        ParticlesDBManager::instance().connect(save);
         NewDecayDialog* nd = new NewDecayDialog(list, this);
         connect(nd, &QDialog::finished, this, [this]{ refresh(); });
         nd->move(pos().x() + 300, pos().y() + 300);
@@ -149,7 +149,7 @@ void ListDialog::modify()
         if (mChecks.at(index)->isChecked()) {
             decayIndex = mChecks.at(index)->text().toInt();
             value      = mbrs.at(index)->text().toDouble();
-            ParticlesDBManager::Instance().modifyBR(decayIndex, value);
+            ParticlesDBManager::instance().modifyBR(decayIndex, value);
         }
     }
     refresh();
@@ -173,7 +173,7 @@ void ListDialog::remove()
     for (QCheckBox* check : mChecks) {
         if (check->isChecked()) {
             int id = check->text().toInt();
-            ParticlesDBManager::Instance().deleteDecay(id);
+            ParticlesDBManager::instance().deleteDecay(id);
         }
     }
     refresh();

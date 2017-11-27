@@ -15,7 +15,7 @@ NewDecayDialog::NewDecayDialog(QStringList &decays, QWidget*/*parent*/)
 {
     // a dialog box to enter a new decay
     setAttribute(Qt::WA_DeleteOnClose);
-    QString partName = ParticlesDBManager::Instance().currentPart();
+    QString partName = ParticlesDBManager::instance().currentPart();
 
     QVBoxLayout* decaysLayout = new QVBoxLayout;
     for (int index = 1; index < decays.size(); index++) {
@@ -60,7 +60,7 @@ NewDecayDialog::NewDecayDialog(QStringList &decays, QWidget*/*parent*/)
     mainLayout->addLayout(insertcancelLayout);
 
     setLayout(mainLayout);
-    int pdg = ParticlesDBManager::Instance().getPDG(partName);
+    int pdg = ParticlesDBManager::instance().getPDG(partName);
     setWindowTitle(QString("New decay for particle %1 (pdg = %2)").arg(partName).arg(pdg));
 }
 
@@ -84,8 +84,8 @@ void NewDecayDialog::insert(QString partName)
             return;
         }
     }
-    int motherid = ParticlesDBManager::Instance().id(partName);
-    ParticlesDBManager::Instance().insertDecay(motherid, 0, br, pdgs);
+    int motherid = ParticlesDBManager::instance().id(partName);
+    ParticlesDBManager::instance().insertDecay(motherid, 0, br, pdgs);
     close();
     emit QDialog::finished(0);
 }
@@ -103,7 +103,7 @@ void NewDecayDialog::selectDecay(QString decay)
         sdecay.clear();
         for (QString dd : sdecays) {
             dd = dd.trimmed();
-            int pdg = ParticlesDBManager::Instance().getPDG(dd);
+            int pdg = ParticlesDBManager::instance().getPDG(dd);
             sdecay.append(QString("%1, ").arg(pdg));
         }
         sdecay.remove(sdecay.lastIndexOf(','), sdecay.size());

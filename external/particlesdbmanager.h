@@ -19,8 +19,7 @@ public:
     Q_ENUM(ENTRY)
 
     bool                       allDecays(int pdg, QHash<int, double>& br, bool normalize = false) const ;
-    //    bool                       allParticles(QList<int>& list, ListOption opt = kALL) const;
-    QHash<int, TTMParticle*>   allParticles(ListOption opt = kALL);
+    QHash<int, TTMParticle*>   allParticles();
     double                     br(int decayindex) const;
     bool                       connect(const QString& path);
     QString                    currentPart() const { return mCurrentPart; }
@@ -49,7 +48,7 @@ public:
     double                     getThreshold(int pdg, const QString& where = "Thermus");
     double                     getWidth(int pdg, const QString& where = "Thermus");
     int                        id(QString name) const;
-    static ParticlesDBManager& Instance();
+    static ParticlesDBManager& instance();
     void                       insertDecay(int mother, int dtype, double br, QStringList &daughters) const;
     void                       insertParticle(const QList<QString>& parameters);
     bool                       isStable(int pdg) const;
