@@ -393,13 +393,13 @@ void MainWindow::createActions()
 
     // Parameters list action
 
-    mParametersList = new QAction(tr("Parameters list"), this);
+    mParametersList = new QAction(QIcon(":/listicon.png"), tr("Parameters list"), this);
     mParametersList->setStatusTip("Makes a list of parameters with properties");
     connect(mParametersList, &QAction::triggered, this, [this]{ listParameters(); });
 
     // quit
 
-    mQuitAction = new QAction(tr("&End"), this);
+    mQuitAction = new QAction(QIcon(":/endicon.png"), tr("&End"), this);
     mQuitAction->setShortcuts(QKeySequence::Quit);
     mQuitAction->setStatusTip(tr("Makes a Thermus prediction"));
     connect(mQuitAction, &QAction::triggered, this, &MainWindow::quit);

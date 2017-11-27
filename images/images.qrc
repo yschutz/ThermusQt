@@ -16,5 +16,6 @@
         <file>noverboseicone.png</file>
         <file>verboseicone.png</file>
         <file>busyicon.png</file>
+        <file>endicon.png</file>
     </qresource>
 </RCC>
