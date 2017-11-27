@@ -444,104 +444,99 @@ void TTMThermalModelBSQ::listInfo() const
     QMessageBox msg(QMessageBox::Information, Q_FUNC_INFO, Q_FUNC_INFO);
     msg.setInformativeText("To be implemented");
     msg.exec();
- /* cout <<"  ***************************************************************"
+  qDebug() <<"  ***************************************************************"
        <<"**************"
-       << endl;
-  cout <<"  ***************************** Thermal Model Info **************"
+       ;
+  qDebug() <<"  ***************************** Thermal Model Info **************"
        <<"**************"
-       << endl << endl;
+        ;
 
-  cout << "\t Particle set: " << endl << "\t\t" << fPartSet->GetFilename()
-       << endl << endl;
+  if(mQStats){
+    qDebug() << "\t Quantum Statistics " ;
+  }else{
+    qDebug() << "\t Boltzmann Statistics " ;
+  }
+  if(mWidth){
+    qDebug() << "\t Resonance width included " ;
+  }else{
+    qDebug() << "\t Resonance width excluded " ;
+  }
+  if(mExclVolCorrection){
+    qDebug() << "\t Excluded volume corrections included " ;
+  }else{
+    qDebug() << "\t Excluded volume corrections excluded " ;
+  }
+  qDebug()  ;
 
-  if(fQStats){
-    cout << "\t Quantum Statistics " << endl;
-  }else{
-    cout << "\t Boltzmann Statistics " << endl;
-  }
-  if(fWidth){
-    cout << "\t Resonance width included " << endl;
-  }else{
-    cout << "\t Resonance width excluded " << endl;
-  }
-  if(fExclVolCorrection){
-    cout << "\t Excluded volume corrections included " << endl;
-  }else{
-    cout << "\t Excluded volume corrections excluded " << endl;
-  }
-  cout << endl << endl;
-
-  mPar->List();
-  cout <<"  ***************************** Thermal Quantities **************"
+  mPar->list();
+  qDebug() <<"  ***************************** Thermal Quantities **************"
        <<"*************** "
-       << endl << endl;
+        ;
 
-  cout << "\t S/V        = ";
-  cout.width(10);
-  cout << fStrange;
-  cout << "\t";
+  qDebug() << "\t S/V        = ";
+  qDebug() << mStrange;
+  qDebug() << "\t";
   if (mPar->getConstrain(TTMParameterSet::kMUS)) {
-    cout << "(constraint :";
-    cout.width(8);
-    cout << mPar->GetSDens() << ")";
+    qDebug() << "(constraint :";
+    qDebug() << mPar->getDens(TTMParameterSet::kMUS) << ")";
   }
-  cout << endl << endl;
-  cout << "\t B/2Q     = ";
-  cout.width(10);
-  cout << fBaryon / 2. / fCharge;
-  cout << "\t";
+  qDebug()  ;
+  qDebug() << "\t B/2Q     = ";
+  qDebug() << mBaryon / 2. / mCharge;
+  qDebug() << "\t";
   if (mPar->getConstrain(TTMParameterSet::kMUQ)) {
-    cout << "(constraint :";
-    cout.width(8);
-    cout << mPar->GetB2Q() << ")";
+    qDebug() << "(constraint :";
+    qDebug() << mPar->getB2Q() << ")";
   }
-  cout << endl << endl;
-  cout << "\t C/V        = ";
-  cout.width(10);
-  cout << fCharm;
-  cout << "\t";
+  qDebug()  ;
+  qDebug() << "\t C/V        = ";
+  qDebug() << mCharm;
+  qDebug() << "\t";
   if (mPar->getConstrain(TTMParameterSet::kMUC)) {
-    cout << "(constraint :";
-    cout.width(8);
-    cout << mPar->GetCDens() << ")";
+    qDebug() << "(constraint :";
+    qDebug() << mPar->getDens(TTMParameterSet::kMUC) << ")";
   }
-  cout << endl << endl;
-  cout << "\t b/V        = ";
-  cout.width(10);
-  cout << fBeauty;
-  cout << "\t";
+  qDebug()  ;
+  qDebug() << "\t b/V        = ";
+  qDebug() << mBeauty;
+  qDebug() << "\t";
   if (mPar->getConstrain(TTMParameterSet::kMUBEAUTY)) {
-    cout << "(constraint :";
-    cout.width(8);
-    cout << mPar->GetbDens() << ")";
+    qDebug() << "(constraint :";
+    qDebug() << mPar->getDens(TTMParameterSet::kMUBEAUTY) << ")";
   }
-  cout << endl << endl;
-  cout << "\t lambda_s = ";
-  cout.width(8);
-  cout << fWroblewski << endl;
-  cout << endl << endl;
-  cout << "\t Primordial Densities: " << endl;
-  if (fDensity != 0.) {
-    cout << "\t\t\t\t n = " << fDensity << endl;
+  qDebug()  ;
+  qDebug() << "\t lambda_s = ";
+  qDebug() << mWroblewski ;
+  qDebug()  ;
+  qDebug() << "\t Primordial Densities: " ;
+  if (mDensity != 0.) {
+    qDebug() << "\t\t\t\t n = " << mDensity ;
   }
-  if (fEnergy != 0.) {
-    cout << "\t\t\t\t e = " << fEnergy << endl;
+  if (mEnergy != 0.) {
+    qDebug() << "\t\t\t\t e = " << mEnergy ;
   }
-  if (fEntropy != 0.) {
-    cout << "\t\t\t\t s = " << fEntropy << endl << endl;
+  if (mEntropy != 0.) {
+    qDebug() << "\t\t\t\t s = " << mEntropy  ;
   }
-  if (fPressure != 0.) {
-    cout << "\t\t\t\t P = " << fPressure << endl << endl;
+  if (mPressure != 0.) {
+    qDebug() << "\t\t\t\t P = " << mPressure  ;
   }
-  ListStableParticles();
-  cout << endl << endl;
-  cout <<"  *************************************************************"
+  QHashIterator<int, TTMParticle*> part(ParticlesDBManager::Instance().allParticles());
+  while (part.hasNext()) {
+      part.next();
+      TTMParticle* particle = part.value();
+      if (!particle->isStable())
+          continue;
+      qDebug() << Q_FUNC_INFO << particle->getName();
+  }
+  qDebug()  ;
+  qDebug() <<"  *************************************************************"
        <<"*****************"
-       << endl;
-  cout <<"  *************************************************************"
+       ;
+  qDebug() <<"  *************************************************************"
        <<"*****************"
-       << endl << endl;
-       */
+        ;
+
 }
 
 //__________________________________________________________________________
@@ -565,14 +560,14 @@ int TTMThermalModelBSQ::primPartDens()
 
     int check = 0;
 
-    if (mPartPDGs.isEmpty())
-        ParticlesDBManager::Instance().allParticles(mPartPDGs);
-
     if (mQStats) {
-        for (int part : mPartPDGs) {
+        QHashIterator<int, TTMParticle*> part(ParticlesDBManager::Instance().allParticles());
+        while (part.hasNext()) {
+            part.next();
+            int pdg = part.key();
             if (check != 0)
                 break;
-            QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part, mPar));
+            QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(pdg, mPar));
             if(!ptr->parametersAllowed())
                 check = 1;
         }
@@ -584,11 +579,15 @@ int TTMThermalModelBSQ::primPartDens()
         return 1;
     } else {
         if (!mExclVolCorrection) {
-            for (int part : mPartPDGs) {
-                QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part, mPar));
+                QHashIterator<int, TTMParticle*> particles(ParticlesDBManager::Instance().allParticles());
+                while (particles.hasNext()) {
+                    particles.next();
+                    int pdg               = particles.key();
+                    TTMParticle* particle = particles.value();
+                QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(pdg, mPar));
                 double partDens;
-                double width = ParticlesDBManager::Instance().getWidth(part);
-                int    stat  = ParticlesDBManager::Instance().getStat(part);
+                double width = particle->getWidth();
+                int    stat  = particle->getStat();
                 if (stat == 0 || !mQStats) {		                    // Boltzmann stats
                     if (width == 0 || !mWidth) 		                    // no width
                         partDens = ptr->densityBoltzmannNoWidth();
@@ -600,36 +599,36 @@ int TTMThermalModelBSQ::primPartDens()
                     else  				    	                       // width
                         partDens = ptr->densityQStatWidth();
                 }
-                TTMDensObj* dens = new TTMDensObj(part);
+                TTMDensObj* dens = new TTMDensObj(pdg);
                 dens->setPrimaryDensity(partDens);
-                mDensTable[part] = dens;
+                mDensTable[pdg] = dens;
                 mDensity += partDens;
 
-                double strange = ParticlesDBManager::Instance().getS(part);
+                double strange = particle->getS();
                 if (strange > 0.)
                     mSplus  += partDens * strange;
                 else if (strange < 0.)
                     mSminus += partDens * strange;
 
-                double baryon = ParticlesDBManager::Instance().getBaryon(part);
+                double baryon = particle->getBaryon();
                 if (baryon > 0.)
                     mBplus  += partDens * baryon;
                 else if (baryon < 0.)
                     mBminus += partDens * baryon;
 
-                double charge = ParticlesDBManager::Instance().getCharge(part);
+                double charge = particle->getCharge();
                 if (charge > 0.)
                     mQplus  += partDens * charge;
                 else if (charge < 0.)
                     mQminus += partDens * charge;
 
-                double charm = ParticlesDBManager::Instance().getCharm(part);
+                double charm = particle->getCharm();
                 if (charm > 0.)
                     mCplus  += partDens * charm;
                 else if (charm < 0.)
                     mCminus += partDens * charm;
 
-                double beauty = ParticlesDBManager::Instance().getBeauty(part);
+                double beauty = particle->getBeauty();
                 if (beauty > 0.)
                     mbplus  += partDens * beauty;
                 else if (beauty < 0.)
@@ -638,11 +637,15 @@ int TTMThermalModelBSQ::primPartDens()
         } else {
             calcExclVolPressure();
             double correction = 1.;
-            for (int part : mPartPDGs) {
-                QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part, mPar));
+            QHashIterator<int, TTMParticle*> particles(ParticlesDBManager::Instance().allParticles());
+            while (particles.hasNext()) {
+                particles.next();
+                int pdg               = particles.key();
+                TTMParticle* particle = particles.value();
+                QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(pdg, mPar));
                 double partDens;
-                double width = ParticlesDBManager::Instance().getWidth(part);
-                int    stat  = ParticlesDBManager::Instance().getStat(part);
+                double width = particle->getWidth();
+                int    stat  = particle->getStat();
                 if (stat == 0 || !mQStats) {		                          // Boltzmann stats
                     if (width == 0 || !mWidth)                   	          // no width
                         partDens = ptr->densityBoltzmannNoWidth(mExclVolPressure);
@@ -656,12 +659,12 @@ int TTMThermalModelBSQ::primPartDens()
                         partDens = ptr->densityQStatWidth(mExclVolPressure);
                 }
 
-                TTMDensObj *dens = new TTMDensObj(part);
+                TTMDensObj *dens = new TTMDensObj(pdg);
                 dens->setPrimaryDensity(partDens);	// ideal gas with shifted chemical potential
 
-                mDensTable[part] = dens;
+                mDensTable[pdg] = dens;
 
-                double radius = ParticlesDBManager::Instance().getRadius(part);
+                double radius = particle->getRadius();
                 double volume = 4. * 4./3. * M_PI * qPow(radius, 3);
                 correction += volume * partDens;
             }
@@ -782,16 +785,15 @@ double TTMThermalModelBSQ::exclVolShiftedPressure(double px)
     // potentials shifted by an amount px
     //
 
-    QList<int> particles;
-    ParticlesDBManager::Instance().allParticles(particles);
-
     double totalShiftedPressure = 0.;
-
-    for (int part : particles) {
-        QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part, mPar));
+    QHashIterator<int, TTMParticle*> part(ParticlesDBManager::Instance().allParticles());
+    while (part.hasNext()) {
+        part.next();
+        int pdg = part.key();
+        QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(pdg, mPar));
         double partPressure;
-        double width = ParticlesDBManager::Instance().getWidth(part);
-        int    stat  = ParticlesDBManager::Instance().getStat(part);
+        double width = ParticlesDBManager::Instance().getWidth(pdg);
+        int    stat  = ParticlesDBManager::Instance().getStat(pdg);
 
         if (stat == 0 || !mQStats) {           		       // Boltzmann stats
             if (width == 0 || !mWidth) 		               // no width

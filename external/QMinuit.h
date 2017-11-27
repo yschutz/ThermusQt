@@ -23,7 +23,8 @@
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
-// copied by Yves Schutz November 2016
+// adapted for Qt by Yves Schutz November 2016
+// implemented as singleton
 
 #ifndef QMinuit_H
 #define QMinuit_H
@@ -35,10 +36,17 @@ class QMinuit : public QObject
     Q_OBJECT
 
 private:
-    QMinuit(const QMinuit &m);
-    QMinuit& operator=(const QMinuit &m); // Not implemented
+//    QMinuit(const QMinuit &m);
+//    QMinuit& operator=(const QMinuit &m); // Not implemented
+    QMinuit(QObject* parent = nullptr);
+    ~QMinuit();
+
+    QMinuit(const QMinuit&) {}
+    QMinuit& operator = (const QMinuit&) { return *this; }
+    static QMinuit mMinuit; // the unique instance
 
 public:
+
     enum{kMAXWARN=100};
 
     double     *mAlim;            // [mMaxPar2] Lower limits for parameters. If zero no limits
@@ -185,9 +193,12 @@ public:
     //  methods performed on QMinuit class
 public:
 
-    explicit      QMinuit(QObject *parent = 0);
-                  QMinuit(int maxpar);
-    virtual       ~QMinuit();
+//    explicit      QMinuit(QObject *parent = 0);
+//                  QMinuit(int maxpar);
+//    virtual       ~QMinuit();
+
+    static QMinuit&  instance();
+    void             setMaxParameters(int max);
 
     virtual void     buildArrays(int maxpar=15);
     virtual QObject* clone(const char *newname="") const;   //Clone-Method to copy the function-pointer fFCN
@@ -274,7 +285,4 @@ public:
     virtual int      setPrintLevel( int printLevel=0 );
 
 };
-
-extern QMinuit *gMinuit;
-
 #endif // QMinuit_H

@@ -91,12 +91,12 @@ void FitMacro::run()
 
     mFitInfo->generateYields();
 //    mFitInfo->listYields();
-//    for (TTMYield* yield : mFitInfo->getYields())
-//        qInfo() << Q_FUNC_INFO << "; PREDICTION: ;" <<
-//                   yield->getID1() << ";" <<
-//                   yield->getID2() << ";" <<
-//                   yield->getTMName() << ";" <<
-//                   yield->getModelValue();
+    //    for (TTMYield* yield : mFitInfo->getYields())
+    //        qInfo() << Q_FUNC_INFO << "; PREDICTION: ;" <<
+    //                   yield->getID1() << ";" <<
+    //                   yield->getID2() << ";" <<
+    //                   yield->getTMName() << ";" <<
+    //                   yield->getModelValue();
     mFT = new FittingThread(mFitInfo);
     connect(mFT, &FittingThread::resultReady, this, [this]{wrapUp();});
     mBusy = new QMessageBox(QMessageBox::Information, Q_FUNC_INFO, "FIT");

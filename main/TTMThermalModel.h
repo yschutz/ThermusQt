@@ -82,9 +82,6 @@ protected:
     QString                 mDescriptor;   // label for the model
     double                  mEnergy;	   // total energy density in model
     double                  mEntropy;	   // total entropy density in model
-    QList<int>              mPartPDGs;     // list of pdg number of all particles (from DB)
-    QList<int>              mPartPDGsS;    // list of pdg number of all stable particles (from DB)
-    QList<int>              mPartPDGsU;    // list of pdg number of all unstable particles (from DB)
     double                  mPressure;	   // total pressure in model
     double                  mQminus;
     double                  mQplus;

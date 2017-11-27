@@ -510,14 +510,18 @@ int TTMThermalModelBQ::primPartDens()
 
 
     if (mNonStrangeQStats) {
-        if (mPartPDGs.isEmpty())
-            ParticlesDBManager::Instance().allParticles(mPartPDGs);
-        for (int part : mPartPDGs) {
+        //        if (mPartPDGs.isEmpty())
+        //            ParticlesDBManager::Instance().allParticles(mPartPDGs);
+        //        for (int part : mPartPDGs) {
+        QHashIterator<int, TTMParticle*> part(ParticlesDBManager::Instance().allParticles());
+        while (part.hasNext()) {
+            part.next();
+            int pdg = part.key();
             if (check != 0)
                 break;
-            if(ParticlesDBManager::Instance().getS(part) == 0.) {
+            if(ParticlesDBManager::Instance().getS(pdg) == 0.) {
                 TTMParameterSetBSQ pGC(mPar->getT(), mPar->getMuB(), 0., mPar->getMuQ(), mPar->getGammas());
-                QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part,&pGC));
+                QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(pdg, &pGC));
                 if(!ptr->parametersAllowed()) {
                     check = 1;
                 }
@@ -536,13 +540,17 @@ int TTMThermalModelBQ::primPartDens()
         double r      = mPar->getCanRadius();
         double volume = 4. * M_PI / 3. * r * r * r;
 
-        for (int part : mPartPDGs) {
-            double width = ParticlesDBManager::Instance().getWidth(part);
-            double s     = ParticlesDBManager::Instance().getS(part);
+        //        for (int part : mPartPDGs) {
+        QHashIterator<int, TTMParticle*> part(ParticlesDBManager::Instance().allParticles());
+        while (part.hasNext()) {
+            part.next();
+            int pdg = part.key();
+            double width = ParticlesDBManager::Instance().getWidth(pdg);
+            double s     = ParticlesDBManager::Instance().getS(pdg);
             if (s == 0. && mNonStrangeQStats){
                 double gCPressure;
                 TTMParameterSetBSQ pGC(mPar->getT(), mPar->getMuB(), 0., mPar->getMuQ(), mPar->getGammas());
-                QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part, &pGC));
+                QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(pdg, &pGC));
                 if (width == 0. || !mWidth)
                     gCPressure = ptr->pressureQStatNoWidth();
                 else
@@ -550,7 +558,7 @@ int TTMThermalModelBQ::primPartDens()
                 z = gCPressure * volume / mPar->getT();
             } else {
                 double gCPartDens;
-                QScopedPointer<TTMThermalParticleBQ> ptr(new TTMThermalParticleBQ(part, mPar, 1));
+                QScopedPointer<TTMThermalParticleBQ> ptr(new TTMThermalParticleBQ(pdg, mPar, 1));
                 if (width == 0 || !mWidth)
                     gCPartDens = ptr->densityBoltzmannNoWidth();
                 else
@@ -765,8 +773,12 @@ int TTMThermalModelBQ::primPartDens()
             mlnZ0     = k0;
             mExactMuS = mPar->getT() * qLn(mCorrP1);
 
-            for (int part : mPartPDGs) {
-                double S = ParticlesDBManager::Instance().getS(part);
+//            for (int part : mPartPDGs) {
+            QHashIterator<int, TTMParticle*> part(ParticlesDBManager::Instance().allParticles());
+            while (part.hasNext()) {
+                part.next();
+                int pdg = part.key();
+                double S = ParticlesDBManager::Instance().getS(pdg);
                 double CorrFactor;
                 if (S == 1)
                     CorrFactor = mCorrP1;
@@ -785,53 +797,53 @@ int TTMThermalModelBQ::primPartDens()
 
                 double PartDens;
 
-                double width = ParticlesDBManager::Instance().getWidth(part);
+                double width = ParticlesDBManager::Instance().getWidth(pdg);
                 if (S == 0. && mNonStrangeQStats) {
                     TTMParameterSetBSQ pGC(mPar->getT(), mPar->getMuB(), 0., mPar->getMuQ(), mPar->getGammas());
-                    QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(part, &pGC));
+                    QScopedPointer<TTMThermalParticleBSQ> ptr(new TTMThermalParticleBSQ(pdg, &pGC));
 
                     if( width == 0.0 || !mWidth)
                         PartDens = ptr->densityQStatNoWidth();
                     else
                         PartDens = ptr->densityQStatWidth();
                 } else {
-                    QScopedPointer<TTMThermalParticleBQ> ptr(new TTMThermalParticleBQ(part, mPar, CorrFactor));
+                    QScopedPointer<TTMThermalParticleBQ> ptr(new TTMThermalParticleBQ(pdg, mPar, CorrFactor));
                     if (width == 0.0 || !mWidth)
                         PartDens = ptr->densityBoltzmannNoWidth();
                     else
                         PartDens = ptr->densityBoltzmannWidth();
                 }
-                TTMDensObj *dens = new TTMDensObj(part);
+                TTMDensObj *dens = new TTMDensObj(pdg);
                 dens->setPrimaryDensity(PartDens);
-                mDensTable[part] = dens;
+                mDensTable[pdg] = dens;
 
                 mDensity += PartDens;
 
-                double strange = ParticlesDBManager::Instance().getS(part);
+                double strange = ParticlesDBManager::Instance().getS(pdg);
                 if (strange > 0.)
                     mSplus += PartDens * strange;
                 else if (strange < 0.)
                     mSminus += PartDens * strange;
 
-                double baryon = ParticlesDBManager::Instance().getBaryon(part);
+                double baryon = ParticlesDBManager::Instance().getBaryon(pdg);
                 if(baryon > 0.)
                     mBplus += PartDens * baryon;
                 else if (baryon < 0.)
                     mBminus += PartDens * baryon;
 
-                double charge = ParticlesDBManager::Instance().getCharge(part);
+                double charge = ParticlesDBManager::Instance().getCharge(pdg);
                 if (charge > 0.)
                     mQplus += PartDens * charge;
                 else if (charge < 0.)
                     mQminus += PartDens * charge;
 
-                double charm = ParticlesDBManager::Instance().getCharm(part);
+                double charm = ParticlesDBManager::Instance().getCharm(pdg);
                 if (charm > 0.)
                     mCplus += PartDens * charm;
                 else if (charm < 0.)
                     mCminus += PartDens * charm;
 
-                double beauty = ParticlesDBManager::Instance().getBeauty(part);
+                double beauty = ParticlesDBManager::Instance().getBeauty(pdg);
                 if (beauty > 0.)
                     mbplus += PartDens * beauty;
                 else if (beauty < 0.)

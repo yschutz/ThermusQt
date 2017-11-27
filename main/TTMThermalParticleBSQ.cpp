@@ -35,6 +35,7 @@ TTMThermalParticleBSQ::TTMThermalParticleBSQ(int part, TTMParameterSetBSQ *parm,
     // ctor
     mCorrFactor = 1.0;
     mParticle   = part;
+    updateMembers();
 }
 
 //__________________________________________________________________________

@@ -43,12 +43,12 @@ public:
     void                     listMinuitInfo() const;
     void                     listYields(bool debug = false);
     void                     removeYield(int id1, int id2, const QString& descr);
-    void                     setMinuit(QMinuit* minuit)                               { mMinuit = minuit; }
+//    void                     setMinuit(QMinuit* minuit)                               { mMinuit = minuit; }
 
 protected:
     double           mChiSquare;   // chi-squared
     QString          mDescriptor;  // string describing fit
-    QMinuit*         mMinuit;      // pointer to QMinuit obj
+   // QMinuit*         mMinuit;      // pointer to QMinuit obj
     double           mQuadDev;     // quadratic deviation
     QList<TTMYield*> mYields;      // Container for yields of interest
     QTableView*      mYieldView;   // to display the yields

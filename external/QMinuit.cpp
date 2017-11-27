@@ -20,15 +20,16 @@
 
 #include "mainwindow.h"
 
+QMinuit QMinuit::mMinuit = QMinuit();
+
 const char charal[29] = " .ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
 //__________________________________________________________________________
-QMinuit::QMinuit(const QMinuit &)
-{
-    // Private QMinuit copy ctor. QMinuit can not be copied
+//QMinuit::QMinuit(const QMinuit &)
+//{
+//    // Private QMinuit copy ctor. QMinuit can not be copied
 
-   qFatal("QMinuit can not copy construct QMinuit");
-}
+//   qFatal("QMinuit can not copy construct QMinuit");
+//}
 
 //__________________________________________________________________________
 QMinuit::QMinuit(QObject *parent) : QObject(parent)
@@ -114,40 +115,34 @@ QMinuit::QMinuit(QObject *parent) : QObject(parent)
     mPlot         = 0;
     mGraphicsMode = true;
 
-    buildArrays(25);
-
     setMaxIterations();
 
-    qmninit(5,6,7);
-
     mFCN = 0;
-
- //   gMinuit = this;
 }
 
 //__________________________________________________________________________
-QMinuit::QMinuit(int maxpar)
-{
-    // Minuit normal constructor
-    // maxpar is the maximum number of parameters used with this QMinuit object
+//QMinuit::QMinuit(int maxpar)
+//{
+//    // Minuit normal constructor
+//    // maxpar is the maximum number of parameters used with this QMinuit object
 
-    mFCN = 0;
+//    mFCN = 0;
 
-    buildArrays(maxpar);
+//    buildArrays(maxpar);
 
-    mStatus       = 0;
-    mEmpty        = 0;
-    mObjectFit    = 0;
-//    mMethodCall   = 0;
-    mPlot         = 0;
-    mGraphicsMode = true;
+//    mStatus       = 0;
+//    mEmpty        = 0;
+//    mObjectFit    = 0;
+////    mMethodCall   = 0;
+//    mPlot         = 0;
+//    mGraphicsMode = true;
 
-    setMaxIterations();
+//    setMaxIterations();
 
-    qmninit(5,6,7);
+//    qmninit(5,6,7);
 
-//    gMinuit = this;
-}
+////    gMinuit = this;
+//}
 
 //__________________________________________________________________________
 QMinuit::~QMinuit()
@@ -157,8 +152,22 @@ QMinuit::~QMinuit()
     deleteArrays();
     delete mPlot;
 //    delete mMethodCall;
-//    if (gMinuit == this)
-//        gMinuit = nullptr;
+}
+
+//__________________________________________________________________________
+QMinuit &QMinuit::instance()
+{
+    // returns unique instance
+    return mMinuit;
+}
+
+//__________________________________________________________________________
+void QMinuit::setMaxParameters(int max)
+{
+  // to be called at least once
+   buildArrays(max);
+   QMinuit::qmninit(5,6,7);
+
 }
 
 //__________________________________________________________________________

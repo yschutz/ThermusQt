@@ -38,9 +38,10 @@ void fit_function(TTMThermalFit * fit, int flag = 0)
         if (current->getFlag() == 0)
             gFitParameters++;
     }
-    QMinuit *lMinuit = new QMinuit(gFitParameters);
-    lMinuit->setFCN(Minuit_fcn);
-    lMinuit->setErrorDef(1.);  		// 1-sigma errors
+//    QMinuit lMinuit = QMinuit::instance(); // new QMinuit(gFitParameters);
+    QMinuit::instance().setMaxParameters(gFitParameters);
+    QMinuit::instance().setFCN(Minuit_fcn);
+    QMinuit::instance().setErrorDef(1.);  		// 1-sigma errors
 
     // Set fit parameters //
 
@@ -50,7 +51,7 @@ void fit_function(TTMThermalFit * fit, int flag = 0)
     for (int i = TTMParameterSet::kT; i < TTMParameterSet::kPARTYPES; i++) {
       TTMParameter* current = (gFit->getParameterSet())->getParameter(static_cast<TTMParameterSet::ParameterType>(i));
         if (current->getFlag() == 0) {
-            lMinuit->qmNParm(k, current->objectName(),
+            QMinuit::instance().qmNParm(k, current->objectName(),
                              current->getStart(), current->getStep(),
                              current->getMin(), current->getMax(),
                              error_flag); // error_flag = 0 if no problems
@@ -82,7 +83,7 @@ void fit_function(TTMThermalFit * fit, int flag = 0)
      arglist[0] = 15000;
      arglist[1] = 1;
 
-     lMinuit->qmnexcm("MIGRAD", arglist, 2, error_flag);
+     QMinuit::instance().qmnexcm("MIGRAD", arglist, 2, error_flag);
 //     // ************************************************ //
 
 //      // Return the current status of the minimization

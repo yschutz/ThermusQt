@@ -31,6 +31,8 @@ ParticlesDBManager::~ParticlesDBManager()
 {
     // close the active data base
 
+    qDeleteAll(mParticles.begin(), mParticles.end());
+    mParticles.clear();
     mDB.close();
 }
 
@@ -165,7 +167,7 @@ void ParticlesDBManager::deleteDecay(int id) const
 }
 
 //__________________________________________________________________________
-QString ParticlesDBManager::getPartParameter(int pdg, ENTRY what, const QString &where) const
+QString ParticlesDBManager::getPartParameter(int pdg, ENTRY what, const QString& where) const
 {
     // retrieve given parameter for given particle
 
@@ -209,91 +211,48 @@ QString ParticlesDBManager::getPartParameter(int pdg, ENTRY what, const QString 
 double ParticlesDBManager::getBaryon(int pdg)
 {
     // gets the baryon number of the given particle
-    double rv = 0.0;
-    if (mBaryonHash.contains(pdg))
-        rv = mBaryonHash[pdg];
-    else {
-        rv = getPartParameter(pdg, kBARYON, "Thermus").toInt();
-        mBaryonHash[pdg] = rv;
-    }
-    return rv;
+    return mParticles[pdg]->getBaryon();
 }
 
 //__________________________________________________________________________
 double ParticlesDBManager::getBContent(int pdg)
 {
     // gets the beauty content of the given particle
-    double rv = 0.0;
-    if (mBContentHash.contains(pdg))
-        rv = mBContentHash[pdg];
-    else {
-        rv = getPartParameter(pdg, kBC, "Thermus").toDouble();
-        mBContentHash[pdg] = rv;
-    }
-    return rv;
+    return mParticles[pdg]->getBContent();
 }
 
 //__________________________________________________________________________
 int ParticlesDBManager::getBeauty(int pdg)
 {
-    double rv = 0.0;
-    if (mBeautyHash.contains(pdg))
-        rv = mBeautyHash[pdg];
-    else {
-        rv = getPartParameter(pdg, kB, "Thermus").toDouble();
-        mBeautyHash[pdg] = rv;
-    }
-    return rv;
+    // gets the beauty of the given particle
+    return mParticles[pdg]->getBeauty();
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getCharge(int pdg, const QString &where)
+double ParticlesDBManager::getCharge(int pdg, const QString &/*where*/)
 {
     // gets the charge of the given particle
-    double rv = 0.0;
-    if (mChargeHash.contains(pdg))
-        rv = mChargeHash[pdg];
-    else {
-        rv = getPartParameter(pdg, kCHARGE, where).toDouble();
-        mChargeHash[pdg] = rv;
-    }
-    return rv;
+    return mParticles[pdg]->getCharge();
 }
 
 //__________________________________________________________________________
 double ParticlesDBManager::getCContent(int pdg)
 {
     // gets the charm content of the given particle
-    double rv = 0.0;
-    if (mCContentHash.contains(pdg))
-        rv = mCContentHash[pdg];
-    else {
-        rv = getPartParameter(pdg, kCC, "Thermus").toDouble();
-        mCContentHash[pdg] = rv;
-    }
-    return rv;
+    return mParticles[pdg]->getCContent();
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getLifetime(int pdg, const QString &where) const
+double ParticlesDBManager::getLifetime(int pdg, const QString &/*where*/) const
 {
     // gets the lifetime of the given particle
-    double rv = 0.0;
-    rv = getPartParameter(pdg, kLIFETIME, where).toDouble();
-    return rv;
+    return mParticles[pdg]->getLifetime();
 }
 
 //__________________________________________________________________________
 double ParticlesDBManager::getCharm(int pdg)
 {
-    double rv = 0.0;
-    if (mCharmHash.contains(pdg))
-        rv = mCharmHash[pdg];
-    else {
-        rv = getPartParameter(pdg, kC, "Thermus").toDouble();
-        mCharmHash[pdg] = rv;
-    }
-    return rv;
+    return mParticles[pdg]->getCharge();
 }
 
 //__________________________________________________________________________
@@ -394,85 +353,42 @@ int ParticlesDBManager::getPDG(int id) const
 double ParticlesDBManager::getRadius(int pdg)
 {
     // gets the radius for the given particle
-    double rv = 0.0;
-    if (mRadiusHash.contains(pdg))
-        rv = mRadiusHash[pdg];
-    else {
-        rv = getPartParameter(pdg, kRADIUS, "Thermus").toDouble();
-        mRadiusHash[pdg] = rv;
-    }
-    return rv;
+    return mParticles[pdg]->getRadius();
 }
 
 //__________________________________________________________________________
 double ParticlesDBManager::getS(int pdg)
 {
     // gets the S of the given particle
-    double rv = 0.0;
-    if (mSHash.contains(pdg))
-        rv = mSHash[pdg];
-    else {
-        rv = getPartParameter(pdg, kS, "Thermus").toDouble();
-        mSHash[pdg] = rv;
-    }
-    return rv;
+    return mParticles[pdg]->getS();
 }
 
 //__________________________________________________________________________
 double ParticlesDBManager::getSContent(int pdg)
 {
     // gets the strangeness content of the given particle
-    double rv = 0.0;
-    if (mSContentHash.contains(pdg))
-        rv = mSContentHash[pdg];
-    else {
-        rv = getPartParameter(pdg, kSC, "Thermus").toDouble();
-        mSContentHash[pdg] = rv;
-    }
-    return rv;
+    return mParticles[pdg]->getSContent();
 }
 
 //__________________________________________________________________________
 double ParticlesDBManager::getSpin(int pdg)
 {
     // gets the spin degeneracy of the given particle
-    double rv = 0.0;
-    if (mSpinHash.contains(pdg))
-        rv = mSpinHash[pdg];
-    else {
-        rv = getPartParameter(pdg, kSPIN, "Thermus").toDouble();
-        mSpinHash[pdg] = rv;
-    }
-    return rv;
+    return mParticles[pdg]->getSpin();
 }
 
 //__________________________________________________________________________
 int ParticlesDBManager::getStat(int pdg)
 {
     // gets the typ of statististics of the given particle
-    double rv = 0.0;
-    if (mStatHash.contains(pdg))
-        rv = mStatHash[pdg];
-    else {
-        rv = getPartParameter(pdg, kSTATISTIC, "Thermus").toInt();
-        mStatHash[pdg] = rv;
-    }
-    return rv;
-
+    return mParticles[pdg]->getStat();
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getThreshold(int pdg, const QString &where)
+double ParticlesDBManager::getThreshold(int pdg, const QString &/*where*/)
 {
     // gets the width of the given particle
-    double rv = 0.0;
-    if (mThresholdHash.contains(pdg))
-        rv = mThresholdHash[pdg];
-    else {
-        rv = getPartParameter(pdg, kTHRESHOLD, where).toDouble();
-        mThresholdHash[pdg] = rv;
-    }
-    return rv;
+    return mParticles[pdg]->getThreshold();
 }
 
 //__________________________________________________________________________
@@ -501,17 +417,10 @@ ParticlesDBManager &ParticlesDBManager::Instance()
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getWidth(int pdg, const QString &where)
+double ParticlesDBManager::getWidth(int pdg, const QString &/*where*/)
 {
     // gets the width of the given particle
-    double rv = 0.0;
-    if (mWidthHash.contains(pdg))
-        rv = mWidthHash[pdg];
-    else {
-        rv = getPartParameter(pdg, kWIDTH, where).toDouble();
-        mWidthHash[pdg] = rv;
-    }
-    return rv;
+    return mParticles[pdg]->getWidth();
 }
 
 //__________________________________________________________________________
@@ -733,19 +642,7 @@ void ParticlesDBManager::insertParticle(const QList<QString> &parameters)
 bool ParticlesDBManager::isStable(int pdg) const
 {
     // check if a particle is stable
-    bool rv = false;
-    QString squery("SELECT ndecay FROM particle WHERE pdg = (:val)");
-    QSqlQuery query;
-    query.prepare(squery);
-    query.bindValue(":val", pdg);
-    if (!query.exec()) {
-        error(Q_FUNC_INFO, query.lastError().text());
-    } else {
-        query.next();
-        if (query.record().value(0).toInt() == 0)
-            rv = true;
-    }
-    return rv;
+    return mParticles[pdg]->isStable();
 }
 
 //__________________________________________________________________________
@@ -905,16 +802,17 @@ QStringList ParticlesDBManager::listProperties(const QString &partPDG) const
 }
 
 //__________________________________________________________________________
-double ParticlesDBManager::getMass(int pdg, const QString &where)
+double ParticlesDBManager::getMass(int pdg, const QString &/*where*/)
 {
     // gets the mass of the given particle
     double rv = 0.0;
-    if (mMassHash.contains(pdg))
-        rv = mMassHash[pdg];
-    else {
-     rv = getPartParameter(pdg, kMASS, where).toDouble();
-     mMassHash[pdg] = rv;
-    }
+//    if (mMassHash.contains(pdg))
+//        rv = mMassHash[pdg];
+//    else {
+//     rv = getPartParameter(pdg, kMASS, where).toDouble();
+//     mMassHash[pdg] = rv;
+//    }
+    rv = mParticles[pdg]->getMass();
     return rv;
 }
 
@@ -1094,34 +992,59 @@ bool ParticlesDBManager::allDecays(int pdg, QHash<int, double> &br, bool normali
 }
 
 //__________________________________________________________________________
-bool ParticlesDBManager::allParticles(QList<int>& list, ListOption opt) const
+QHash<int, TTMParticle*> ParticlesDBManager::allParticles(ListOption opt)
 {
     // retrieves all particles in the Thermus DB
 
-    QString squery;
-    switch (opt) {
-    case kALL:
-        squery = "SELECT pdg FROM particle";
-        break;
-    case kSTABLE:
-        squery = "SELECT pdg FROM particle WHERE ndecay = 0";
-        break;
-    case kUNSTABLE:
-        squery = "SELECT pdg FROM particle WHERE ndecay != 0";
-        break;
-    default:
-        break;
-    }
+    if (!mParticles.isEmpty())
+        return mParticles;
 
+    QString squery;
+    //    switch (opt) {
+    //    case kALL:
+    //        squery = "SELECT pdg FROM particle";
+    //        break;
+    //    case kSTABLE:
+    //        squery = "SELECT pdg FROM particle WHERE ndecay = 0";
+    //        break;
+    //    case kUNSTABLE:
+    //        squery = "SELECT pdg FROM particle WHERE ndecay != 0";
+    //        break;
+    //    default:
+    //        break;
+    //    }
+
+    squery = "SELECT pdg, name, spin, statistic, mass, s, baryon, charge, c, b, t, sc, cc, bc, tc, width, lifetime, threshold, radius, ndecay FROM particle";
     QSqlQuery query(squery);
     if (!query.exec()) {
         error(Q_FUNC_INFO, query.lastError().text());
-        return false;
+        exit(1);
     }
-    while(query.next())
-        list.append(query.record().value(0).toInt());
-
-    return true;
+    while(query.next()) {
+        //        list.append(query.record().value(0).toInt());
+        int pdg = query.record().value(kPDG).toInt();
+        mParticles[pdg] = new TTMParticle(query.record().value(kNAME).toString(),
+                                          query.record().value(kPDG).toInt(),
+                                          query.record().value(kSPIN).toInt(),
+                                          query.record().value(kSTATISTIC).toInt(),
+                                          query.record().value(kMASS).toDouble(),
+                                          query.record().value(kS).toInt(),
+                                          query.record().value(kBARYON).toInt(),
+                                          query.record().value(kCHARGE).toDouble(),
+                                          query.record().value(kC).toInt(),
+                                          query.record().value(kB).toInt(),
+                                          query.record().value(kT).toInt(),
+                                          query.record().value(kSC).toInt(),
+                                          query.record().value(kCC).toInt(),
+                                          query.record().value(kBC).toInt(),
+                                          query.record().value(kTC).toInt(),
+                                          query.record().value(kWIDTH).toDouble(),
+                                          query.record().value(kLIFETIME).toDouble(),
+                                          query.record().value(kTHRESHOLD).toDouble(),
+                                          query.record().value(kRADIUS).toDouble(),
+                                          query.record().value(kNDECAY).toInt());
+    }
+    return mParticles;
 }
 
 //__________________________________________________________________________

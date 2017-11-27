@@ -3,6 +3,7 @@
 //__________________________________________________________________________
 // Base class for all thermal model classes.
 //
+#include <QHash>
 #include <QMessageBox>
 #include <QTableView>
 #include <QSqlQuery>
@@ -22,9 +23,6 @@ TTMThermalModel::TTMThermalModel(QObject *parent) : QObject(parent),
     mStrange(0.0), mWidth(true), mWroblewski(0.0)
 {
     // ctor
-    mPartPDGs.clear();
-    mPartPDGsS.clear();
-    mPartPDGsU.clear();
 }
 
 //__________________________________________________________________________
@@ -68,9 +66,6 @@ TTMThermalModel::~TTMThermalModel()
     //dtor
     qDeleteAll(mDensTable.begin(), mDensTable.end());
     mDensTable.clear();
-    mPartPDGs.clear();
-    mPartPDGsS.clear();
-    mPartPDGsU.clear();
 }
 
 //__________________________________________________________________________
@@ -87,26 +82,23 @@ void TTMThermalModel::calcWroblewski()
 
     absstrangemesons = absstrangebaryons = nstrangemesons = nstrangebaryons = 0.;
 
-    if (mPartPDGs.isEmpty())
-        ParticlesDBManager::Instance().allParticles(mPartPDGs);
-
-    for (int pdg : mPartPDGs) {
+    QHashIterator<int, TTMParticle*> particles(ParticlesDBManager::Instance().allParticles());
+    while (particles.hasNext()) {
+        particles.next();
+        int pdg           = particles.key();
+        TTMParticle* part = particles.value();
         TTMDensObj *dens = getDensities(pdg);
         if (!dens)
             return;
         double part_dens = dens->getPrimaryDensity();
-        if (ParticlesDBManager::Instance().getBaryon(pdg)) { // mesons
-            absstrangemesons += ParticlesDBManager::Instance().getSContent(pdg) * part_dens;
-            nstrangemesons += (2. - ParticlesDBManager::Instance().getSContent(pdg))
-                    * part_dens;
+        if (part->getBaryon() == 0) { // mesons
+            absstrangemesons += part->getSContent() * part_dens;
+            nstrangemesons   += (2. - part->getSContent()) * part_dens;
 
-        } else {                                            //baryons
-            absstrangebaryons += ParticlesDBManager::Instance().getSContent(pdg)
-              * part_dens;
-            nstrangebaryons += (3. - ParticlesDBManager::Instance().getSContent(pdg))
-              * part_dens;
-
-          }
+        } else {                 // baryons
+            absstrangebaryons += part->getSContent() * part_dens;
+            nstrangebaryons   += (3. - part->getSContent()) * part_dens;
+        }
     }
 
     absstrange = absstrangemesons + absstrangebaryons;
@@ -117,6 +109,7 @@ void TTMThermalModel::calcWroblewski()
     //no. of new ud
     nstr = nstrange / 2.;
     mWroblewski = 2. * str / nstr;
+
 }
 
 //__________________________________________________________________________
@@ -126,9 +119,13 @@ void TTMThermalModel::generateDecayPartDens()
     // decay contributions to the densities of the particles considered
     // stable in the particle set.
 
-    if (mPartPDGsS.isEmpty())
-        ParticlesDBManager::Instance().allParticles(mPartPDGsS, ParticlesDBManager::kSTABLE);
-    for (int pdg : mPartPDGsS) {
+    QHashIterator<int, TTMParticle*> particles(ParticlesDBManager::Instance().allParticles());
+    while (particles.hasNext()) {
+        particles.next();
+        int pdg               = particles.key();
+        TTMParticle* particle = particles.value();
+        if (!particle->isStable())
+            continue;
         QHash<int, double> br;
         ParticlesDBManager::Instance().allDecays(pdg, br, false);
         double decay = 0.0;
@@ -280,10 +277,13 @@ void TTMThermalModel::listStableDensities() const
     headers << "parent pdg" << "particle name" << "primordial density" << "decay contribution";
     model->setHorizontalHeaderLabels(headers);
 
-    QList<int> stableParticles;
-    if(!ParticlesDBManager::Instance().allParticles(stableParticles, ParticlesDBManager::kSTABLE))
-        return;
-    for (int pdg : stableParticles) {
+    QHashIterator<int, TTMParticle*> part(ParticlesDBManager::Instance().allParticles());
+    while (part.hasNext()) {
+        part.next();
+        int pdg               = part.key();
+        TTMParticle* particle = part.value();
+        if (!particle->isStable())
+            continue;
         TTMDensObj* dens = getDensities(pdg);
         if(!dens) {
             delete model;

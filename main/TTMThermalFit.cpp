@@ -21,7 +21,7 @@ void fit_function(TTMThermalFit *fit, int flag = 0);
 
 //__________________________________________________________________________
 TTMThermalFit::TTMThermalFit(QObject *parent) : QObject(parent),
-    mChiSquare(0.0), mMinuit(nullptr), mQuadDev(0.0), mYieldView(nullptr)
+    mChiSquare(0.0), mQuadDev(0.0), mYieldView(nullptr)
 {
     // ctor
 }
@@ -32,7 +32,7 @@ TTMThermalFit::~TTMThermalFit()
     // dtor
     qDeleteAll(mYields.begin(), mYields.end());
     mYields.clear();
-    delete mMinuit; //carefull in case QMinuit becomes a singleton
+    //delete mMinuit; //carefull in case QMinuit becomes a singleton
 //    delete mYieldView;
 }
 
@@ -71,6 +71,7 @@ void TTMThermalFit::generateYields()
 
     TTMThermalModel* model = generateThermalModel();
     model->generateParticleDens();
+
     double volume = model->getParameterSet()->getVolume();
     for (TTMYield* yield : mYields) {
         int id1       = yield->getID1();
@@ -104,8 +105,7 @@ void TTMThermalFit::generateYields()
             } else {
                 model->generateDecayPartDens(id1);
                 TTMDensObj *partDens = model->getDensities(id1);
-//                qDebug() << Q_FUNC_INFO << ";" << partDens->getID() << ";" << partDens->getFinalDensity();
-                yield->setModelValue(partDens->getFinalDensity() * volume);
+               yield->setModelValue(partDens->getFinalDensity() * volume);
             }
         } else { // ratio
             if (id1 == 3130) {
@@ -327,11 +327,11 @@ void TTMThermalFit::inputExpYields(QString& fileName)
 //__________________________________________________________________________
 void TTMThermalFit::listMinuitInfo() const
 {
-    if(mMinuit){
+//    if(mMinuit){
 
         double amin, edm, errdef;
         int nvpar, nparx, icstat;
-        mMinuit->qmnstat(amin, edm, errdef, nvpar, nparx, icstat);
+        QMinuit::instance().qmnstat(amin, edm, errdef, nvpar, nparx, icstat);
 
         QString comment;
         if(icstat == 0)
@@ -352,17 +352,17 @@ void TTMThermalFit::listMinuitInfo() const
                   new QStandardItem(QString::number(edm))  <<
                   new QStandardItem(QString::number(errdef));
         model->appendRow(onerow);
-        mMinuit->qmnprin(2, amin);
-        mMinuit->qmnmatu(1);
+        QMinuit::instance().qmnprin(2, amin);
+        QMinuit::instance().qmnmatu(1);
         QTableView* view = new QTableView;
         view->setAttribute(Qt::WA_DeleteOnClose);
         view->setModel(model);
         view->show();
-      } else {
-        QMessageBox msg(QMessageBox::Warning, "ListMinuitInfo", Q_FUNC_INFO);
-        msg.setInformativeText("Run FitData() to instantiate a QMinuit object");
-        msg.exec();
-      }
+//      } else {
+//        QMessageBox msg(QMessageBox::Warning, "ListMinuitInfo", Q_FUNC_INFO);
+//        msg.setInformativeText("Run FitData() to instantiate a QMinuit object");
+//        msg.exec();
+//      }
 }
 
 //__________________________________________________________________________

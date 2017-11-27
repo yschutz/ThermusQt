@@ -35,7 +35,9 @@ double F1::eval(double x)
     // evalutes the function for x
     double* xx = new double[1];
     xx[0] = x;
-    return mFunction(xx, mPar);
+    double rv = mFunction(xx, mPar);
+    delete[] xx;
+    return rv;
 }
 
 //__________________________________________________________________________

@@ -5,6 +5,8 @@
 #include <QObject>
 #include <QtSql>
 
+#include "main/TTMParticle.h"
+
 class ParticlesDBManager : public QObject
 {
     Q_OBJECT
@@ -17,7 +19,8 @@ public:
     Q_ENUM(ENTRY)
 
     bool                       allDecays(int pdg, QHash<int, double>& br, bool normalize = false) const ;
-    bool                       allParticles(QList<int>& list, ListOption opt = kALL) const;
+    //    bool                       allParticles(QList<int>& list, ListOption opt = kALL) const;
+    QHash<int, TTMParticle*>   allParticles(ListOption opt = kALL);
     double                     br(int decayindex) const;
     bool                       connect(const QString& path);
     QString                    currentPart() const { return mCurrentPart; }
@@ -70,26 +73,12 @@ private:
     QString  makeQuery(ParticlesDBManager::ENTRY en, const QString &para, QString& squery) const;
 
 private:
-    QHash<int, double>        mBaryonHash;   // buffer containing baryon of all particles
-    QHash<int, double>        mBContentHash; // buffer containing B Content of all particles
-    QHash<int, double>        mBeautyHash;   // buffer containing beauty of all particles
-    QHash<int, double>        mCContentHash; // buffer containing C content of all particles
-    QHash<int, double>        mChargeHash;   // buffer containing charge of all particles
-    QHash<int, double>        mCharmHash;    // buffer containing charm of all particles
     QString                   mCurrentPart;  // the current particle
     QSqlDatabase              mDB;           // the data base
     const QString             mkThermusName = "ThermusParticles";
     const QString             mkPDGName     = "PDGParticles";
-    QHash<int, double>        mMassHash;     // buffer containing mass of all particles
     static ParticlesDBManager mPDBM;         // the unique instance
-    QHash<int, double>        mRadiusHash;   // buffer containing radius of all particles
-    QHash<int, double>        mSHash;        // buffer containing S of all particles
-    QHash<int, double>        mSContentHash; // buffer containing S content of all particles
-    QHash<int, double>        mSpinHash;     // buffer containing spin of all particles
-    QHash<int, double>        mStatHash;     // buffer containing stat of all particles
-    QHash<int, double>        mThresholdHash;// buffer containing threshold of all particles
-    QHash<int, double>        mWidthHash;    // buffer containing width of all particles
-
+    QHash<int, TTMParticle*>  mParticles;    // particles list by pdgs
 };
 
 #endif // PARTICLESDBMANAGER_H

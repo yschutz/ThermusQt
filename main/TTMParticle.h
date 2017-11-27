@@ -16,102 +16,67 @@
 #define TTMPARTICLE_H
 
 #include <QObject>
-#include "main/TTMDecay.h"
-#include "main/TTMDecayChannel.h"
-
 
 class TTMParticle : public QObject
 {
     Q_OBJECT
 
-    friend class TTMParticleSet;
-
 public:
     explicit TTMParticle(QObject* parent = nullptr);
-    TTMParticle(TTMParticle &obj, QObject* parent);
-    ~TTMParticle();
+    TTMParticle(QString name, int pdg, int spin, int statistic, double mass,
+                int strange, int baryon, int charge, int charm, int beauty, int top,
+                int sContent, int cContent, int bContent, int tContent,
+                double width, double lifetime, double radius, double threshold, int ndecay,
+                QObject* parent = nullptr);
 
-//    int                       getB() const {return mB;}
-//    double                    getBContent() const {return mBContent;}
-//    int                       getBeauty() const {return mBeauty;}
-//    int                       getCharm() const {return mCharm;}
-//    double                    getCContent() const {return mCContent;}
-//    TTMDecay*                 getDecay(int daughter_id);
-//    TTMDecayChannel*          getDecayChannel(int channel);
-//    QList<TTMDecayChannel*>&  getDecayChannels() {return mDecayChannels;}
-//    QList<TTMDecay*>&         getDecaySummary() {return mDecaySummary;}
-//    int                       getDeg() const {return mDeg;}
-//    int                       getID() const {return mID;}
-//    double                    getMass() const {return mMass;}
-//    const QString&            getPartName() const {return mPartName;}
-//    int                       getQ() const {return mQ;}
-//    double                    getRadius() const {return mRadius;}
-//    int                       getS() const {return mS;}
-//    double                    getSContent() const {return mSContent;}
-//    bool                      getStable() const {return mStable;}
-//    int                       getStat() const {return mStat;}
-//    double                    getTContent() const {return mTContent;}
-//    double                    getThreshold() const {return mThreshold;}
-//    double                    getThresholdCalc() const {return mThresholdCalc;}
-//    bool                      getThresholdFlag() const {return mThresholdFlag;}
-//    int                       getTop() const {return mTop;}
-//    double                    getWidth() const {return mWidth;}
-//    void                      list() const;
-//    void                      setB(int x) {mB = x;}
-//    void                      setBContent(double x) {mBContent = x;}
-//    void                      setBeauty(int x) {mB = x;}
-//    void                      setCharm(int x) {mCharm = x;}
-//    void                      setCContent(double x) {mCContent = x;}
-//    void                      setDecayChannels(QString file, bool scaleBRatios = false);
-//    void                      setDecayChannels(QList<TTMDecayChannel *> &x);
-//    void                      setDecayChannelEfficiency(int channel, double eff);
-//    void                      setDeg(int x) {mDeg = x;}
-//    void                      setID(int x);
-//    void                      setMass(double x) {mMass = x;}
-//    void                      setPartName(QString x) {mPartName = x;}
-//    void                      setQ(int x) {mQ = x;}
-//    void                      setS(int x) {mS = x;}
-//    void                      setSContent(double x) {mSContent = x;}
-//    void                      setStable() {mStable = true;}
-//    void                      setStat(int x) {mStat = x;}
-//    void                      setTop(int x) {mTop = x;}
-//    void                      setThreshold(double x) {mThreshold = x;}
-//    void                      setThresholdFlag(bool x) {mThresholdFlag = x;}
-//    void                      setUnstable() {mStable = false;}
-//    void                      setWidth(double x) {mWidth = x;}
-//    void                      setRadius(double x) {mRadius = x;}
-//    void                      setTContent(double x) {mTContent = x;}
-    void                        updateDecaySummary();
+    TTMParticle(TTMParticle &obj, QObject* parent);
+    ~TTMParticle(){;}
+
+    int                       getBaryon() const                              { return mBaryon; }
+    int                       getBContent() const                            { return mBC; }
+    int                       getBeauty() const                              { return mB; }
+    int                       getCContent() const                            { return mCC; }
+    double                    getCharge() const                              { return mCharge; }
+    int                       getCharm() const                               { return mC; }
+    double                    getLifetime() const                            { return mLifetime; }
+    double                    getMass() const                                { return mMass; }
+    const QString&            getName() const                                { return mName; }
+    int                       getPDG() const                                 { return mPDG; }
+    double                    getRadius() const                              { return mRadius; }
+    int                       getS() const                                   { return mS; }
+    int                       getSContent() const                            { return mSC; }
+    int                       getSpin() const                                { return mSpin; }
+    int                       getStat() const                                { return mStatistic;}
+    int                       getTContent() const                            { return mTC; }
+    double                    getThreshold() const                           { return mThreshold; }
+    int                       getTop() const                                 { return mT; }
+    double                    getWidth() const                               { return mWidth; }
+    bool                      isStable() const                               { return mNdecay == 0 ? true : false; }
+    void                      list() const;
 
     TTMParticle& operator=(TTMParticle& obj);
 
 private:
-//    void                      setDecaySummary(QList<TTMDecay *> &x);
-//    void                      setThresholdCalc(double x) {mThresholdCalc = x;}
-
-    int                       mB;              // baryon number
-    double                    mBContent;       // |b_i|= #b + #b-bar quarks
-    int                       mBeauty;         // beauty
-    int                       mCharm;          // charm
-    double                    mCContent;       // |C_i|= #c + #c-bar quarks
-    QList<TTMDecay*>          mDecaySummary;   // pointer to summary list of decays
-    QList<TTMDecayChannel*>   mDecayChannels;  // pointer to list of decay channels
-    int                       mDeg;            // spin degeneracy
-    int                       mID;             // Monte Carlo ID
+    QString                   mName;           // particle name
+    int                       mPDG;            // PDG ID
+    int                       mSpin;           // spin degeneracy
+    int                       mStatistic;      // 0:Boltzmann +1:Fermi-Dirac -1:Bose-Einstein
     double                    mMass;           // mass
-    QString                   mPartName;       // particle name
-    int                       mQ;              // charge
-    double                    mRadius;         // hard    sphere excluded volume radius
     int                       mS;              // strangeness
-    double                    mSContent;       // |S_i|= #s + #s-bar quarks
-    bool                      mStable;         // true if stable
-    int                       mStat;           // 0:Boltzmann +1:Fermi-Dirac -1:Bose-Einstein
-    double                    mTContent;       // |T_i|= #t + #t-bar quarks
-    double                    mThreshold;      // threshold
-    double                    mThresholdCalc;  // calculated threshold
-    bool                      mThresholdFlag;  // true if threshold has been calculated
-    int                       mTop;            // top
+    int                       mBaryon;         // baryon number
+    double                    mCharge;         // charge
+    int                       mC;              // charm
+    int                       mB;              // |b_i|= #b + #b-bar quarks
+    int                       mT;              // |T_i|= #t + #t-bar quarks
+    int                       mSC;             // |S_i|= #s + #s-bar quarks
+    int                       mCC      ;       // |C_i|= #c + #c-bar quarks
+    int                       mBC;             // |S_i|= #s + #s-bar quarks
+    int                       mTC;             // |S_i|= #s + #s-bar quarks
     double                    mWidth;          // width
+    double                    mLifetime;       // lifetime
+    double                    mRadius;         // hard    sphere excluded volume radius
+    double                    mThreshold;      // threshold
+    int                       mNdecay;         // number of decays
 };
 
 #endif // TTMPARTICLE_H
