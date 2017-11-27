@@ -23,126 +23,31 @@
 QMinuit QMinuit::mMinuit = QMinuit();
 
 const char charal[29] = " .ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-//__________________________________________________________________________
-//QMinuit::QMinuit(const QMinuit &)
-//{
-//    // Private QMinuit copy ctor. QMinuit can not be copied
-
-//   qFatal("QMinuit can not copy construct QMinuit");
-//}
 
 //__________________________________________________________________________
-QMinuit::QMinuit(QObject *parent) : QObject(parent)
+QMinuit::QMinuit(QObject *parent) : QObject(parent),
+    mAlim(nullptr), mAmin(0.), mApsi(0.), mBigedm(0.),
+    mBlim(nullptr), mCfrom(""), mChpt(nullptr), mCOMDplist(nullptr), mCONTgcc(nullptr), mCONTw(nullptr),
+    mCpnam(nullptr), mCstatu(""),  mCtitl(""), mCword(""), mCvrsn(""), mCundef(""),
+    mDcovar(0.), mDirin(nullptr), mDirins(nullptr), mDgrd(nullptr), mEDM(0.), mEmpty(0), mEpsi(0.),
+    mEpsmac(0.), mEpsma2(0.), mErn(nullptr), mErp(nullptr), mIpfix(nullptr), mFIXPyy(nullptr), mFval3(0.),
+    mG2(nullptr), mG2s(nullptr), mGin(nullptr), mGlobcc(nullptr), mGRADgf(nullptr), mGraphicsMode(true),
+    mGrd(nullptr), mGrds(nullptr), mGstep(nullptr), mGsteps(nullptr), mHESSyy(nullptr), mIcomnd(0),
+    mIMPRdsav(nullptr), mIMPRy(nullptr), mIsysrd(0), mIsyssa(0), mIsyswr(0), mItaur(0), mIstrat(0), mKe1cr(0),
+    mKe2cr(0), mLimset(false), mLnewmn(false), mLnolim(false), mLphead(false), mLrepor(false), mLwarn(false),
+    mMATUvline(nullptr), mMaxPar(0), mMaxCptns(0), mMaxExtr(0), mMaxInt(0), mMaxIterations(0), mMaxPar1(0),
+    mMaxPar2(0), mMaxPar5(0), mMIGRflnu(nullptr), mMIGRgs(nullptr), mMIGRstep(nullptr), mMIGRvg(nullptr),
+    mMIGRxxs(nullptr), mMNOTgcc(nullptr), mMNOTw(nullptr), mMNOTxdev(nullptr), mNblock(0), mNexofi(nullptr),
+    mNewpag(0), mNfcn(0), mNfcnlc(0), mNfcnfr(0), mNfcnmx(0), mNiofex(nullptr), mNPFix(0), mNstkrd(0), mNstkwr(0),
+    mNu(0), mObjectFit(nullptr), mP(nullptr), mPARSplist(nullptr), mPbar(nullptr), mPlot(nullptr), mPrho(nullptr), mPSDFs(nullptr),
+    mPstar(nullptr), mPstst(nullptr), mSEEKxbest(nullptr), mSEEKxmid(nullptr), mSIMPy(nullptr), mStatus(0),
+    mU(nullptr), mUndefi(0.), mUp(0.), mUpdflt(0.), mNvarl(nullptr), mVERTq(nullptr), mVERTs(nullptr), mVERTpp(nullptr),
+    mVhmat(nullptr), mVlimhi(0.), mVlimlo(0.), mVthmat(nullptr), mWerr(nullptr), mWord7(nullptr), mX(nullptr), mXdircr(0.), mXmidcr(0.),
+    mXpt(nullptr), mXs(nullptr), mXt(nullptr), mXts(nullptr), mYpt(nullptr), mYdircr(0.), mYmidcr(0.), mFCN(nullptr)
 {
     setObjectName("MINUIT: The Minimization package");
-    //preset all pointers to null
-    mCpnam     = 0;
-    mU         = 0;
-    mAlim      = 0;
-    mBlim      = 0;
-    mPstar     = 0;
-    mGin       = 0;
-    mNvarl     = 0;
-    mNiofex    = 0;
-
-    mNexofi    = 0;
-    mIpfix     = 0;
-    mErp       = 0;
-    mErn       = 0;
-    mWerr      = 0;
-    mGlobcc    = 0;
-    mX         = 0;
-    mXt        = 0;
-    mDirin     = 0;
-    mXs        = 0;
-    mXts       = 0;
-    mDirins    = 0;
-    mGrd       = 0;
-    mG2        = 0;
-    mGstep     = 0;
-    mDgrd      = 0;
-    mGrds      = 0;
-    mG2s       = 0;
-    mGsteps    = 0;
-    mPstst     = 0;
-    mPbar      = 0;
-    mPrho      = 0;
-    mWord7     = 0;
-    mVhmat     = 0;
-    mVthmat    = 0;
-    mP         = 0;
-    mXpt       = 0;
-    mYpt       = 0;
-    mChpt      = 0;
-    mCONTgcc   = 0;
-    mCONTw     = 0;
-    mFIXPyy    = 0;
-    mGRADgf    = 0;
-    mHESSyy    = 0;
-    mIMPRdsav  = 0;
-    mIMPRy     = 0;
-    mMATUvline = 0;
-    mMIGRflnu  = 0;
-    mMIGRstep  = 0;
-    mMIGRgs    = 0;
-    mMIGRvg    = 0;
-    mMIGRxxs   = 0;
-    mMNOTxdev  = 0;
-    mMNOTw     = 0;
-    mMNOTgcc   = 0;
-    mPSDFs     = 0;
-    mSEEKxmid  = 0;
-    mSEEKxbest = 0;
-    mSIMPy     = 0;
-    mVERTq     = 0;
-    mVERTs     = 0;
-    mVERTpp    = 0;
-    mCOMDplist = 0;
-    mPARSplist = 0;
-
-    mUp        = 0;
-    mEpsi      = 0;
-    mApsi      = 0;
-    mXmidcr    = 0;
-    mYmidcr    = 0;
-    mXdircr    = 0;
-    mYdircr    = 0;
-
-    mStatus       = 0;
-    mEmpty        = 0;
-    mObjectFit    = 0;
-//    mMethodCall   = 0;
-    mPlot         = 0;
-    mGraphicsMode = true;
-
     setMaxIterations();
-
-    mFCN = 0;
 }
-
-//__________________________________________________________________________
-//QMinuit::QMinuit(int maxpar)
-//{
-//    // Minuit normal constructor
-//    // maxpar is the maximum number of parameters used with this QMinuit object
-
-//    mFCN = 0;
-
-//    buildArrays(maxpar);
-
-//    mStatus       = 0;
-//    mEmpty        = 0;
-//    mObjectFit    = 0;
-////    mMethodCall   = 0;
-//    mPlot         = 0;
-//    mGraphicsMode = true;
-
-//    setMaxIterations();
-
-//    qmninit(5,6,7);
-
-////    gMinuit = this;
-//}
 
 //__________________________________________________________________________
 QMinuit::~QMinuit()
@@ -151,7 +56,6 @@ QMinuit::~QMinuit()
 
     deleteArrays();
     delete mPlot;
-//    delete mMethodCall;
 }
 
 //__________________________________________________________________________
@@ -167,7 +71,6 @@ void QMinuit::setMaxParameters(int max)
   // to be called at least once
    buildArrays(max);
    QMinuit::qmninit(5,6,7);
-
 }
 
 //__________________________________________________________________________
@@ -259,19 +162,6 @@ void QMinuit::buildArrays(int maxpar)
 }
 
 //__________________________________________________________________________
-QObject *QMinuit::clone(const char */*newname*/) const
-{
-    //  Make a clone of an object using the Streamer facility.
-    // Function pointer is copied to Clone
-
-    qWarning() << Q_FUNC_INFO << "NOT IMPLEMENTED";
-    qFatal("99");
-//    QMinuit *named = (QMinuit*)TNamed::Clone(newname);
-//     named->fFCN=fFCN;
-//         return named;
-}
-
-//__________________________________________________________________________
 int QMinuit::command(const char *command)
 {
     //  execute a Minuit command
@@ -349,16 +239,9 @@ QObject *QMinuit::contour(int npoints, int pa1, int pa2)
     // create graph via the  PluginManager
     xcoor[npoints] = xcoor[0];  // add first pointat end to get closed polyline
     ycoor[npoints] = ycoor[0];
-//    TObject *gr = 0;
-//    TPluginHandler *h;
-//    if ((h = gROOT->GetPluginManager()->FindHandler("QMinuitGraph"))) {
-//       if (h->LoadPlugin() != -1)
-//       gr = (TObject*)h->ExecPlugin(3,npoints+1,xcoor,ycoor);
-//    }
     qWarning() << Q_FUNC_INFO << "Need to implement the equivalent of TGraph";
     delete [] xcoor;
     delete [] ycoor;
-//    return gr;
     return nullptr;
 }
 
@@ -366,7 +249,6 @@ QObject *QMinuit::contour(int npoints, int pa1, int pa2)
 int QMinuit::defineParameter(int parNo, const char *name, double initVal, double initErr, double lowerLimit, double upperLimit)
 {
     // Define a parameter
-
     int err;
 
     QString sname = name;
@@ -472,24 +354,6 @@ int QMinuit::eval(int npar, double *grad, double &fval, double *par, int flag)
     //  The default function calls the function specified in SetFCN
     //
     //  Example of Minimisation function:
-
-    /*
-       if (flag == 1) {
-          read input data,
-          calculate any necessary constants, etc.
-       }
-       if (flag == 2) {
-          calculate GRAD, the first derivatives of FVAL
-         (this is optional)
-       }
-       Always calculate the value of the function, FVAL,
-       which is usually a chisquare or log likelihood.
-       if (iflag == 3) {
-          will come here only after the fit is finished.
-          Perform any final calculations, output fitted data, etc.
-       }
-    */
-    //  See concrete examples in TH1::H1FitChisquare, H1FitLikelihood
 
     if (mFCN) (*mFCN)(npar,grad,fval,par,flag);
     return 0;
@@ -1255,7 +1119,6 @@ void QMinuit::qmncrck(QString cardbuf, int maxcwd, QString &comand, int &lnc, in
     /* Local variables */
     int ifld, iend, lend, left, nreq, ipos, kcmnd, nextb, ic, ibegin, ltoadd;
     int ielmnt, lelmnt[25], nelmnt;
-//    QString ctemp;
     char *celmnt[25];
     char command[25];
 
@@ -2325,16 +2188,13 @@ void QMinuit::qmnexcm(const char *command, double *plist, int llist, int &ierflg
       }
       ++mIcomnd;
       mNfcnlc = mNfcn;
-//      if (mCword(0,7) != "SET PRI" || mWord7[0] >= 0) {
       if (mCword.left(7) != "SET PRI" || mWord7[0] >= 0) {
          if (mISW[4] >= 0) {
             lnow = llist;
             if (lnow > 4) lnow = 4;
             MainWindow::verbosePrint(" **********");
             ctemp = QString(" **   %1 **%2").arg(mIcomnd).arg(mCword);
-//            ctemp.Form(" **%5d **%s",mIcomnd,(const char*)mCword);
             for (i = 1; i <= lnow; ++i) {
-//                ctemp += QString::Format("%12.4g",plist[i-1]);
                 ctemp += QString("   %1").arg(plist[i-1]);
             }
             MainWindow::verbosePrint(ctemp);
@@ -7609,37 +7469,7 @@ int QMinuit::setErrorDef(double up)
 /////*-*          ===============================================
 void QMinuit::setFCN(void (*fcn)(int &, double *, double &, double *, int))
 {
-//    TMethodCall *m  = gMinuit->GetMethodCall();
-//    if (!m) return;
-
-//    long args[5];
-//    args[0] = (long)&npar;
-//    args[1] = (long)gin;
-//    args[2] = (long)&f;
-//    args[3] = (long)u;
-//    args[4] = (long)flag;
-//    m->SetParamPtrs(args);
-//    double result;
-//    m->Execute(result);
     mFCN = fcn;
-}
-
- ////////////////////////////////////////////////////////////////////////////////
- ///*-*-*-*-*-*-*To set the address of the minimization function*-*-*-*-*-*-*-*
- ///*-*          ===============================================
- ///     this function is called by CINT instead of the function above
- ///*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-void QMinuit::setFCN(void */*fcn*/)
-{
-//    if (!fcn) return;
-//    mFCN = fcn;
-//    //    const char *funcname = gCling->Getp2f2funcname(fcn);
-//    //    if (funcname) {
-//    //       mMethodCall = new TMethodCall();
-//    //       mMethodCall->InitWithPrototype(funcname,"Int_t&,double*,double&,double*,Int_t");
-//    //    }
-//    //    mFCN = InteractiveFCNm;
-//    gMinuit = this; //required by InteractiveFCN
 }
 
 ////////////////////////////////////////////////////////////////////////////////

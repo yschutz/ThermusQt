@@ -35,18 +35,96 @@ class QMinuit : public QObject
 {
     Q_OBJECT
 
+public:
+    virtual void     buildArrays(int maxpar=15);
+    virtual int      command(const char *command);
+    virtual QObject* contour(int npoints=10, int pa1=0, int pa2=1);
+    virtual int      defineParameter( int parNo, const char *name, double initVal, double initErr, double lowerLimit, double upperLimit );
+    virtual void     deleteArrays();
+    virtual int      eval(int npar, double *grad, double &fval, double *par, int flag);
+    virtual int      fixParameter( int parNo );
+    QObject*         geQObjectFit() const {return mObjectFit;}
+    int              getMaxIterations() const {return mMaxIterations;}
+    virtual int      getNumFixedPars() const {return mNPFix;}
+    virtual int      getNumFreePars() const {return mNPar;}
+    virtual int      getNumPars() const {return mNPar + mNPFix;}
+    virtual int      getParameter( int parNo, double &currentValue, double &currentError ) const;
+    virtual QObject* getPlot() const {return mPlot;}
+    int              getStatus() const {return mStatus;}
+    static QMinuit&  instance();
+    virtual int      migrad();
+    virtual void     qmnamin();
+    virtual void     qmnbins(double a1, double a2, int naa, double &bl, double &bh, int &nb, double &bwid);
+    virtual void     qmncalf(double *pvec, double &ycalf);
+    virtual void     qmncler();
+    virtual void     qmncntr(int ike1, int ike2, int &ierrf);
+    virtual void     qmncomd(const char *crdbin, int &icondn);
+    virtual void     qmncont(int ke1, int ke2, int nptu, double *xptu, double *yptu, int &ierrf);
+    virtual void     qmncrck(QString crdbuf, int maxcwd, QString &comand, int &lnc, int mxp, double *plist, int &llist, int &ierr, int isyswr);
+    virtual void     qmncros(double &aopt, int &iercr);
+    virtual void     qmncuve();
+    virtual void     qmnderi();
+    virtual void     qmndxdi(double pint, int ipar, double &dxdi);
+    virtual void     qmneig(double *a, int ndima, int n, int mits, double *work, double precis, int &ifault);
+    virtual void     qmnemat(double *emat, int ndim);
+    virtual void     qmnerrs(int number, double &eplus, double &eminus, double &eparab, double &gcc);
+    virtual void     qmneval(double anext, double &fnext, int &ierev);
+    virtual void     qmnexcm(const char *comand, double *plist, int llist, int &ierflg) ;
+    virtual void     qmnexin(double *pint);
+    virtual void     qmnfixp(int iint, int &ierr);
+    virtual void     qmnfree(int k);
+    virtual void     qmngrad();
+    virtual void     qmnhelp(QString comd);
+    virtual void     qmnhelp(const char *command="");
+    virtual void     qmnhess();
+    virtual void     qmnhes1();
+    virtual void     qmnimpr();
+    virtual void     qmninex(double *pint);
+    virtual void     qmninit(int i1, int i2, int i3);
+    virtual void     qmnlims();
+    virtual void     qmnline(double *start, double fstart, double *step, double slope, double toler);
+    virtual void     qmnmatu(int kode);
+    virtual void     qmnmigr();
+    virtual void     qmnmnos();
+    virtual void     qmnmnot(int ilax, int ilax2, double &val2pl, double &val2mi);
+    virtual void     qmNParm(int k, QString cnamj, double uk, double wk, double a, double b, int &ierflg);
+    virtual void     qmNPars(QString &crdbuf, int &icondn);
+    virtual void     qmnpfit(double *parx2p, double *pary2p, int npar2p, double *coef2p, double &sdev2p);
+    virtual void     qmnpint(double &pexti, int i, double &pinti);
+    virtual void     qmnplot(double *xpt, double *ypt, char *chpt, int nxypt, int npagwd, int npagln);
+    virtual void     qmnpout(int iuext, QString &chnam, double &val, double &err, double &xlolim, double &xuplim, int &iuint) const;
+    virtual void     qmnprin(int inkode, double fval);
+    virtual void     qmnpsdf();
+    virtual void     qmnrazz(double ynew, double *pnew, double *y, int &jh, int &jl);
+    virtual void     qmnrn15(double &val, int &inseed);
+    virtual void     qmnrset(int iopt);
+    virtual void     qmnsave();
+    virtual void     qmnscan();
+    virtual void     qmnseek();
+    virtual void     qmnset();
+    virtual void     qmnsimp();
+    virtual void     qmnstat(double &fmin, double &mEDM, double &errdef, int &npari, int &nparx, int &istat);
+    virtual void     qmntiny(volatile double epsp1, double &epsbak);
+    bool             qmnunpt(QString &cfname);
+    virtual void     qmnvert(double *a, int l, int m, int n, int &ifail);
+    virtual void     qmnwarn(const char *copt, const char *corg, const char *cmes);
+    virtual void     qmnwerr();
+    virtual int      release( int parNo );
+    virtual int      setErrorDef( double up );
+    virtual void     setFCN(void (*fcn)(int &, double *, double &f, double *, int));
+    virtual void     setGraphicsMode(bool mode=true) {mGraphicsMode = mode;}
+    virtual void     setMaxIterations(int maxiter=500) {mMaxIterations = maxiter;}
+    void             setMaxParameters(int max);
+    virtual void     seQObjectFit(QObject *obj) {mObjectFit=obj;}
+    virtual int      setPrintLevel( int printLevel=0 );
+
 private:
-//    QMinuit(const QMinuit &m);
-//    QMinuit& operator=(const QMinuit &m); // Not implemented
     QMinuit(QObject* parent = nullptr);
     ~QMinuit();
 
-    QMinuit(const QMinuit&) {}
+    QMinuit(const QMinuit&) {} // cannot copy QMinuit
     QMinuit& operator = (const QMinuit&) { return *this; }
     static QMinuit mMinuit; // the unique instance
-
-public:
-
     enum{kMAXWARN=100};
 
     double     *mAlim;            // [mMaxPar2] Lower limits for parameters. If zero no limits
@@ -121,7 +199,6 @@ public:
     int        mMaxPar1;          // mMaxPar*(mMaxPar+1)
     int        mMaxPar2;          // mMaxPar*mMaxPar
     int        mMaxPar5;          // mMaxPar*(mMaxPar+1)/2
-    //    TMethodCall  *mMethodCall;      // Pointer to MethodCall in case of interpreted function
     double     *mMIGRflnu;        // [mMaxPar] array used in mnmigr
     double     *mMIGRgs;          // [mMaxPar] array used in mnmigr
     double     *mMIGRstep;        // [mMaxPar] array used in mnmigr
@@ -142,7 +219,6 @@ public:
     int        mNpagln;           // Number of lines per page
     int        mNpagwd;           // Page width
     int        mNPar;             // Number of free parameters (total number of pars = mNPar + fNfix)
-    double     *mPARSplist;       // [mMaxPar] array used in mNPars
     int        mNPFix;            // Number of fixed parameters
     int        mNstkrd;           //
     int        mNstkwr;           //
@@ -151,6 +227,7 @@ public:
     QObject    *mObjectFit;       // Pointer to object being fitted
     QString    mOrigin[kMAXWARN]; //
     double     *mP;               // [mMaxPar1]
+    double     *mPARSplist;       // [mMaxPar] array used in mNPars
     double     *mPbar;            // [mMaxPar]
     QObject    *mPlot;            // Pointer to TGraph object created by mncont
     double     *mPrho;            // [mMaxPar] Minimum point of parabola
@@ -186,103 +263,6 @@ public:
     double     *mYpt;             // [mMaxCptns] Y array of points for contours
     double     mYdircr;           //
     double     mYmidcr;           //
-
     void      (*mFCN)(int &npar, double *gin, double &f, double *u, int flag); // !
-
-
-    //  methods performed on QMinuit class
-public:
-
-//    explicit      QMinuit(QObject *parent = 0);
-//                  QMinuit(int maxpar);
-//    virtual       ~QMinuit();
-
-    static QMinuit&  instance();
-    void             setMaxParameters(int max);
-
-    virtual void     buildArrays(int maxpar=15);
-    virtual QObject* clone(const char *newname="") const;   //Clone-Method to copy the function-pointer fFCN
-    virtual int      command(const char *command);
-    virtual QObject* contour(int npoints=10, int pa1=0, int pa2=1);
-    virtual int      defineParameter( int parNo, const char *name, double initVal, double initErr, double lowerLimit, double upperLimit );
-    virtual void     deleteArrays();
-    virtual int      eval(int npar, double *grad, double &fval, double *par, int flag);
-    virtual int      fixParameter( int parNo );
-//    TMethodCall   *GetMethodCall() const {return mMethodCall;}
-    QObject*         geQObjectFit() const {return mObjectFit;}
-    int              getMaxIterations() const {return mMaxIterations;}
-    virtual int      getNumFixedPars() const {return mNPFix;}
-    virtual int      getNumFreePars() const {return mNPar;}
-    virtual int      getNumPars() const {return mNPar + mNPFix;}
-    virtual int      getParameter( int parNo, double &currentValue, double &currentError ) const;
-    virtual QObject* getPlot() const {return mPlot;}
-    int              getStatus() const {return mStatus;}
-    virtual int      migrad();
-    virtual void     qmnamin();
-    virtual void     qmnbins(double a1, double a2, int naa, double &bl, double &bh, int &nb, double &bwid);
-    virtual void     qmncalf(double *pvec, double &ycalf);
-    virtual void     qmncler();
-    virtual void     qmncntr(int ike1, int ike2, int &ierrf);
-    virtual void     qmncomd(const char *crdbin, int &icondn);
-    virtual void     qmncont(int ke1, int ke2, int nptu, double *xptu, double *yptu, int &ierrf);
-    virtual void     qmncrck(QString crdbuf, int maxcwd, QString &comand, int &lnc
-                     ,  int mxp, double *plist, int &llist, int &ierr, int isyswr);
-    virtual void     qmncros(double &aopt, int &iercr);
-    virtual void     qmncuve();
-    virtual void     qmnderi();
-    virtual void     qmndxdi(double pint, int ipar, double &dxdi);
-    virtual void     qmneig(double *a, int ndima, int n, int mits, double *work, double precis, int &ifault);
-    virtual void     qmnemat(double *emat, int ndim);
-    virtual void     qmnerrs(int number, double &eplus, double &eminus, double &eparab, double &gcc);
-    virtual void     qmneval(double anext, double &fnext, int &ierev);
-    virtual void     qmnexcm(const char *comand, double *plist, int llist, int &ierflg) ;
-    virtual void     qmnexin(double *pint);
-    virtual void     qmnfixp(int iint, int &ierr);
-    virtual void     qmnfree(int k);
-    virtual void     qmngrad();
-    virtual void     qmnhelp(QString comd);
-    virtual void     qmnhelp(const char *command="");
-    virtual void     qmnhess();
-    virtual void     qmnhes1();
-    virtual void     qmnimpr();
-    virtual void     qmninex(double *pint);
-    virtual void     qmninit(int i1, int i2, int i3);
-    virtual void     qmnlims();
-    virtual void     qmnline(double *start, double fstart, double *step, double slope, double toler);
-    virtual void     qmnmatu(int kode);
-    virtual void     qmnmigr();
-    virtual void     qmnmnos();
-    virtual void     qmnmnot(int ilax, int ilax2, double &val2pl, double &val2mi);
-    virtual void     qmNParm(int k, QString cnamj, double uk, double wk, double a, double b, int &ierflg);
-    virtual void     qmNPars(QString &crdbuf, int &icondn);
-    virtual void     qmnpfit(double *parx2p, double *pary2p, int npar2p, double *coef2p, double &sdev2p);
-    virtual void     qmnpint(double &pexti, int i, double &pinti);
-    virtual void     qmnplot(double *xpt, double *ypt, char *chpt, int nxypt, int npagwd, int npagln);
-    virtual void     qmnpout(int iuext, QString &chnam, double &val, double &err, double &xlolim, double &xuplim, int &iuint) const;
-    virtual void     qmnprin(int inkode, double fval);
-    virtual void     qmnpsdf();
-    virtual void     qmnrazz(double ynew, double *pnew, double *y, int &jh, int &jl);
-    virtual void     qmnrn15(double &val, int &inseed);
-    virtual void     qmnrset(int iopt);
-    virtual void     qmnsave();
-    virtual void     qmnscan();
-    virtual void     qmnseek();
-    virtual void     qmnset();
-    virtual void     qmnsimp();
-    virtual void     qmnstat(double &fmin, double &mEDM, double &errdef, int &npari, int &nparx, int &istat);
-    virtual void     qmntiny(volatile double epsp1, double &epsbak);
-    bool             qmnunpt(QString &cfname);
-    virtual void     qmnvert(double *a, int l, int m, int n, int &ifail);
-    virtual void     qmnwarn(const char *copt, const char *corg, const char *cmes);
-    virtual void     qmnwerr();
-    virtual int      release( int parNo );
-    virtual int      setErrorDef( double up );
-    virtual void     setFCN(void *fcn);
-    virtual void     setFCN(void (*fcn)(int &, double *, double &f, double *, int));
-    virtual void     setGraphicsMode(bool mode=true) {mGraphicsMode = mode;}
-    virtual void     setMaxIterations(int maxiter=500) {mMaxIterations = maxiter;}
-    virtual void     seQObjectFit(QObject *obj) {mObjectFit=obj;}
-    virtual int      setPrintLevel( int printLevel=0 );
-
 };
 #endif // QMinuit_H

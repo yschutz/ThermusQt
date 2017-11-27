@@ -5,13 +5,6 @@
 #include "f1.h"
 
 //__________________________________________________________________________
-//F1::F1(QObject *parent) : QObject(parent),
-//    mFunction(nullptr)
-//{
-
-//}
-
-//__________________________________________________________________________
 F1::F1(const QString &name, double (*fcn)(double *, double *), double xmin, double xmax, int par, QObject *parent) : QObject(parent),
     mFunction(fcn), mXMax(xmax), mXMin(xmin), mNPar(par)
 {

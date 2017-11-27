@@ -9,7 +9,6 @@ class F1 : public QObject
 {
     Q_OBJECT
 public:
-//    explicit F1(QObject *parent = 0);
     F1(const QString& name, double(*fcn)(double*, double*), double xmin, double xmax, int par, QObject* parent = 0);
     ~F1();
 
