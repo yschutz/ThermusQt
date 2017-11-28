@@ -162,6 +162,6 @@ void Macro::start(bool debug)
     QDate date = start.date();
     QTime time = start.time();
 
-    QString info = QString(" *** Start at Date : %1 Time : %2").arg(date.toString("dd MMMM yyyy")).arg(time.toString());
+    QString info = QString(" *** Start at : %1 Time : %2").arg(date.toString("dd MMMM yyyy")).arg(time.toString());
     qInfo() << info;
 }

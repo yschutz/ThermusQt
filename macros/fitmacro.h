@@ -14,11 +14,10 @@ class FitMacro : public Macro
 {
     Q_OBJECT
 public:
-    static      FitMacro& instance();
-
-    void                setDefaultParameters();
-    void                setMacroDefaultParameters();
-    void                run();
+    static FitMacro& instance();
+    void             setDefaultParameters();
+    void             setMacroDefaultParameters();
+    void             run();
 
 public slots:
     void wrapUp();

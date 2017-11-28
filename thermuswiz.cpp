@@ -93,5 +93,5 @@ void ThermusWiz::accept()
 
     mLoop.exit(0);
     close();
-    qobject_cast<MainWindow*>(parentWidget())->createConsol();
+//    qobject_cast<MainWindow*>(parentWidget())->createConsol();
 }

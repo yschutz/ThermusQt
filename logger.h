@@ -5,6 +5,7 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#include <QDir>
 #include <QObject>
 #include <QPlainTextEdit>
 
@@ -15,15 +16,17 @@ class Logger : public QObject
 public:
     static Logger& instance();
 
-    void setTextEdit(QPlainTextEdit* val) {mTextEdit = val;}
-    void writeMessage(const QString& message, bool debug=true);
+    QString logFileName() const { return QDir::current().path() + "/" + mLogFile.fileName(); }
+    void    setTextEdit(QPlainTextEdit* val) {mTextEdit = val;}
+    void    writeMessage(const QString& message, bool debug=true);
 
 private:
     Logger();
-    ~Logger() {}
+    ~Logger() { mLogFile.close(); }
     Logger (const Logger&) {}
 
     static Logger      mInstance; // the unique instance
+    QFile              mLogFile;  // the log file
     QPlainTextEdit*    mTextEdit; // the widget where to write logs
 };
 

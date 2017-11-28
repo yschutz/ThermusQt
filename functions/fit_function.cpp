@@ -38,7 +38,6 @@ void fit_function(TTMThermalFit * fit, int flag = 0)
         if (current->getFlag() == 0)
             gFitParameters++;
     }
-//    QMinuit lMinuit = QMinuit::instance(); // new QMinuit(gFitParameters);
     QMinuit::instance().setMaxParameters(gFitParameters);
     QMinuit::instance().setFCN(Minuit_fcn);
     QMinuit::instance().setErrorDef(1.);  		// 1-sigma errors

@@ -90,6 +90,7 @@ private:
     QMenu*             mUpdateMenu;            // to update the particles db from Root or Thermus Data
     QAction*           mUpdatePDG;             // to update the particles Root db
     QAction*           mUpdateThermus;         // to update the particles Thermus db
+    QString            mWhat;                  // Prediction or Fit
 };
 
 #endif // MAINWINDOW_H

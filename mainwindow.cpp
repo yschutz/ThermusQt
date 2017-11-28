@@ -40,6 +40,9 @@ MainWindow::MainWindow(QWidget *parent) :
         if(ret ==QMessageBox::Ok)
             exit(1);
     }
+    QMessageBox msg(QMessageBox::Information, Q_FUNC_INFO, Q_FUNC_INFO);
+    msg.setInformativeText(QString("Log file is: %1").arg(Logger::instance().logFileName()));
+    msg.exec();
 
     QString partDir = mThermusDir.path() + "/particles/";
     QString thermusDBName(QString(ParticlesDBManager::instance().getThermusDBName()).append(".db"));
@@ -98,7 +101,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setMinimumSize(160, 160);
     resize(480, 320);
 
-
+    createConsol();
 }
 
 //__________________________________________________________________________
@@ -127,11 +130,11 @@ void MainWindow::createConsol()
 
     outputAreaWindow->setCentralWidget(mdiArea);
 
-    outputAreaWindow->show();
+//    outputAreaWindow->show();
 
 
     // direct the log info to the console
-//    qInstallMessageHandler(customMessageHandler);
+    qInstallMessageHandler(customMessageHandler);
 }
 
 //__________________________________________________________________________
@@ -200,7 +203,10 @@ QString MainWindow::getDBPath(const QString &opt)
 //__________________________________________________________________________
 void MainWindow::listParameters()
 {
-    PredictionMacro::instance().listParameters();
+    if (mWhat == "Prediction")
+        PredictionMacro::instance().listParameters();
+    else if (mWhat == "Fit")
+        FitMacro::instance().listParameters();
 }
 
 //__________________________________________________________________________
@@ -256,6 +262,7 @@ void MainWindow::run(const QString &what)
 {
     Macro* myMacro = nullptr;
     QString message;
+    mWhat = what;
     if (what == "Prediction") {
         myMacro = &PredictionMacro::instance();
         message = mPredictionAction->statusTip();
