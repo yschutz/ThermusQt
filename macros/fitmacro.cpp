@@ -2,6 +2,7 @@
 //
 // The steering class to run a thermus fit (aka ROOT macro)
 
+#include <QDateTime>
 #include <QMessageBox>
 #include <QTimer>
 
@@ -87,6 +88,12 @@ void FitMacro::setMacroDefaultParameters()
 //__________________________________________________________________________
 void FitMacro::run()
 {
+    QDateTime start = QDateTime::currentDateTime();
+    QDate date = start.date();
+    QTime time = start.time();
+    QString info = QString(" *** Start at : %1 Time : %2").arg(date.toString("dd MMMM yyyy")).arg(time.toString());
+    qInfo() << info;
+
     qInfo() << "******* Fitting:" << mMacroParaSel->getTitle() << "******* ";
 
     mFitInfo->generateYields();
@@ -144,7 +151,7 @@ void FitMacro::timeout()
 FitMacro::FitMacro(QObject* parent) : Macro(parent), mFT(nullptr)
 {
     // ctor
-    setObjectName("Fit Macro");
+    setObjectName("Fit_Macro_");
 }
 
 //__________________________________________________________________________

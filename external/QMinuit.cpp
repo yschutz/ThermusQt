@@ -12,12 +12,12 @@
  *************************************************************************/
 
 
-#include <QDebug>
 #include <QMessageBox>
 #include <QtMath>
 
 #include "QMinuit.h"
 
+#include "logger.h"
 #include "mainwindow.h"
 
 QMinuit QMinuit::mMinuit = QMinuit();
@@ -410,7 +410,8 @@ void QMinuit::qmnamin()
     double fnew;
 
     if (mISW[4] >= 1) {
-       MainWindow::verbosePrint(QString("%1--INFO: FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.").arg(Q_FUNC_INFO));
+        QString pr(QString("%1--INFO: FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.").arg(Q_FUNC_INFO));
+        Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
     }
     qmnexin(mX);
     eval(mNPar, mGin, fnew, mU, 4);
@@ -578,7 +579,7 @@ void QMinuit::qmncntr(int ike1, int ike2, int &ierrf)
     double  ylabel, fmn, fmx, xlo, ylo, xup, yup;
     double devs, xsav, ysav,  bwidx,  bwidy, unext, ff, xb4;
     int ngrid, ixmid, nparx, nx, ny, ki1, ki2, ixzero, ics;
-    QString chmid, chln, chzero;
+    QString chmid, chln, chzero, pr;
 
     int ke1 = ike1 + 1;
     int ke2 = ike2 + 1;
@@ -590,8 +591,8 @@ void QMinuit::qmncntr(int ike1, int ike2, int &ierrf)
     if (ki1 == ki2)           goto L1350;
 
     if (mISW[1] < 1) {
-       qmnhess();
-       qmnwerr();
+        qmnhess();
+        qmnwerr();
     }
     nparx = mNPar;
     xsav = mU[ke1 - 1];
@@ -652,11 +653,13 @@ void QMinuit::qmncntr(int ike1, int ike2, int &ierrf)
        chmid[ix - 1]  = '*';
        chzero[ix - 1] = '-';
     }
-    MainWindow::verbosePrint(QString("%1-- Y-AXIS: PARAMETER: %2 %3").arg(Q_FUNC_INFO).arg(ke2).arg(mCpnam[ke2-1]));
+    pr = QString("%1-- Y-AXIS: PARAMETER: %2 %3").arg(Q_FUNC_INFO).arg(ke2).arg(mCpnam[ke2-1]);
+    Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
     if (ixzero > 0) {
        chzero[ixzero-1] = '+';
        chln = " ";
-       MainWindow::verbosePrint(QString("%1--             X=0").arg(Q_FUNC_INFO));
+       pr = QString("%1--             X=0").arg(Q_FUNC_INFO);
+       Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
     }
  //*-*-                loop over rows
     for (int iy = 1; iy <= ny; ++iy) {
@@ -1962,11 +1965,13 @@ void QMinuit::qmnemat(double *emat, int ndim)
 
     /* Function Body */
     if (mISW[1] < 1) return;
+    QString pr;
     if (mISW[4] >= 2) {
-        MainWindow::verbosePrint(QString(" EXTERNAL ERROR MATRIX.    NDIM = %1 NPAR = %2 ERR DEF = %3").
+        pr = QString(" EXTERNAL ERROR MATRIX.    NDIM = %1 NPAR = %2 ERR DEF = %3").
                                  arg(ndim).
                                  arg(mNPar).
-                                 arg(mUp));
+                                 arg(mUp);
+        Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
     }
  //*-*-                   size of matrix to be printed
     npard = mNPar;
@@ -2006,7 +2011,7 @@ void QMinuit::qmnemat(double *emat, int ndim)
              for (kk = k; kk <= k2; ++kk) {
                 ctemp += QString("%1").arg(emat[i + kk*emat_dim1]);
              }
-             MainWindow::verbosePrint(ctemp);
+             Logger::instance().writeMessage(ctemp, Logger::instance().isVerbose());
           }
        }
     }
@@ -2188,16 +2193,17 @@ void QMinuit::qmnexcm(const char *command, double *plist, int llist, int &ierflg
       }
       ++mIcomnd;
       mNfcnlc = mNfcn;
+      QString pr;
       if (mCword.left(7) != "SET PRI" || mWord7[0] >= 0) {
          if (mISW[4] >= 0) {
             lnow = llist;
             if (lnow > 4) lnow = 4;
-            MainWindow::verbosePrint(" **********");
+            Logger::instance().writeMessage(" **********", Logger::instance().isVerbose());
             ctemp = QString(" **   %1 **%2").arg(mIcomnd).arg(mCword);
             for (i = 1; i <= lnow; ++i) {
                 ctemp += QString("   %1").arg(plist[i-1]);
             }
-            MainWindow::verbosePrint(ctemp);
+            Logger::instance().writeMessage(ctemp, Logger::instance().isVerbose());
             inonde = 0;
             if (llist > lnow) {
                kll = llist;
@@ -2205,12 +2211,12 @@ void QMinuit::qmnexcm(const char *command, double *plist, int llist, int &ierflg
                   inonde = 1;
                   kll = mMaxPar;
                }
-               MainWindow::verbosePrint(" **********");
+               Logger::instance().writeMessage(" **********", Logger::instance().isVerbose());
                for (i = lnow + 1; i <= kll; ++i) {
-                  MainWindow::verbosePrint(QString::number(plist[i-1]));
+                   Logger::instance().writeMessage(QString::number(plist[i-1]), Logger::instance().isVerbose());
                }
             }
-            MainWindow::verbosePrint(" **********");
+            Logger::instance().writeMessage(" **********", Logger::instance().isVerbose());
             if (inonde > 0) {
                qWarning() << "  ERROR: ABOVE CALL TO MNEXCM TRIED TO PASS MORE THAN" << mMaxPar << "PARAMETERS.";
             }
@@ -2858,13 +2864,14 @@ void QMinuit::qmngrad()
           mGRADgf[lc-1] = 0;
        }
        if (cwd != "GOOD") mISW[2] = 0;
-       MainWindow::verbosePrint(QString("%1 %2 %3 %4 %5 %6").
+       QString pr(QString("%1 %2 %3 %4 %5 %6").
                                 arg(i).
                                 arg(mCpnam[i-1]).
                                 arg(mGRADgf[lc-1]).
                                 arg(mGrd[lc-1]).
                                 arg(err).
                                 arg(cwd));
+       Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
     }
     if (lnone) {
        qInfo() << "  AGREEMENT=NONE  MEANS FCN DID NOT CALCULATE THE DERIVATIVE";
@@ -3679,7 +3686,7 @@ void QMinuit::qmnhess()
        mEDM += mP[i + i*mMaxPar - mMaxPar-1]*(mGrd[i-1]*mGrd[i-1]);
     }
     if (mISW[4] >= 1 && mISW[1] == 3 && mItaur == 0) {
-       MainWindow::verbosePrint(" COVARIANCE MATRIX CALCULATED SUCCESSFULLY");
+        Logger::instance().writeMessage(" COVARIANCE MATRIX CALCULATED SUCCESSFULLY", Logger::instance().isVerbose());
     }
     goto L900;
  //*-*-                             failure to invert 2nd deriv matrix
@@ -4505,12 +4512,12 @@ void QMinuit::qmnmatu(int kode)
     ncoef = (mNpagwd - 19) / 6;
     ncoef = qMin(ncoef,20);
     nparm = qMin(mNPar,ncoef);
-    MainWindow::verbosePrint(" PARAMETER  CORRELATION COEFFICIENTS  ");
+    Logger::instance().writeMessage(" PARAMETER  CORRELATION COEFFICIENTS  ", Logger::instance().isVerbose());
     ctemp = "       NO.  GLOBAL";
     for (id = 1; id <= nparm; ++id) {
        ctemp += QString(" %1").arg(mNexofi[id-1]);
     }
-    MainWindow::verbosePrint(ctemp);
+    Logger::instance().writeMessage(ctemp, Logger::instance().isVerbose());
     for (i = 1; i <= mNPar; ++i) {
        ix  = mNexofi[i-1];
        ndi = i*(i + 1) / 2;
@@ -4526,7 +4533,7 @@ void QMinuit::qmnmatu(int kode)
        for (it = 1; it <= nparm; ++it) {
           ctemp += QString(" %1").arg(mMATUvline[it-1]);
        }
-       MainWindow::verbosePrint(ctemp);
+       Logger::instance().writeMessage(ctemp, Logger::instance().isVerbose());
        if (i <= nparm) continue;
        ctemp = "                   ";
        for (iso = 1; iso <= 10; ++iso) {
@@ -4535,12 +4542,12 @@ void QMinuit::qmnmatu(int kode)
           for (it = nsofar + 1; it <= nparm; ++it) {
              ctemp = ctemp + QString(" %1").arg(mMATUvline[it-1]);
           }
-          MainWindow::verbosePrint(ctemp);
+          Logger::instance().writeMessage(ctemp, Logger::instance().isVerbose());
           if (i <= nparm) break;
        }
     }
     if (isw2 < 3)
-       MainWindow::verbosePrint(QString("%1").arg(mCovmes[isw2]));
+        Logger::instance().writeMessage(QString("%1").arg(mCovmes[isw2]), Logger::instance().isVerbose());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -4579,8 +4586,8 @@ void QMinuit::qmnmigr()
     mISW[3] = -1;
     rhotol  = mApsi*.001;
     if (iswtr >= 1) {
-       MainWindow::verbosePrint(QString(" START MIGRAD MINIMIZATION.  STRATEGY %1 CONVERGENCE WHEN EDM .LT. %2").
-                                arg(mIstrat).arg(rhotol));
+        Logger::instance().writeMessage(QString(" START MIGRAD MINIMIZATION.  STRATEGY %1 CONVERGENCE WHEN EDM .LT. %2").
+                                        arg(mIstrat).arg(rhotol), Logger::instance().isVerbose());
     }
  //*-*-                                          initialization strategy
     if (mIstrat < 2 || mISW[1] >= 3) goto L2;
@@ -4860,12 +4867,12 @@ void QMinuit::qmnmigr()
  //*-*-                                        . . apparent convergence
  L300:
     if (iswtr >= 0) {
-       MainWindow::verbosePrint(" MIGRAD MINIMIZATION HAS CONVERGED.");
+        Logger::instance().writeMessage(" MIGRAD MINIMIZATION HAS CONVERGED.", Logger::instance().isVerbose());
     }
     if (mItaur == 0) {
        if (mIstrat >= 2 || (mIstrat == 1 && mISW[1] < 3)) {
           if (mISW[4] >= 0) {
-             MainWindow::verbosePrint(" MIGRAD WILL VERIFY CONVERGENCE AND ERROR MATRIX.");
+              Logger::instance().writeMessage(" MIGRAD WILL VERIFY CONVERGENCE AND ERROR MATRIX.", Logger::instance().isVerbose());
           }
           qmnhess();
           qmnwerr();
@@ -5188,27 +5195,27 @@ void QMinuit::qmNParm(int k1, QString cnamj, double uk, double wk, double a, dou
     if (ktofix > 0) {
        qmnwarn("W", "PARAM DEF", "REDEFINING A FIXED PARAMETER.");
        if (kint>= mMaxInt) {
-          qInfo() << " CANNOT RELEASE. MAX NPAR EXCEEDED.";
-          goto L800;
+           qInfo() << " CANNOT RELEASE. MAX NPAR EXCEEDED.";
+           goto L800;
        }
        qmnfree(-k);
     }
- //*-*-                      if redefining previously variable parameter
+    //*-*-                      if redefining previously variable parameter
     if (mNiofex[k-1] > 0) kint= mNPar - 1;
- L50:
+L50:
 
- //*-*-                                     . . .printheading
+    //*-*-                                     . . .printheading
     if (mLphead && mISW[4] >= 0) {
-       MainWindow::verbosePrint(" PARAMETER DEFINITIONS:");
-       QString pr = QString("%1 %2 %3 %4 %5 %6").arg("No.", -3).
-               arg("NAME", -20).
-               arg("VALUE", -10).
-               arg("STEP",  -10).
-               arg("SIZE",  -10).
-               arg("LIMITS", -20);
-       MainWindow::verbosePrint(pr);
+        Logger::instance().writeMessage(" PARAMETER DEFINITIONS:", Logger::instance().isVerbose());
+        QString pr = QString("%1 %2 %3 %4 %5 %6").arg("No.", -3).
+                arg("NAME", -20).
+                arg("VALUE", -10).
+                arg("STEP",  -10).
+                arg("SIZE",  -10).
+                arg("LIMITS", -20);
+        Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
 
-       mLphead = false;
+        mLphead = false;
     }
     if (wk > 0) goto L122;
  //*-*-                                       . . .constant parameter . . . .
@@ -5217,7 +5224,7 @@ void QMinuit::qmNParm(int k1, QString cnamj, double uk, double wk, double a, dou
                 arg(cnamk, -20).
                 arg(uk, 10, 'e', 5).
                 arg("constant", 30);
-        MainWindow::verbosePrint(pr);
+        Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
     }
     nvl = 0;
     goto L200;
@@ -5231,7 +5238,7 @@ void QMinuit::qmNParm(int k1, QString cnamj, double uk, double wk, double a, dou
                    arg(uk, 10, 'e', 5).
                    arg(wk, 10, 'e', 5).
                    arg("no limits", 20);
-           MainWindow::verbosePrint(pr);
+           Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
        }
     } else {
  //*-*-                                        variable parameter with limits
@@ -5244,7 +5251,7 @@ void QMinuit::qmNParm(int k1, QString cnamj, double uk, double wk, double a, dou
                    arg(wk, 10, 'e', 5).
                    arg(a, 10, 'e', 5).
                    arg(b, 10, 'e', 5);
-           MainWindow::verbosePrint(pr);
+           Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
        }
     }
  //*-*-                            . . request for another variable parameter
@@ -5878,25 +5885,25 @@ void QMinuit::qmnprin(int inkode, double fval)
     else                 chedm = QString("%1").arg(mEDM);
 
     nc = mNfcn - mNfcnfr;
-    MainWindow::verbosePrint(QString(" FCN = %1 FROM %2 STATUS = %3 %4 CALLS %5 TOTAL").
-                             arg(cheval).
-                             arg(mCfrom).
-                             arg(mCstatu).
-                             arg(nc).
-                             arg(mNfcn));
+    Logger::instance().writeMessage(QString(" FCN = %1 FROM %2 STATUS = %3 %4 CALLS %5 TOTAL").
+                                    arg(cheval).
+                                    arg(mCfrom).
+                                    arg(mCstatu).
+                                    arg(nc).
+                                    arg(mNfcn), Logger::instance().isVerbose());
     m = mISW[1];
     if (m == 0 || m == 2 || mDcovar == 0) {
-        MainWindow::verbosePrint(QString("                     EDM = %1    STRATEGY = %2       %3").
-                                 arg(chedm).
-                                 arg(mIstrat).
-                                 arg(mCovmes[m]));
+        Logger::instance().writeMessage(QString("                     EDM = %1    STRATEGY = %2       %3").
+                                        arg(chedm).
+                                        arg(mIstrat).
+                                        arg(mCovmes[m]), Logger::instance().isVerbose());
     } else {
-       dcmax = 1;
-       dc    = qMin(mDcovar,dcmax)*100;
-       MainWindow::verbosePrint(QString("                     EDM = %1    STRATEGY = %2   ERROR MATRIX UNCERTAINTY %3 per cent").
-                                arg(chedm).
-                                arg(mIstrat).
-                                arg(dc));
+        dcmax = 1;
+        dc    = qMin(mDcovar,dcmax)*100;
+        Logger::instance().writeMessage(QString("                     EDM = %1    STRATEGY = %2   ERROR MATRIX UNCERTAINTY %3 per cent").
+                                        arg(chedm).
+                                        arg(mIstrat).
+                                        arg(dc), Logger::instance().isVerbose());
     }
 
     if (ikode == 0) return;
@@ -5952,10 +5959,10 @@ void QMinuit::qmnprin(int inkode, double fval)
     }
     QString pr = QString("%1 %2 %3 %4 %5 %6").arg("EXT", 3).
             arg("PARAMETER", 20).arg("", 20).arg(colhdu[0], 20).arg(colhdu[1], 20).arg(colhdu[2], 20);
-    MainWindow::verbosePrint(pr);
+    Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
     pr = QString("%1 %2 %3 %4 %5 %6").arg("NO.", 3).
             arg("NAME", 20).arg("VALUE", 20).arg(colhdl[0], 20).arg(colhdl[1], 20).arg(colhdl[2], 20);
-    MainWindow::verbosePrint(pr);
+    Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
  //*-*-                                       . . . loop over parameters . .
     for (i = 1; i <= mNu; ++i) {
        if (mNvarl[i-1] < 0) continue;
@@ -5998,7 +6005,7 @@ void QMinuit::qmnprin(int inkode, double fval)
        if (cx3 == "PLEASE GET X..")  cx3 = QString("%1").arg(x3);
        pr = QString("%1 %2 %3 %4 %5 %6").arg(i, 3).
                arg(cnambf, 20).arg(mU[i-1], 20).arg(x1, 20).arg(cx2, 20).arg(cx3, 20);
-       MainWindow::verbosePrint(pr);
+       Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
 
  //*-*-              check if parameter is at limit
        if (mNvarl[i-1] <= 1 || ikode == 3) continue;
@@ -7314,7 +7321,7 @@ void QMinuit::qmnvert(double *a, int l, int /*m*/, int n, int &ifail)
 
 void QMinuit::qmnwarn(const char *copt1, const char *corg1, const char *cmes1)
 {
-    if (!MainWindow::isVerbose())
+    if (!Logger::instance().isVerbose())
         return;
 
     QString copt = copt1;

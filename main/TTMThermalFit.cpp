@@ -8,6 +8,8 @@
 #include <QStandardItemModel>
 #include <QTableView>
 
+#include "logger.h"
+
 #include "TTMDensObj.h"
 #include "TTMParameterSet.h"
 #include "TTMThermalFit.h"
@@ -372,10 +374,10 @@ void TTMThermalFit::listYields(bool debug)
         double  value = yield->getExpValue();
         double  error = yield->getExpError();
         if (debug) {
-            MainWindow::verbosePrint(QString("%1").arg(name, 20));
-            MainWindow::verbosePrint(QString("%1: %2 +/- %3").arg("experiment", 30).
+            qInfo() << QString("%1").arg(name, 20);
+            qInfo() << QString("%1: %2 +/- %3").arg("experiment", 30).
                        arg(value, 12, 'e', 6).
-                       arg(error, 12, 'e', 6));
+                       arg(error, 12, 'e', 6);
         } else {
             onerow << new QStandardItem(yield->objectName());
             QStandardItem* valueItem = new QStandardItem();
@@ -404,11 +406,11 @@ void TTMThermalFit::listYields(bool debug)
             double std  = yield->getStdDev();
             double quad = yield->getQuadDev();
             if (debug) {
-                MainWindow::verbosePrint(QString("%1: %2 +/- %3").arg("model", 30).
+                qInfo() << QString("%1: %2 +/- %3").arg("model", 30).
                            arg(value, 12, 'e', 6).
-                           arg(error, 12, 'e', 6));
-                MainWindow::verbosePrint(QString("%1: %2  %3: %4").arg("Std.Dev.", 30).arg(std, 5).
-                           arg("Quad.Dev", 30).arg(quad, 5));
+                           arg(error, 12, 'e', 6);
+                qInfo() << QString("%1: %2  %3: %4").arg("Std.Dev.", 30).arg(std, 5).
+                           arg("Quad.Dev", 30).arg(quad, 5);
                 continue;
             } else {
                 QStandardItem* valueItem = new QStandardItem();
@@ -463,6 +465,39 @@ void TTMThermalFit::listYields(bool debug)
         mYieldView->resizeColumnsToContents();
         mYieldView->setAlternatingRowColors(true);
         mYieldView->show();
+    }
+    QString textData;
+    int rows = model->rowCount();
+    int columns = model->columnCount();
+
+    // save results in a csv file
+
+    for (QString sHeader : header) {
+        textData +=  sHeader;
+        textData += ", ";
+    }
+    textData += "\n";
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+
+                textData += model->data(model->index(i,j)).toString();
+                textData += ", ";      // for .csv file format
+        }
+        textData += "\n";             // (optional: for new line segmentation)
+    }
+
+    // [Save to file] (header file <QFile> needed)
+    // .csv
+    ;
+    QDir::setCurrent("/tmp");
+    QFile csvFile(Logger::instance().logFileName() + ".csv");
+    if (csvFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        QTextStream out(&csvFile);
+        out << textData;
+        csvFile.close();
+        QMessageBox msg(QMessageBox::Information, Q_FUNC_INFO, Q_FUNC_INFO);
+        msg.setInformativeText(QString("Results saved as csv in %1").arg(csvFile.fileName()));
     }
 }
 

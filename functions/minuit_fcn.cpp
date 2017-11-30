@@ -1,7 +1,7 @@
 #include "main/TTMParameterSet.h"
 #include "main/TTMThermalFit.h"
 #include "main/TTMThermalModel.h"
-#include "mainwindow.h"
+#include "Logger.h"
 
 #include <QDebug>
 
@@ -39,22 +39,26 @@ void Minuit_fcn(int & /*npar*/, double * /*gin*/, double & f, double * par, int 
 
     gFit->generateYields();
 
-    MainWindow::verbosePrint("  *********************************** FITTING **********************************");
+    QString pr("  *********************************** FITTING **********************************");
+    Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
 
     // *** //
 
     for (int i = TTMParameterSet::kT; i < TTMParameterSet::kPARTYPES; i++) {
         TTMParameter* current = (gFit->getParameterSet())->getParameter(static_cast<TTMParameterSet::ParameterType>(i));
-        QString pr = QString("%1 = %2 %3").arg(current->objectName(), 20).
+        pr = QString("%1 = %2 %3").arg(current->objectName(), 20).
                 arg(current->getValue(), 10, 'e', 5).
                 arg(current->getStatus(), 20);
-        MainWindow::verbosePrint(pr);
+        Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
     }
-    MainWindow::verbosePrint(QString("%1").arg(gFit->getParameterSet()->getConstraintInfo(), 40));
-    MainWindow::verbosePrint("  ******************************************************************************");
+    pr = QString("%1").arg(gFit->getParameterSet()->getConstraintInfo(), 40);
+    Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
+    pr = "  ******************************************************************************";
+    Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
     // *** //
 
-    QString pr("********************** ");
+    pr = "********************** ";
+    Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
     if (gChi) {
         f = gFit->getChiSquare();
         pr = pr + QString("ChiSquare = %1").arg(f, 10, 'g', 7);
@@ -63,32 +67,40 @@ void Minuit_fcn(int & /*npar*/, double * /*gin*/, double & f, double * par, int 
         pr = pr + QString("Quad Dev  = %1").arg(f, 10, 'g', 7);
     }
     pr = pr + " **********************";
-    MainWindow::verbosePrint(pr);
+    Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
 
     TTMThermalModel *model = gFit->generateThermalModel();
     model->generateParticleDens();
-    //    if (MainWindow::isVerbose()) {
-    MainWindow::verbosePrint(QString("     S/V  = %1").arg(model->getStrange(), 12, 'e', 6));
-    MainWindow::verbosePrint(QString("    B/2Q  = %1").arg(model->getBaryon() / 2. / model->getCharge(), 12, 'e', 6));
-    MainWindow::verbosePrint(QString("     C/V  = %1").arg(model->getCharm(), 12, 'e', 6));
-    MainWindow::verbosePrint(QString("     b/V  = %1").arg(model->getBeauty(), 12, 'e', 6));
-    //    }
+    pr = QString("     S/V  = %1").arg(model->getStrange(), 12, 'e', 6);
+    Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
+    pr = QString("    B/2Q  = %1").arg(model->getBaryon() / 2. / model->getCharge(), 12, 'e', 6);
+    Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
+    pr = QString("     C/V  = %1").arg(model->getCharm(), 12, 'e', 6);
+    Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
+    pr = QString("     b/V  = %1").arg(model->getBeauty(), 12, 'e', 6);
+    Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
+
     // Check for minimum and display //
 
     if (f < gMinF) {
         gMinF = f;
-        MainWindow::verbosePrint("\t New Minimum!");
+        pr = "\t New Minimum!";
+        Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
         for (int i = TTMParameterSet::kT; i < TTMParameterSet::kPARTYPES; i++) {
             TTMParameter* current = (gFit->getParameterSet())->getParameter(static_cast<TTMParameterSet::ParameterType>(i));
-            QString pr = QString("%1 = %2 %3").arg(current->objectName(), 20).
+            pr = QString("%1 = %2 %3").arg(current->objectName(), 20).
                     arg(current->getValue(), 10, 'e', 5).
                     arg(current->getStatus(), 20);
-            MainWindow::verbosePrint(pr);
+            Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
         }
-        MainWindow::verbosePrint(QString("%1").arg(gFit->getParameterSet()->getConstraintInfo(), 40));
-        MainWindow::verbosePrint("  ******************************************************************************");
-        if (MainWindow::isVerbose())
+        pr = QString("%1").arg(gFit->getParameterSet()->getConstraintInfo(), 40);
+        Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
+        pr = "  ******************************************************************************";
+        Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
+        if (Logger::instance().isVerbose())
             gFit->listYields(true);
-    } else
-        MainWindow::verbosePrint("  ******************************************************************************");
+    } else {
+        pr = "  ******************************************************************************";
+        Logger::instance().writeMessage(pr, Logger::instance().isVerbose());
+    }
 }

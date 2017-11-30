@@ -29,6 +29,7 @@
 #ifndef QMinuit_H
 #define QMinuit_H
 
+#include <QDebug>
 #include <QObject>
 
 class QMinuit : public QObject

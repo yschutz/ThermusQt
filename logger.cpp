@@ -15,24 +15,22 @@ Logger::Logger()
 {
     // ctor (private)
     setObjectName("Logger");
-    //    QString logdir(QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory) + "/ThermusQt/logs");
-    QDir::setCurrent("/tmp");
-    mLogFile.setFileName("ThermusLog.txt");
-    mLogFile.open(QIODevice::WriteOnly | QIODevice::Text);
 }
 
 //__________________________________________________________________________
-void Logger::writeMessage(const QString &message, bool debug)
+void Logger::writeMessage(const QString &message, bool verbose)
 {
-    if (mTextEdit) {
-        if (debug)
-            mTextEdit->appendPlainText(message);
-        else
-            mTextEdit->appendPlainText(message);
-        //            mTextEdit->appendHtml(message);
-        QTextStream out(&mLogFile);
-        out << message << "\n";
-    }
+//    if (mTextEdit) {
+//        if (!debug)
+//            mTextEdit->appendPlainText("");
+//        else
+//            mTextEdit->appendPlainText(message);
+//                    mTextEdit->appendHtml(message);
+        if (verbose && mLogFile.isOpen()) {
+            QTextStream out(&mLogFile);
+            out << message << "\n";
+        }
+//    }
 }
 
 //__________________________________________________________________________
@@ -40,4 +38,14 @@ Logger &Logger::instance()
 {
     // returns the unique instance
     return mInstance;
+}
+
+//__________________________________________________________________________
+void Logger::setLogFileName(const QString &name)
+{
+    // set the Log file name
+    //    QString logdir(QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory) + "/ThermusQt/logs");
+    QDir::setCurrent("/tmp");
+    mLogFile.setFileName(name);
+    mLogFile.open(QIODevice::WriteOnly | QIODevice::Text);
 }

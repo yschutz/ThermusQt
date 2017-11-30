@@ -22,6 +22,7 @@
 #include "external/finddialog.h"
 #include "external/newparticledialog.h"
 #include "external/particlesdbmanager.h"
+#include "external/QMinuit.h"
 #include "external/selectdialog.h"
 
 #include "main/TTMThermalFitBSQ.h"
@@ -36,13 +37,9 @@ MainWindow::MainWindow(QWidget *parent) :
     mThermusDir.setPath(QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory) + "/ThermusQt");
     if (!mThermusDir.exists()) {
         QMessageBox* msg = new QMessageBox(QMessageBox::Critical,"Wrong Installation", QString("ThermusQt installation is expected at %1").arg(mThermusDir.path()));
-        int ret = msg->exec();
-        if(ret ==QMessageBox::Ok)
+        if(msg->exec() == QMessageBox::Ok)
             exit(1);
     }
-    QMessageBox msg(QMessageBox::Information, Q_FUNC_INFO, Q_FUNC_INFO);
-    msg.setInformativeText(QString("Log file is: %1").arg(Logger::instance().logFileName()));
-    msg.exec();
 
     QString partDir = mThermusDir.path() + "/particles/";
     QString thermusDBName(QString(ParticlesDBManager::instance().getThermusDBName()).append(".db"));
@@ -101,7 +98,9 @@ MainWindow::MainWindow(QWidget *parent) :
     setMinimumSize(160, 160);
     resize(480, 320);
 
-    createConsol();
+//    createConsol();
+    // direct the log info to the console
+    qInstallMessageHandler(customMessageHandler);
 }
 
 //__________________________________________________________________________
@@ -130,8 +129,7 @@ void MainWindow::createConsol()
 
     outputAreaWindow->setCentralWidget(mdiArea);
 
-//    outputAreaWindow->show();
-
+    outputAreaWindow->show();
 
     // direct the log info to the console
     qInstallMessageHandler(customMessageHandler);
@@ -164,13 +162,10 @@ void MainWindow::customMessageHandler(QtMsgType type, const QMessageLogContext &
     Logger& logger = Logger::instance();
 
     // Set my QTextEdit
-    logger.setTextEdit(mLogConsol);
+//    logger.setTextEdit(mLogConsol);
 
-    // Write the message to QTextEdit
-    if (mDebug)
-        logger.writeMessage(txt, true);
-    else
-        logger.writeMessage(txt, false);
+    // Write the message to log file
+    logger.writeMessage(txt);
 }
 
 //__________________________________________________________________________
@@ -181,10 +176,12 @@ void MainWindow::setDebugMode(bool val)
     if (mDebug) {
         mDebugOnAction->setText("✓ On");
         mDebugOffAction->setText("Off");
+        Logger::instance().setVerbosity(true);
     }
     else {
         mDebugOnAction->setText("On");
         mDebugOffAction->setText("✓ Off");
+        Logger::instance().setVerbosity(false);
     }
 }
 
@@ -210,54 +207,6 @@ void MainWindow::listParameters()
 }
 
 //__________________________________________________________________________
-void MainWindow::runFit()
-{
-    // runs the fit macro
-//    FitMacro& myMacro = FitMacro::instance();
-
-//    QString message = mFitAction->statusTip() + ": macro " + myMacro.objectName();
-//    statusBar()->showMessage(message);
-
-//    myMacro.start(mDebug);
-
-//    new ThermusWiz(this);
-
-//    // **************************************************
-//    // connect to the Thermus DB
-//    particlesDBManagement(kConnectT);
-}
-
-//__________________________________________________________________________
-void MainWindow::runPrediction()
-{
-    // runs the prediction macro
-
-//    PredictionMacro& myMacro = PredictionMacro::instance();
-//    QString message = mPredictionAction->statusTip() + ": macro " + myMacro.objectName();
-//    statusBar()->showMessage(message);
-
-//    myMacro.start(mDebug);
-
-//    new ThermusWiz(this);
-
-//    // **************************************************
-//    // connect to the Thermus DB
-//    particlesDBManagement(kConnectT);
-
-//    // Choice of starting parameters, select parameters to fit or fix, add constraint
-//    myMacro.setParameters();
-
-//    mRunMenu->insertAction(mQuitAction, mParametersList);
-
-//    // Create the fit model
-//    myMacro.setFit();
-
-//    // Run the stuff
-//    myMacro.run();
-
-}
-
-//__________________________________________________________________________
 void MainWindow::run(const QString &what)
 {
     Macro* myMacro = nullptr;
@@ -276,6 +225,7 @@ void MainWindow::run(const QString &what)
     statusBar()->showMessage(message);
 
     myMacro->start(mDebug);
+
     new ThermusWiz(what, this);
 
     // **************************************************

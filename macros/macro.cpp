@@ -2,15 +2,15 @@
 //
 // Base class for the macros to run prediction or fit
 
+#include "logger.h"
+#include "macro.h"
 #include "macroparasel.h"
 #include "parasel.h"
-#include "macro.h"
 
 #include "main/TTMParameterSetBSQ.h"
 #include "main/TTMParameterSetBQ.h"
 #include "main/TTMThermalFitBSQ.h"
 
-#include <QDateTime>
 #include <QDebug>
 #include <QMessageBox>
 #include <QTimer>
@@ -142,6 +142,11 @@ void Macro::setParameters()
     setConstrain();
 
     // list all settings
+    Logger::instance().setLogFileName("Thermus" + objectName() + mMacroParaSel->getTitle());
+    QMessageBox msg(QMessageBox::Information, Q_FUNC_INFO, Q_FUNC_INFO);
+    msg.setInformativeText(QString("Log file is: %1").arg(Logger::instance().logFileName()));
+    msg.exec();
+
     listParameters();
     mMacroParaSel->list();
 }
@@ -158,10 +163,4 @@ void Macro::setParaSel(ParaSel *val)
 void Macro::start(bool debug)
 {
     setDebug(debug);
-    QDateTime start = QDateTime::currentDateTime();
-    QDate date = start.date();
-    QTime time = start.time();
-
-    QString info = QString(" *** Start at : %1 Time : %2").arg(date.toString("dd MMMM yyyy")).arg(time.toString());
-    qInfo() << info;
 }

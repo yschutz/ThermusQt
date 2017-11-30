@@ -16,9 +16,12 @@ class Logger : public QObject
 public:
     static Logger& instance();
 
-    QString logFileName() const { return QDir::current().path() + "/" + mLogFile.fileName(); }
-    void    setTextEdit(QPlainTextEdit* val) {mTextEdit = val;}
-    void    writeMessage(const QString& message, bool debug=true);
+    bool    isVerbose() const                                      { return mVerbose; }
+    QString logFileName() const                                    { return QDir::current().path() + "/" + mLogFile.fileName(); }
+    void    setLogFileName(const QString& name);
+    void    setTextEdit(QPlainTextEdit* val)                       { mTextEdit = val; }
+    void    setVerbosity(bool val = true)                          { mVerbose = val; }
+    void    writeMessage(const QString& message, bool verbose=true);
 
 private:
     Logger();
@@ -28,6 +31,7 @@ private:
     static Logger      mInstance; // the unique instance
     QFile              mLogFile;  // the log file
     QPlainTextEdit*    mTextEdit; // the widget where to write logs
+    bool               mVerbose;  // verbosity on/off
 };
 
 #endif // LOGGER_H

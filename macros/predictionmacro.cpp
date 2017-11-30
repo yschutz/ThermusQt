@@ -9,6 +9,7 @@
 #include "main/TTMThermalFitBSQ.h"
 #include "main/TTMParticleSet.h"
 
+#include <QDateTime>
 #include <QDebug>
 #include <QDir>
 #include <QMessageBox>
@@ -20,7 +21,7 @@ PredictionMacro::PredictionMacro(QObject* parent) : Macro(parent),
     mConstrainMuQ(true)
 {
     // ctor
-    setObjectName("Prediction Macro");
+    setObjectName("Prediction_Macro_");
 }
 
 //__________________________________________________________________________
@@ -95,15 +96,21 @@ PredictionMacro &PredictionMacro::instance()
 //__________________________________________________________________________
 void PredictionMacro::run()
 {
+   QDateTime start = QDateTime::currentDateTime();
+    QDate date = start.date();
+    QTime time = start.time();
+    QString info = QString(" *** Start at : %1 Time : %2").arg(date.toString("dd MMMM yyyy")).arg(time.toString());
+    qInfo() << info;
+
     mFitInfo->generateYields();
     mFitInfo->listYields();
-    if (MainWindow::isVerbose()) {
-        for (TTMYield* yield : mFitInfo->getYields())
-            qInfo() << Q_FUNC_INFO << "; PREDICTION: ;" <<
-                       yield->getID1() << ";" <<
-                       yield->getID2() << ";" <<
-                       yield->getTMName() << ";" <<
-                       yield->getModelValue();
-    }
+//    if (MainWindow::isVerbose()) {
+//        for (TTMYield* yield : mFitInfo->getYields())
+//            qInfo() << Q_FUNC_INFO << "; PREDICTION: ;" <<
+//                       yield->getID1() << ";" <<
+//                       yield->getID2() << ";" <<
+//                       yield->getTMName() << ";" <<
+//                       yield->getModelValue();
+//    }
 }
 

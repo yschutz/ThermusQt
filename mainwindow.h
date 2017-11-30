@@ -37,14 +37,10 @@ public:
     void        createConsol();
     static void customMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
     QString     getDBPath(const QString& opt);
-    static bool isVerbose()                          { return mDebug; }
     void        listParameters();
     void        particlesDBManagement(DBOPS option);
     void        quit();
     void        setDebugMode(bool val);
-    void        runFit();
-    void        runPrediction();
-    static void verbosePrint(const QString& str) { if (isVerbose()) qInfo() << str;}
 
 public slots:
     void run(const QString& what);
