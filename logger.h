@@ -7,7 +7,9 @@
 
 #include <QDir>
 #include <QObject>
-#include <QPlainTextEdit>
+#include <QTextStream>
+
+//#include <QPlainTextEdit>
 
 class Logger : public QObject
 {
@@ -19,7 +21,7 @@ public:
     bool    isVerbose() const                                      { return mVerbose; }
     QString logFileName() const                                    { return QDir::current().path() + "/" + mLogFile.fileName(); }
     void    setLogFileName(const QString& name);
-    void    setTextEdit(QPlainTextEdit* val)                       { mTextEdit = val; }
+//    void    setTextEdit(QPlainTextEdit* val)                       { mTextEdit = val; }
     void    setVerbosity(bool val = true)                          { mVerbose = val; }
     void    writeMessage(const QString& message, bool verbose=true);
 
@@ -30,7 +32,8 @@ private:
 
     static Logger      mInstance; // the unique instance
     QFile              mLogFile;  // the log file
-    QPlainTextEdit*    mTextEdit; // the widget where to write logs
+//    QPlainTextEdit*    mTextEdit; // the widget where to write logs
+    QTextStream        mOut;      // the out stream to the mLogFile
     bool               mVerbose;  // verbosity on/off
 };
 

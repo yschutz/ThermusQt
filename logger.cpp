@@ -6,7 +6,6 @@
 
 #include <QDebug>
 #include <QStandardPaths>
-#include <QTextStream>
 
 Logger Logger::mInstance = Logger();
 
@@ -26,8 +25,9 @@ void Logger::writeMessage(const QString &message, bool verbose)
 //        else
 //            mTextEdit->appendPlainText(message);
 //                    mTextEdit->appendHtml(message);
+    static QTextStream out(&mLogFile);
         if (verbose && mLogFile.isOpen()) {
-            QTextStream out(&mLogFile);
+//            QTextStream out(&mLogFile);
             out << message << "\n";
         }
 //    }
@@ -48,4 +48,5 @@ void Logger::setLogFileName(const QString &name)
     QDir::setCurrent("/tmp");
     mLogFile.setFileName(name);
     mLogFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    mOut.setDevice(&mLogFile);
 }
