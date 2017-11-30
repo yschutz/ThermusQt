@@ -2195,9 +2195,6 @@ void QMinuit::qmnexcm(const char *command, double *plist, int llist, int &ierflg
          if (mISW[4] >= 0) {
             lnow = llist;
             if (lnow > 4) lnow = 4;
-
-            qDebug() << Q_FUNC_INFO << Logger::instance().isVerbose();
-
             Logger::instance().writeMessage(" **********", Logger::instance().isVerbose());
             ctemp = QString(" **   %1 **%2").arg(mIcomnd).arg(mCword);
             for (i = 1; i <= lnow; ++i) {
