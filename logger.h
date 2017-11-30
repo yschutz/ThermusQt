@@ -7,7 +7,6 @@
 
 #include <QDir>
 #include <QObject>
-#include <QTextStream>
 
 //#include <QPlainTextEdit>
 
@@ -33,7 +32,6 @@ private:
     static Logger      mInstance; // the unique instance
     QFile              mLogFile;  // the log file
 //    QPlainTextEdit*    mTextEdit; // the widget where to write logs
-    QTextStream        mOut;      // the out stream to the mLogFile
     bool               mVerbose;  // verbosity on/off
 };
 
