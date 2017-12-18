@@ -158,12 +158,10 @@ HEADERS  += mainwindow.h \
 
 
 RESOURCES += \
-    particles/particles.qrc \
     images/images.qrc
 
 unix:LIBS += -L/usr/local/lib -lgsl
 INCLUDEPATH += /usr/local/include
 
 DISTFILES += \
-    external/ManageParticleDB.py \
-    data/prediction_yannick.txt
+    external/ManageParticleDB.py
