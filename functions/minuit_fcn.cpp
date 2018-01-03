@@ -1,7 +1,7 @@
 #include "main/TTMParameterSet.h"
 #include "main/TTMThermalFit.h"
 #include "main/TTMThermalModel.h"
-#include "Logger.h"
+#include "logger.h"
 
 #include <QDebug>
 

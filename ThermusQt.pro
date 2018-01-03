@@ -163,5 +163,14 @@ RESOURCES += \
 unix:LIBS += -L/usr/local/lib -lgsl
 INCLUDEPATH += /usr/local/include
 
-DISTFILES += \
-    external/ManageParticleDB.py
+#DISTFILES += \
+#    external/ManageParticleDB.py
+
+APP_PD.files =  particles/ThermusParticles.db particles/PDGParticles.db
+APP_PD.files += particles/particles.tar.gz
+APP_PD.path = Contents/Resources/particles
+QMAKE_BUNDLE_DATA += APP_PD
+
+APP_PY.files += external/PDGParticles.py external/ThermusParticles.py
+APP_PY.path = Contents/Resources/python
+QMAKE_BUNDLE_DATA += APP_PY

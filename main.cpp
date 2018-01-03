@@ -8,6 +8,11 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    a.setApplicationName("ThermusQt");
+    a.setOrganizationName("IPHC/IN2P3");
+    a.setOrganizationDomain("in2p3.fr");
+    a.setApplicationVersion("1.0");
+    a.setApplicationDisplayName("ThermusQt");
 
     MainWindow w;
     w.show();

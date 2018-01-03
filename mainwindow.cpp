@@ -33,15 +33,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), mFd(nullptr), mNPD(nullptr)
 {
     // ctor
+    mThermusDir.setPath(QDir::currentPath());
+    mThermusDir.cdUp();
 
-    mThermusDir.setPath(QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory) + "/ThermusQt");
-    if (!mThermusDir.exists()) {
-        QMessageBox* msg = new QMessageBox(QMessageBox::Critical,"Wrong Installation", QString("ThermusQt installation is expected at %1").arg(mThermusDir.path()));
-        if(msg->exec() == QMessageBox::Ok)
-            exit(1);
-    }
-
-    QString partDir = mThermusDir.path() + "/particles/";
+    QString partDir = mThermusDir.path() + "/Resources/particles/";
     QString thermusDBName(QString(ParticlesDBManager::instance().getThermusDBName()).append(".db"));
     QString pdgDBName(QString(ParticlesDBManager::instance().getPDGDBName()).append(".db"));
 
@@ -406,7 +401,8 @@ void MainWindow::particlesDBManagement(DBOPS option)
 {
     // Manages the particles DB
 
-    const QString kPartDir = mThermusDir.path() + "/particles/";
+    const QString kPartDir = mThermusDir.path() + "/Resources/particles/";
+    const QString kExtDir  = mThermusDir.path() + "/Resources/python/";
 
     bool pdg     = false;
     bool thermus = false;
@@ -422,13 +418,12 @@ void MainWindow::particlesDBManagement(DBOPS option)
         fullDBName     = mThermusDBPath;
     }
 
+
     QString dbName = fullDBName.replace(kPartDir, "");
     QMetaEnum metaEnum = QMetaEnum::fromType<DBOPS>();
     QString soption    = metaEnum.valueToKey(option);
     soption.remove(0,1);
     soption.remove(soption.length() - 1 ,1);
-
-    QMessageBox msg;
 
     // ======================
     // connect
@@ -450,17 +445,36 @@ void MainWindow::particlesDBManagement(DBOPS option)
         const QString kPythonPath("/usr/local/bin/python3");
         QFileInfo check(kPythonPath);
         if (!check.exists() || !check.isExecutable()) {
-            msg.setText(QString("%1: %2 is not found or not executable!").arg(Q_FUNC_INFO, kPythonPath));
+            QMessageBox msg(QMessageBox::Critical, "", tr("missing python script"));
+            msg.setInformativeText(QString(tr("%1: %2 is not found or not executable!")).arg(Q_FUNC_INFO, kPythonPath));
             msg.exec();
             return;
         }
-        const QString kExtDir = mThermusDir.path() + "/external/";
-        QString pythonScript;
+        QProcess p;
+        p.setProcessChannelMode(QProcess::SeparateChannels);
+        QStringList params;
+        QDir::setCurrent(kPartDir);
+        if (soption.contains("Create")) {
+            // untar the particles data text files
+            const QString kParticlesData("particles.tar.gz");
+            check.setFile(kParticlesData);
+            if (!check.exists()) {
+                QMessageBox msg(QMessageBox::Critical, "", tr("Missing data"));
+                msg.setInformativeText(QString(tr("%1 does not exist")).arg(kParticlesData));
+                msg.exec();
+                return;
+            }
+            params << "-zxvf" << kParticlesData;
+            p.start("tar", params);
+            p.waitForFinished();
+            p.close();
+        }
+        QString pythonScriptName;
         QString input("");
         if (pdg) {
-            pythonScript = "PDGParticles.py";
+            pythonScriptName = "PDGParticles.py";
         } else if (thermus) {
-            pythonScript = "ThermusParticles.py";
+            pythonScriptName = "ThermusParticles.py";
             if (soption.contains("Create")) {
                 // check if PDG particles db exists
 //                QString pdgName(dbName);
@@ -471,32 +485,32 @@ void MainWindow::particlesDBManagement(DBOPS option)
                     QMessageBox msg(QMessageBox::Critical, "Particles DB creation", "You must first create the PDG particles list");
                     msg.exec();
                     return;
-                }
+                }                
                 SelectDialog sdia(kPartDir, this);
                 sdia.setModal(true);
                 if (sdia.exec() == QDialog::Accepted)
                     input = sdia.fileName();
             }
         }
+        QFile pythonScript(pythonScriptName);
+        pythonScript.setPermissions(QFile::ExeGroup | QFile::ExeOther | QFile::ExeOther | QFile::ExeUser);
         if (soption.contains(("Update"))) {
-            // check if PDG particles db exists
-            QFileInfo check(fullDBName);
+            // check if particles db exists
+            QFileInfo check(dbName);
             if (! check.exists()) {
                 QMessageBox msg(QMessageBox::Critical, "Particles DB creation", "You must first create the particles DB");
                 msg.exec();
                 return;
             }
         }
-        QProcess p;
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         env.insert("EXTDIR", kExtDir); // Add an environment variable
         env.insert("PARTDIR", kPartDir);
         env.insert("DBNAME", dbName);
         p.setProcessEnvironment(env);
 
-        p.setProcessChannelMode(QProcess::SeparateChannels);
-        QStringList params;
-        params << kExtDir + pythonScript << soption << input;
+        params.clear();
+        params << kExtDir + pythonScriptName << soption << input;
         QProgressDialog progress;
         p.start(kPythonPath, params);
 
@@ -506,7 +520,7 @@ void MainWindow::particlesDBManagement(DBOPS option)
                 progress.setLabelText(QString("%1 particles DB (%2)").arg(soption, sourceName));
                 progress.setCancelButtonText("Cancel");
                 progress.setMinimum(0);
-                progress.setMaximum(400);
+                progress.setMaximum(800);
                 progress.setWindowModality(Qt::WindowModal);
                 progress.resize(progress.width() * 1.5, progress.height());
                 progress.show();
@@ -528,7 +542,7 @@ void MainWindow::particlesDBManagement(DBOPS option)
         progress.close();
         if (p.error() == QProcess::FailedToStart) {
             QMessageBox msg;
-            msg.setText(QString("%1 or %2 not found").arg(kPythonPath, pythonScript));
+            msg.setText(QString("%1 or %2 not found").arg(kPythonPath, pythonScriptName));
             msg.exec();
             return;
         }
@@ -536,20 +550,28 @@ void MainWindow::particlesDBManagement(DBOPS option)
         QStringList listout = p_stdout.split('\n');
         QString p_stderr = p.readAllStandardError();
 
-        if (p.exitStatus() == QProcess::CrashExit)
-            msg.setText("Python process ended abnormally");
-        if (p_stderr != "")
-            msg.setText(msg.text() + " Error encountered in Python macro: " + p_stderr);
-        else
-            msg.setText(QString("The particles DB has been %1d with %2 entries").arg(soption).arg(listout.size()));
-        msg.exec();
+        if (p.exitStatus() == QProcess::CrashExit) {
+            QMessageBox msg(QMessageBox::Critical, "Python abort", "Python Abort");
+            msg.setInformativeText("python process crashed");
+            msg.exec();
+        }
+        if (p_stderr != "") {
+            QMessageBox msg(QMessageBox::Critical, "Python abort", "Python Abort");
+            msg.setInformativeText(msg.text() + " Error encountered in Python macro: " + p_stderr);
+            msg.exec();
+        }
+        else {
+            QMessageBox msg(QMessageBox::Information, "Python success", "Python success");
+            msg.setInformativeText(QString("The particles DB has been %1d with %2 entries").arg(soption).arg(listout.size()));
+            msg.exec();
+        }
         return;
     }
 
     // ======================
     // search a particle with its decay channels
     if (soption.contains("Search")) {
-        if (ParticlesDBManager::instance().connect(kPartDir + dbName)) {
+        if (ParticlesDBManager::instance().connect(dbName)) {
             mFd = new FindDialog(sourceName, this);
             mFd->exec();
         }
@@ -559,7 +581,7 @@ void MainWindow::particlesDBManagement(DBOPS option)
     // ======================
     // List all particles
     if (soption.contains("List")) {
-        if (ParticlesDBManager::instance().connect(kPartDir + dbName)) {
+        if (ParticlesDBManager::instance().connect(dbName)) {
             ParticlesDBManager::instance().listParticles(ParticlesDBManager::kALL);
         }
         return;
@@ -568,7 +590,7 @@ void MainWindow::particlesDBManagement(DBOPS option)
     // ======================
     // Insert a new particle into Thermus DB
     if (option == kInsert) {
-        bool connected = ParticlesDBManager::instance().connect(kPartDir + dbName);
+        bool connected = ParticlesDBManager::instance().connect(dbName);
         if (!connected) {
             QMessageBox msg(QMessageBox::Critical, "DB connection",
                             QString("Could not connect to particles DB: %1").arg(kPartDir + dbName));
