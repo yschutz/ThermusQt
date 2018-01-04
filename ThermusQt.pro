@@ -163,8 +163,10 @@ RESOURCES += \
 unix:LIBS += -L/usr/local/lib -lgsl
 INCLUDEPATH += /usr/local/include
 
-#DISTFILES += \
-#    external/ManageParticleDB.py
+DISTFILES += \
+    .travis.yml \
+    .appveyor.yml \
+    innosetup.iss
 
 APP_PD.files =  particles/ThermusParticles.db particles/PDGParticles.db
 APP_PD.files += particles/particles.tar.gz
