@@ -12,7 +12,9 @@ TARGET = ThermusQt
 TEMPLATE = app
 
 include("QFontIcon/QFontIcon.pri")
+
 INCLUDEPATH += QFontIcon
+
 ICON = images/ThermusQt.icns
 
 SOURCES += main.cpp\
