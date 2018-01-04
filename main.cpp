@@ -2,8 +2,11 @@
 //
 // The main program
 
-#include "mainwindow.h"
 #include <QApplication>
+
+#include "mainwindow.h"
+
+#include "QFontIcon/qfonticon.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,6 +16,8 @@ int main(int argc, char *argv[])
     a.setOrganizationDomain("in2p3.fr");
     a.setApplicationVersion("1.0");
     a.setApplicationDisplayName("ThermusQt");
+
+//    QFontIcon::addFont(":/fontawesome.ttf");
 
     MainWindow w;
     w.show();

@@ -11,6 +11,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ThermusQt
 TEMPLATE = app
 
+include("QFontIcon/QFontIcon.pri")
+INCLUDEPATH += QFontIcon
+ICON = images/ThermusQt.icns
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -166,7 +169,8 @@ INCLUDEPATH += /usr/local/include
 DISTFILES += \
     .travis.yml \
     .appveyor.yml \
-    innosetup.iss
+    innosetup.iss \
+    images/ThermusQt.icns
 
 APP_PD.files =  particles/ThermusParticles.db particles/PDGParticles.db
 APP_PD.files += particles/particles.tar.gz

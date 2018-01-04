@@ -14,6 +14,8 @@
 #include <QtWidgets>
 #include <QVBoxLayout>
 
+#include "QFontIcon/qfonticon.h"
+
 #include "macros/fitmacro.h"
 #include "macros/predictionmacro.h"
 #include "logger.h"
@@ -89,6 +91,16 @@ MainWindow::MainWindow(QWidget *parent) :
     createMenus();
     QString message = tr("Welcome to Thermus");
     statusBar()->showMessage(message);
+
+    // the toolbars
+//    QToolBar *tb = new QToolBar(this);
+
+//    QAction *pract = new QAction(QFontIcon::icon(0xf02f), "print");
+//    pract->setWhatsThis("print current window");
+//    connect(pract, SIGNAL(triggered(bool)), this, SLOT(printCurrentWindow()));
+//    tb->addAction(pract);
+//    addToolBar(tb);
+
 
     setMinimumSize(160, 160);
     resize(480, 320);
