@@ -37,6 +37,13 @@ ParticlesDBManager::~ParticlesDBManager()
 }
 
 //__________________________________________________________________________
+ParticlesDBManager::ParticlesDBManager(const ParticlesDBManager &ma) : QObject(ma.parent())
+{
+    mCurrentPart = "";
+    mDB          = ma.mDB;
+}
+
+//__________________________________________________________________________
 void ParticlesDBManager::error(QString text, QString info) const
 {
     // displays an error message

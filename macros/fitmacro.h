@@ -26,7 +26,7 @@ public slots:
 private:
     FitMacro(QObject* parent = nullptr);
     ~FitMacro();
-    FitMacro (const FitMacro&) {;}
+    FitMacro (const FitMacro& ma) : Macro(ma.parent()) {;}
 
     FittingThread*  mFT;               // the thread where the fitting process is running
     static FitMacro mInstance;         // unique instance of the object

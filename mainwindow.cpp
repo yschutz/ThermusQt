@@ -129,10 +129,10 @@ void MainWindow::createConsol()
     QMainWindow *outputAreaWindow = new QMainWindow(this);
     QMdiArea *mdiArea = new QMdiArea(outputAreaWindow);
 
-    // the console for log output from qDebug, qInfo, qWarning
-    mLogConsol = new QPlainTextEdit("log Consol", mdiArea);
-    mLogConsol->setReadOnly(true);
-    mdiArea->addSubWindow(mLogConsol);
+    // the console for log output from qDebug, qInfo, qWarning --> disabled, use log file instaed
+//    mLogConsol = new QPlainTextEdit("log Consol", mdiArea);
+//    mLogConsol->setReadOnly(true);
+//    mdiArea->addSubWindow(mLogConsol);
 
     outputAreaWindow->setCentralWidget(mdiArea);
 

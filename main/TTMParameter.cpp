@@ -39,7 +39,7 @@ TTMParameter::TTMParameter(QString name, double value, double error)
 }
 
 //__________________________________________________________________________
-TTMParameter::TTMParameter(const TTMParameter& par)
+TTMParameter::TTMParameter(const TTMParameter& par) : QObject(par.parent())
 {
     // copy ctor
     mError  = par.mError;

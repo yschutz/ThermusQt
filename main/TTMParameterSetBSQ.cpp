@@ -61,13 +61,13 @@ TTMParameterSetBSQ::TTMParameterSetBSQ(double temp, double mub, double mus, doub
 }
 
 //__________________________________________________________________________
-TTMParameterSetBSQ::TTMParameterSetBSQ(const TTMParameterSetBSQ &set)
+TTMParameterSetBSQ::TTMParameterSetBSQ(const TTMParameterSetBSQ &set) : TTMParameterSet(set.parent())
 {
     // copy ctor
     mB2Q               = set.getB2Q();
 
-    for (int type = 0; type < kPARTYPES; type++)
-        mPar.append(new TTMParameter(set.mPar.at(type)));
+    for (TTMParameter* par : set.mPar)
+        mPar.append(new TTMParameter(par));
     mBeautyDens        = set.mBeautyDens;
     mCDens             = set.mCDens;
     mSDens             = set.mSDens;

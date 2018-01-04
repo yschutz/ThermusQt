@@ -27,7 +27,7 @@ public:
 private:
     Logger();
     ~Logger() { mLogFile.close(); }
-    Logger (const Logger&) {}
+    Logger (const Logger& lo) : QObject(lo.parent()) {}
 
     static Logger      mInstance; // the unique instance
     QFile              mLogFile;  // the log file

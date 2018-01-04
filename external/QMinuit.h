@@ -123,7 +123,7 @@ private:
     QMinuit(QObject* parent = nullptr);
     ~QMinuit();
 
-    QMinuit(const QMinuit&) {} // cannot copy QMinuit
+    QMinuit(const QMinuit& m) :QObject(m.parent()) {} // cannot copy QMinuit
     QMinuit& operator = (const QMinuit&) { return *this; }
     static QMinuit mMinuit; // the unique instance
     enum{kMAXWARN=100};

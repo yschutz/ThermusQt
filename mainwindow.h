@@ -15,7 +15,7 @@
 #include <QPainter>
 #include <QPlainTextEdit>
 
-static QPlainTextEdit* mLogConsol;         // Consol where to write log information
+//static QPlainTextEdit* mLogConsol;         // Consol where to write log information
 
 class FindDialog;
 class NewParticleDialog;

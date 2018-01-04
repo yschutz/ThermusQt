@@ -726,45 +726,7 @@ void ParaSel::conParameter(TTMParameterSet::ParameterType type)
 void ParaSel::fixParameter(TTMParameterSet::ParameterType type)
 {
     // fix/free parameters and request fitting constrains
-    QGroupBox *temp = NULL;
 
-    switch (type) {
-    case TTMParameterSet::kT:
-        temp = mTFitBox;
-        break;
-    case TTMParameterSet::kMUB:
-        temp = mMuFitBox;
-        break;
-    case TTMParameterSet::kMUQ:
-        temp = mMuFitBox;
-        break;
-    case TTMParameterSet::kGAMMAS:
-        temp = mGammaFitBox;
-        break;
-    case TTMParameterSet::kCRADIUS:
-        temp = mRFitBox;
-        break;
-    case TTMParameterSet::kRADIUS:
-        temp = mRFitBox;
-        break;
-    case TTMParameterSet::kGAMMAC:
-        temp = mGammaFitBox;
-        break;
-    case TTMParameterSet::kGAMMABEAUTY:
-        temp = mGammaFitBox;
-        break;
-    case TTMParameterSet::kMUS:
-        temp = mMuFitBox;
-        break;
-    case TTMParameterSet::kMUC:
-        temp = mMuFitBox;
-        break;
-    case TTMParameterSet::kMUBEAUTY:
-        temp = mMuFitBox;
-        break;
-    default:
-        break;
-    }
     if (mParameterFix[type]->isChecked()) {
         mPalette.setColor(QPalette::Text,Qt::red);
         mParameterValue[type]->setReadOnly(true);

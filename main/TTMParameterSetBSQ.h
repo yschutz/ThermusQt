@@ -61,4 +61,4 @@ private:
     bool    mMuSConstrain;         // true if muS must be constrained
  };
 
-#endif // TTMPARAMETERsetBSQ_H
+#endif // TTMPARAMETERSETBSQ_H

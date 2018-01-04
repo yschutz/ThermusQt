@@ -65,7 +65,7 @@ private:
     ParticlesDBManager();
     ~ParticlesDBManager();
 
-    ParticlesDBManager(const ParticlesDBManager&) {}
+    ParticlesDBManager(const ParticlesDBManager& ma);
     ParticlesDBManager& operator = (const ParticlesDBManager&) {return *this;}
 
     void     error(QString text, QString info) const;

@@ -32,7 +32,7 @@ public slots:
 private:
     PredictionMacro(QObject* parent = nullptr);
     ~PredictionMacro();
-    PredictionMacro (const PredictionMacro&) {;}
+    PredictionMacro (const PredictionMacro& ma) : Macro(ma.parent()) {;}
 
     bool                   mConstrainMuQ;     // true if B/2Q to be constrained
     static PredictionMacro mInstance;         // unique instance of the object

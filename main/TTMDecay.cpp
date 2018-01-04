@@ -18,7 +18,7 @@ TTMDecay::TTMDecay(QObject* parent) : QObject(parent),
 }
 
 //__________________________________________________________________________
-TTMDecay::TTMDecay(const TTMDecay &decay)
+TTMDecay::TTMDecay(const TTMDecay &decay) : QObject(decay.parent())
 {
     // copy ctor
     mParentID   = decay.mParentID;
