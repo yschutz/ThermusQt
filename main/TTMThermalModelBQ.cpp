@@ -47,7 +47,7 @@ TTMThermalModelBQ::TTMThermalModelBQ(TTMParameterSetBQ *parameters, bool width, 
 }
 
 //__________________________________________________________________________
-TTMThermalModelBQ::TTMThermalModelBQ(const TTMThermalModelBQ &model)
+TTMThermalModelBQ::TTMThermalModelBQ(const TTMThermalModelBQ &model) : TTMThermalModel(model.parent())
 {
     // copy ctor
     mCorrM1           = model.mCorrM1;

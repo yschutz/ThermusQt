@@ -35,7 +35,7 @@ TTMThermalParticleBQ::TTMThermalParticleBQ(int part, TTMParameterSetBQ *parm, do
 }
 
 //__________________________________________________________________________
-TTMThermalParticleBQ::TTMThermalParticleBQ(TTMThermalParticleBQ &obj)
+TTMThermalParticleBQ::TTMThermalParticleBQ(TTMThermalParticleBQ &obj) : TTMThermalParticle(obj.parent())
 {
     // copy ctor
     mParticle   = obj.getParticle();

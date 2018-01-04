@@ -123,7 +123,7 @@ double TTMThermalParticleBSQ::densityQStatWidth(double exclVolPressure)
 
             double (*pFcnDensWidth)(double*, double*);
             pFcnDensWidth = &FcnDensWidth;
-            QScopedPointer<F2> fn(new F2("n QStat width", FcnDensWidth, 0., 300., 0., (mM + 3. * width) / mT, 6));
+            QScopedPointer<F2> fn(new F2("n QStat width", pFcnDensWidth, 0., 300., 0., (mM + 3. * width) / mT, 6));
             fn->setParameters(mMu/mT, mM/mT, mG, stat, mDeg, width / mT);
 
             double (*pFcnDensNormWidth)(double*, double*);
