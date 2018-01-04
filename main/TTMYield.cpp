@@ -29,7 +29,7 @@ TTMYield::TTMYield(QString name, double exp_val, double exp_err, int id1, int id
 }
 
 //__________________________________________________________________________
-TTMYield::TTMYield(const TTMYield &yield)
+TTMYield::TTMYield(const TTMYield &yield) : QObject(yield.parent())
 {
     // copy ctor
     setObjectName(yield.objectName());

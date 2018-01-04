@@ -24,7 +24,7 @@ TTMDensObj::TTMDensObj(int pdg, QObject *parent) : QObject(parent),
 }
 
 //__________________________________________________________________________
-TTMDensObj::TTMDensObj(const TTMDensObj &dens)
+TTMDensObj::TTMDensObj(const TTMDensObj &dens) : QObject(dens.parent())
 {
     // copy ctor
     mDecayDensity = dens.mDecayDensity;

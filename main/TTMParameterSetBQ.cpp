@@ -59,7 +59,7 @@ TTMParameterSetBQ::TTMParameterSetBQ(double temp, double mub, double muq, double
 }
 
 //__________________________________________________________________________
-TTMParameterSetBQ::TTMParameterSetBQ(const TTMParameterSetBQ &set)
+TTMParameterSetBQ::TTMParameterSetBQ(const TTMParameterSetBQ &set) : TTMParameterSet(set.parent())
 {
     // copy ctor
     mB2Q                = set.getB2Q();

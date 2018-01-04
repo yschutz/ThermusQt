@@ -88,7 +88,7 @@ double F2::integral(double ax, double bx, double ay, double by, double epsrel)
     double result  = 0;
     double abserr  = 0;
     int    status  = 3;
-    int    nfnevl  = 0;
+//    int    nfnevl  = 0;
     int    relerr  = 0;
     double twondm  = qPow(2.0, n);
     int    ifncls  = 0;
@@ -276,7 +276,7 @@ L160: //to divide or not
         ctr[idvax0 - 1] -= wth[idvax0 - 1];
         goto L20;
     }
-    nfnevl = ifncls;       //number of function evaluations performed.
+//    nfnevl = ifncls;       //number of function evaluations performed.
     delete [] wk;
 
     return result;         //an approximate value of the integral

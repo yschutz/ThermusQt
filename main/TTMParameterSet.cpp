@@ -17,7 +17,7 @@ TTMParameterSet::TTMParameterSet(QObject *parent) : QObject(parent),
 }
 
 //__________________________________________________________________________
-TTMParameterSet::TTMParameterSet(const TTMParameterSet &set)
+TTMParameterSet::TTMParameterSet(const TTMParameterSet &set) : QObject(set.parent())
 {
     // copy ctor
 

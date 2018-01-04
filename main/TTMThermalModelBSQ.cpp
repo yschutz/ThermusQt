@@ -46,7 +46,7 @@ TTMThermalModelBSQ::TTMThermalModelBSQ(TTMParameterSetBSQ *parameters, bool qsta
 }
 
 //__________________________________________________________________________
-TTMThermalModelBSQ::TTMThermalModelBSQ(const TTMThermalModelBSQ &model)
+TTMThermalModelBSQ::TTMThermalModelBSQ(const TTMThermalModelBSQ &model) : TTMThermalModel(model.parent())
 {
     // copy ctor
     mExclVolCorrection  = model.mExclVolCorrection;
@@ -726,8 +726,8 @@ void TTMThermalModelBSQ::reset()
     // from the base class
 
     mBaryon = mBeauty = mBminus = mBplus = mbminus = mbplus = mCharge = mCharm = mCminus = mCplus = mDensity = 0;
-
-    mEnergy = mEntropy = mPressure = mQminus = mQplus = mSminus = mSplus = mStrange = mWidth = mWroblewski = 0;
+    mEnergy = mEntropy = mPressure = mQminus = mQplus = mSminus = mSplus = mStrange = mWroblewski = 0;
+    mWidth  = false;
 
     qDeleteAll(mDensTable.begin(), mDensTable.end());
     mDensTable.clear();

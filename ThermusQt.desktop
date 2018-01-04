@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=ThermusQt
+Comment=A tool to calculate the particle composition od the final hadronic state in pp, pA and AA collisions
+Exec=ThermusQt %F
+Icon=ThermusQt
+Terminal=false
+Categories=Sciences;Physics;Qt;

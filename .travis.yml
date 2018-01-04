@@ -22,8 +22,8 @@ script:
   - mkdir -p appdir/usr/bin ; cd appdir
   - dpkg -x ../app_1-1_amd64.deb . ; find .
   - mv ./usr/local/bin/* ./usr/bin/ # Why is this needed despite PREFIX=/usr? Bug?
-  - cp ./usr/share/icons/hicolor/48x48/apps/ComputingResources.png .
-  - cp ./usr/share/applications/ComputingResources.desktop .
+  - cp ./usr/share/icons/hicolor/48x48/apps/ThermusQt.icns .
+  - cp ./usr/share/applications/ThermusQt.desktop .
   - cd ..
   - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/3/linuxdeployqt-3-x86_64.AppImage"
   - chmod a+x linuxdeployqt*.AppImage

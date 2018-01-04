@@ -26,7 +26,7 @@ TTMThermalModel::TTMThermalModel(QObject *parent) : QObject(parent),
 }
 
 //__________________________________________________________________________
-TTMThermalModel::TTMThermalModel(const TTMThermalModel &model)
+TTMThermalModel::TTMThermalModel(const TTMThermalModel &model) : QObject(model.parent())
 {
     // coy ctor
     mBaryon     = model.mBaryon;

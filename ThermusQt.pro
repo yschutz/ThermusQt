@@ -172,7 +172,8 @@ DISTFILES += \
     .travis.yml \
     .appveyor.yml \
     innosetup.iss \
-    images/ThermusQt.icns
+    images/ThermusQt.icns \
+    ThermusQt.desktop
 
 APP_PD.files =  particles/ThermusParticles.db particles/PDGParticles.db
 APP_PD.files += particles/particles.tar.gz
@@ -182,3 +183,12 @@ QMAKE_BUNDLE_DATA += APP_PD
 APP_PY.files += external/PDGParticles.py external/ThermusParticles.py
 APP_PY.path = Contents/Resources/python
 QMAKE_BUNDLE_DATA += APP_PY
+
+# Installation
+target.path = /usr/local/bin
+desktop.path = /usr/share/applications
+desktop.files += ThermusQt.desktop
+icons.path = /usr/share/icons/hicolor/48x48/apps
+icons.files += images/ThermusQt.png
+
+INSTALLS += target desktop icons

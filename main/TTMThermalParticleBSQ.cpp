@@ -39,7 +39,7 @@ TTMThermalParticleBSQ::TTMThermalParticleBSQ(int part, TTMParameterSetBSQ *parm,
 }
 
 //__________________________________________________________________________
-TTMThermalParticleBSQ::TTMThermalParticleBSQ(TTMThermalParticleBSQ& obj)
+TTMThermalParticleBSQ::TTMThermalParticleBSQ(TTMThermalParticleBSQ& obj) : TTMThermalParticle(obj.parent())
 {
     // copy ctor
     mParameters = obj.mParameters;
@@ -128,7 +128,7 @@ double TTMThermalParticleBSQ::densityQStatWidth(double exclVolPressure)
 
             double (*pFcnDensNormWidth)(double*, double*);
             pFcnDensNormWidth = &FcnDensNormWidth;
-            QScopedPointer<F1> fnorm(new F1("norm", FcnDensNormWidth, 0., (mM + 3. * width) / mT, 2));
+            QScopedPointer<F1> fnorm(new F1("norm", pFcnDensNormWidth, 0., (mM + 3. * width) / mT, 2));
             fnorm->setParameters(mM / mT, width / mT);
 
             if(stat == +1 && mMu > mM){
@@ -186,7 +186,7 @@ double TTMThermalParticleBSQ::energyQStatNoWidth(double exclVolPressure)
         else {
             double (*pFcnEnergyDens)(double*, double*);
             pFcnEnergyDens = &FcnEnergyDens;
-            QScopedPointer<F1> fe(new F1("e QStat No width", FcnEnergyDens, 0., 300., 5));
+            QScopedPointer<F1> fe(new F1("e QStat No width", pFcnEnergyDens, 0., 300., 5));
             fe->setParameters(mMu / mT, mM / mT, mG, stat, mDeg);
 
             if (stat == +1 && mMu >= mM) {
@@ -225,12 +225,12 @@ double TTMThermalParticleBSQ::energyQStatWidth(double exclVolPressure)
 
             double (*pFcnEnergyDensWidth)(double*, double*);
             pFcnEnergyDensWidth = &FcnEnergyDensWidth;
-            QScopedPointer<F2> fe(new F2("e QStat width", FcnEnergyDensWidth, 0., 300., 0., (mM + 3. * width) / mT, 6));
+            QScopedPointer<F2> fe(new F2("e QStat width", pFcnEnergyDensWidth, 0., 300., 0., (mM + 3. * width) / mT, 6));
             fe->setParameters(mMu / mT, mM / mT, mG, stat, mDeg, width / mT);
 
             double (*pFcnDensNormWidth)(double*, double*);
             pFcnDensNormWidth = &FcnDensNormWidth;
-            QScopedPointer<F1> fnorm(new F1("norm", FcnDensNormWidth, 0., (mM + 3. * width) / mT, 2));
+            QScopedPointer<F1> fnorm(new F1("norm", pFcnDensNormWidth, 0., (mM + 3. * width) / mT, 2));
             fnorm->setParameters(mM / mT, width / mT);
 
             if (stat == +1 && mMu > mM) {
@@ -281,14 +281,14 @@ double TTMThermalParticleBSQ::entropyBoltzmannWidth(double exclVolPressure)
 
         double (*pFcnEntropyBoltzmannWidth)(double*, double*);
         pFcnEntropyBoltzmannWidth = &FcnEntropyBoltzmannWidth;
-        QScopedPointer<F1> fs(new F1("s Boltzmann Width", FcnEntropyBoltzmannWidth, 0., (mM + 3. * width) / mT, 5));
+        QScopedPointer<F1> fs(new F1("s Boltzmann Width", pFcnEntropyBoltzmannWidth, 0., (mM + 3. * width) / mT, 5));
         fs->setParameters(mMu / mT, mM / mT, mG, mDeg, width / mT);
 
         double s = IntegrateLegendre40(fs.data(), a / mT, (mM + 2. * width) / mT);
 
         double (*pFcnDensNormWidth)(double*, double*);
         pFcnDensNormWidth = &FcnDensNormWidth;
-        QScopedPointer<F1> fnorm(new F1("norm", FcnDensNormWidth, 0., (mM + 3. * width) / mT, 2));
+        QScopedPointer<F1> fnorm(new F1("norm", pFcnDensNormWidth, 0., (mM + 3. * width) / mT, 2));
         fnorm->setParameters(mM / mT, width / mT);
 
         double norm = IntegrateLegendre40(fnorm.data(), a / mT, (mM + 2. * width) / mT);
@@ -318,7 +318,7 @@ double TTMThermalParticleBSQ::entropyQStatNoWidth(double exclVolPressure)
     else {
         double (*pFcnEntropyDens)(double*, double*);
         pFcnEntropyDens = &FcnEntropyDens;
-        QScopedPointer<F1> fs(new F1("s QStat No width", FcnEntropyDens, 0., 300., 5));
+        QScopedPointer<F1> fs(new F1("s QStat No width", pFcnEntropyDens, 0., 300., 5));
         fs->setParameters(mMu / mT, mM / mT, mG, stat, mDeg);
         if (stat == +1 && mMu >= mM) {
             double guesss = IntegrateLegendre32(fs.data(), 0., 250.);
@@ -354,12 +354,12 @@ double TTMThermalParticleBSQ::entropyQStatWidth(double exclVolPressure)
 
             double (*pFcnEntropyDensWidth)(double*, double*);
             pFcnEntropyDensWidth = &FcnEntropyDensWidth;
-            QScopedPointer<F2> fs(new F2("s QStat width", FcnEntropyDensWidth, 0., 300., 0., (mM + 3. * width) / mT, 6));
+            QScopedPointer<F2> fs(new F2("s QStat width", pFcnEntropyDensWidth, 0., 300., 0., (mM + 3. * width) / mT, 6));
             fs->setParameters(mMu / mT, mM / mT, mG, stat, mDeg, width / mT);
 
             double (*pFcnDensNormWidth)(double*, double*);
             pFcnDensNormWidth = &FcnDensNormWidth;
-            QScopedPointer<F1> fnorm(new F1("norm", FcnDensNormWidth, 0., (mM + 3. * width) / mT, 2));
+            QScopedPointer<F1> fnorm(new F1("norm", pFcnDensNormWidth, 0., (mM + 3. * width) / mT, 2));
             fnorm->setParameters(mM / mT, width / mT);
 
             if (stat == +1 && mMu > mM) {
@@ -420,7 +420,7 @@ double TTMThermalParticleBSQ::pressureQStatNoWidth(double exclVolPressure)
     else {
         double (*pFcnPressure)(double*, double*);
         pFcnPressure = &FcnPressure;
-        QScopedPointer<F1> fP(new F1("P QStat No width", FcnPressure, 0., 300., 5));
+        QScopedPointer<F1> fP(new F1("P QStat No width", pFcnPressure, 0., 300., 5));
         fP->setParameters(mMu / mT, mM / mT, mG, stat, mDeg);
 
         if(stat == +1 && mMu >= mM){
@@ -457,12 +457,12 @@ double TTMThermalParticleBSQ::pressureQStatWidth(double exclVolPressure)
 
             double (*pFcnPressureWidth)(double*, double*);
             pFcnPressureWidth = &FcnPressureWidth;
-            QScopedPointer<F2> fP(new F2("P QStat width", FcnPressureWidth, 0., 300., 0., (mM + 3. * width) / mT, 6));
+            QScopedPointer<F2> fP(new F2("P QStat width", pFcnPressureWidth, 0., 300., 0., (mM + 3. * width) / mT, 6));
             fP->setParameters(mMu / mT, mM / mT, mG, stat, mDeg, width / mT);
 
             double (*pFcnDensNormWidth)(double*, double*);
             pFcnDensNormWidth = &FcnDensNormWidth;
-            QScopedPointer<F1> fnorm(new F1("norm", FcnDensNormWidth, 0., (mM + 3. * width) / mT,2));
+            QScopedPointer<F1> fnorm(new F1("norm", pFcnDensNormWidth, 0., (mM + 3. * width) / mT,2));
             fnorm->setParameters(mM / mT, width / mT);
 
             if (stat == +1 && mMu > mM) {

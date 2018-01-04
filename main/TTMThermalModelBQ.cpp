@@ -622,12 +622,12 @@ int TTMThermalModelBQ::primPartDens()
             Tfactorkp3   = rterm[3];
 
             double dZ;
-            double dp1;
-            double dp2;
-            double dp3;
-            double dm1;
-            double dm2;
-            double dm3;
+//            double dp1;
+//            double dp2;
+//            double dp3;
+//            double dm1;
+//            double dm2;
+//            double dm3;
             // First Quandrant +m and +n axes included //
             int    m = 1, n = 0;
             int    mmax;
@@ -646,12 +646,12 @@ int TTMThermalModelBQ::primPartDens()
                     Tfactorkp3   += rterm[3];
 
                     dZ  = rterm[0] / TSPartition3;
-                    dp1 = rterm[1] / Tfactorkp1;
-                    dp2 = rterm[2] / Tfactorkp2;
-                    dp3 = rterm[3] / Tfactorkp3;
-                    dm1 = rterm[4] / Tfactorkm1;
-                    dm2 = rterm[5] / Tfactorkm2;
-                    dm3 = rterm[6] / Tfactorkm3;
+//                    dp1 = rterm[1] / Tfactorkp1;
+//                    dp2 = rterm[2] / Tfactorkp2;
+//                    dp3 = rterm[3] / Tfactorkp3;
+//                    dm1 = rterm[4] / Tfactorkm1;
+//                    dm2 = rterm[5] / Tfactorkm2;
+//                    dm3 = rterm[6] / Tfactorkm3;
 
                     m++;
                 } while (dZ > tol);
@@ -678,12 +678,12 @@ int TTMThermalModelBQ::primPartDens()
                     Tfactorkp3   += rterm[3];
 
                     dZ  = rterm[0] / TSPartition3;
-                    dp1 = rterm[1] / Tfactorkp1;
-                    dp2 = rterm[2] / Tfactorkp2;
-                    dp3 = rterm[3] / Tfactorkp3;
-                    dm1 = rterm[4] / Tfactorkm1;
-                    dm2 = rterm[5] / Tfactorkm2;
-                    dm3 = rterm[6] / Tfactorkm3;
+//                    dp1 = rterm[1] / Tfactorkp1;
+//                    dp2 = rterm[2] / Tfactorkp2;
+//                    dp3 = rterm[3] / Tfactorkp3;
+//                    dm1 = rterm[4] / Tfactorkm1;
+//                    dm2 = rterm[5] / Tfactorkm2;
+//                    dm3 = rterm[6] / Tfactorkm3;
 
                     m--;
                 } while (dZ > tol);
@@ -710,12 +710,12 @@ int TTMThermalModelBQ::primPartDens()
                     Tfactorkp3   += rterm[3];
 
                     dZ  = rterm[0] / TSPartition3;
-                    dp1 = rterm[1] / Tfactorkp1;
-                    dp2 = rterm[2] / Tfactorkp2;
-                    dp3 = rterm[3] / Tfactorkp3;
-                    dm1 = rterm[4] / Tfactorkm1;
-                    dm2 = rterm[5] / Tfactorkm2;
-                    dm3 = rterm[6] / Tfactorkm3;
+//                    dp1 = rterm[1] / Tfactorkp1;
+//                    dp2 = rterm[2] / Tfactorkp2;
+//                    dp3 = rterm[3] / Tfactorkp3;
+//                    dm1 = rterm[4] / Tfactorkm1;
+//                    dm2 = rterm[5] / Tfactorkm2;
+//                    dm3 = rterm[6] / Tfactorkm3;
 
                     m--;
                 } while ( dZ > tol);
@@ -742,12 +742,12 @@ int TTMThermalModelBQ::primPartDens()
                     Tfactorkp3   += rterm[3];
 
                     dZ  = rterm[0] / TSPartition3;
-                    dp1 = rterm[1] / Tfactorkp1;
-                    dp2 = rterm[2] / Tfactorkp2;
-                    dp3 = rterm[3] / Tfactorkp3;
-                    dm1 = rterm[4] / Tfactorkm1;
-                    dm2 = rterm[5] / Tfactorkm2;
-                    dm3 = rterm[6] / Tfactorkm3;
+//                    dp1 = rterm[1] / Tfactorkp1;
+//                    dp2 = rterm[2] / Tfactorkp2;
+//                    dp3 = rterm[3] / Tfactorkp3;
+//                    dm1 = rterm[4] / Tfactorkm1;
+//                    dm2 = rterm[5] / Tfactorkm2;
+//                    dm3 = rterm[6] / Tfactorkm3;
 
                     m++;
                 } while (dZ > tol);
@@ -862,8 +862,8 @@ void TTMThermalModelBQ::reset()
     // from the base class
 
     mBaryon = mBeauty = mBminus = mBplus = mbminus = mbplus = mCharge = mCharm = mCminus = mCplus = mDensity = 0;
-
-    mEnergy = mEntropy = mPressure = mQminus = mQplus = mSminus = mSplus = mStrange = mWidth = mWroblewski = 0;
+    mEnergy = mEntropy = mPressure = mQminus = mQplus = mSminus = mSplus = mStrange = mWroblewski = 0;
+    mWidth  = false;
 
     qDeleteAll(mDensTable.begin(), mDensTable.end());
     mDensTable.clear();

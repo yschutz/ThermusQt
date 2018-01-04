@@ -57,7 +57,7 @@ double TTMThermalParticle::densityBoltzmannWidth(double exclVolPressure)
 
         double (*pFcnDensNormWidth)(double*, double*);
         pFcnDensNormWidth = &FcnDensNormWidth;
-        QScopedPointer<F1> fnorm(new F1("norm", FcnDensNormWidth, 0., (mM + 3. * width) / mT, 2));
+        QScopedPointer<F1> fnorm(new F1("norm", pFcnDensNormWidth, 0., (mM + 3. * width) / mT, 2));
         fnorm->setParameters(mM / mT, width / mT);
 
         double norm = IntegrateLegendre40(fnorm.data(), a / mT, (mM + 2. * width) / mT);
@@ -100,14 +100,14 @@ double TTMThermalParticle::energyBoltzmannWidth(double exclVolPressure)
 
         double (*pFcnEnergyBoltzmannWidth)(double*, double*);
         pFcnEnergyBoltzmannWidth = &FcnEnergyBoltzmannWidth;
-        QScopedPointer<F1> fe(new F1("e Boltzmann Width", FcnEnergyBoltzmannWidth, 0., (mM + 3. * width) / mT, 5));
+        QScopedPointer<F1> fe(new F1("e Boltzmann Width", pFcnEnergyBoltzmannWidth, 0., (mM + 3. * width) / mT, 5));
         fe->setParameters(mMu / mT, mM / mT, mG, mDeg, width / mT);
 
         double e = IntegrateLegendre40(fe.data(), a / mT, (mM + 2. * width) / mT);
 
         double (*pFcnDensNormWidth)(double*, double*);
         pFcnDensNormWidth = &FcnDensNormWidth;
-        QScopedPointer<F1> fnorm(new F1("norm", FcnDensNormWidth, 0., (mM + 3. * width) / mT, 2));
+        QScopedPointer<F1> fnorm(new F1("norm", pFcnDensNormWidth, 0., (mM + 3. * width) / mT, 2));
         fnorm->setParameters(mM / mT, width / mT);
 
         double norm = IntegrateLegendre40(fnorm.data(), a / mT, (mM + 2. * width) / mT);
