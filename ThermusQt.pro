@@ -165,7 +165,7 @@ HEADERS  += mainwindow.h \
 RESOURCES += \
     images/images.qrc
 
-unix:LIBS += -L/usr/local/lib -lcblas -lgsl
+unix:LIBS += -L/usr/local/lib -lgsl -lgslcblas -lm
 INCLUDEPATH += /usr/local/include
 
 DISTFILES += \
