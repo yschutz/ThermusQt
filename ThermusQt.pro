@@ -8,14 +8,11 @@ QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = ThermusQt
-TEMPLATE = app
-
 include("QFontIcon/QFontIcon.pri")
 
 INCLUDEPATH += QFontIcon
 
-ICON = images/ThermusQt.icns
+ICON = images/ThermusQt.png
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -172,8 +169,13 @@ DISTFILES += \
     .travis.yml \
     .appveyor.yml \
     innosetup.iss \
-    images/ThermusQt.icns \
-    ThermusQt.desktop
+    ThermusQt.desktop \
+
+mac {
+    images/ThermusQt.icns
+    TARGET = ThermusQt
+    TEMPLATE = app
+}
 
 APP_PD.files =  particles/ThermusParticles.db particles/PDGParticles.db
 APP_PD.files += particles/particles.tar.gz
@@ -185,10 +187,18 @@ APP_PY.path = Contents/Resources/python
 QMAKE_BUNDLE_DATA += APP_PY
 
 # Installation
-target.path = /usr/local/bin
-desktop.path = /usr/share/applications
-desktop.files += ThermusQt.desktop
-icons.path = /usr/share/icons/hicolor/48x48/apps
-icons.files += images/ThermusQt.png
 
-INSTALLS += target desktop icons
+unix {
+    isEmpty(PREFIX) {
+        PREFIX = /usr/local
+    }
+
+    target.path = $$PREFIX/bin
+    desktop.path = $$PREFIX/share/applications
+    desktop.files += ThermusQt.desktop
+    icons.path = $$PREFIX/share/icons/hicolor/48x48/apps
+    icons.files += images/ThermusQt.png
+#    INSTALLS += target icons
+}
+
+INSTALLS += target icons desktop
