@@ -5,4 +5,4 @@ Comment=A tool to calculate the particle composition od the final hadronic state
 Exec=ThermusQt %F
 Icon=ThermusQt
 Terminal=false
-Categories=Sciences;Physics;Qt;
+Categories=Science;Physics;Qt;
