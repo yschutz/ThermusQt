@@ -12,7 +12,7 @@ include("QFontIcon/QFontIcon.pri")
 
 INCLUDEPATH += QFontIcon
 
-ICON = images/ThermusQt.png
+ICON = images/ThermusQt.icns
 
 SOURCES += main.cpp\
         mainwindow.cpp \

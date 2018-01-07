@@ -271,11 +271,11 @@ void MainWindow::paintEvent(QPaintEvent *event)
     // the background image
 
     QPixmap bkgnd(":/tumblr_static_9sry26wrvv484cg0wsw4o0gc0_640_v2.jpg");
-    painter.drawPixmap(0,0,width(), height(),bkgnd);
+    painter.drawPixmap(0,0,width(), height() ,bkgnd);
 
     // the Thermus banner, first the background
-    qint32 bheight = height() / 3 ;
-    qint32 bwidth  = width() * 0.7 ;
+//    qint32 bheight = height()  * 0.3 ;
+//    qint32 bwidth  = width() * 0.7 ;
 //    qint32 bx = (width() - bwidth) / 2;
 //    qint32 by = (height() - bheight) / 2;
 //    QRect bg = QRect(bx, by, bwidth, bheight);
@@ -290,26 +290,36 @@ void MainWindow::paintEvent(QPaintEvent *event)
 
     painter.setPen(QPen(blue));
     painter.setFont(QFont("Helvetica [Cronyx]", QFont::ExtraBold, 20, true));
-    int x = rect().left();
-    int y = rect().bottom();
-    int stepy = qrand() % height() * 0.8;
-    int stepx = x + 20;
-    //    painter.drawText(x, y,"thermus");
+    int y = rect().bottom() - height() * 0.3;
+    int stepy = qrand() % height() * 0.3;
+    int stepx = width() / 8;
+    int x0 = width() / 2. - stepx / 2;
+    int x = x0;
+    painter.drawText(x, y-stepy,"r");
+    stepy = qrand() % height()  * 0.3 ;
+    x -= stepx;
+    painter.drawText(x, y-stepy,"e");
+    stepy = qrand() % height()  * 0.3 ;
+    x -= stepx;
+    painter.drawText(x, y-stepy,"h");
+    stepy = qrand() % height()  * 0.3 ;
+    x -= stepx;
     painter.drawText(x, y-stepy,"t");
-    stepy = qrand() % height();
+    stepy = qrand() % height()  * 0.3 ;
+    x = x0 + stepx;
+    painter.drawText(x, y-stepy,"m");
+    stepy = qrand() % height()  * 0.3 ;
+    x += stepx;
+    painter.drawText(x, y-stepy,"u");
+    stepy = qrand() % height()  * 0.3 ;
+    x += stepx;
+    painter.drawText(x, y-stepy,"s");
 
-    painter.drawText(x+stepx, y-stepy,"h");
-    stepy = qrand() % height();
-    painter.drawText(x+stepx, y-stepy,"e");
-    stepy = qrand() % height();
-    painter.drawText(x+stepx, y-stepy,"r");
-    stepy = qrand() % height();
-    painter.drawText(x+stepx, y-stepy,"m");
-    stepy = qrand() % height();
-    painter.drawText(x+stepx, y-stepy,"u");
-    stepy = qrand() % height();
-    painter.drawText(x+stepx, y-stepy,"s");
-
+    y = rect().bottom() - height() * 0.1;
+    x = rect().right() - width() * 0.3;
+    painter.setFont(QFont("Helvetica [Cronyx]", QFont::ExtraLight, 10, true));
+    painter.setPen(QPen(Qt::black));
+    painter.drawText(x, y, "arXiv:1108.4588 [hep-ph]");
     QMainWindow::paintEvent(event);
 }
 
@@ -364,9 +374,9 @@ void MainWindow::createActions()
     mPdgSelectAction = new QAction(QIcon(":/selecticon.png"), tr("&Select"), this);
     connect(mPdgSelectAction, &QAction::triggered, this, [this]{ particlesDBManagement(kSelect); });
 
-    // run  macro
-
+    // run  macro    
     mPredictionAction = new QAction(QIcon(":/predictionicon.png"), tr("&Prediction"), this);
+    mPredictionAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_P));
     mPredictionAction->setStatusTip(tr("Makes a Thermus prediction"));
     connect(mPredictionAction, &QAction::triggered, this, [this] { run(mPredictionAction->text().remove(0,1)); });
 
@@ -554,7 +564,7 @@ void MainWindow::particlesDBManagement(DBOPS option)
                 progress.setMinimum(0);
                 progress.setMaximum(800);
                 progress.setWindowModality(Qt::WindowModal);
-                progress.resize(progress.width() * 1.5, progress.height());
+                progress.resize(progress.width() * 1.5, progress.height()  * 0.3 );
                 progress.show();
             }
             if (p.state() == QProcess::Running) {
