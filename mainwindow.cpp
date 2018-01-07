@@ -270,27 +270,45 @@ void MainWindow::paintEvent(QPaintEvent *event)
 
     // the background image
 
-    QPixmap bkgnd(":/2015-Jul-03-Fit_PbPb0010_Reference_final_SQM.png");
+    QPixmap bkgnd(":/tumblr_static_9sry26wrvv484cg0wsw4o0gc0_640_v2.jpg");
     painter.drawPixmap(0,0,width(), height(),bkgnd);
 
     // the Thermus banner, first the background
     qint32 bheight = height() / 3 ;
     qint32 bwidth  = width() * 0.7 ;
-    qint32 bx = (width() - bwidth) / 2;
-    qint32 by = (height() - bheight) / 2;
-    QRect bg = QRect(bx, by, bwidth, bheight);
+//    qint32 bx = (width() - bwidth) / 2;
+//    qint32 by = (height() - bheight) / 2;
+//    QRect bg = QRect(bx, by, bwidth, bheight);
 
     QColor blue = Qt::blue;
     blue.setAlphaF(0.5);
 
     painter.setBrush(QBrush(blue));
-    painter.drawRect(bg);
+//    painter.drawRect(bg);
 
     // the Thermus banner, then the text
 
-    painter.setPen(QPen(Qt::red));
-    painter.setFont(QFont("Helvetica [Cronyx]", QFont::ExtraBold, 10, true));
-    painter.drawText(rect(), Qt::AlignHCenter|Qt::AlignVCenter,"Thermus");
+    painter.setPen(QPen(blue));
+    painter.setFont(QFont("Helvetica [Cronyx]", QFont::ExtraBold, 20, true));
+    int x = rect().left();
+    int y = rect().bottom();
+    int stepy = qrand() % height() * 0.8;
+    int stepx = x + 20;
+    //    painter.drawText(x, y,"thermus");
+    painter.drawText(x, y-stepy,"t");
+    stepy = qrand() % height();
+
+    painter.drawText(x+stepx, y-stepy,"h");
+    stepy = qrand() % height();
+    painter.drawText(x+stepx, y-stepy,"e");
+    stepy = qrand() % height();
+    painter.drawText(x+stepx, y-stepy,"r");
+    stepy = qrand() % height();
+    painter.drawText(x+stepx, y-stepy,"m");
+    stepy = qrand() % height();
+    painter.drawText(x+stepx, y-stepy,"u");
+    stepy = qrand() % height();
+    painter.drawText(x+stepx, y-stepy,"s");
 
     QMainWindow::paintEvent(event);
 }
@@ -579,13 +597,16 @@ void MainWindow::particlesDBManagement(DBOPS option)
             msg.setInformativeText(QString("The particles DB has been %1d with %2 entries").arg(soption).arg(listout.size()));
             msg.exec();
         }
+        p.close();
         params.clear();
         params << QString("%1/*.txt").arg(kPartDir);
         QMessageBox msg(QMessageBox::Information, "", "Debug");
         msg.setInformativeText(params.at(0));
+        msg.exec();
         p.start("rm", params);
         p.waitForFinished();
         p.close();
+
         return;
     }
 

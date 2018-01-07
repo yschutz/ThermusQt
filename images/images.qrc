@@ -17,5 +17,6 @@
         <file>verboseicone.png</file>
         <file>busyicon.png</file>
         <file>endicon.png</file>
+        <file>ThermusQt.png</file>
     </qresource>
 </RCC>

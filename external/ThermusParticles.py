@@ -557,7 +557,7 @@ def createDB():
 			ndecay = countDecays(name)
 		pdgName = rename(pdg) 
 		thermusName[pdg] = name
-		#print ("Adding ", thermusName, pdgName)
+		print ("Adding ", thermusName, pdgName)
 		if not pdgName == "":
 			name = pdgName
 		part = Particle.create(name  = name, 
@@ -592,7 +592,7 @@ def createDB():
 						aname = name.replace('+', '-')
 					elif name.find('-') != -1:
 						aname = name.replace('-', '+')
-			#print ("Adding ", aname)
+			print ("Adding ", aname)
 			apart = Particle.create(name = aname, 
 				pdg = -part.pdg, 
 				spin = part.spin, 
