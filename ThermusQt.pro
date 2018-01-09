@@ -198,7 +198,12 @@ unix {
     desktop.files += ThermusQt.desktop
     icons.path = $$PREFIX/share/icons/hicolor/48x48/apps
     icons.files += images/ThermusQt.png
+    data.files = particles/ThermusParticles.db particles/PDGParticles.db
+    data.files += += particles/particles.tar.gz
+    data.path = $$PREFIX/Contents/Resources/particles
+    python.files = external/PDGParticles.py external/ThermusParticles.py
+    python.path = $$PREFIX/Contents/Resources/python
 #    INSTALLS += target icons
 }
 
-INSTALLS += target icons desktop
+INSTALLS += target icons desktop data python
