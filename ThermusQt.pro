@@ -10,6 +10,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 include("QFontIcon/QFontIcon.pri")
 
+QTPLUGIN += qsqlite
+
 INCLUDEPATH += QFontIcon
 
 ICON = images/ThermusQt.icns
