@@ -200,9 +200,9 @@ unix {
     icons.files += images/ThermusQt.png
     data.files = particles/ThermusParticles.db particles/PDGParticles.db
     data.files += += particles/particles.tar.gz
-    data.path = $$PREFIX/Contents/Resources/particles
+    data.path = $$PREFIX/Resources/particles
     python.files = external/PDGParticles.py external/ThermusParticles.py
-    python.path = $$PREFIX/Contents/Resources/python
+    python.path = $$PREFIX/Resources/python
 #    INSTALLS += target icons
 }
 

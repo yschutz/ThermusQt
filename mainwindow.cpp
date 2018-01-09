@@ -38,11 +38,6 @@ MainWindow::MainWindow(QWidget *parent) :
     mThermusDir.setPath(qApp->applicationDirPath());
     mThermusDir.cdUp();
 
-    QMessageBox msg(QMessageBox::Information, "","");
-    msg.setInformativeText(mThermusDir.path());
-    msg.exec();
-
-
     QString partDir = mThermusDir.path() + "/Resources/particles/";
     QString thermusDBName(QString(ParticlesDBManager::instance().getThermusDBName()).append(".db"));
     QString pdgDBName(QString(ParticlesDBManager::instance().getPDGDBName()).append(".db"));
