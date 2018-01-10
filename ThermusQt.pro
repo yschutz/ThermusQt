@@ -166,11 +166,15 @@ RESOURCES += \
 
 INCLUDEPATH += /usr/local/include
 
+LIBS += -L/usr/local/lib -lgsl -lgslcblas -lm
+
 DISTFILES += \
     .travis.yml \
     .appveyor.yml \
     innosetup.iss \
     ThermusQt.desktop \
+
+# Installation
 
 mac {
     images/ThermusQt.icns
@@ -185,10 +189,7 @@ mac {
    APP_PY.files += external/PDGParticles.py external/ThermusParticles.py
    APP_PY.path = Contents/Resources/python
    QMAKE_BUNDLE_DATA += APP_PY
-    LIBS += -L/usr/local/lib -lgsl -lgslcblas -lm
 }
-
-# Installation
 
 unix:!mac {
     isEmpty(PREFIX) {
@@ -205,7 +206,6 @@ unix:!mac {
     data.path = $$PREFIX/Resources/particles
     python.files = external/PDGParticles.py external/ThermusParticles.py
     python.path = $$PREFIX/Resources/python
-    LIBS += -lsqlite
     INSTALLS += target icons desktop data python
 }
 #INSTALLS += target icons desktop data python
