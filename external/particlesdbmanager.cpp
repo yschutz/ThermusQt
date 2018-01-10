@@ -80,8 +80,9 @@ bool ParticlesDBManager::connect(const QString &path)
 
     mDB.setDatabaseName(path);
     if (!mDB.open()) {
+        mDB.lastError();
         QMessageBox msg(QMessageBox::Critical, "DB connection",
-                        QString("Could not connect to particles DB: %1").arg(path));
+                        QString("DB %1: %2").arg(path, mDB.lastError().text()));
         msg.exec();
         return false;
     } else {
