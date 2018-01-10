@@ -164,7 +164,6 @@ HEADERS  += mainwindow.h \
 RESOURCES += \
     images/images.qrc
 
-unix:LIBS += -L/usr/local/lib -lgsl -lgslcblas -lm
 INCLUDEPATH += /usr/local/include
 
 DISTFILES += \
@@ -177,7 +176,6 @@ mac {
     images/ThermusQt.icns
     TARGET = ThermusQt
     TEMPLATE = app
-}
 
 APP_PD.files =  particles/ThermusParticles.db particles/PDGParticles.db
 APP_PD.files += particles/particles.tar.gz
@@ -187,6 +185,7 @@ QMAKE_BUNDLE_DATA += APP_PD
 APP_PY.files += external/PDGParticles.py external/ThermusParticles.py
 APP_PY.path = Contents/Resources/python
 QMAKE_BUNDLE_DATA += APP_PY
+}
 
 # Installation
 
@@ -205,7 +204,7 @@ unix {
     data.path = $$PREFIX/Resources/particles
     python.files = external/PDGParticles.py external/ThermusParticles.py
     python.path = $$PREFIX/Resources/python
-#    INSTALLS += target icons
+    LIBS += -L/usr/local/lib -lgsl -lgslcblas -lm -lsqlite
 }
 
 INSTALLS += target icons desktop data python
