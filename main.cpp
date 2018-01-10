@@ -3,10 +3,9 @@
 // The main program
 
 #include <QApplication>
-
 #include "mainwindow.h"
 
-#include "QFontIcon/qfonticon.h"
+//#include "QFontIcon/qfonticon.h"
 
 
 int main(int argc, char *argv[])
