@@ -177,19 +177,20 @@ mac {
     TARGET = ThermusQt
     TEMPLATE = app
 
-APP_PD.files =  particles/ThermusParticles.db particles/PDGParticles.db
-APP_PD.files += particles/particles.tar.gz
-APP_PD.path = Contents/Resources/particles
-QMAKE_BUNDLE_DATA += APP_PD
+    APP_PD.files =  particles/ThermusParticles.db particles/PDGParticles.db
+    APP_PD.files += particles/particles.tar.gz
+    APP_PD.path = Contents/Resources/particles
+    QMAKE_BUNDLE_DATA += APP_PD
 
-APP_PY.files += external/PDGParticles.py external/ThermusParticles.py
-APP_PY.path = Contents/Resources/python
-QMAKE_BUNDLE_DATA += APP_PY
+   APP_PY.files += external/PDGParticles.py external/ThermusParticles.py
+   APP_PY.path = Contents/Resources/python
+   QMAKE_BUNDLE_DATA += APP_PY
+    LIBS += -L/usr/local/lib -lgsl -lgslcblas -lm
 }
 
 # Installation
 
-unix {
+unix:!mac {
     isEmpty(PREFIX) {
         PREFIX = /usr/local
     }
@@ -204,7 +205,8 @@ unix {
     data.path = $$PREFIX/Resources/particles
     python.files = external/PDGParticles.py external/ThermusParticles.py
     python.path = $$PREFIX/Resources/python
-    LIBS += -L/usr/local/lib -lgsl -lgslcblas -lm -lsqlite
+    LIBS += -lsqlite
+    INSTALLS += target icons desktop data python
 }
+#INSTALLS += target icons desktop data python
 
-INSTALLS += target icons desktop data python
