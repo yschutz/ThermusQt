@@ -164,8 +164,9 @@ HEADERS  += mainwindow.h \
 RESOURCES += \
     images/images.qrc
 
-unix:LIBS += -L/usr/local/lib -lgsl -lgslcblas -lm
 INCLUDEPATH += /usr/local/include
+
+LIBS += -L/usr/local/lib -lgsl -lgslcblas -lm
 
 DISTFILES += \
     .travis.yml \
@@ -174,6 +175,7 @@ DISTFILES += \
     ThermusQt.desktop \
 
 # Installation
+
 mac {
     images/ThermusQt.icns
     TARGET = ThermusQt
@@ -204,4 +206,3 @@ unix:!mac {
     python.path = $$PREFIX/Resources/python
     INSTALLS += target icons desktop data python
 }
-
