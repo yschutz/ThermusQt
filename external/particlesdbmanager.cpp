@@ -22,8 +22,9 @@ ParticlesDBManager::ParticlesDBManager() : QObject(nullptr),
     mCurrentPart("")
 {
     //ctor
-
-    mDB = QSqlDatabase::addDatabase("QSQLITE");
+    const QString kDriver("QSQLITE");
+    if(QSqlDatabase::isDriverAvailable(kDriver))
+        mDB = QSqlDatabase::addDatabase(kDriver);
 }
 
 //__________________________________________________________________________
@@ -80,7 +81,6 @@ bool ParticlesDBManager::connect(const QString &path)
 
     mDB.setDatabaseName(path);
     if (!mDB.open()) {
-        mDB.lastError();
         QMessageBox msg(QMessageBox::Critical, "DB connection",
                         QString("DB %1: %2").arg(path, mDB.lastError().text()));
         msg.exec();
