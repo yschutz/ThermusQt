@@ -5,6 +5,11 @@
 #include <QObject>
 #include <QtSql>
 
+#include <QSqlDatabase>
+#include <QSqlDriver>
+#include <QSqlError>
+#include <QSqlQuery>
+
 #include "main/TTMParticle.h"
 
 class ParticlesDBManager : public QObject
