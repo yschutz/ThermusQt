@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 include("QFontIcon/QFontIcon.pri")
 
-QTPLUGIN += qsqlite
+#QTPLUGIN += qsqlite
 
 INCLUDEPATH += QFontIcon
 
@@ -180,15 +180,13 @@ mac {
     images/ThermusQt.icns
     TARGET = ThermusQt
     TEMPLATE = app
-
     APP_PD.files =  particles/ThermusParticles.db particles/PDGParticles.db
     APP_PD.files += particles/particles.tar.gz
     APP_PD.path = Contents/Resources/particles
     QMAKE_BUNDLE_DATA += APP_PD
-
-   APP_PY.files += external/PDGParticles.py external/ThermusParticles.py
-   APP_PY.path = Contents/Resources/python
-   QMAKE_BUNDLE_DATA += APP_PY
+    APP_PY.files += external/PDGParticles.py external/ThermusParticles.py
+    APP_PY.path = Contents/Resources/python
+    QMAKE_BUNDLE_DATA += APP_PY
 }
 
 unix:!mac {
@@ -208,5 +206,3 @@ unix:!mac {
     python.path = $$PREFIX/Resources/python
     INSTALLS += target icons desktop data python
 }
-#INSTALLS += target icons desktop data python
-
