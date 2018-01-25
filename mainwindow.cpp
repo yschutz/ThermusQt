@@ -480,8 +480,12 @@ void MainWindow::particlesDBManagement(DBOPS option)
         QEventLoop loop;
         connect(&t, SIGNAL(timeout()), &loop, SLOT(quit()));
 
-        const QString kPythonPath("/usr/local/bin/python3");
+        QString kPythonPath("/usr/local/bin/python3");
         QFileInfo check(kPythonPath);
+        if (!check.exists()) {
+            kPythonPath = "/usr/bin/python3";
+            check.setFile(kPythonPath);
+        }
         if (!check.exists() || !check.isExecutable()) {
             QMessageBox msg(QMessageBox::Critical, "", tr("missing python script"));
             msg.setInformativeText(QString(tr("%1: %2 is not found or not executable!")).arg(Q_FUNC_INFO, kPythonPath));
