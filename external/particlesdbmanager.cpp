@@ -22,14 +22,6 @@ ParticlesDBManager::ParticlesDBManager() : QObject(nullptr),
     mCurrentPart("")
 {
     //ctor
-
-//    const QString kDriver("QSQLITE");
-//    if(QSqlDatabase::isDriverAvailable(kDriver))
-//        mDB = QSqlDatabase::addDatabase(kDriver);
-//    else {
-//        qDebug() << QString("%1: %2 driver not available").arg(Q_FUNC_INFO, kDriver);
-//        exit(1);
-//    }
 }
 
 //__________________________________________________________________________

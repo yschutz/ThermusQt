@@ -4,11 +4,19 @@
 #include <QVBoxLayout>
 #include "selectdialog.h"
 
+#include <QMessageBox>
+
 //__________________________________________________________________________
 SelectDialog::SelectDialog(const QString &dirname, QWidget *parent) : QDialog(parent),
     mFileName("")
 {
+
     QDir dir(dirname);
+
+    QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);
+    msg.setInformativeText(dirname);
+    msg.exec();
+
     dir.setFilter(QDir::Files);
     QStringList filterName("PartList_*");
     QStringList files = dir.entryList(filterName);
