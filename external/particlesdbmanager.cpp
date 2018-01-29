@@ -22,9 +22,18 @@ ParticlesDBManager::ParticlesDBManager() : QObject(nullptr),
     mCurrentPart("")
 {
     //ctor
+    qDebug() << Q_FUNC_INFO << "!!!!!!!!!!!!!!!!!!!!!!";
+
+
     const QString kDriver("QSQLITE");
     if(QSqlDatabase::isDriverAvailable(kDriver))
         mDB = QSqlDatabase::addDatabase(kDriver);
+    else {
+        QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);
+        msg.setInformativeText(QString("%1 driver not available").arg(kDriver));
+        msg.exec();
+        exit(1);
+    }
 }
 
 //__________________________________________________________________________
@@ -79,6 +88,7 @@ bool ParticlesDBManager::connect(const QString &path)
 {
     // connect to data base with given name
 
+    qDebug() << Q_FUNC_INFO << "!!!!!!!!!!!!!!!!!!!!!!";
     mDB.setDatabaseName(path);
     if (!mDB.open()) {
         QMessageBox msg(QMessageBox::Critical, "DB connection",
