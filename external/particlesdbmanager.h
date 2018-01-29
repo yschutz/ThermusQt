@@ -28,7 +28,7 @@ public:
     double                     br(int decayindex) const;
     bool                       connect(const QString& path);
     QString                    currentPart() const { return mCurrentPart; }
-    QString                    dbName() const { return mDB.databaseName(); } //mDBName; }
+    QString                    dbName() const { return QSqlDatabase::database().databaseName(); } //mDBName; }
     void                       deleteDecays(int motherid) const;
     void                       deleteDecay(int id) const;
     double                     getBaryon(int pdg);
@@ -78,7 +78,6 @@ private:
 
 private:
     QString                   mCurrentPart;  // the current particle
-    QSqlDatabase              mDB;           // the data base
     const QString             mkThermusName = "ThermusParticles";
     const QString             mkPDGName     = "PDGParticles";
     static ParticlesDBManager mPDBM;         // the unique instance

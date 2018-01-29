@@ -23,13 +23,13 @@ ParticlesDBManager::ParticlesDBManager() : QObject(nullptr),
 {
     //ctor
 
-    const QString kDriver("QSQLITE");
-    if(QSqlDatabase::isDriverAvailable(kDriver))
-        mDB = QSqlDatabase::addDatabase(kDriver);
-    else {
-        qDebug() << QString("%1: %2 driver not available").arg(Q_FUNC_INFO, kDriver);
-        exit(1);
-    }
+//    const QString kDriver("QSQLITE");
+//    if(QSqlDatabase::isDriverAvailable(kDriver))
+//        mDB = QSqlDatabase::addDatabase(kDriver);
+//    else {
+//        qDebug() << QString("%1: %2 driver not available").arg(Q_FUNC_INFO, kDriver);
+//        exit(1);
+//    }
 }
 
 //__________________________________________________________________________
@@ -39,14 +39,13 @@ ParticlesDBManager::~ParticlesDBManager()
 
     qDeleteAll(mParticles.begin(), mParticles.end());
     mParticles.clear();
-    mDB.close();
+    QSqlDatabase::database().close();
 }
 
 //__________________________________________________________________________
 ParticlesDBManager::ParticlesDBManager(const ParticlesDBManager &ma) : QObject(ma.parent())
 {
     mCurrentPart = "";
-    mDB          = ma.mDB;
 }
 
 //__________________________________________________________________________
@@ -83,11 +82,11 @@ QString ParticlesDBManager::makeQuery(ENTRY en, const QString& para, QString &sq
 bool ParticlesDBManager::connect(const QString &path)
 {
     // connect to data base with given name
-
-    mDB.setDatabaseName(path);
-    if (!mDB.open()) {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(path);
+    if (!db.open()) {
         QMessageBox msg(QMessageBox::Critical, "DB connection",
-                        QString("DB %1: %2").arg(path, mDB.lastError().text()));
+                        QString("DB %1: %2").arg(path, db.lastError().text()));
         msg.exec();
         return false;
     } else {
