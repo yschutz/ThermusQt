@@ -8,6 +8,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QDialogButtonBox>
+#include <QDir>
 #include <QFileInfo>
 #include <QMdiArea>
 #include <QMessageBox>
@@ -32,13 +33,22 @@
 bool MainWindow::mDebug = false;
 //__________________________________________________________________________
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), mFd(nullptr), mNPD(nullptr)
+    QMainWindow(parent), mFd(nullptr), mNewDB(false), mNPD(nullptr), mThermus("Thermus")
 {
     // ctor
     mThermusDir.setPath(qApp->applicationDirPath());
     mThermusDir.cdUp();
 
-    QString partDir = mThermusDir.path() + "/Resources/particles/";
+    const QString kPartDirOrg = mThermusDir.path() + "/Resources/particles/";
+    QString partDir = QDir::tempPath() + "/" + mThermus + "/";
+
+    // create a temp dir to store particles data files
+    QDir::temp().mkdir(mThermus);
+    QDir org(kPartDirOrg);
+    for (QFileInfo f : org.entryInfoList())
+        QFile::copy(kPartDirOrg + f.fileName(), partDir + f.fileName());
+    QDir::setCurrent(partDir);
+
     QString thermusDBName(QString(ParticlesDBManager::instance().getThermusDBName()).append(".db"));
     QString pdgDBName(QString(ParticlesDBManager::instance().getPDGDBName()).append(".db"));
 
@@ -114,7 +124,24 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     // dtor
-
+    if (mNewDB) {
+        QMessageBox msg(QMessageBox::Information, "DB modified", "Particles DB has been modified?");
+        msg.setInformativeText("Do you want to save changes?");
+        msg.setStandardButtons(QMessageBox::Yes);
+        msg.addButton(QMessageBox::No);
+        msg.setDefaultButton(QMessageBox::No);
+        if(msg.exec() == QMessageBox::Yes) {
+            QDir save(QDir::homePath());
+            save.mkdir("ThermusSave");
+            save.cd("ThermusSave");
+            QDir::current().setNameFilters(QStringList() << "*.db");
+            for (QFileInfo f : QDir::current().entryInfoList())
+                QFile::copy(f.fileName(), save.absolutePath() + "/" + f.fileName());
+            QMessageBox msgg(QMessageBox::Information, "", "Particles DB saved");
+            msgg.setInformativeText(QString("in %1").arg(save.absolutePath()));
+            msgg.exec();        }
+    }
+    QDir::current().removeRecursively();
 }
 
 //__________________________________________________________________________
@@ -441,8 +468,7 @@ void MainWindow::particlesDBManagement(DBOPS option)
 {
     // Manages the particles DB
 
-    const QString kPartDir = mThermusDir.path() + "/Resources/particles/";
-    const QString kExtDir  = mThermusDir.path() + "/Resources/python/";
+    const QString kExtDir     = mThermusDir.path() + "/Resources/python/";
 
     bool pdg     = false;
     bool thermus = false;
@@ -495,18 +521,18 @@ void MainWindow::particlesDBManagement(DBOPS option)
         QProcess p;
         p.setProcessChannelMode(QProcess::SeparateChannels);
         QStringList params;
-        QDir::setCurrent(kPartDir);
+        QDir::temp().mkdir("Thermus");
         if (soption.contains("Create")) {
             // untar the particles data text files
             const QString kParticlesData("particles.tar.gz");
-            check.setFile(kParticlesData);
+            check.setFile(QDir::currentPath() + "/" + kParticlesData);
             if (!check.exists()) {
                 QMessageBox msg(QMessageBox::Critical, "", tr("Missing data"));
-                msg.setInformativeText(QString(tr("%1 does not exist in %2")).arg(kParticlesData, kPartDir));
+                msg.setInformativeText(QString(tr("%1 does not exist in %2")).arg(kParticlesData, QDir::currentPath()));
                 msg.exec();
                 return;
             }
-            params << "-zxvf" << kParticlesData;
+            params << "-zxvf" << QDir::currentPath() + "/" + kParticlesData;
             p.start("tar", params);
             p.waitForFinished();
             p.close();
@@ -525,11 +551,11 @@ void MainWindow::particlesDBManagement(DBOPS option)
                 QFileInfo check(mPdgDBPath);
                 if (! check.exists()) {
                     QMessageBox msg(QMessageBox::Critical, tr("Particles DB creation"), tr("You must first create the PDG particles list"));
-                    msg.setInformativeText(QString(tr("DB %1 not found in %2")).arg(mPdgDBPath, kPartDir));
+                    msg.setInformativeText(QString(tr("DB %1 not found in %2")).arg(mPdgDBPath, QDir::currentPath()));
                     msg.exec();
                     return;
                 }                
-                SelectDialog sdia(kPartDir, this);
+                SelectDialog sdia(QDir::currentPath(), this);
                 sdia.setModal(true);
                 if (sdia.exec() == QDialog::Accepted)
                     input = sdia.fileName();
@@ -542,15 +568,15 @@ void MainWindow::particlesDBManagement(DBOPS option)
             QFileInfo check(fullDBName);
             if (! check.exists()) {
                 QMessageBox msg(QMessageBox::Critical, tr("Particles DB creation"), tr("You must first create the particles DB"));
-                msg.setInformativeText(QString(tr("DB %1 not found in %2 %3")).arg(fullDBName, kPartDir, QDir::currentPath()));
+                msg.setInformativeText(QString(tr("DB %1 not found in %2")).arg(fullDBName, QDir::currentPath()));
                 msg.exec();
                 return;
             }
         }
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         env.insert("EXTDIR", kExtDir); // Add an environment variable
-        env.insert("PARTDIR", kPartDir);
-        QString dbName = fullDBName.replace(kPartDir, "");
+        env.insert("PARTDIR", QDir::currentPath() + "/");
+        QString dbName = fullDBName.right(fullDBName.length() - fullDBName.lastIndexOf("/") - 1);
         env.insert("DBNAME", dbName);
         p.setProcessEnvironment(env);
 
@@ -609,17 +635,9 @@ void MainWindow::particlesDBManagement(DBOPS option)
             QMessageBox msg(QMessageBox::Information, "Python success", "Python success");
             msg.setInformativeText(QString("The particles DB has been %1d with %2 entries").arg(soption).arg(listout.size()));
             msg.exec();
+            mNewDB = true;
         }
         p.close();
-        params.clear();
-        params << QString("%1/*.txt").arg(kPartDir);
-        QMessageBox msg(QMessageBox::Information, "", "Debug");
-        msg.setInformativeText(params.at(0));
-        msg.exec();
-        p.start("rm", params);
-        p.waitForFinished();
-        p.close();
-
         return;
     }
 
@@ -653,6 +671,7 @@ void MainWindow::particlesDBManagement(DBOPS option)
         } else {
             mNPD = new NewParticleDialog(this);
             mNPD->exec();
+            mNewDB = true;
         }
         return;
     }

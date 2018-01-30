@@ -67,6 +67,7 @@ private:
     QMenu*             mListMenu;              // to list all the particles db from Root or Thermus Data
     QAction*           mListPDG;               // to list the particles Root db
     QAction*           mListThermus;           // to list the particles Thermus db
+    bool               mNewDB;                 // to check if db has been changed
     QAction*           mNewParticleAction;     // insert a new particle in Thermus DB
     NewParticleDialog* mNPD;                   // dialog box to insert a new particle in Thermus DB
     QAction*           mParametersList;        // list all parameteres with properties
@@ -85,7 +86,8 @@ private:
     QString            mThermusDBPath;         // the full path to Thermus DB
     QMenu*             mUpdateMenu;            // to update the particles db from Root or Thermus Data
     QAction*           mUpdatePDG;             // to update the particles Root db
-    QAction*           mUpdateThermus;         // to update the particles Thermus db
+    QAction*           mUpdateThermus;         // to update the particles Thermus db    
+    QString            mThermus;               // To be used for naming the temp directory
     QString            mWhat;                  // Prediction or Fit
 };
 

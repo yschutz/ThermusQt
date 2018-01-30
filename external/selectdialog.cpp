@@ -12,11 +12,6 @@ SelectDialog::SelectDialog(const QString &dirname, QWidget *parent) : QDialog(pa
 {
 
     QDir dir(dirname);
-
-    QMessageBox msg(QMessageBox::Critical, Q_FUNC_INFO, Q_FUNC_INFO);
-    msg.setInformativeText(dirname);
-    msg.exec();
-
     dir.setFilter(QDir::Files);
     QStringList filterName("PartList_*");
     QStringList files = dir.entryList(filterName);

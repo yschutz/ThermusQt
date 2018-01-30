@@ -31,7 +31,8 @@ ParticlesDBManager::~ParticlesDBManager()
 
     qDeleteAll(mParticles.begin(), mParticles.end());
     mParticles.clear();
-    QSqlDatabase::database().close();
+    if (QSqlDatabase::database().isOpen())
+        QSqlDatabase::database().close();
 }
 
 //__________________________________________________________________________
