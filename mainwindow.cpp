@@ -26,7 +26,6 @@
 #include "external/newparticledialog.h"
 #include "external/particlesdbmanager.h"
 #include "external/QMinuit.h"
-#include "external/selectdialog.h"
 
 #include "main/TTMThermalFitBSQ.h"
 
@@ -99,8 +98,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createActions();
     createMenus();
-    QString message = tr("Welcome to Thermus");
-    statusBar()->showMessage(message);
+    statusBar()->showMessage(tr("Welcome to Thermus"));
 
     // the toolbars
 //    QToolBar *tb = new QToolBar(this);
@@ -256,6 +254,7 @@ void MainWindow::run(const QString &what)
     }
 
     message += ": macro " + myMacro->objectName();
+
     statusBar()->showMessage(message);
 
     myMacro->start(mDebug);
@@ -486,6 +485,9 @@ void MainWindow::particlesDBManagement(DBOPS option)
 
     QMetaEnum metaEnum = QMetaEnum::fromType<DBOPS>();
     QString soption    = metaEnum.valueToKey(option);
+
+    statusBar()->showMessage(soption);
+
     soption.remove(0,1);
     soption.remove(soption.length() - 1 ,1);
 
@@ -547,18 +549,17 @@ void MainWindow::particlesDBManagement(DBOPS option)
                 // check if PDG particles db exists
 //                QString pdgName(dbName);
 //                pdgName.replace("Thermus", "PDG");
-//                pdgName.prepend(kPartDir);
+                //                pdgName.prepend(kPartDir);
                 QFileInfo check(mPdgDBPath);
                 if (! check.exists()) {
                     QMessageBox msg(QMessageBox::Critical, tr("Particles DB creation"), tr("You must first create the PDG particles list"));
                     msg.setInformativeText(QString(tr("DB %1 not found in %2")).arg(mPdgDBPath, QDir::currentPath()));
                     msg.exec();
                     return;
-                }                
-                SelectDialog sdia(QDir::currentPath(), this);
-                sdia.setModal(true);
-                if (sdia.exec() == QDialog::Accepted)
-                    input = sdia.fileName();
+                }
+                QString file = QFileDialog::getOpenFileName(this, tr("Open a particle list"), QDir::currentPath(),
+                                                            tr("particles list (PartList_*)"));
+                input = QFileInfo(file).fileName();
             }
         }
         QFile pythonScript(pythonScriptName);

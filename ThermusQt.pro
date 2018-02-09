@@ -34,7 +34,6 @@ SOURCES += main.cpp\
     external/particlesdbmanager.cpp \
     external/finddialog.cpp \
     external/listdialog.cpp \
-    external/selectdialog.cpp \
     external/newdecaydialog.cpp \
     external/newparticledialog.cpp \
     main/TTMThermalFitBQ.cpp \
@@ -135,7 +134,6 @@ HEADERS  += mainwindow.h \
     external/particlesdbmanager.h \
     external/finddialog.h \
     external/listdialog.h \
-    external/selectdialog.h \
     external/newdecaydialog.h \
     external/newparticledialog.h \
     main/TTMThermalFitBQ.h \
