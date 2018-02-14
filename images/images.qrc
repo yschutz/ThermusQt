@@ -18,5 +18,6 @@
         <file>busyicon.png</file>
         <file>endicon.png</file>
         <file>ThermusQt.png</file>
+        <file>plugins-512.png</file>
     </qresource>
 </RCC>

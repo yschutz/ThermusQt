@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
+<<<<<<< HEAD
 <!-- Written by QtCreator 4.5.0, 2018-02-09T15:25:01. -->
+=======
+<!-- Written by QtCreator 4.5.0, 2018-02-14T14:19:28. -->
+>>>>>>> introducing the framework for on the flight editing and compiling macros (plugin)
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>

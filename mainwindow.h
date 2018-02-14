@@ -18,6 +18,7 @@
 //static QPlainTextEdit* mLogConsol;         // Consol where to write log information
 
 class FindDialog;
+class MacroEditor;
 class NewParticleDialog;
 
 class MainWindow : public QMainWindow
@@ -43,6 +44,7 @@ public:
     void        setDebugMode(bool val);
 
 public slots:
+    void openCreateMacro();
     void run(const QString& what);
 
 protected:
@@ -67,6 +69,8 @@ private:
     QMenu*             mListMenu;              // to list all the particles db from Root or Thermus Data
     QAction*           mListPDG;               // to list the particles Root db
     QAction*           mListThermus;           // to list the particles Thermus db
+    QAction*           mMacroAction;           // triggers opening or creation of a macro
+    MacroEditor*       mMacroEditor;           // tool to edit, compile and load a macro on the flight
     bool               mNewDB;                 // to check if db has been changed
     QAction*           mNewParticleAction;     // insert a new particle in Thermus DB
     NewParticleDialog* mNPD;                   // dialog box to insert a new particle in Thermus DB

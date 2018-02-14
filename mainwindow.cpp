@@ -23,6 +23,7 @@
 #include "thermuswiz.h"
 
 #include "external/finddialog.h"
+#include "external/macroeditor.h"
 #include "external/newparticledialog.h"
 #include "external/particlesdbmanager.h"
 #include "external/QMinuit.h"
@@ -32,7 +33,7 @@
 bool MainWindow::mDebug = false;
 //__________________________________________________________________________
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), mFd(nullptr), mNewDB(false), mNPD(nullptr), mThermus("Thermus")
+    QMainWindow(parent), mFd(nullptr), mMacroEditor(nullptr), mNewDB(false), mNPD(nullptr), mThermus("Thermus")
 {
     // ctor
     mThermusDir.setPath(qApp->applicationDirPath());
@@ -406,8 +407,15 @@ void MainWindow::createActions()
     connect(mPredictionAction, &QAction::triggered, this, [this] { run(mPredictionAction->text().remove(0,1)); });
 
     mFitAction = new QAction(QIcon(":/fiticon.png"), tr("&Fit"), this);
+    mFitAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_F));
     mFitAction->setStatusTip(tr("Makes a Thermus Fit"));
     connect(mFitAction, &QAction::triggered, this, [this] { run(mFitAction->text().remove(0,1)); });
+
+    // edit macro
+    mMacroAction = new QAction(QIcon(":/plugins-512.png"),tr("Macro"), this);
+    mMacroAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_M));
+    mMacroAction->setStatusTip(tr("Edit, compile, execute a macro"));
+    connect(mMacroAction, &QAction::triggered, this, [this] { openCreateMacro(); });
 
     // Parameters list action
 
@@ -458,8 +466,18 @@ void MainWindow::createMenus()
     mRunMenu = menuBar()->addMenu(tr("&Run"));
     mRunMenu->addAction(mPredictionAction);
     mRunMenu->addAction(mFitAction);
+    mRunMenu->addAction(mMacroAction);
     mRunMenu->addAction(mQuitAction);
 
+}
+
+//__________________________________________________________________________
+void MainWindow::openCreateMacro()
+{
+    // edit, compile, load macros on the flight
+    if (!mMacroEditor)
+        mMacroEditor = new MacroEditor(this);
+    mMacroEditor->start();
 }
 
 //__________________________________________________________________________

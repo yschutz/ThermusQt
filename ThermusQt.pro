@@ -113,7 +113,10 @@ SOURCES += main.cpp\
     macros/predictionmacro.cpp \
     functions/fit_function.cpp \
     functions/minuit_fcn.cpp \
-    fittingthread.cpp
+    fittingthread.cpp \
+    external/editorwindow.cpp \
+    external/highlighter.cpp \
+    external/macroeditor.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -154,7 +157,11 @@ HEADERS  += mainwindow.h \
     macros/macro.h \
     macros/fitmacro.h \
     macros/predictionmacro.h \
-    fittingthread.h
+    fittingthread.h \
+    external/editorwindow.h \
+    external/highlighter.h \
+    external/macroeditor.h \
+    external/macrointerface.h
 
 
 RESOURCES += \
@@ -183,6 +190,11 @@ mac {
     APP_PY.files += external/PDGParticles.py external/ThermusParticles.py
     APP_PY.path = Contents/Resources/python
     QMAKE_BUNDLE_DATA += APP_PY
+    APP_MAC.files = macrotemplate/plugintemplate.h macrotemplate/plugintemplate.cpp macrotemplate/plugintemplate.json \
+                           macrotemplate/plugintemplate.pro macrotemplate/makelibrary.sh \
+                           macrotemplate/plugin_global.h external/macrointerface.h
+    APP_MAC.path = Contents/Resources/plugintemplate
+    QMAKE_BUNDLE_DATA += APP_MAC
 }
 
 unix:!mac {
@@ -200,5 +212,10 @@ unix:!mac {
     data.path = $$PREFIX/Resources/particles
     python.files = external/PDGParticles.py external/ThermusParticles.py
     python.path = $$PREFIX/Resources/python
-    INSTALLS += target icons desktop data python
+    macro.files = macrotemplate/makelibrary.sh \
+                  macrotemplate/plugintemplate.cpp macrotemplate/plugintemplate.h \
+                  macrotemplate/plugintemplate.json macrotemplate/plugintemplate.pro \
+                  macrotemplate/makelibrary.sh macrotemplate/plugin_global.h
+    macro.path = $$PREFIX/Resources/plugintemplate
+    INSTALLS += target icons desktop data python macro
 }
