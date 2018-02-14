@@ -40,7 +40,6 @@ public:
     QString     getDBPath(const QString& opt);
     void        listParameters();
     void        particlesDBManagement(DBOPS option);
-    void        quit();
     void        setDebugMode(bool val);
 
 public slots:
@@ -81,7 +80,6 @@ private:
     QAction*           mPdgSelectAction;       // select particles for the Thermus fit
     QAction*           mPdgUpdateMassAction;   // update particles mass and lifetime
     QAction*           mPredictionAction;      // Action for the Prediction macro
-    QAction*           mQuitAction;            // Action for quitting the application
     QMenu*             mRunMenu;               // Menu Tab to select the macro to run
     QMenu*             mSearchMenu;            // to serach and update one particle from Root or Thermus Data
     QAction*           mSearchPDG;             // to search for a particle Root db

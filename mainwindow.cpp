@@ -269,22 +269,11 @@ void MainWindow::run(const QString &what)
     // Choice of starting parameters, select parameters to fit or fix, add constraint
     myMacro->setParameters();
 
-    mRunMenu->insertAction(mQuitAction, mParametersList);
-
     // Create the fit model
     myMacro->setFit();
 
     // Run the stuff
     myMacro->run();
-}
-
-//__________________________________________________________________________
-void MainWindow::quit()
-{
-    // end gracefully
-    statusBar()->showMessage(mQuitAction->statusTip());
-    close();
-    exit(0);
 }
 
 //__________________________________________________________________________
@@ -422,13 +411,6 @@ void MainWindow::createActions()
     mParametersList = new QAction(QIcon(":/listicon.png"), tr("Parameters list"), this);
     mParametersList->setStatusTip("Makes a list of parameters with properties");
     connect(mParametersList, &QAction::triggered, this, [this]{ listParameters(); });
-
-    // quit
-
-    mQuitAction = new QAction(QIcon(":/endicon.png"), tr("&End"), this);
-    mQuitAction->setShortcuts(QKeySequence::Quit);
-    mQuitAction->setStatusTip(tr("Makes a Thermus prediction"));
-    connect(mQuitAction, &QAction::triggered, this, &MainWindow::quit);
 }
 
 //__________________________________________________________________________
@@ -467,8 +449,6 @@ void MainWindow::createMenus()
     mRunMenu->addAction(mPredictionAction);
     mRunMenu->addAction(mFitAction);
     mRunMenu->addAction(mMacroAction);
-    mRunMenu->addAction(mQuitAction);
-
 }
 
 //__________________________________________________________________________

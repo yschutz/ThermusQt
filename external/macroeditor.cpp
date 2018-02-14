@@ -22,7 +22,7 @@
 
 //__________________________________________________________________________
 MacroEditor::MacroEditor(QObject *parent) : QObject(parent),
-    mCancelButton(nullptr), mEditor(nullptr), mEditorcpp(nullptr), mEditorh(nullptr), mMacroDirName(QDir::tempPath()), mMacroInterface(nullptr)
+    mMacroDirName(QDir::tempPath()), mMacroInterface(nullptr)
 {
     // ctor: check if Qt installed
     mQtPath = QFileInfo(findQt()).absolutePath();
@@ -30,6 +30,38 @@ MacroEditor::MacroEditor(QObject *parent) : QObject(parent),
         QMessageBox::critical(nullptr, Q_FUNC_INFO, "Qt installation not found!");
         return;
     }
+    mEditor = new QWidget();
+    QHBoxLayout* editorLayout = new QHBoxLayout;
+
+    mEditorh   = new EditorWindow(mEditor);
+    mEditorcpp = new EditorWindow(mEditor);
+    editorLayout->addWidget(mEditorh);
+    editorLayout->addWidget(mEditorcpp);
+
+    mLabelh   = new QLabel(mEditor);
+    mLabelcpp = new QLabel(mEditor);
+    QHBoxLayout* nameLayout = new QHBoxLayout;
+    nameLayout->addWidget(mLabelh, 0, Qt::AlignCenter);
+    nameLayout->addWidget(mLabelcpp, 0, Qt::AlignCenter);
+
+    mSaveButton = new QPushButton(tr("Save"));
+    connect(mSaveButton, &QPushButton::pressed, this, [this] { saveMacro(); });
+    mCancelButton = new QPushButton(tr("Cancel"));
+    mCancelButton->setFixedSize(mCancelButton->sizeHint());
+    mSaveButton->setFixedSize(mCancelButton->sizeHint());
+    mCancelButton->setDefault(true);
+    connect(mCancelButton, &QPushButton::pressed, this, [this] { closeEditor(); });
+
+    QVBoxLayout* buttonLayout = new QVBoxLayout;
+    buttonLayout->addWidget(mCancelButton);
+    buttonLayout->addWidget(mSaveButton);
+
+    QVBoxLayout* mainLayout = new QVBoxLayout;
+    mainLayout->addLayout(nameLayout);
+    mainLayout->addLayout(editorLayout);
+    mainLayout->addLayout(buttonLayout);
+
+    mEditor->setLayout(mainLayout);
 }
 
 //__________________________________________________________________________
@@ -40,23 +72,12 @@ void MacroEditor::closeEditor()
 }
 
 //__________________________________________________________________________
-void MacroEditor::editMacro(bool neuf)
+void MacroEditor::editMacro()
 {
      // edit a new (from a template) or an existing macro class
-
-    mEditor = new QWidget();
-    mEditor->setWindowTitle("Class editor: " + mClassName);
-    QHBoxLayout* editorLayout = new QHBoxLayout;
-
     QString hfileName;
     QString cppfileName;
-
-    mEditorh   = new EditorWindow(mClassName + ".h", mEditor);
-    mEditorh->setAttribute(Qt::WA_DeleteOnClose);
-    mEditorcpp = new EditorWindow(mClassName + ".cpp", mEditor);
-    mEditorcpp->setAttribute(Qt::WA_DeleteOnClose);
-
-    if (neuf) { // creates a new macro from template
+    if (mNeuf) { // creates a new macro from template
         QDir plugintemplateDir(qApp->applicationDirPath());
 #ifdef Q_OS_MAC
         if (plugintemplateDir.dirName() == "MacOS") {
@@ -117,31 +138,11 @@ void MacroEditor::editMacro(bool neuf)
             return;
         }
     }
-    editorLayout->addWidget(mEditorh);
-    editorLayout->addWidget(mEditorcpp);
-
-    QHBoxLayout* nameLayout = new QHBoxLayout;
-    nameLayout->addWidget(new QLabel(mEditorh->windowTitle()), 0, Qt::AlignCenter);
-    nameLayout->addWidget(new QLabel(mEditorcpp->windowTitle()), 0, Qt::AlignCenter);
-
-    mSaveButton = new QPushButton(tr("Save"));
-    connect(mSaveButton, &QPushButton::pressed, this, [this, neuf] { saveMacro(neuf); });
-    mCancelButton = new QPushButton(tr("Cancel"));
-    mCancelButton->setFixedSize(mCancelButton->sizeHint());
-    mSaveButton->setFixedSize(mCancelButton->sizeHint());
-    mCancelButton->setDefault(true);
-    connect(mCancelButton, &QPushButton::pressed, this, [this] { closeEditor(); });
-
-    QVBoxLayout* buttonLayout = new QVBoxLayout;
-    buttonLayout->addWidget(mCancelButton);
-    buttonLayout->addWidget(mSaveButton);
-
-    QVBoxLayout* mainLayout = new QVBoxLayout;
-    mainLayout->addLayout(nameLayout);
-    mainLayout->addLayout(editorLayout);
-    mainLayout->addLayout(buttonLayout);
-
-    mEditor->setLayout(mainLayout);
+    mEditor->setWindowTitle("Class editor: " + mClassName);
+    mEditorh->setTitle(mClassName + ".h");
+    mEditorcpp->setTitle(mClassName + ".cpp");
+    mLabelh->setText(mEditorh->windowTitle());
+    mLabelcpp->setText(mEditorcpp->windowTitle());
     mEditor->show();
 }
 
@@ -189,14 +190,15 @@ void MacroEditor::openFile(const QString& fileName)
     if( f.suffix() == libSuffix) { // its a shared library
         loadLibrary(mClassFileName);
     } else if (f.suffix() == "cpp" || f.suffix() == "h") {
-        editMacro(false);
+        mNeuf = false;
+        editMacro();//false);
     } else {
         QMessageBox::critical(nullptr, Q_FUNC_INFO, QString("File %1 not found").arg(f.fileName()));
     }
 }
 
 //__________________________________________________________________________
-void MacroEditor::saveMacro(bool neuf)
+void MacroEditor::saveMacro()//bool neuf)
 {
     // save, compile(create a shared library) the macro
     closeEditor();
@@ -224,7 +226,7 @@ void MacroEditor::saveMacro(bool neuf)
         srcDir.cdUp();
     }
 #endif
-    if (neuf) {
+    if (mNeuf) {
         srcDir.cd("Resources/plugintemplate");
         QFile::copy(srcDir.absolutePath() + "/plugin_global.h", mMacroDirName + "/plugin_global.h");
         QFile::copy(srcDir.absolutePath() + "/plugintemplate.json", mMacroDirName + "/" + mClassName + ".json");
@@ -285,18 +287,15 @@ void MacroEditor::saveMacro(bool neuf)
 void MacroEditor::loadLibrary(const QString& library)
 {
     // load a shared library
-    bool rv = mPluginLoader.isLoaded();
-     rv = mPluginLoader.unload();
-    rv = mPluginLoader.isLoaded();
+    if (mPluginLoader.isLoaded())
+        mPluginLoader.unload();
     mPluginLoader.setFileName(library);
-    mPluginLoader.load();
-    rv = mPluginLoader.isLoaded();
     QObject* macro = mPluginLoader.instance();
     if (macro) {
         mMacroInterface = qobject_cast<MacroInterface*>(macro);
         if (mMacroInterface) {
             QMessageBox::information(nullptr, "Running Macro", mMacroInterface->run("Hallo "));
-         } else
+        } else
             QMessageBox::critical(nullptr, Q_FUNC_INFO, QString("Macro library %1 not loaded").arg(library));
     }
 }
@@ -332,5 +331,6 @@ void MacroEditor::newMacro(const QString& className)
 {
     // creates a new macro class (.h & .cpp)
       mClassName = className;
-      editMacro(true);
+      mNeuf = true;
+      editMacro(); //true);
 }

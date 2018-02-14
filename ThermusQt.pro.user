@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<<<<<<< HEAD
-<!-- Written by QtCreator 4.5.0, 2018-02-09T15:25:01. -->
-=======
-<!-- Written by QtCreator 4.5.0, 2018-02-14T14:19:28. -->
->>>>>>> introducing the framework for on the flight editing and compiling macros (plugin)
+<!-- Written by QtCreator 4.5.0, 2018-02-14T20:55:47. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
-  <value type="QByteArray">{3a68b5d3-6663-4b1a-acb7-4f1be6ada35e}</value>
+  <value type="QByteArray">{70b8b8ba-22e2-4c9e-8b5b-1fe9544b99cf}</value>
  </data>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>

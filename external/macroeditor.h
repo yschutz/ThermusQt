@@ -6,6 +6,7 @@
 
 #include "macrointerface.h"
 
+class QLabel;
 class QPushButton;
 class EditorWindow;
 class MacroEditor : public QObject
@@ -22,10 +23,10 @@ private slots:
     void closeEditor();
     void newMacro(const QString& className);
     void openFile(const QString& fileName);
-    void saveMacro(bool neuf);
+    void saveMacro();
 
 private:
-    void    editMacro(bool neuf);
+    void    editMacro();
     QString findQt() const;
     void    loadLibrary(const QString& library);
 
@@ -35,8 +36,11 @@ private:
     QWidget*           mEditor;           // the editor window
     EditorWindow*      mEditorcpp;        // editor window of the cpp file
     EditorWindow*      mEditorh;          // editor window of the h file
+    QLabel*            mLabelh;           // label for edit h window
+    QLabel*            mLabelcpp;         // label for edit cpp window
     QString            mMacroDirName;     // dir name where macro is stored
     MacroInterface*    mMacroInterface;   // the macro interface
+    bool               mNeuf;             // flag for new (true) or existing (false) macro
     QPluginLoader      mPluginLoader;     // the pluginloader;
     QString            mQtPath;           // path to Qt bin
     QPushButton*       mSaveButton;       // triggers saving the plugin files

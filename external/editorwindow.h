@@ -10,10 +10,11 @@ class EditorWindow : public QWidget
 {
     Q_OBJECT
 public:
-    explicit EditorWindow(const QString& title, QWidget* parent = nullptr);
+    explicit EditorWindow(QWidget* parent = nullptr);
 
-    void    attach(QFile& file) { mEditor->setPlainText(file.readAll());}
-    void    attach(const QString& text) { mEditor->setPlainText(text);}
+    void    attach(QFile& file) { mEditor->setPlainText(file.readAll()); }
+    void    attach(const QString& text) { mEditor->setPlainText(text); }
+    void    setTitle(const QString& title) { setWindowTitle(title); }
     QString text() const { return mEditor->toPlainText(); }
 
 private:

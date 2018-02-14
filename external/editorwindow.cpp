@@ -4,14 +4,13 @@
 #include "editorwindow.h"
 
 //__________________________________________________________________________
-EditorWindow::EditorWindow(const QString &title, QWidget *parent) : QWidget(parent)
+EditorWindow::EditorWindow(QWidget *parent) : QWidget(parent)
 {
     setupEditor();
     QVBoxLayout* layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(mEditor);
     setLayout(layout);
-    setWindowTitle(title);
 }
 
 //__________________________________________________________________________
