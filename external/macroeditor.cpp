@@ -78,14 +78,15 @@ void MacroEditor::editMacro()
     QString hfileName;
     QString cppfileName;
     if (mNeuf) { // creates a new macro from template
-        QDir plugintemplateDir(qApp->applicationDirPath());
+        QDir macrotemplateDir(qApp->applicationDirPath());
+        QMessageBox::information(nullptr, "info", macrotemplateDir.absolutePath());
 #ifdef Q_OS_MAC
-        if (plugintemplateDir.dirName() == "MacOS") {
-            plugintemplateDir.cdUp();
+        if (macrotemplateDir.dirName() == "MacOS") {
+            macrotemplateDir.cdUp();
         }
 #endif
-        plugintemplateDir.cd("Resources/plugintemplate");
-        hfileName =  plugintemplateDir.absoluteFilePath("plugintemplate.h");
+        macrotemplateDir.cd("Resources/plugintemplate");
+        hfileName =  macrotemplateDir.absoluteFilePath("plugintemplate.h");
         QFile hFile(hfileName);
         if (hFile.open(QFile::ReadOnly | QFile::Text)) {
             QString text = hFile.readAll();
@@ -99,7 +100,7 @@ void MacroEditor::editMacro()
             hFile.close();
             mEditorh->attach(text);
         }
-        cppfileName =  plugintemplateDir.absoluteFilePath("plugintemplate.cpp");
+        cppfileName =  macrotemplateDir.absoluteFilePath("plugintemplate.cpp");
         QFile cppFile(cppfileName);
         if (cppFile.open(QIODevice::ReadOnly | QFile::Text)) {
             QString text = cppFile.readAll();
