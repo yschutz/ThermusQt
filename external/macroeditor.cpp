@@ -2,7 +2,11 @@
 #include <QComboBox>
 #include <QDate>
 #include <QDebug>
+<<<<<<< HEAD
 #include <QDialogButtonBox>
+=======
+#include <QtWidgets/QDialogButtonBox>
+>>>>>>> 694cfc9663a8b07beff1025be9dcb0394588f3e5
 #include <QDir>
 #include <QDirIterator>
 #include <QFileDialog>
