@@ -2,7 +2,7 @@
 #include <QComboBox>
 #include <QDate>
 #include <QDebug>
-#include <QtWidgets/QDialogButtonbox>
+#include <QDialogButtonBox>
 #include <QDir>
 #include <QDirIterator>
 #include <QFileDialog>
@@ -181,7 +181,7 @@ void MacroEditor::openFile(const QString& fileName)
     QString libSuffix("");
 #ifdef Q_OS_MAC
     libSuffix = "dylib";
-#elif
+#else
     libSuffix = "so";
 #endif
 
