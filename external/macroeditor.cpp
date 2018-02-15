@@ -218,11 +218,7 @@ void MacroEditor::saveMacro()//bool neuf)
 
     mMacroDirName = QFileInfo(fileName).absolutePath();
     QDir    srcDir      = qApp->applicationDirPath();
-#ifdef Q_OS_MAC
-    if (srcDir.dirName() == "MacOS") {
-        srcDir.cdUp();
-    }
-#endif
+    srcDir.cdUp();
     if (mNeuf) {
         srcDir.cd("Resources/plugintemplate");
         QFile::copy(srcDir.absolutePath() + "/plugin_global.h", mMacroDirName + "/plugin_global.h");
