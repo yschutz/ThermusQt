@@ -8,7 +8,7 @@ QT          += widgets
 QT          -= gui
 
 INCLUDEPATH += ../MainApp
-TARGET       = $$qtLibraryTarget(XxXxxxxx)
+TARGET       = $$qtLibraryTarget(xxxxxxxx)
 TEMPLATE     = lib
 CONFIG      += plugin
 DESTDIR      = ./

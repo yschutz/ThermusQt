@@ -279,11 +279,9 @@ void MacroEditor::saveMacro()//bool neuf)
     p.setProcessChannelMode(QProcess::SeparateChannels);
     p.setProcessEnvironment(env);
     QStringList params;
-    params << mClassName;
+    params << mClassName.toLower();
     p.start("./makelibrary.sh", params);
     p.waitForFinished();
-    QString p_stdout = p.readAllStandardOutput();
-    QStringList listout = p_stdout.split('\n');
     QString p_stderr = p.readAllStandardError();
     if (p.exitStatus() == QProcess::CrashExit || p_stderr != "") {
         QMessageBox msg(QMessageBox::Critical, "make abort", "Library creation aborted");
@@ -297,7 +295,7 @@ void MacroEditor::saveMacro()//bool neuf)
 #elif defined(Q_OS_LINUX)
         libsuffix = ".so";
 #endif
-        QString libName = mMacroDirName + "/lib" + mClassName + libsuffix;
+        QString libName = mMacroDirName + "/lib" + mClassName.toLower() + libsuffix;
         QFileInfo lib(libName);
         if (lib.exists() && lib.isFile())
             loadLibrary(libName);
