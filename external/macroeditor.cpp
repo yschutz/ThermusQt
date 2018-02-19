@@ -291,7 +291,13 @@ void MacroEditor::saveMacro()//bool neuf)
         msg.exec();
     } else {
         p.close();
-        QString libName = mMacroDirName + "/lib" + mClassName + ".dylib";
+        QString ext;
+#ifdef Q_OS_MAC
+        ext = ".dylib";
+#elif defined(Q_OS_LINUX)
+        ext = ".so";
+#endif
+        QString libName = mMacroDirName + "/lib" + mClassName + ext;
         QFileInfo lib(libName);
         if (lib.exists() && lib.isFile())
             loadLibrary(libName);
