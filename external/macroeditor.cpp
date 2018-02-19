@@ -28,11 +28,13 @@ MacroEditor::MacroEditor(QObject *parent) : QObject(parent),
     // ctor: check if Qt installed
     mQtPath = QFileInfo(findQt()).absolutePath();
     if (mQtPath.isEmpty()) {
-        QMessageBox::critical(nullptr, Q_FUNC_INFO, "Qt installation not found!");
+        QMessageBox msg(QMessageBox::Critical, "Qt installation not found", "qmake is missing");
+#ifdef Q_OS_LINUX
+        msg.setInformativeText("To install: sudo apt-get instal qt5-qmake");
+#endif
+        msg.exec();
         return;
     }
-
-    QMessageBox::information(nullptr, "title", QLibraryInfo::location(QLibraryInfo::BinariesPath));
 
     mEditor = new QWidget();
     QHBoxLayout* editorLayout = new QHBoxLayout;
@@ -84,7 +86,16 @@ void MacroEditor::editMacro()
     if (mNeuf) { // creates a new macro from template
         QDir plugintemplateDir(qApp->applicationDirPath());
         QMessageBox::information(nullptr, "info", plugintemplateDir.absolutePath());
+#ifdef Q_OS_MAC
+    if (plugintemplateDir.dirName() == "MacOS")
+#elif Q_OS_LINUX
+    if (plugintemplateDir.dirName() == "bin")
+#endif
         plugintemplateDir.cdUp();
+    else {
+        QMessageBox::critical(nullptr, "Path error", QString("%1: something wrong in the application path %2").arg(Q_FUNC_INFO, plugintemplateDir.path()));
+        return;
+    }
         plugintemplateDir.cd("Resources/plugintemplate");
         hfileName =  plugintemplateDir.absoluteFilePath("plugintemplate.h");
         QFile hFile(hfileName);
@@ -222,7 +233,16 @@ void MacroEditor::saveMacro()//bool neuf)
 
     mMacroDirName = QFileInfo(fileName).absolutePath();
     QDir    srcDir      = qApp->applicationDirPath();
-    srcDir.cdUp();
+#ifdef Q_OS_MAC
+    if (srcDir.dirName() == "MacOS")
+#elif Q_OS_LINUX
+    if (srcDir.dirName() == "bin")
+#endif
+        srcDir.cdUp();
+    else {
+        QMessageBox::critical(nullptr, "Path error", QString("%1: something wrong in the application path %2").arg(Q_FUNC_INFO, srcDir.path()));
+        return;
+    }
     if (mNeuf) {
         srcDir.cd("Resources/plugintemplate");
         QFile::copy(srcDir.absolutePath() + "/plugin_global.h", mMacroDirName + "/plugin_global.h");

@@ -2,7 +2,6 @@
 export PATH=$PATH:$QTDIR
 os=`uname`
 if [ "$os" = "Darwin" ]; then
-        echo DARWIN
         lib=lib$1.dylib
 elif [ "$os" = "Linux" ]; then
         lib=lib$1.so
