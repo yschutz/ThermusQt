@@ -182,40 +182,38 @@ DISTFILES += \
 mac {
     images/ThermusQt.icns
     TARGET = ThermusQt
-    TEMPLATE = app
-    APP_PD.files =  particles/ThermusParticles.db particles/PDGParticles.db
+    TEMPLATE      = app
+    APP_PD.files  =  particles/ThermusParticles.db particles/PDGParticles.db
     APP_PD.files += particles/particles.tar.gz
-    APP_PD.path = Contents/Resources/particles
-    QMAKE_BUNDLE_DATA += APP_PD
+    APP_PD.path   = Contents/Resources/particles
     APP_PY.files += external/PDGParticles.py external/ThermusParticles.py
-    APP_PY.path = Contents/Resources/python
-    QMAKE_BUNDLE_DATA += APP_PY
+    APP_PY.path   = Contents/Resources/python
     APP_MAC.files = macrotemplate/plugintemplate.h macrotemplate/plugintemplate.cpp macrotemplate/plugintemplate.json \
-                           macrotemplate/plugintemplate.pro macrotemplate/makelibrary.sh \
-                           macrotemplate/plugin_global.h external/macrointerface.h
-    APP_MAC.path = Contents/Resources/plugintemplate
-    QMAKE_BUNDLE_DATA += APP_MAC
+                    macrotemplate/plugintemplate.pro macrotemplate/makelibrary.sh \
+                    macrotemplate/plugin_global.h external/macrointerface.h
+    APP_MAC.path  = Contents/Resources/plugintemplate
+
+    QMAKE_BUNDLE_DATA += APP_PD APP_PY APP_MAC
 }
 
 unix:!mac {
     isEmpty(PREFIX) {
         PREFIX = /usr/local
     }
-
-    target.path = $$PREFIX/bin
-    desktop.path = $$PREFIX/share/applications
+    target.path    = $$PREFIX/bin
+    desktop.path   = $$PREFIX/share/applications
     desktop.files += ThermusQt.desktop
-    icons.path = $$PREFIX/share/icons/hicolor/48x48/apps
-    icons.files += images/ThermusQt.png
-    data.files = particles/ThermusParticles.db particles/PDGParticles.db
-    data.files += += particles/particles.tar.gz
-    data.path = $$PREFIX/Resources/particles
-    python.files = external/PDGParticles.py external/ThermusParticles.py
-    python.path = $$PREFIX/Resources/python
-    macro.files = macrotemplate/makelibrary.sh \
-                  macrotemplate/plugintemplate.cpp macrotemplate/plugintemplate.h \
-                  macrotemplate/plugintemplate.json macrotemplate/plugintemplate.pro \
-                  macrotemplate/makelibrary.sh macrotemplate/plugin_global.h
-    macro.path = $$PREFIX/Resources/plugintemplate
+    icons.path     = $$PREFIX/share/icons/hicolor/48x48/apps
+    icons.files   += images/ThermusQt.png
+    data.files     = particles/ThermusParticles.db particles/PDGParticles.db
+    data.files    += particles/particles.tar.gz
+    data.path      = $$PREFIX/Resources/particles
+    python.files   = external/PDGParticles.py external/ThermusParticles.py
+    python.path    = $$PREFIX/Resources/python
+    macro.files    = macrotemplate/plugintemplate.cpp macrotemplate/plugintemplate.h macrotemplate/plugintemplate.json  \
+                     macrotemplate/plugintemplate.pro macrotemplate/makelibrary.sh\
+                     macrotemplate/plugin_global.h external/macrointerface.h
+    macro.path     = $$PREFIX/Resources/plugintemplate
+
     INSTALLS += target icons desktop data python macro
 }

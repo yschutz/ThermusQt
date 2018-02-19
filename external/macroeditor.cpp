@@ -80,22 +80,24 @@ void MacroEditor::closeEditor()
 //__________________________________________________________________________
 void MacroEditor::editMacro()
 {
-     // edit a new (from a template) or an existing macro class
+    // edit a new (from a template) or an existing macro class
     QString hfileName;
     QString cppfileName;
     if (mNeuf) { // creates a new macro from template
         QDir plugintemplateDir(qApp->applicationDirPath());
         QMessageBox::information(nullptr, "info", plugintemplateDir.absolutePath());
+        QString executableDir;
 #ifdef Q_OS_MAC
-    if (plugintemplateDir.dirName() == "MacOS")
+        executableDir = "MacOS";
 #elif Q_OS_LINUX
-    if (plugintemplateDir.dirName() == "bin")
+        executableDir = "bin";
 #endif
-        plugintemplateDir.cdUp();
-    else {
-        QMessageBox::critical(nullptr, "Path error", QString("%1: something wrong in the application path %2").arg(Q_FUNC_INFO, plugintemplateDir.path()));
-        return;
-    }
+        if (plugintemplateDir.dirName() == executableDir)
+            plugintemplateDir.cdUp();
+        else {
+            QMessageBox::critical(nullptr, "Path error", QString("%1: something wrong in the application path %2").arg(Q_FUNC_INFO, plugintemplateDir.path()));
+            return;
+        }
         plugintemplateDir.cd("Resources/plugintemplate");
         hfileName =  plugintemplateDir.absoluteFilePath("plugintemplate.h");
         QFile hFile(hfileName);
@@ -233,11 +235,13 @@ void MacroEditor::saveMacro()//bool neuf)
 
     mMacroDirName = QFileInfo(fileName).absolutePath();
     QDir    srcDir      = qApp->applicationDirPath();
+    QString executableDir;
 #ifdef Q_OS_MAC
-    if (srcDir.dirName() == "MacOS")
+    executableDir = "MacOS";
 #elif Q_OS_LINUX
-    if (srcDir.dirName() == "bin")
+    executableDir = "bin";
 #endif
+    if (srcDir.dirName() == executableDir)
         srcDir.cdUp();
     else {
         QMessageBox::critical(nullptr, "Path error", QString("%1: something wrong in the application path %2").arg(Q_FUNC_INFO, srcDir.path()));
