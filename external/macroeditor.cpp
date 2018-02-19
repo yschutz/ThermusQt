@@ -299,8 +299,8 @@ void MacroEditor::saveMacro()//bool neuf)
         else {
             QMessageBox::critical(nullptr, Q_FUNC_INFO, QString("library %1 not created").arg(libName));
         }
-        QDir::setCurrent(save.absolutePath());
     }
+    QDir::setCurrent(save.absolutePath());
 }
 
 //__________________________________________________________________________
