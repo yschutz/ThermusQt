@@ -140,8 +140,6 @@ MainWindow::~MainWindow()
             msgg.setInformativeText(QString("in %1").arg(save.absolutePath()));
             msgg.exec();        }
     }
-    QString t = QDir::currentPath();
-    QMessageBox::information(nullptr, "folder", t);
     QDir::current().removeRecursively();
 }
 

@@ -30,7 +30,7 @@ MacroEditor::MacroEditor(QObject *parent) : QObject(parent),
     if (mQtPath.isEmpty()) {
         QMessageBox msg(QMessageBox::Critical, "Qt installation not found", "qmake is missing");
 #ifdef Q_OS_LINUX
-        msg.setInformativeText("To install: sudo apt-get instal qt5-qmake");
+        msg.setInformativeText("To install:\n sudo apt-get instal qt5-qmake \n sudo apt-get install qt5-default");
 #endif
         msg.exec();
         return;
@@ -85,7 +85,6 @@ void MacroEditor::editMacro()
     QString cppfileName;
     if (mNeuf) { // creates a new macro from template
         QDir plugintemplateDir(qApp->applicationDirPath());
-        QMessageBox::information(nullptr, "info", plugintemplateDir.absolutePath());
         QString executableDir;
 #ifdef Q_OS_MAC
         executableDir = "MacOS";
@@ -249,7 +248,7 @@ void MacroEditor::saveMacro()//bool neuf)
             return;
         }
         QFile::copy(srcDir.absolutePath() + "/plugin_global.h", mMacroDirName + "/plugin_global.h");
-        QFile::copy(srcDir.absolutePath() + "/plugintemplate.json", mMacroDirName + "/" + mClassName + ".json");
+        QFile::copy(srcDir.absolutePath() + "/plugintemplate.json", mMacroDirName + "/" + mClassName.toLower() + ".json");
         QFile::copy(srcDir.absolutePath() + "/macrointerface.h", mMacroDirName + "/macrointerface.h");
         QFile::copy(srcDir.absolutePath() + "/makelibrary.sh", mMacroDirName + "/makelibrary.sh");
         QFile::setPermissions(mMacroDirName + "/makelibrary.sh", QFile::ReadUser | QFile::ExeUser | QFile::WriteUser);
