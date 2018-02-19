@@ -36,6 +36,14 @@ MacroEditor::MacroEditor(QObject *parent) : QObject(parent),
         return;
     }
 
+#ifdef Q_OS_MAC
+        mLibSuffix = "dylib";
+        mExecutableDir = "MacOS";
+#elif defined(Q_OS_LINUX)
+        mLibSuffix = "so";
+        mExecutableDir = "bin";
+#endif
+
     mEditor = new QWidget();
     QHBoxLayout* editorLayout = new QHBoxLayout;
 
@@ -85,19 +93,12 @@ void MacroEditor::editMacro()
     QString cppfileName;
     if (mNeuf) { // creates a new macro from template
         QDir plugintemplateDir(qApp->applicationDirPath());
-        QString executableDir;
-#ifdef Q_OS_MAC
-        executableDir = "MacOS";
-#elif defined(Q_OS_LINUX)
-        executableDir = "bin";
-#endif
-        if (plugintemplateDir.dirName() == executableDir)
+        if (plugintemplateDir.dirName() == mExecutableDir)
             plugintemplateDir.cdUp();
-        else {
+        if (!plugintemplateDir.cd("Resources/plugintemplate")) {
             QMessageBox::critical(nullptr, "Path error", QString("%1: something wrong in the application path %2").arg(Q_FUNC_INFO, plugintemplateDir.path()));
             return;
         }
-        plugintemplateDir.cd("Resources/plugintemplate");
         hfileName =  plugintemplateDir.absoluteFilePath("plugintemplate.h");
         QFile hFile(hfileName);
         if (hFile.open(QFile::ReadOnly | QFile::Text)) {
@@ -191,16 +192,9 @@ void MacroEditor::openFile(const QString& fileName)
 {
     // gets library or class (.h &.cpp) as selected from the file dialog
 
-    QString libSuffix("");
-#ifdef Q_OS_MAC
-    libSuffix = "dylib";
-#elif defined(Q_OS_LINUX)
-    libSuffix = "so";
-#endif
-
     QFileInfo f(fileName);
     mClassFileName = f.absoluteFilePath();
-    if( f.suffix() == libSuffix) { // its a shared library
+    if( f.suffix() == mLibSuffix) { // its a shared library
         loadLibrary(mClassFileName);
     } else if (f.suffix() == "cpp" || f.suffix() == "h") {
         mNeuf = false;
@@ -234,13 +228,7 @@ void MacroEditor::saveMacro()//bool neuf)
 
     mMacroDirName = QFileInfo(fileName).absolutePath();
     QDir    srcDir      = qApp->applicationDirPath();
-    QString executableDir;
-#ifdef Q_OS_MAC
-    executableDir = "MacOS";
-#elif defined(Q_OS_LINUX)
-    executableDir = "bin";
-#endif
-    if (srcDir.dirName() == executableDir)
+    if (srcDir.dirName() == mExecutableDir)
         srcDir.cdUp();
     if (mNeuf) {
         if (!srcDir.cd("Resources/plugintemplate")) {
@@ -289,13 +277,7 @@ void MacroEditor::saveMacro()//bool neuf)
         msg.exec();
     } else {
         p.close();
-        QString libsuffix;
-#ifdef Q_OS_MAC
-        libsuffix = ".dylib";
-#elif defined(Q_OS_LINUX)
-        libsuffix = ".so";
-#endif
-        QString libName = mMacroDirName + "/lib" + mClassName.toLower() + libsuffix;
+        QString libName = mMacroDirName + "/lib" + mClassName.toLower() + "." + mLibSuffix;
         QFileInfo lib(libName);
         if (lib.exists() && lib.isFile())
             loadLibrary(libName);

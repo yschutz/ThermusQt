@@ -36,8 +36,10 @@ private:
     QWidget*           mEditor;           // the editor window
     EditorWindow*      mEditorcpp;        // editor window of the cpp file
     EditorWindow*      mEditorh;          // editor window of the h file
+    QString            mExecutableDir;    // application directory
     QLabel*            mLabelh;           // label for edit h window
     QLabel*            mLabelcpp;         // label for edit cpp window
+    QString            mLibSuffix;        // lib suffix depending on OS
     QString            mMacroDirName;     // dir name where macro is stored
     MacroInterface*    mMacroInterface;   // the macro interface
     bool               mNeuf;             // flag for new (true) or existing (false) macro
