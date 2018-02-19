@@ -89,7 +89,7 @@ void MacroEditor::editMacro()
         QString executableDir;
 #ifdef Q_OS_MAC
         executableDir = "MacOS";
-#elif Q_OS_LINUX
+#elif defined(Q_OS_LINUX)
         executableDir = "bin";
 #endif
         if (plugintemplateDir.dirName() == executableDir)
@@ -195,7 +195,7 @@ void MacroEditor::openFile(const QString& fileName)
     QString libSuffix("");
 #ifdef Q_OS_MAC
     libSuffix = "dylib";
-#else
+#elif defined(Q_OS_LINUX)
     libSuffix = "so";
 #endif
 
@@ -238,7 +238,7 @@ void MacroEditor::saveMacro()//bool neuf)
     QString executableDir;
 #ifdef Q_OS_MAC
     executableDir = "MacOS";
-#elif Q_OS_LINUX
+#elif defined(Q_OS_LINUX)
     executableDir = "bin";
 #endif
     if (srcDir.dirName() == executableDir)
