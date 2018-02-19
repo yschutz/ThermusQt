@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLibraryInfo>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QProcess>
@@ -30,6 +31,9 @@ MacroEditor::MacroEditor(QObject *parent) : QObject(parent),
         QMessageBox::critical(nullptr, Q_FUNC_INFO, "Qt installation not found!");
         return;
     }
+
+    QMessageBox::information(nullptr, "title", QLibraryInfo::location(QLibraryInfo::BinariesPath));
+
     mEditor = new QWidget();
     QHBoxLayout* editorLayout = new QHBoxLayout;
 
