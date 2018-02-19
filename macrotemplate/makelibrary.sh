@@ -11,7 +11,7 @@ else
 fi
 if [ -f "Makefile" ]; then
         make clean
-        rm MakeFile
+        rm Makefile
 fi
 qmake $1.pro
 make clean
