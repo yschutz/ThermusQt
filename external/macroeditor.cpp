@@ -259,7 +259,7 @@ void MacroEditor::saveMacro()//bool neuf)
             text.replace(re, mClassName);
             re.setPattern("xxxxxxxx");
             text.replace(re, mClassName.toLower());
-            QFile fout(mMacroDirName + "/" + mClassName + ".pro");
+            QFile fout(mMacroDirName + "/" + mClassName.toLower() + ".pro");
             if (fout.open(QIODevice::WriteOnly | QFile::Truncate)) {
                 QTextStream out(&fout);
                 out << text;
@@ -291,13 +291,13 @@ void MacroEditor::saveMacro()//bool neuf)
         msg.exec();
     } else {
         p.close();
-        QString ext;
+        QString libsuffix;
 #ifdef Q_OS_MAC
-        ext = ".dylib";
+        libsuffix = ".dylib";
 #elif defined(Q_OS_LINUX)
-        ext = ".so";
+        libsuffix = ".so";
 #endif
-        QString libName = mMacroDirName + "/lib" + mClassName + ext;
+        QString libName = mMacroDirName + "/lib" + mClassName + libsuffix;
         QFileInfo lib(libName);
         if (lib.exists() && lib.isFile())
             loadLibrary(libName);
@@ -329,8 +329,14 @@ void MacroEditor::loadLibrary(const QString& library)
 void MacroEditor::start()
 {
     // starts the macro editor (select file)
+#ifdef Q_OS_MAC
     QFileDialog diag(mEditor, tr("Open macro source or library"), mMacroDirName,
                      tr("libraries (*.dylib);; header files (*.h);;implemtation files (*.cpp)"));
+#elif defined(Q_OS_LINUX)
+    QFileDialog diag(mEditor, tr("Open macro source or library"), mMacroDirName,
+                     tr("libraries (*.so);; header files (*.h);;implemtation files (*.cpp)"));
+#endif
+
     diag.setAcceptMode(QFileDialog::AcceptOpen);
     diag.setOption(QFileDialog::DontUseNativeDialog, true);
 
