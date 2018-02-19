@@ -243,12 +243,11 @@ void MacroEditor::saveMacro()//bool neuf)
 #endif
     if (srcDir.dirName() == executableDir)
         srcDir.cdUp();
-    else {
-        QMessageBox::critical(nullptr, "Path error", QString("%1: something wrong in the application path %2").arg(Q_FUNC_INFO, srcDir.path()));
-        return;
-    }
     if (mNeuf) {
-        srcDir.cd("Resources/plugintemplate");
+        if (!srcDir.cd("Resources/plugintemplate")) {
+            QMessageBox::critical(nullptr, "Path error", QString("%1: something wrong in the application path %2").arg(Q_FUNC_INFO, srcDir.path()));
+            return;
+        }
         QFile::copy(srcDir.absolutePath() + "/plugin_global.h", mMacroDirName + "/plugin_global.h");
         QFile::copy(srcDir.absolutePath() + "/plugintemplate.json", mMacroDirName + "/" + mClassName + ".json");
         QFile::copy(srcDir.absolutePath() + "/macrointerface.h", mMacroDirName + "/macrointerface.h");

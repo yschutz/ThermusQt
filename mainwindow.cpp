@@ -141,6 +141,7 @@ MainWindow::~MainWindow()
             msgg.exec();        }
     }
     QString t = QDir::currentPath();
+    QMessageBox::information(nullptr, "folder", t);
     QDir::current().removeRecursively();
 }
 
