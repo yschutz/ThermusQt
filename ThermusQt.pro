@@ -182,18 +182,22 @@ DISTFILES += \
 mac {
     images/ThermusQt.icns
     TARGET = ThermusQt
-    TEMPLATE      = app
-    APP_PD.files  =  particles/ThermusParticles.db particles/PDGParticles.db
-    APP_PD.files += particles/particles.tar.gz
-    APP_PD.path   = Contents/Resources/particles
-    APP_PY.files += external/PDGParticles.py external/ThermusParticles.py
-    APP_PY.path   = Contents/Resources/python
-    APP_MAC.files = macrotemplate/plugintemplate.h macrotemplate/plugintemplate.cpp macrotemplate/plugintemplate.json \
-                    macrotemplate/plugintemplate.pro macrotemplate/makelibrary.sh \
-                    macrotemplate/plugin_global.h external/macrointerface.h
-    APP_MAC.path  = Contents/Resources/plugintemplate
+    TEMPLATE          = app
+    APP_PD.files      = particles/ThermusParticles.db particles/PDGParticles.db
+    APP_PD.files     += particles/particles.tar.gz
+    APP_PD.path       = Contents/Resources/particles
+    APP_PY.files     += external/PDGParticles.py external/ThermusParticles.py
+    APP_PY.path       = Contents/Resources/python
+    APP_MAC.files     = macrotemplate/plugintemplate.h macrotemplate/plugintemplate.cpp macrotemplate/plugintemplate.json \
+                        macrotemplate/plugintemplate.pro macrotemplate/makelibrary.sh \
+                        macrotemplate/plugin_global.h external/macrointerface.h
+    APP_MAC.path      = Contents/Resources/plugintemplate
+    APP_H.files       = parasel.h
+    APP_H.path        = Contents/Resources/thermusinclude
+    APP_HM.files      = main/TTMParameter.h main/TTMParameterSet.h main/TTMParameterSetBSQ.h
+    APP_HM.path       = Contents/Resources/thermusinclude/main
 
-    QMAKE_BUNDLE_DATA += APP_PD APP_PY APP_MAC
+    QMAKE_BUNDLE_DATA += APP_PD APP_PY APP_MAC APP_H APP_HM
 }
 
 unix:!mac {

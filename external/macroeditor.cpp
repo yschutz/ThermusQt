@@ -87,6 +87,69 @@ void MacroEditor::closeEditor()
 }
 
 //__________________________________________________________________________
+void MacroEditor::copyFiles() const
+{
+    // copy all the files needed for  local on the flight compilation
+
+    QDir    srcDir      = qApp->applicationDirPath();
+    if (srcDir.dirName() == mExecutableDir)
+        srcDir.cdUp();
+    if (!srcDir.cd("Resources/plugintemplate")) {
+        QMessageBox::critical(nullptr, "Path error", QString("%1: %2 dir not found").arg(Q_FUNC_INFO, "plugintemplate"));
+        return;
+    }
+    QStringList filters;
+    filters << "*.h" << "*.json" << "*.sh*";
+    QStringList dirEntries = srcDir.entryList(filters);
+    for (QString file : dirEntries)
+        if (QFileInfo(file).suffix() == "json")
+            QFile::copy(srcDir.absolutePath() + "/" + file, mMacroDirName + "/" + mClassName.toLower() + ".json");
+        else
+            QFile::copy(srcDir.absolutePath() + "/" + file, mMacroDirName + "/" + file);
+    QFile::setPermissions(mMacroDirName + "/makelibrary.sh", QFile::ReadUser | QFile::ExeUser | QFile::WriteUser);
+    QFile fin(srcDir.absolutePath() + "/plugintemplate.pro");
+    if (fin.open(QIODevice::ReadOnly | QFile::Text)) {
+        QString text = fin.readAll();
+        QRegularExpression re("XxXxxxxx");
+        text.replace(re, mClassName);
+        re.setPattern("xxxxxxxx");
+        text.replace(re, mClassName.toLower());
+        QFile fout(mMacroDirName + "/" + mClassName.toLower() + ".pro");
+        if (fout.open(QIODevice::WriteOnly | QFile::Truncate)) {
+            QTextStream out(&fout);
+            out << text;
+            fout.close();
+        }
+        fin.close();
+    } else {
+        QMessageBox::critical(nullptr, Q_FUNC_INFO, QString("File %1 not found").arg(fin.fileName()));
+        return;
+    }
+    if (!srcDir.cd("../thermusinclude")) {
+        QMessageBox::critical(nullptr, "Path error", QString("%1: %2 dir not found").arg(Q_FUNC_INFO, "thermusinclude"));
+        return;
+    }
+    dirEntries = srcDir.entryList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+    for (QString file : dirEntries) {
+        QFileInfo fileInfo(QString("%1/%2").arg(srcDir.path(), file));
+        if (fileInfo.isDir()) {
+            QDir din(QString("%1/%2").arg(srcDir.absolutePath(), file));
+            QDir dou(mMacroDirName);
+            dou.mkdir(din.dirName());
+            QStringList filters;
+            filters << "*.h";
+            QStringList dirEntries = din.entryList(filters);
+            for (QString file : dirEntries) {
+                QString in = srcDir.absolutePath() + "/" + file;
+                QString ou = QString("%1/%2/%3").arg(mMacroDirName, din.dirName(), file);
+                QFile::copy(QString("%1/%2/%3").arg(srcDir.absolutePath(), din.dirName(), file), QString("%1/%2/%3").arg(mMacroDirName, din.dirName(), file));
+            }
+        } else
+            QFile::copy(srcDir.absolutePath() + "/" + file, mMacroDirName + "/" + QFileInfo(file).fileName());
+    }
+}
+
+//__________________________________________________________________________
 void MacroEditor::editMacro()
 {
     // edit a new (from a template) or an existing macro class
@@ -228,38 +291,8 @@ void MacroEditor::saveMacro()//bool neuf)
     }
 
     mMacroDirName = QFileInfo(fileName).absolutePath();
-    QDir    srcDir      = qApp->applicationDirPath();
-    if (srcDir.dirName() == mExecutableDir)
-        srcDir.cdUp();
-    if (mNeuf) {
-        if (!srcDir.cd("Resources/plugintemplate")) {
-            QMessageBox::critical(nullptr, "Path error", QString("%1: something wrong in the application path %2").arg(Q_FUNC_INFO, srcDir.path()));
-            return;
-        }
-        QFile::copy(srcDir.absolutePath() + "/plugin_global.h", mMacroDirName + "/plugin_global.h");
-        QFile::copy(srcDir.absolutePath() + "/plugintemplate.json", mMacroDirName + "/" + mClassName.toLower() + ".json");
-        QFile::copy(srcDir.absolutePath() + "/macrointerface.h", mMacroDirName + "/macrointerface.h");
-        QFile::copy(srcDir.absolutePath() + "/makelibrary.sh", mMacroDirName + "/makelibrary.sh");
-        QFile::setPermissions(mMacroDirName + "/makelibrary.sh", QFile::ReadUser | QFile::ExeUser | QFile::WriteUser);
-        QFile fin(srcDir.absolutePath() + "/plugintemplate.pro");
-        if (fin.open(QIODevice::ReadOnly | QFile::Text)) {
-            QString text = fin.readAll();
-            QRegularExpression re("XxXxxxxx");
-            text.replace(re, mClassName);
-            re.setPattern("xxxxxxxx");
-            text.replace(re, mClassName.toLower());
-            QFile fout(mMacroDirName + "/" + mClassName.toLower() + ".pro");
-            if (fout.open(QIODevice::WriteOnly | QFile::Truncate)) {
-                QTextStream out(&fout);
-                out << text;
-                fout.close();
-            }
-            fin.close();
-        } else {
-            QMessageBox::critical(nullptr, Q_FUNC_INFO, QString("File %1 not found").arg(fin.fileName()));
-            return;
-        }
-    }
+    if (mNeuf)
+        copyFiles();
     QDir save = QDir::current();
     QDir::setCurrent(mMacroDirName);
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();

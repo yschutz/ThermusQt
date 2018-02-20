@@ -7,7 +7,7 @@
 QT          += widgets
 QT          -= gui
 
-INCLUDEPATH += ../MainApp
+INCLUDEPATH += ../MainApp thermusinclude
 TARGET       = $$qtLibraryTarget(xxxxxxxx)
 TEMPLATE     = lib
 CONFIG      += plugin

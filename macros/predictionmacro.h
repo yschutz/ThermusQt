@@ -7,7 +7,6 @@
 #ifndef PREDICTION_H
 #define PREDICTION_H
 
-#include <QDebug>
 #include <QObject>
 
 #include "macros/macro.h"
