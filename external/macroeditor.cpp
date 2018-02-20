@@ -42,6 +42,7 @@ MacroEditor::MacroEditor(QObject *parent) : QObject(parent),
 #elif defined(Q_OS_LINUX)
         mLibSuffix = "so";
         mExecutableDir = "bin";
+        mPluginLoader.setLoadHints(QLibrary::DeepBindHint);
 #endif
 
     mEditor = new QWidget();
