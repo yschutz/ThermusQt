@@ -21,7 +21,7 @@ public:
 
 private slots:
     void closeEditor();
-    void copyFiles() const;
+    bool copyFiles() const;
     void newMacro(const QString& className);
     void openFile(const QString& fileName);
     void saveMacro();

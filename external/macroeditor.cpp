@@ -87,7 +87,7 @@ void MacroEditor::closeEditor()
 }
 
 //__________________________________________________________________________
-void MacroEditor::copyFiles() const
+bool MacroEditor::copyFiles() const
 {
     // copy all the files needed for  local on the flight compilation
 
@@ -96,7 +96,7 @@ void MacroEditor::copyFiles() const
         srcDir.cdUp();
     if (!srcDir.cd("Resources/plugintemplate")) {
         QMessageBox::critical(nullptr, "Path error", QString("%1: %2 dir not found").arg(Q_FUNC_INFO, "plugintemplate"));
-        return;
+        return false;
     }
     QStringList filters;
     filters << "*.h" << "*.json" << "*.sh*";
@@ -123,11 +123,11 @@ void MacroEditor::copyFiles() const
         fin.close();
     } else {
         QMessageBox::critical(nullptr, Q_FUNC_INFO, QString("File %1 not found").arg(fin.fileName()));
-        return;
+        return false;
     }
     if (!srcDir.cd("../thermusinclude")) {
         QMessageBox::critical(nullptr, "Path error", QString("%1: %2 dir not found").arg(Q_FUNC_INFO, "thermusinclude"));
-        return;
+        return false;
     }
     dirEntries = srcDir.entryList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
     for (QString file : dirEntries) {
@@ -147,6 +147,7 @@ void MacroEditor::copyFiles() const
         } else
             QFile::copy(srcDir.absolutePath() + "/" + file, mMacroDirName + "/" + QFileInfo(file).fileName());
     }
+    return true;
 }
 
 //__________________________________________________________________________
@@ -291,35 +292,37 @@ void MacroEditor::saveMacro()//bool neuf)
     }
 
     mMacroDirName = QFileInfo(fileName).absolutePath();
-    if (mNeuf)
-        copyFiles();
-    QDir save = QDir::current();
-    QDir::setCurrent(mMacroDirName);
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    env.insert("QTDIR", mQtPath);
-    QProcess p;
-    p.setProcessChannelMode(QProcess::SeparateChannels);
-    p.setProcessEnvironment(env);
-    QStringList params;
-    params << mClassName.toLower();
-    p.start("./makelibrary.sh", params);
-    p.waitForFinished();
-    QString p_stderr = p.readAllStandardError();
-    if (p.exitStatus() == QProcess::CrashExit || p_stderr != "") {
-        QMessageBox msg(QMessageBox::Critical, "make abort", "Library creation aborted");
-        msg.setInformativeText(msg.text() + " Error encountered in makelibrary.sh: " + p_stderr);
-        msg.exec();
-    } else {
-        p.close();
-        QString libName = mMacroDirName + "/lib" + mClassName.toLower() + "." + mLibSuffix;
-        QFileInfo lib(libName);
-        if (lib.exists() && lib.isFile())
-            loadLibrary(libName);
-        else {
-            QMessageBox::critical(nullptr, Q_FUNC_INFO, QString("library %1 not created").arg(libName));
+    if (mNeuf) {
+        if (copyFiles()) {
+            QDir save = QDir::current();
+            QDir::setCurrent(mMacroDirName);
+            QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+            env.insert("QTDIR", mQtPath);
+            QProcess p;
+            p.setProcessChannelMode(QProcess::SeparateChannels);
+            p.setProcessEnvironment(env);
+            QStringList params;
+            params << mClassName.toLower();
+            p.start("./makelibrary.sh", params);
+            p.waitForFinished();
+            QString p_stderr = p.readAllStandardError();
+            if (p.exitStatus() == QProcess::CrashExit || p_stderr != "") {
+                QMessageBox msg(QMessageBox::Critical, "make abort", "Library creation aborted");
+                msg.setInformativeText(msg.text() + " Error encountered in makelibrary.sh: " + p_stderr);
+                msg.exec();
+            } else {
+                p.close();
+                QString libName = mMacroDirName + "/lib" + mClassName.toLower() + "." + mLibSuffix;
+                QFileInfo lib(libName);
+                if (lib.exists() && lib.isFile())
+                    loadLibrary(libName);
+                else {
+                    QMessageBox::critical(nullptr, Q_FUNC_INFO, QString("library %1 not created").arg(libName));
+                }
+            }
+            QDir::setCurrent(save.absolutePath());
         }
     }
-    QDir::setCurrent(save.absolutePath());
 }
 
 //__________________________________________________________________________

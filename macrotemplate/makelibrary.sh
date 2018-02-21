@@ -14,6 +14,9 @@ if [ -f "Makefile" ]; then
         rm Makefile
 fi
 qmake $1.pro
+if [ "$os" = "Linux" ]; then
+    sed -i '/CXXFLAGS      =/a CXXFLAGS      += --std=c++11' Makefile
+fi
 make clean
 if [ -f $lib ]; then
    rm $lib
