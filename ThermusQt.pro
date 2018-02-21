@@ -218,6 +218,10 @@ unix:!mac {
                      macrotemplate/plugintemplate.pro macrotemplate/makelibrary.sh\
                      macrotemplate/plugin_global.h external/macrointerface.h
     macro.path     = $$PREFIX/Resources/plugintemplate
+    header.files   = parasel.h
+    header.path    = $$PREFIX/Resources/thermusinclude
+    headerm.files  = main/TTMParameter.h main/TTMParameterSet.h main/TTMParameterSetBSQ.h
+    headerm.path   = $$PREFIX/Resources/thermusinclude/main
 
-    INSTALLS += target icons desktop data python macro
+    INSTALLS += target icons desktop data python macro header headerm
 }
