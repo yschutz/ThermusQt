@@ -27,6 +27,9 @@ INCLUDEPATH += /usr/local/include
 
 LIBS += -L/usr/local/lib -lgsl -lgslcblas -lm
 
+unix:!mac {
+    QMAKE_CXXFLAGS += --std=c++11
+}
 
 SOURCES += \
         thermuslib.cpp \

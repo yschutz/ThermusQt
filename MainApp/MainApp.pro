@@ -40,6 +40,10 @@ DISTFILES += \
     external/particles_mass.txt \
     external/pdg_table.txt
 
+unix:!mac {
+    QMAKE_CXXFLAGS += --std=c++11
+}
+
 mac {
     images/ThermusQt.icns
     TARGET = ThermusQt
