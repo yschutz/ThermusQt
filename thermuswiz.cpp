@@ -2,8 +2,8 @@
 //
 // The wizard to setp up various things
 
-#include "macros/predictionmacro.h"
-#include "macros/fitmacro.h"
+#include "predictionmacro.h"
+#include "fitmacro.h"
 
 #include "macroparasel.h"
 #include "mainwindow.h"

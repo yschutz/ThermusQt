@@ -11,7 +11,7 @@
 // Only when a particle set is specified can it be determined.
 //
 
-#include "external/particlesdbmanager.h"
+#include "particlesdbmanager.h"
 
 #include "TTMParameterSetBQ.h"
 #include "TTMThermalParticle.h"

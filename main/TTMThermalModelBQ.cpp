@@ -10,8 +10,8 @@
 #include <QtMath>
 #include <QScopedPointer>
 
-#include "external/particlesdbmanager.h"
-#include "functions/FncsConstrain.h"
+#include "particlesdbmanager.h"
+#include "FncsConstrain.h"
 
 #include "TTMDensObj.h"
 #include "TTMParameterSetBSQ.h"

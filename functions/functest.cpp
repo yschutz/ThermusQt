@@ -3,8 +3,8 @@
 
 #include <QDebug>
 
-#include "main/TTMThermalModelBQ.h"
-#include "functions/FncsConstrain.h"
+#include "TTMThermalModelBQ.h"
+#include "FncsConstrain.h"
 
 
 

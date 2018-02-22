@@ -1,10 +1,14 @@
+// Author: Yves Schutz February 2018
+//
+// Base class for the macros to run prediction or fit
+
 #ifndef MACROINTERFACE_H
 #define MACROINTERFACE_H
 
 #include <QMessageBox>
 #include <QString>
 
-#include <main/TTMParameterSetBSQ.h>
+#include "TTMParameterSetBSQ.h"
 
 class MacroParaSel;
 class ParaSel;
@@ -12,12 +16,19 @@ class TTMThermalFitBSQ;
 
 class QTimer;
 
-class MacroInterface
-{
+class MacroInterface {
 public:
-    virtual bool    init() = 0;
-            bool    isInitialized() const { return mInitialized; }
-    virtual QString run(const QString& message) = 0;
+    virtual bool    init()                       = 0;
+            void    setConstrain();
+            bool    isDebug() const           { return mDebug; }
+            bool    isInitialized() const     { return mInitialized; }
+            void    listParameters() const    { mParaInfo->list(); }
+    virtual void    run(const QString& message) = 0;
+            void    setDebug(bool val)        { mDebug = val; }
+    virtual void    setDefaultParameters()      = 0;
+            void    setFitFix();
+    virtual void    setMacroDefaultParameters() = 0;
+            void    setParameters();
 
 protected:
     bool                   mInitialized = false; // flag if initialization done or not

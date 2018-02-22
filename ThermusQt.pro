@@ -10,7 +10,7 @@ include("QFontIcon/QFontIcon.pri")
 
 #QTPLUGIN += qsqlite
 
-INCLUDEPATH += QFontIcon
+INCLUDEPATH += QFontIcon main external functions macros
 
 ICON = images/ThermusQt.icns
 
@@ -116,7 +116,8 @@ SOURCES += main.cpp\
     fittingthread.cpp \
     external/editorwindow.cpp \
     external/highlighter.cpp \
-    external/macroeditor.cpp
+    external/macroeditor.cpp \
+    external/macrointerface.cpp
 
 HEADERS  += mainwindow.h \
     main/TTMParticleSet.h \
@@ -192,12 +193,11 @@ mac {
                         macrotemplate/plugintemplate.pro macrotemplate/makelibrary.sh \
                         macrotemplate/plugin_global.h external/macrointerface.h
     APP_MAC.path      = Contents/Resources/plugintemplate
-    APP_H.files       = parasel.h
+    APP_H.files       = parasel.h macroparasel.h \
+                        main/TTMParameter.h main/TTMParameterSet.h main/TTMParameterSetBSQ.h
     APP_H.path        = Contents/Resources/thermusinclude
-    APP_HM.files      = main/TTMParameter.h main/TTMParameterSet.h main/TTMParameterSetBSQ.h
-    APP_HM.path       = Contents/Resources/thermusinclude/main
 
-    QMAKE_BUNDLE_DATA += APP_PD APP_PY APP_MAC APP_H APP_HM
+    QMAKE_BUNDLE_DATA += APP_PD APP_PY APP_MAC APP_H
 }
 
 unix:!mac {
@@ -218,10 +218,9 @@ unix:!mac {
                      macrotemplate/plugintemplate.pro macrotemplate/makelibrary.sh\
                      macrotemplate/plugin_global.h external/macrointerface.h
     macro.path     = $$PREFIX/Resources/plugintemplate
-    header.files   = parasel.h
+    header.files   = parasel.h macroparasel.h \
+                     main/TTMParameter.h main/TTMParameterSet.h main/TTMParameterSetBSQ.h
     header.path    = $$PREFIX/Resources/thermusinclude
-    headerm.files  = main/TTMParameter.h main/TTMParameterSet.h main/TTMParameterSetBSQ.h
-    headerm.path   = $$PREFIX/Resources/thermusinclude/main
 
-    INSTALLS += target icons desktop data python macro header headerm
+    INSTALLS += target icons desktop data python macro header
 }

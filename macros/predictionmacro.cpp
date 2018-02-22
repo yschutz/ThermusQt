@@ -6,8 +6,8 @@
 #include "mainwindow.h"
 #include "predictionmacro.h"
 
-#include "main/TTMThermalFitBSQ.h"
-#include "main/TTMParticleSet.h"
+#include "TTMThermalFitBSQ.h"
+#include "TTMParticleSet.h"
 
 #include <QDateTime>
 #include <QDebug>

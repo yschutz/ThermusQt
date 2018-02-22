@@ -12,7 +12,7 @@
 #include "TTMDensObj.h"
 #include "TTMThermalModel.h"
 
-#include "external/particlesdbmanager.h"
+#include "particlesdbmanager.h"
 
 //__________________________________________________________________________
 TTMThermalModel::TTMThermalModel(QObject *parent) : QObject(parent),

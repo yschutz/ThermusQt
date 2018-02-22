@@ -3,7 +3,7 @@
 
 #include <QtMath>
 
-#include  "external/f2.h"
+#include  "f2.h"
 
 using namespace std;
 

@@ -9,7 +9,7 @@
 
 #include <QObject>
 
-#include "macros/macro.h"
+#include "macro.h"
 
 class ParaSel;
 class MacroParaSel;

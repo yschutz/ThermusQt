@@ -10,7 +10,7 @@
 #include <QRadioButton>
 #include <QWizardPage>
 
-#include "main/TTMParameterSet.h"
+#include "TTMParameterSet.h"
 
 class ParaSel : public QWizardPage
 {

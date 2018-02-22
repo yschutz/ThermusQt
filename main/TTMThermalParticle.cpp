@@ -8,9 +8,9 @@
 #include <QScopedPointer>
 #include <QtMath>
 
-#include "external/f1.h"
-#include "external/particlesdbmanager.h"
-#include "functions/FncsThermalModel.h"
+#include "f1.h"
+#include "particlesdbmanager.h"
+#include "FncsThermalModel.h"
 
 #include "TTMThermalParticle.h"
 

@@ -17,18 +17,18 @@
 
 #include "QFontIcon/qfonticon.h"
 
-#include "macros/fitmacro.h"
-#include "macros/predictionmacro.h"
+#include "fitmacro.h"
+#include "predictionmacro.h"
 #include "logger.h"
 #include "thermuswiz.h"
 
-#include "external/finddialog.h"
-#include "external/macroeditor.h"
-#include "external/newparticledialog.h"
-#include "external/particlesdbmanager.h"
-#include "external/QMinuit.h"
+#include "finddialog.h"
+#include "macroeditor.h"
+#include "newparticledialog.h"
+#include "particlesdbmanager.h"
+#include "QMinuit.h"
 
-#include "main/TTMThermalFitBSQ.h"
+#include "TTMThermalFitBSQ.h"
 
 bool MainWindow::mDebug = false;
 //__________________________________________________________________________

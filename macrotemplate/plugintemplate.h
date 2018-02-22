@@ -14,9 +14,10 @@ class PLUGINSHARED_EXPORT XxXxxxxx : public QObject, MacroInterface
     Q_INTERFACES(MacroInterface)
 
 public:
-    bool    init();
-    QString run(const QString& message);
-
+    bool    init() override;
+    void    run(const QString& message) override;
+    void    setDefaultParameters() override;
+    void    setMacroDefaultParameters() override;
 };
 
 #endif // XXXXXXXX_H

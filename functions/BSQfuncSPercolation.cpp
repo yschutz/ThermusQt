@@ -1,11 +1,11 @@
 // Author: Spencer Wheaton 24 November 2004 //
 // Adapted for Qt by Yves Schutz: October 2017
 
-#include "external/particlesdbmanager.h"
-#include "functions/FncsConstrain.h"
+#include "particlesdbmanager.h"
+#include "FncsConstrain.h"
 
-#include "main/TTMDensObj.h"
-#include "main/TTMThermalModelBSQ.h"
+#include "TTMDensObj.h"
+#include "TTMThermalModelBSQ.h"
 
 #include <QMessageBox>
 

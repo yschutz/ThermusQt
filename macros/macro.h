@@ -6,7 +6,7 @@
 
 #include <QObject>
 
-#include <main/TTMParameterSetBSQ.h>
+#include <TTMParameterSetBSQ.h>
 
 class MacroParaSel;
 class ParaSel;

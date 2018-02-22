@@ -15,7 +15,7 @@
 
 #include <QObject>
 
-#include "main/TTMIDObj.h"
+#include "TTMIDObj.h"
 
 class TTMDecayChannel : public QObject
 {

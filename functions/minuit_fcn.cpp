@@ -1,6 +1,6 @@
-#include "main/TTMParameterSet.h"
-#include "main/TTMThermalFit.h"
-#include "main/TTMThermalModel.h"
+#include "TTMParameterSet.h"
+#include "TTMThermalFit.h"
+#include "TTMThermalModel.h"
 #include "logger.h"
 
 #include <QDebug>

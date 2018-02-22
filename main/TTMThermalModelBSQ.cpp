@@ -6,9 +6,9 @@
 
 #include <QMessageBox>
 
-#include "external/particlesdbmanager.h"
-#include "functions/FncsConstrain.h"
-#include "functions/FncsThermalModel.h"
+#include "particlesdbmanager.h"
+#include "FncsConstrain.h"
+#include "FncsThermalModel.h"
 
 #include "TTMDensObj.h"
 #include "TTMThermalModelBSQ.h"

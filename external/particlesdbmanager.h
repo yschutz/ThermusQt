@@ -10,7 +10,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 
-#include "main/TTMParticle.h"
+#include "TTMParticle.h"
 
 class ParticlesDBManager : public QObject
 {

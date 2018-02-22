@@ -1,9 +1,9 @@
 // Author: Spencer Wheaton 14 July 2004 //
 // Adapted for Qt: Yves Schutz Noveber 2017
 
-#include "external/QMinuit.h"
-#include "main/TTMParameterSet.h"
-#include "main/TTMThermalFit.h"
+#include "QMinuit.h"
+#include "TTMParameterSet.h"
+#include "TTMThermalFit.h"
 #include "mainwindow.h"
 
 #include <QDebug>

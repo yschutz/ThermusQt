@@ -1,7 +1,7 @@
 // Author: Spencer Wheaton 14 July 2004 //
 // Adapted for Qt by Yves Schutz: September 2017
 
-#include "external/f1.h"
+#include "f1.h"
 
 
 //__________________________________________________________________________

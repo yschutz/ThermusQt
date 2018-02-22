@@ -3,7 +3,7 @@
 #include <gsl/gsl_roots.h>
 
 #include <QDebug>
-#include "functions/FncsConstrain.h"
+#include "FncsConstrain.h"
 
 double brent(double xLow, double xHigh, double step, int& status, PARAMETERSS p, double (*myfunction)(double x, void* p))
 {

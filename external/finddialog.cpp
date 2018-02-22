@@ -9,7 +9,7 @@
 
 #include "finddialog.h"
 #include "listdialog.h"
-#include "external/particlesdbmanager.h"
+#include "particlesdbmanager.h"
 
 //__________________________________________________________________________
 FindDialog::FindDialog(const QString& what, QWidget *parent) : QDialog(parent), mLd(nullptr)

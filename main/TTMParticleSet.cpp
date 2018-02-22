@@ -11,7 +11,7 @@
 #include "TTMDecayChannel.h"
 #include "TTMParticleSet.h"
 
-#include "external/particlesdbmanager.h"
+#include "particlesdbmanager.h"
 
 #include <QDebug>
 #include <QFile>

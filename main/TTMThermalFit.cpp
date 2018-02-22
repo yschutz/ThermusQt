@@ -15,8 +15,8 @@
 #include "TTMThermalFit.h"
 #include "TTMThermalModel.h"
 
-#include "external/particlesdbmanager.h"
-#include "external/QMinuit.h"
+#include "particlesdbmanager.h"
+#include "QMinuit.h"
 #include "mainwindow.h"
 
 void fit_function(TTMThermalFit *fit, int flag = 0);

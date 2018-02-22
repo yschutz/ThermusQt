@@ -9,10 +9,10 @@
 #include <QMessageBox>
 #include <QScopedPointer>
 
-#include "external/particlesdbmanager.h"
-#include "external/f1.h"
-#include "external/f2.h"
-#include "functions/FncsThermalModel.h"
+#include "particlesdbmanager.h"
+#include "f1.h"
+#include "f2.h"
+#include "FncsThermalModel.h"
 
 #include "TTMParameterSetBSQ.h"
 #include "TTMThermalParticleBSQ.h"

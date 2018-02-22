@@ -5,7 +5,7 @@
 //#include "parasel.h"
 #include "summary.h"
 
-#include "main/TTMParameterSet.h"
+#include "TTMParameterSet.h"
 
 //__________________________________________________________________________
 Summary::Summary(QWidget *parent) : QWizardPage(parent)

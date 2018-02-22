@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-#include "functions/FncsConstrain.h"
+#include "FncsConstrain.h"
 
 void broyden(gsl_vector* x, size_t ndim, int& status, PARAMETERSS p, int (*myfunction)(const gsl_vector* x, void* p, gsl_vector* f))
 {

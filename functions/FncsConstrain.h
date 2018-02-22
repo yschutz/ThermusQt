@@ -1,7 +1,7 @@
 #include <gsl/gsl_vector.h>
 
-#include "main/TTMThermalModelBQ.h"
-#include "main/TTMThermalModelBSQ.h"
+#include "TTMThermalModelBQ.h"
+#include "TTMThermalModelBSQ.h"
 
 struct PARAMETERS  { TTMThermalModelBQ* p0; double p1;};
 struct PARAMETERSS { TTMThermalModelBSQ* p0; double p1; double p2; double p3;};

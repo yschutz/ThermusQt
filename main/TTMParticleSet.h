@@ -14,7 +14,7 @@
 
 #include <QObject>
 
-#include "main/TTMParticle.h"
+#include "TTMParticle.h"
 
 class TTMParticleSet : public QObject
 {

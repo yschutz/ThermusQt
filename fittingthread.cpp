@@ -2,7 +2,7 @@
 // Author: Yves Schutz, November 2018
 
 #include "fittingthread.h"
-#include "main/TTMThermalFit.h"
+#include "TTMThermalFit.h"
 
 #include <QDebug>
 #include <QTimer>

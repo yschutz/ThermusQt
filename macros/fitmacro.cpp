@@ -9,7 +9,7 @@
 #include "fitmacro.h"
 #include "fittingthread.h"
 #include "macroparasel.h"
-#include "main/TTMThermalFitBSQ.h"
+#include "TTMThermalFitBSQ.h"
 
 
 FitMacro FitMacro::mInstance = FitMacro();

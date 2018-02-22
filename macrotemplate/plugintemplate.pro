@@ -7,7 +7,8 @@
 QT          += widgets
 QT          -= gui
 
-INCLUDEPATH += ../MainApp thermusinclude
+INCLUDEPATH += include 
+#../MainApp thermusinclude
 TARGET       = $$qtLibraryTarget(xxxxxxxx)
 TEMPLATE     = lib
 CONFIG      += plugin
@@ -33,7 +34,7 @@ SOURCES += \
 
 HEADERS += \
         xxxxxxxx.h \
-        plugin_global.h 
+        include/plugin_global.h 
 
 mac {
 

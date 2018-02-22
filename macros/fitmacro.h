@@ -5,7 +5,7 @@
 #ifndef FITMACRO_H
 #define FITMACRO_H
 
-#include "macros/macro.h"
+#include "macro.h"
 
 #include <QObject>
 

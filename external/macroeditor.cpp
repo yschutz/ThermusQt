@@ -91,19 +91,23 @@ bool MacroEditor::copyFiles() const
 {
     // copy all the files needed for  local on the flight compilation
 
-    QDir    srcDir      = qApp->applicationDirPath();
+    QDir srcDir      = qApp->applicationDirPath();
     if (srcDir.dirName() == mExecutableDir)
         srcDir.cdUp();
     if (!srcDir.cd("Resources/plugintemplate")) {
         QMessageBox::critical(nullptr, "Path error", QString("%1: %2 dir not found").arg(Q_FUNC_INFO, "plugintemplate"));
         return false;
     }
+    QDir outDir(mMacroDirName);
+    outDir.mkdir("include");
     QStringList filters;
     filters << "*.h" << "*.json" << "*.sh*";
     QStringList dirEntries = srcDir.entryList(filters);
     for (QString file : dirEntries)
         if (QFileInfo(file).suffix() == "json")
             QFile::copy(srcDir.absolutePath() + "/" + file, mMacroDirName + "/" + mClassName.toLower() + ".json");
+        else if (QFileInfo(file).suffix() == "h")
+            QFile::copy(srcDir.absolutePath() + "/" + file, mMacroDirName + "/include/" + file);
         else
             QFile::copy(srcDir.absolutePath() + "/" + file, mMacroDirName + "/" + file);
     QFile::setPermissions(mMacroDirName + "/makelibrary.sh", QFile::ReadUser | QFile::ExeUser | QFile::WriteUser);
@@ -129,24 +133,9 @@ bool MacroEditor::copyFiles() const
         QMessageBox::critical(nullptr, "Path error", QString("%1: %2 dir not found").arg(Q_FUNC_INFO, "thermusinclude"));
         return false;
     }
-    dirEntries = srcDir.entryList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-    for (QString file : dirEntries) {
-        QFileInfo fileInfo(QString("%1/%2").arg(srcDir.path(), file));
-        if (fileInfo.isDir()) {
-            QDir din(QString("%1/%2").arg(srcDir.absolutePath(), file));
-            QDir dou(mMacroDirName);
-            dou.mkdir(din.dirName());
-            QStringList filters;
-            filters << "*.h";
-            QStringList dirEntries = din.entryList(filters);
-            for (QString file : dirEntries) {
-                QString in = srcDir.absolutePath() + "/" + file;
-                QString ou = QString("%1/%2/%3").arg(mMacroDirName, din.dirName(), file);
-                QFile::copy(QString("%1/%2/%3").arg(srcDir.absolutePath(), din.dirName(), file), QString("%1/%2/%3").arg(mMacroDirName, din.dirName(), file));
-            }
-        } else
-            QFile::copy(srcDir.absolutePath() + "/" + file, mMacroDirName + "/" + QFileInfo(file).fileName());
-    }
+    dirEntries = srcDir.entryList(filters);
+    for (QString file : dirEntries)
+        QFile::copy(srcDir.absolutePath() + "/" + file, mMacroDirName + "/include/" + file);
     return true;
 }
 
@@ -270,7 +259,7 @@ void MacroEditor::openFile(const QString& fileName)
 }
 
 //__________________________________________________________________________
-void MacroEditor::saveMacro()//bool neuf)
+void MacroEditor::saveMacro()
 {
     // save, compile(create a shared library) the macro
     closeEditor();
@@ -293,36 +282,38 @@ void MacroEditor::saveMacro()//bool neuf)
 
     mMacroDirName = QFileInfo(fileName).absolutePath();
     if (mNeuf) {
-        if (copyFiles()) {
-            QDir save = QDir::current();
-            QDir::setCurrent(mMacroDirName);
-            QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-            env.insert("QTDIR", mQtPath);
-            QProcess p;
-            p.setProcessChannelMode(QProcess::SeparateChannels);
-            p.setProcessEnvironment(env);
-            QStringList params;
-            params << mClassName.toLower();
-            p.start("./makelibrary.sh", params);
-            p.waitForFinished();
-            QString p_stderr = p.readAllStandardError();
-            if (p.exitStatus() == QProcess::CrashExit || p_stderr != "") {
-                QMessageBox msg(QMessageBox::Critical, "make abort", "Library creation aborted");
-                msg.setInformativeText(msg.text() + " Error encountered in makelibrary.sh: " + p_stderr);
-                msg.exec();
-            } else {
-                p.close();
-                QString libName = mMacroDirName + "/lib" + mClassName.toLower() + "." + mLibSuffix;
-                QFileInfo lib(libName);
-                if (lib.exists() && lib.isFile())
-                    loadLibrary(libName);
-                else {
-                    QMessageBox::critical(nullptr, Q_FUNC_INFO, QString("library %1 not created").arg(libName));
-                }
-            }
-            QDir::setCurrent(save.absolutePath());
+        if (!copyFiles()) {
+            QMessageBox::warning(nullptr, Q_FUNC_INFO, "Files not copied: nothing done");
+            return;
         }
     }
+    QDir save = QDir::current();
+    QDir::setCurrent(mMacroDirName);
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    env.insert("QTDIR", mQtPath);
+    QProcess p;
+    p.setProcessChannelMode(QProcess::SeparateChannels);
+    p.setProcessEnvironment(env);
+    QStringList params;
+    params << mClassName.toLower();
+    p.start("./makelibrary.sh", params);
+    p.waitForFinished();
+    QString p_stderr = p.readAllStandardError();
+    if (p.exitStatus() == QProcess::CrashExit || p_stderr != "") {
+        QMessageBox msg(QMessageBox::Critical, "make abort", "Library creation aborted");
+        msg.setInformativeText(msg.text() + " Error encountered in makelibrary.sh: " + p_stderr);
+        msg.exec();
+    } else {
+        p.close();
+        QString libName = mMacroDirName + "/lib" + mClassName.toLower() + "." + mLibSuffix;
+        QFileInfo lib(libName);
+        if (lib.exists() && lib.isFile())
+            loadLibrary(libName);
+        else {
+            QMessageBox::critical(nullptr, Q_FUNC_INFO, QString("library %1 not created").arg(libName));
+        }
+    }
+    QDir::setCurrent(save.absolutePath());
 }
 
 //__________________________________________________________________________
@@ -336,7 +327,7 @@ void MacroEditor::loadLibrary(const QString& library)
     if (macro) {
         mMacroInterface = qobject_cast<MacroInterface*>(macro);
         if (mMacroInterface) {
-            QMessageBox::information(nullptr, "Running Macro", mMacroInterface->run("Hallo "));
+            mMacroInterface->run("Hallo ");
 
         } else
             QMessageBox::critical(nullptr, Q_FUNC_INFO, QString("Macro library %1 not loaded").arg(library));

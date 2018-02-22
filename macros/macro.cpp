@@ -7,9 +7,9 @@
 #include "macroparasel.h"
 #include "parasel.h"
 
-#include "main/TTMParameterSetBSQ.h"
-#include "main/TTMParameterSetBQ.h"
-#include "main/TTMThermalFitBSQ.h"
+#include "TTMParameterSetBSQ.h"
+#include "TTMParameterSetBQ.h"
+#include "TTMThermalFitBSQ.h"
 
 #include <QDebug>
 #include <QMessageBox>

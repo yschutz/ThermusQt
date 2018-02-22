@@ -1,10 +1,10 @@
 // Author: Spencer Wheaton 14 July 2004 //
 // Adapted for QT: Yves Schutz September 2017
 
-#include "functions/FncsConstrain.h"
+#include "FncsConstrain.h"
 
-#include "main/TTMParameterSet.h"
-#include "main/TTMThermalModelBQ.h"
+#include "TTMParameterSet.h"
+#include "TTMThermalModelBQ.h"
 
 #include <QMessageBox>
 

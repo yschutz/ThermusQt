@@ -3,7 +3,7 @@
 #ifndef F2_H
 #define F2_H
 
-#include "external/f1.h"
+#include "f1.h"
 
 class F2 : public F1
 {
