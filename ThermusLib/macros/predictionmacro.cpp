@@ -3,7 +3,7 @@
 // The steering class to run a thermus prediction (aka ROOT macro)
 
 #include "macroparasel.h"
-#include "mainwindow.h"
+//#include "mainwindow.h"
 #include "predictionmacro.h"
 
 #include "TTMThermalFitBSQ.h"

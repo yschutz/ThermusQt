@@ -18,7 +18,7 @@
 #include "QMinuit.h"
 
 #include "logger.h"
-#include "mainwindow.h"
+//#include "mainwindow.h"
 
 QMinuit QMinuit::mMinuit = QMinuit();
 

@@ -101,6 +101,7 @@ bool MacroEditor::copyFiles() const
     QDir outDir(mMacroDirName);
     outDir.mkdir("include");
     QStringList filters;
+    // the plugin (macro) stuff
     filters << "*.h" << "*.json" << "*.sh*";
     QStringList dirEntries = srcDir.entryList(filters);
     for (QString file : dirEntries)
@@ -129,6 +130,7 @@ bool MacroEditor::copyFiles() const
         QMessageBox::critical(nullptr, Q_FUNC_INFO, QString("File %1 not found").arg(fin.fileName()));
         return false;
     }
+    // the Thermus header files
     if (!srcDir.cd("../thermusinclude")) {
         QMessageBox::critical(nullptr, "Path error", QString("%1: %2 dir not found").arg(Q_FUNC_INFO, "thermusinclude"));
         return false;
@@ -136,6 +138,18 @@ bool MacroEditor::copyFiles() const
     dirEntries = srcDir.entryList(filters);
     for (QString file : dirEntries)
         QFile::copy(srcDir.absolutePath() + "/" + file, mMacroDirName + "/include/" + file);
+    // the libraries
+    outDir.mkdir("libs");
+    if (!srcDir.cd("../../libs")) {
+        QMessageBox::critical(nullptr, "Path error", QString("%1: %2 dir not found").arg(Q_FUNC_INFO, "libs"));
+        return false;
+    }
+    filters.clear();
+    filters << "*." + mLibSuffix;
+    dirEntries = srcDir.entryList(filters);
+    for (QString file : dirEntries) {
+        QFile::copy(srcDir.absolutePath() + "/" + file, mMacroDirName + "/libs/" + file);
+    }
     return true;
 }
 

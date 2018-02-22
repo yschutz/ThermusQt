@@ -13,6 +13,7 @@ TARGET       = $$qtLibraryTarget(xxxxxxxx)
 TEMPLATE     = lib
 CONFIG      += plugin
 DESTDIR      = ./
+LIBS        += -Llibs -lThermusLib
 
 DEFINES += PLUGIN_LIBRARY
 

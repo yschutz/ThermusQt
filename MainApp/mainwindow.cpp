@@ -15,7 +15,7 @@
 #include <QtWidgets>
 #include <QVBoxLayout>
 
-#include "QFontIcon/qfonticon.h"
+#include "qfonticon.h"
 
 #include "fitmacro.h"
 #include "predictionmacro.h"

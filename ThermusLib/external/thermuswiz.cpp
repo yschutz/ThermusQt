@@ -6,7 +6,7 @@
 #include "fitmacro.h"
 
 #include "macroparasel.h"
-#include "mainwindow.h"
+//#include "mainwindow.h"
 #include "parasel.h"
 #include "summary.h"
 #include "thermuswiz.h"

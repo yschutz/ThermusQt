@@ -17,7 +17,7 @@
 
 #include "particlesdbmanager.h"
 #include "QMinuit.h"
-#include "mainwindow.h"
+//#include "mainwindow.h"
 
 void fit_function(TTMThermalFit *fit, int flag = 0);
 

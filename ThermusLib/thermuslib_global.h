@@ -1,0 +1,12 @@
+#ifndef THERMUSLIB_GLOBAL_H
+#define THERMUSLIB_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(THERMUSLIB_LIBRARY)
+#  define THERMUSLIBSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define THERMUSLIBSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // THERMUSLIB_GLOBAL_H

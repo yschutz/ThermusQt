@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../images/ThermusQt.icns</file>
+        <file>../images/ThermusQt.png</file>
+    </qresource>
+</RCC>
