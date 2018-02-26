@@ -72,7 +72,7 @@ unix:!mac {
     }
     target.path    = $$PREFIX/bin
     desktop.path   = $$PREFIX/share/applications
-    desktop.files += ThermusQt.desktop
+    desktop.files += ../ThermusQt.desktop
     icons.path     = $$PREFIX/share/icons/hicolor/48x48/apps
     icons.files   += ../images/ThermusQt.png
     data.files     = ../particles/ThermusParticles.db ../particles/PDGParticles.db
@@ -87,7 +87,7 @@ unix:!mac {
     header.files   = ../ThermusLib/external/parasel.h ../ThermusLib/external/macroparasel.h \
                      ../ThermusLib/main/TTMParameter.h ../ThermusLib/main/TTMParameterSet.h ../ThermusLib/main/TTMParameterSetBSQ.h
     header.path    = $$PREFIX/Resources/thermusinclude
-    libs.files     = ../libs/libThermusLib.so
+    libs.files     = $$OUT_PWD/../libs/libThermusLib.so
     libs.path      = $$PREFIX/libs
 
     INSTALLS += target icons desktop data python macro header
