@@ -183,9 +183,4 @@ HEADERS += \
     main/TTMThermalParticleBSQ.h \
     main/TTMYield.h
 
-DESTDIR = ../libs
-
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
+DESTDIR = ../lib
