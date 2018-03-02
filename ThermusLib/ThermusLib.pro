@@ -183,4 +183,4 @@ HEADERS += \
     main/TTMThermalParticleBSQ.h \
     main/TTMYield.h
 
-DESTDIR = ../lib
+DESTDIR = lib

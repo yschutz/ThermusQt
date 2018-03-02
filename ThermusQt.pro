@@ -1,31 +1,25 @@
 TEMPLATE = subdirs
 
-SUBDIRS = ThermusLib 
+SUBDIRS = ThermusLib MainApp
 
 CONFIG += ordered
 
 ThermusLib.subdir = ThermusLib
-
-
 MainApp.subdir    = MainApp
-
-SUBDIRS += MainApp
 
 MainApp.depends = ThermusLib
 
 mac {
     images/ThermusQt.icns
-    APP_PD.files      = ../particles/ThermusParticles.db ../particles/PDGParticles.db
-    APP_PD.files     += ../particles/particles.tar.gz
+    APP_PD.files      = particles/ThermusParticles.db ../particles/PDGParticles.db
+    APP_PD.files     += particles/particles.tar.gz
     APP_PD.path       = Contents/Resources/particles
-    APP_PY.files     += ../python/PDGParticles.py ../python/ThermusParticles.py
+    APP_PY.files     += python/PDGParticles.py python/ThermusParticles.py
     APP_PY.path       = Contents/Resources/python
-    APP_MAC.files     = ../macrotemplate/plugintemplate.h ../macrotemplate/plugintemplate.cpp ../macrotemplate/plugintemplate.json \
-                        ../macrotemplate/plugintemplate.pro ../macrotemplate/makelibrary.sh \
-                        ../macrotemplate/plugin_global.h ../ThermusLib/external/macrointerface.h
+    APP_MAC.files     = macrotemplate/* /ThermusLib/external/macrointerface.h
     APP_MAC.path      = Contents/Resources/plugintemplate
-    APP_H.files       = ../ThermusLib/external/parasel.h ../ThermusLib/external/macroparasel.h \
-                        ../ThermusLib/main/TTMParameter.h ../ThermusLib/main/TTMParameterSet.h ../ThermusLib/main/TTMParameterSetBSQ.h
+    APP_H.files       = ThermusLib/external/parasel.h ThermusLib/external/macroparasel.h \
+                        ThermusLib/main/TTMParameter.h ThermusLib/main/TTMParameterSet.h ThermusLib/main/TTMParameterSetBSQ.h
     APP_H.path        = Contents/Resources/thermusinclude
     APP_LIB.files     = $$OUT_PWD/../libs/libThermusLib.dylib
     APP_LIB.path      = Contents/libs
