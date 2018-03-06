@@ -6,7 +6,7 @@
 
 QT       += widgets sql
 
-TARGET = $$qtLibraryTarget(ThermusLib)
+TARGET   = ThermusLib
 TEMPLATE = lib
 
 DEFINES += THERMUSLIB_LIBRARY

@@ -131,8 +131,8 @@ bool MacroEditor::copyFiles() const
         return false;
     }
     // the Thermus header files
-    if (!srcDir.cd("../thermusinclude")) {
-        QMessageBox::critical(nullptr, "Path error", QString("%1: %2 dir not found").arg(Q_FUNC_INFO, "thermusinclude"));
+    if (!srcDir.cd("../../include")) {
+        QMessageBox::critical(nullptr, "Path error", QString("%1: %2 dir not found").arg(Q_FUNC_INFO, srcDir.absolutePath()));
         return false;
     }
     dirEntries = srcDir.entryList(filters);
@@ -140,8 +140,8 @@ bool MacroEditor::copyFiles() const
         QFile::copy(srcDir.absolutePath() + "/" + file, mMacroDirName + "/include/" + file);
     // the libraries
     outDir.mkdir("libs");
-    if (!srcDir.cd("../../libs")) {
-        QMessageBox::critical(nullptr, "Path error", QString("%1: %2 dir not found").arg(Q_FUNC_INFO, "libs"));
+    if (!srcDir.cd("../lib")) {
+        QMessageBox::critical(nullptr, "Path error", QString("%1: %2 dir not found").arg(Q_FUNC_INFO, "lib"));
         return false;
     }
     filters.clear();

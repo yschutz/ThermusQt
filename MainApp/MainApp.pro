@@ -14,7 +14,7 @@ INCLUDEPATH += ../QFontIcon
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../ThermusLib/release/ -lThermusLib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../ThermusLib/debug/ -lThermusLib
-else:unix: LIBS += -L$$OUT_PWD/../ThermusLib/lib/ -l$$qtLibraryTarget(ThermusLib)
+else:unix: LIBS += -L$$OUT_PWD/../ThermusLib/lib/ -lThermusLib
 
 INCLUDEPATH += $$PWD/ThermusLib $$PWD/../ThermusLib/external $$PWD/../ThermusLib/macros \
                $$PWD/../ThermusLib/main
@@ -64,7 +64,7 @@ mac {
     APP_H.files       = ../ThermusLib/external/parasel.h ../ThermusLib/external/macroparasel.h \
                         ../ThermusLib/main/TTMParameter.h ../ThermusLib/main/TTMParameterSet.h ../ThermusLib/main/TTMParameterSetBSQ.h
     APP_H.path        = Contents/include
-    APP_LIB.files     = $$OUT_PWD/../ThermusLib/lib/lib$$qtLibraryTarget(ThermusLib).dylib
+    APP_LIB.files     = $$OUT_PWD/../ThermusLib/lib/libThermusLib.dylib
     APP_LIB.path      = Contents/lib
 
     QMAKE_BUNDLE_DATA += APP_PD APP_PY APP_MAC APP_H APP_LIB
@@ -97,7 +97,7 @@ unix:!mac {
                      ../ThermusLib/main/TTMParameter.h ../ThermusLib/main/TTMParameterSet.h ../ThermusLib/main/TTMParameterSetBSQ.h
     header.path    = $$PREFIX/include
 
-    lib.files      = $$OUT_PWD/../ThermusLib/lib/lib$$qtLibraryTarget(ThermusLib).so
+    lib.files      = $$OUT_PWD/../ThermusLib/lib/ThermusLib.so
     lib.path       = $$PREFIX/lib
 
    INSTALLS += icons desktop data python macro header lib
