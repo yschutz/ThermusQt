@@ -70,36 +70,33 @@ mac {
     QMAKE_BUNDLE_DATA += APP_PD APP_PY APP_MAC APP_H APP_LIB
 }
 
-unix:!mac {
-    isEmpty(PREFIX) {
-        PREFIX = /usr/local
-    }
-    target.path = $$PREFIX/bin
-    INSTALLS += target
+#unix:!mac {
+#    isEmpty(PREFIX) {
+#        PREFIX = /usr/local
+#    }
+##    target.path = $$PREFIX/bin
+##    INSTALLS += target
 
-    desktop.files += ../ThermusQt.desktop
-    desktop.path   = $$PREFIX/share/applications
+#    desktop.files += ../ThermusQt.desktop
+#    desktop.path   = $$PREFIX/share/applications
 
-    icons.path     = $$PREFIX/share/icons/hicolor/48x48/apps
-    icons.files   += ../images/ThermusQt.png
+#    icons.path     = $$PREFIX/share/icons/hicolor/48x48/apps
+#    icons.files   += ../images/ThermusQt.png
 
-    data.files     = ../particles/ThermusParticles.db ../particles/PDGParticles.db \
-                     ../particles/particles.tar.gz
-    data.path      = $$PREFIX/Resources/particles
+#    data.files     = ../particles/ThermusParticles.db ../particles/PDGParticles.db \
+#                     ../particles/particles.tar.gz
+#    data.path      = $$PREFIX/Resources/particles
 
-    python.files   = ../python/PDGParticles.py ../python/ThermusParticles.py
-    python.path    = $$PREFIX/Resources/python
+#    python.files   = ../python/PDGParticles.py ../python/ThermusParticles.py
+#    python.path    = $$PREFIX/Resources/python
 
-    macro.files    = ../macrotemplate/* ../ThermusLib/external/macrointerface.h
-    macro.path     = $$PREFIX/Resources/plugintemplate
+#    macro.files    = ../macrotemplate/* ../ThermusLib/external/macrointerface.h
+#    macro.path     = $$PREFIX/Resources/plugintemplate
 
-    header.files   = ../ThermusLib/external/parasel.h ../ThermusLib/external/macroparasel.h \
-                     ../ThermusLib/main/TTMParameter.h ../ThermusLib/main/TTMParameterSet.h ../ThermusLib/main/TTMParameterSetBSQ.h
-    header.path    = $$PREFIX/include
+#    header.files   = ../ThermusLib/external/parasel.h ../ThermusLib/external/macroparasel.h \
+#                     ../ThermusLib/main/TTMParameter.h ../ThermusLib/main/TTMParameterSet.h ../ThermusLib/main/TTMParameterSetBSQ.h
+#    header.path    = $$PREFIX/include
 
-    lib.files      = $$OUT_PWD/../ThermusLib/lib/ThermusLib.so
-    lib.path       = $$PREFIX/lib
-
-   INSTALLS += icons desktop data python macro header lib
-}
+#   INSTALLS += icons desktop data python macro header
+#}
 
