@@ -21,6 +21,9 @@ script:
   - make -j$(nproc)
   - qmake CONFIG+=release PREFIX=/usr
   - make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
+  - ln -s appdir/usr/lib/libThermusLib.so.1.0.0 appdir/usr/lib/libThermusLib.so
+  - ln -s appdir/usr/lib/libThermusLib.so.1.0.0 appdir/usr/lib/libThermusLib.so.1
+  - ln -s appdir/usr/lib/libThermusLib.so.1.0.0 appdir/usr/lib/libThermusLib.so.1.0  
   - wget -c -q "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
   - chmod a+x linuxdeployqt*.AppImage
   - unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH

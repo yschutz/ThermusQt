@@ -36,7 +36,7 @@ unix:!mac {
                      $$OUT_PWD/ThermusLib/main/TTMParameter.h $$OUT_PWD/ThermusLib/main/TTMParameterSet.h $$OUT_PWD/ThermusLib/main/TTMParameterSetBSQ.h
     header.path    = $$PREFIX/include
 
-    lib.files      = $$OUT_PWD/ThermusLib/lib/libThermusLib.so
+    lib.files      = $$OUT_PWD/ThermusLib/lib/libThermusLib.so.1.0.0
     lib.path       = $$PREFIX/lib
 
     app.files      = $$OUT_PWD/MainApp/ThermusQt
