@@ -14,7 +14,7 @@ INCLUDEPATH += ../QFontIcon
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../ThermusLib/release/ -lThermusLib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../ThermusLib/debug/ -lThermusLib
-else:unix: LIBS += -L$$OUT_PWD/../ThermusLib/lib/ -lThermusLib
+else:unix!mac: LIBS += -L$$OUT_PWD/../ThermusLib/lib/ -L../lib -lThermusLib
 
 INCLUDEPATH += $$PWD/ThermusLib $$PWD/../ThermusLib/external $$PWD/../ThermusLib/macros \
                $$PWD/../ThermusLib/main
@@ -39,6 +39,8 @@ DISTFILES += \
     .appveyor.yml \
     innosetup.iss \
     ThermusQt.desktop \
+    ../scripts/macdeploy.sh \
+    ../scripts/linuxdeploy.sh
 
 # Installation
 
@@ -50,6 +52,8 @@ DISTFILES += \
 TARGET = ThermusQt
 
 mac {
+    LIBS           += -L$$OUT_PWD/../ThermusLib/lib/ -lThermusLib
+    PRE_TARGETDEPS += $$OUT_PWD/../ThermusLib/lib/libThermusLib.1.0.0.dylib
     images/ThermusQt.icns
     APP_PD.files      = ../particles/ThermusParticles.db ../particles/PDGParticles.db
     APP_PD.files     += ../particles/particles.tar.gz
@@ -64,39 +68,8 @@ mac {
     APP_H.files       = ../ThermusLib/external/parasel.h ../ThermusLib/external/macroparasel.h \
                         ../ThermusLib/main/TTMParameter.h ../ThermusLib/main/TTMParameterSet.h ../ThermusLib/main/TTMParameterSetBSQ.h
     APP_H.path        = Contents/include
-    APP_LIB.files     = $$OUT_PWD/../ThermusLib/lib/libThermusLib.dylib
+    APP_LIB.files     = ../ThermusLib/lib/libThermusLib.1.0.0.dylib
     APP_LIB.path      = Contents/lib
 
     QMAKE_BUNDLE_DATA += APP_PD APP_PY APP_MAC APP_H APP_LIB
 }
-
-#unix:!mac {
-#    isEmpty(PREFIX) {
-#        PREFIX = /usr/local
-#    }
-##    target.path = $$PREFIX/bin
-##    INSTALLS += target
-
-#    desktop.files += ../ThermusQt.desktop
-#    desktop.path   = $$PREFIX/share/applications
-
-#    icons.path     = $$PREFIX/share/icons/hicolor/48x48/apps
-#    icons.files   += ../images/ThermusQt.png
-
-#    data.files     = ../particles/ThermusParticles.db ../particles/PDGParticles.db \
-#                     ../particles/particles.tar.gz
-#    data.path      = $$PREFIX/Resources/particles
-
-#    python.files   = ../python/PDGParticles.py ../python/ThermusParticles.py
-#    python.path    = $$PREFIX/Resources/python
-
-#    macro.files    = ../macrotemplate/* ../ThermusLib/external/macrointerface.h
-#    macro.path     = $$PREFIX/Resources/plugintemplate
-
-#    header.files   = ../ThermusLib/external/parasel.h ../ThermusLib/external/macroparasel.h \
-#                     ../ThermusLib/main/TTMParameter.h ../ThermusLib/main/TTMParameterSet.h ../ThermusLib/main/TTMParameterSetBSQ.h
-#    header.path    = $$PREFIX/include
-
-#   INSTALLS += icons desktop data python macro header
-#}
-
