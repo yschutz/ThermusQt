@@ -20,7 +20,7 @@ fi
 #check if gsl is installed 
 if [ ! -d /usr/include/gsl ]; then 
 	echo "gsl apparently not installed ! Trying to install it"
-        sudo apt-get install libgsl0ldbl
+        sudo apt-get install libgsl2
         if [ ! $0 -eq 0 ]; then 
            echo "no su priviledges ?" 
            exit 1
@@ -28,10 +28,20 @@ if [ ! -d /usr/include/gsl ]; then
         sudo apt-get install gsl-bin libgsl0-dev
 fi
 
+#check if git installed
+if [ ! -e /usr/bin/git ]; then
+    echo "git apparently not installed ! Trying to install it"
+    sudo apt-get Install git
+fi
 #check if ThermusQt software present 
 if [ ! -d ThermusQt ]; then
 	git clone https://github.com/yschutz/ThermusQt.git
+        if [ ! $0 -eq 0 ]; then
+           echo "no su priviledges ?"
+           exit 1
+        fi
 fi 
+
 cd ThermusQt
 
 # check if Makefile already exists and clean everything

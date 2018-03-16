@@ -14,7 +14,7 @@ INCLUDEPATH += ../QFontIcon
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../ThermusLib/release/ -lThermusLib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../ThermusLib/debug/ -lThermusLib
-else:unix!mac: LIBS += -L$$OUT_PWD/../ThermusLib/lib/ -L../lib -lThermusLib
+else:!mac: LIBS += -L$$OUT_PWD/../ThermusLib/lib/ -L../lib -lThermusLib
 
 INCLUDEPATH += $$PWD/ThermusLib $$PWD/../ThermusLib/external $$PWD/../ThermusLib/macros \
                $$PWD/../ThermusLib/main

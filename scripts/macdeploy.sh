@@ -17,7 +17,7 @@ if [ ! $QTDIR ]; then
 fi
 
 APPDIR=$1
-macdeployqt $APPDIR -dmg
+$QTDIR/macdeployqt $APPDIR -dmg
 APPNAME=ThermusQt
 APPLIB=libThermusLib
 APPLIBDIR=$APPDIR/Contents/lib
@@ -28,4 +28,4 @@ ln -s $APPLIBDIR/$APPLIB.1.0.0.dylib $APPLIBDIR/$APPLIB.dylib
 cp $APPLIBDIR/$APPLIB.1.0.0.dylib $APPDIR/Contents/Frameworks/$APPLIB.1.dylib
 install_name_tool -change $APPLIB.1.dylib @executable_path/../Frameworks/$APPLIB.1.dylib $APPDIR/Contents/MacOS/$APPNAME
 rm $APPDIR/../$APPNAME.dmg
-macdeployqt $APPDIR -dmg
+$QTDIR/macdeployqt $APPDIR -dmg
