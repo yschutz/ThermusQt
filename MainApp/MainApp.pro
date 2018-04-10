@@ -65,8 +65,9 @@ mac {
                         ../macrotemplate/plugin_global.h \
                         ../ThermusLib/external/macrointerface.h
     APP_MAC.path      = Contents/Resources/plugintemplate
-    APP_H.files       = ../ThermusLib/external/parasel.h ../ThermusLib/external/macroparasel.h \
+    APP_H.files       = ../ThermusLib/external/parasel.h ../ThermusLib/external/macroparasel.h ../ThermusLib/external/thermuswiz.h \
                         ../ThermusLib/main/TTMParameter.h ../ThermusLib/main/TTMParameterSet.h ../ThermusLib/main/TTMParameterSetBSQ.h
+
     APP_H.path        = Contents/include
     APP_LIB.files     = ../ThermusLib/lib/libThermusLib.1.0.0.dylib
     APP_LIB.path      = Contents/lib

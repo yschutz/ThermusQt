@@ -19,7 +19,7 @@
 //__________________________________________________________________________
 MacroParaSel::MacroParaSel(QWidget* parent) : QWizardPage(parent)
 {
-    // create an interactive window to set parameters for the macro
+//     create an interactive window to set parameters for the macro
     setTitle("Macro parameters setting");
 
     QPalette palette;
@@ -27,10 +27,10 @@ MacroParaSel::MacroParaSel(QWidget* parent) : QWizardPage(parent)
     palette.setColor(QPalette::Text,Qt::green);
 
 
-    // choice of model
-    QGroupBox* modelBox  = new QGroupBox(tr("Model"));
-    mRadBQ               = new QRadioButton(tr("Canonical (BQ)"));
-    mRadBSQ              = new QRadioButton(tr("Grand Canonical (BSQ)"));
+//     choice of model
+    QGroupBox* modelBox  = new QGroupBox("Model");
+    mRadBQ               = new QRadioButton("Canonical (BQ)");
+    mRadBSQ              = new QRadioButton("Grand Canonical (BSQ)");
 
     QVBoxLayout* modelBoxLayout = new QVBoxLayout();
     modelBoxLayout->addWidget(mRadBQ);
@@ -38,22 +38,22 @@ MacroParaSel::MacroParaSel(QWidget* parent) : QWizardPage(parent)
     modelBox->setLayout(modelBoxLayout);
 
     // Q statistics, resonance width and exclusion volume
-    QGroupBox* qstaBox     = new QGroupBox(tr("Quantum statistics, resonance width and exclusion volume treatement"));
-    mQstatBut              = new QCheckBox(tr("Quantum statistics on"));
-    mWidthBut              = new QCheckBox(tr("Resonance width on"));
+    QGroupBox* qstaBox     = new QGroupBox("Quantum statistics, resonance width and exclusion volume treatement");
+    mQstatBut              = new QCheckBox("Quantum statistics on");
+    mWidthBut              = new QCheckBox("Resonance width on");
     QHBoxLayout* eVoLayout = new QHBoxLayout();
-    mExclVolBut            = new QCheckBox(tr("Exclusion volume on"));
+    mExclVolBut            = new QCheckBox("Exclusion volume on");
     mExclVolLE             = new QLineEdit(QString::number(0.0));
     mExclVolLE->setPalette(palette);
     eVoLayout->addWidget(mExclVolBut);
     eVoLayout->addWidget(mExclVolLE);
 
     // Exclude from the fit
-    QGroupBox* fitBox    = new QGroupBox(tr("To be excluded from the fit"));
-    mFitProton           = new QCheckBox(tr("Proton"));
-    mFitHyperons         = new QCheckBox(tr("Hyperons"));
-    mFitResonances       = new QCheckBox(tr("Resonances"));
-    mFitNuclei           = new QCheckBox(tr("Nuclei"));
+    QGroupBox* fitBox    = new QGroupBox("To be excluded from the fit");
+    mFitProton           = new QCheckBox("Proton");
+    mFitHyperons         = new QCheckBox("Hyperons");
+    mFitResonances       = new QCheckBox("Resonances");
+    mFitNuclei           = new QCheckBox("Nuclei");
     mFitProton->setChecked(true);
     mFitHyperons->setChecked(true);
     mFitResonances->setChecked(false);
@@ -89,21 +89,21 @@ MacroParaSel::MacroParaSel(QWidget* parent) : QWizardPage(parent)
         radFilesLayout->addWidget(radFile);
         mRadFiles.append(radFile);
     }
-    QRadioButton* radFile = new QRadioButton(tr("other (enter full path)"));
+    QRadioButton* radFile = new QRadioButton("other (enter full path)");
     connect(radFile, &QRadioButton::toggled, this, [this] { setData(); });
     radFilesLayout->addWidget(radFile);
     mRadFiles.append(radFile);
 
-    QGroupBox* dataBox   = new QGroupBox(tr("Select data file"));
-    mYieldRatio          = new QCheckBox(tr("Yields (checked) or ratio"));
+    QGroupBox* dataBox   = new QGroupBox("Select data file");
+    mYieldRatio          = new QCheckBox("Yields (checked) or ratio");
     QHBoxLayout* dataBoxLayout = new QHBoxLayout();
     dataBoxLayout->addWidget(mYieldRatio);
     dataBoxLayout->addLayout(radFilesLayout);
     dataBox->setLayout(dataBoxLayout);
 
     // title
-    QGroupBox* titleBox  = new QGroupBox(tr("Enter an informative title"));
-    mTitle               = new QLineEdit(tr("centrality class - collision system  - other"));
+    QGroupBox* titleBox  = new QGroupBox("Enter an informative title");
+    mTitle               = new QLineEdit("centrality class - collision system  - other");
     mTitle->setReadOnly(false);
     mTitle->setPalette(palette);
     QVBoxLayout* titleBoxLayout = new QVBoxLayout();
@@ -179,10 +179,10 @@ void MacroParaSel::list()
 //__________________________________________________________________________
 void MacroParaSel::setData()
 {
-    // picks up the data file name
+//    // picks up the data file name
     QRadioButton* rad = mRadFiles.last();
     if (rad->isChecked()) {
-        QString dataFileName = QInputDialog::getText(this, tr("Enter file name (full path"), tr("name?"), QLineEdit::Normal);
+        QString dataFileName = QInputDialog::getText(this, "Enter file name (full path)", "name?", QLineEdit::Normal);
         if (!dataFileName.isEmpty())
             rad->setText(dataFileName);
     }

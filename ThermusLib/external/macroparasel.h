@@ -9,8 +9,9 @@
 
 class MacroParaSel : public QWizardPage
 {
+//    Q_OBJECT
 public:
-    MacroParaSel(QWidget* parent = nullptr);
+    explicit MacroParaSel(QWidget* parent = nullptr);
 
     QString dataFileName() const;
     double  getExclVol() const         { return mExclVolLE->text().toDouble(); }

@@ -26,21 +26,12 @@ ThermusWiz::ThermusWiz(const QString &what, QWidget *parent) : QWizard(parent)
     //    //setPixmap(QWizard::BannerPixmap, QPixmap(":/Icons/Icons/NegativeSmile.png"));
     //    setPixmap(QWizard::BackgroundPixmap, QPixmap(":/Icons/Icons/RC30Controller.JPG"));
 
-    Macro* myMacro = nullptr;
-    if (what == "Prediction")
-        myMacro = &PredictionMacro::instance();
-    else if (what == "Fit")
-        myMacro = &FitMacro::instance();
 
     // page for the parameters setting
-
     mParaSelId = addPage(new ParaSel(this));
-    myMacro->setParaSel((ParaSel*)page(mParaSelId));
 
     // page for the macro parameters setting
-
-    mMacrooParaSelId = addPage(new MacroParaSel(this));
-    myMacro->setMacroParaSel((MacroParaSel*)page(mMacrooParaSelId));
+    mMacroParaSelId = addPage(new MacroParaSel(this));
 
     // page summarizing evrything
 
@@ -51,7 +42,18 @@ ThermusWiz::ThermusWiz(const QString &what, QWidget *parent) : QWizard(parent)
 
     show();
 
+
+    Macro* myMacro = nullptr;
+    if (what == "Prediction")
+        myMacro = &PredictionMacro::instance();
+    else if (what == "Fit")
+        myMacro = &FitMacro::instance();
+    else
+        return;
+
     mLoop.exec();
+    myMacro->setParaSel((ParaSel*)page(mParaSelId));
+    myMacro->setMacroParaSel((MacroParaSel*)page(mMacroParaSelId));
 }
 
 //__________________________________________________________________________

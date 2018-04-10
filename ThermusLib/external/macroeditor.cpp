@@ -147,8 +147,25 @@ bool MacroEditor::copyFiles() const
     filters.clear();
     filters << "*." + mLibSuffix;
     dirEntries = srcDir.entryList(filters);
+    QDir destDir(mMacroDirName + "/libs/");
     for (QString file : dirEntries) {
-        QFile::copy(srcDir.absolutePath() + "/" + file, mMacroDirName + "/libs/" + file);
+        QFileInfo fi(file);
+        if (fi.isSymLink())
+            QFile::link(file, destDir.dirName() + file);
+        else
+            QFile::copy(srcDir.absolutePath() + "/" + file, destDir.absolutePath() + "/" + file);
+    }
+    dirEntries = destDir.entryList(filters);
+    for (QString file : dirEntries) {
+        QFileInfo fi(file);
+        if (!fi.isSymLink()) {
+            QString baseName = fi.baseName();
+            QFile::link(file, destDir.absolutePath() + "/" + baseName + "." + mLibSuffix);
+            baseName = QFileInfo(fi.completeBaseName()).completeBaseName();
+            QFile::link(file, destDir.absolutePath() + "/" + baseName + "." + mLibSuffix);
+            baseName = QFileInfo(QFileInfo(fi.completeBaseName()).completeBaseName()).completeBaseName();
+            QFile::link(file, destDir.absolutePath() + "/" + baseName + "." + mLibSuffix);
+        }
     }
     return true;
 }

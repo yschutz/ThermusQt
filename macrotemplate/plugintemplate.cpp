@@ -5,6 +5,7 @@
 //__________________________________________________________________________
 void XxXxxxxx::run(const QString &message)
 {
+    localInit(); // do not remove
     if (!isInitialized()) {
         QMessageBox::information(nullptr, Q_FUNC_INFO, "no intitialization done");
     }
@@ -14,15 +15,16 @@ void XxXxxxxx::run(const QString &message)
 
 
 //__________________________________________________________________________
-bool XxXxxxxx::init()
+bool XxXxxxxx::localInit()
 {
     bool rv = false;
-    setObjectName("XxXxxxxx");
-    rv = true;
+    setObjectName("mm");
+    rv = init();   // do not remove
 
     mInitialized = rv;
     return rv;
 }
+
 
 //__________________________________________________________________________
 void XxXxxxxx::setDefaultParameters()

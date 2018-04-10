@@ -5,7 +5,24 @@
 #include "logger.h"
 #include "macrointerface.h"
 #include "macroparasel.h"
+#include "parasel.h"
+#include "thermuswiz.h"
 
+
+//__________________________________________________________________________
+bool MacroInterface::init()
+{
+    // initializes things which should be transparent to the user
+    bool rv = false;
+    ThermusWiz *wiz = new ThermusWiz("Custom");
+    mMacroParaSel = (MacroParaSel*)wiz->page(wiz->macroparaselId());
+    mParaSel      = qobject_cast<ParaSel*>(wiz->page(wiz->paraselId()));
+
+    wiz->show();
+    rv = true;
+
+    return rv;
+}
 
 //__________________________________________________________________________
 void MacroInterface::setConstrain()

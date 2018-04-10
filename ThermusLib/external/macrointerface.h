@@ -18,17 +18,18 @@ class QTimer;
 
 class MacroInterface {
 public:
-    virtual bool    init()                       = 0;
-            void    setConstrain();
-            bool    isDebug() const           { return mDebug; }
-            bool    isInitialized() const     { return mInitialized; }
-            void    listParameters() const    { mParaInfo->list(); }
+    bool    init();
+    bool    isDebug() const           { return mDebug; }
+    bool    isInitialized() const     { return mInitialized; }
+    void    listParameters() const    { mParaInfo->list(); }
+    virtual bool    localInit()                 = 0;
     virtual void    run(const QString& message) = 0;
-            void    setDebug(bool val)        { mDebug = val; }
+    void    setConstrain();
+    void    setDebug(bool val)        { mDebug = val; }
     virtual void    setDefaultParameters()      = 0;
-            void    setFitFix();
+    void    setFitFix();
     virtual void    setMacroDefaultParameters() = 0;
-            void    setParameters();
+    void    setParameters();
 
 protected:
     bool                   mInitialized = false; // flag if initialization done or not
