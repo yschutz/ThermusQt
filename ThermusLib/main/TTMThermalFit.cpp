@@ -261,22 +261,11 @@ void TTMThermalFit::inputExpYields(QString& fileName)
     //
     qDeleteAll(mYields.begin(), mYields.end());
     mYields.clear();
-    QDir dataDir;
-    dataDir.setPath(QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory) + "/ThermusQt");
-    if (!dataDir.exists()) {
-        QMessageBox* msg = new QMessageBox(QMessageBox::Critical,"Wrong Installation", QString("ThermusQt installation is expected at %1").arg(dataDir.path()));
-        int ret = msg->exec();
-        if(ret ==QMessageBox::Ok)
-            exit(1);
-    }
 
-    QString fullName = fileName.prepend("/data/");
-    fullName = fullName.prepend(dataDir.path());
-
-    QFile file(fullName);
+    QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QMessageBox msg(QMessageBox::Critical, "inputExpYields", Q_FUNC_INFO);
-        msg.setInformativeText(QString("Cannot open %1").arg(fullName));
+        msg.setInformativeText(QString("Cannot open %1").arg(fileName));
         msg.exec();
         return;
     }

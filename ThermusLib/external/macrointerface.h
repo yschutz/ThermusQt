@@ -14,32 +14,43 @@ class MacroParaSel;
 class ParaSel;
 class TTMThermalFitBSQ;
 
+class FittingThread;
 class QTimer;
 
 class MacroInterface {
 public:
-    bool    init();
-    bool    isDebug() const           { return mDebug; }
-    bool    isInitialized() const     { return mInitialized; }
-    void    listParameters() const    { mParaInfo->list(); }
-    virtual bool    localInit()                 = 0;
-    virtual void    run(const QString& message) = 0;
-    void    setConstrain();
-    void    setDebug(bool val)        { mDebug = val; }
-    virtual void    setDefaultParameters()      = 0;
-    void    setFitFix();
-    virtual void    setMacroDefaultParameters() = 0;
-    void    setParameters();
+            bool init(double Tch, double muB, double muS, double muQ, double gammaS, double radius,
+                      double cradius, double mu, double gamma, double muBeauty, double gammaBeauty,
+                      bool bsq, bool qstat, bool width, bool exclvol,
+                      bool fitHyp, bool fitPro, bool fitRes, bool fitNuc, const QString & data);
+            bool isDebug() const           { return mDebug; }
+            bool isInitialized() const     { return mInitialized; }
+            void listParameters() const    { mParaInfo->list(); }
+    virtual void localInit()                 = 0;
+    virtual void run(const QString& message) = 0;
+            void setConstrain();
+            void setDebug(bool val)        { mDebug = val; }
+            void setFit();
+            void setFitFix();
+            void setParameters();
+
+public slots:
+            void wrapUp();
 
 protected:
-    bool                   mInitialized = false; // flag if initialization done or not
     QMessageBox*           mBusy;                // displayed when process going on
+    bool                   mInitialized = false; // flag if initialization done or not
     int                    mBusytics;            // timer ticks
     bool                   mDebug;               // true if debug mode on
     TTMThermalFitBSQ*      mFitInfo;             // the fit model to be used
+    FittingThread*         mFT;                  // the thread where the fitting process is running
+    QList<int>             mHyperons;            // list of hyperons to be fitted
     MacroParaSel*          mMacroParaSel;        // window for parameters selection
+    QList<int>             mNuclei;              // list of nuclei to be fitted
     TTMParameterSetBSQ*    mParaInfo;            // holds the information on parameters
     ParaSel*               mParaSel;             // window for parameters selection
+    QList<int>             mProton;              // list of protons to be fitted
+    QList<int>             mResonances;          // list of resonances to be fitted
     QTimer*                mTimer;               // a timer
 };
 

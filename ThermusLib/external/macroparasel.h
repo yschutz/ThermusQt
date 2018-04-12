@@ -26,9 +26,11 @@ public:
     bool    isResonancesFitted() const { return mFitResonances->isChecked(); }
     bool    isWidth() const            { return mWidthBut->isChecked(); }
     bool    isYields() const           { return mYieldRatio->isChecked(); }
+    void    setData(const QString & d);
     void    setModelBQ(bool opt)       { mRadBQ->setChecked(opt); mRadBSQ->setChecked(!opt); }
     void    setModelBSQ(bool opt)      { mRadBSQ->setChecked(opt); mRadBQ->setChecked(!opt); }
     void    setExclVol(double v)       { mExclVolLE->setText(QString::number(v)); }
+    void    setFitParticles(bool hyp, bool pro, bool res,bool nuc) const;
     void    setQstat(bool opt)         { mQstatBut->setChecked(opt); }
     void    setWidth(bool opt)         { mWidthBut->setChecked(opt); }
     void    list();
@@ -37,6 +39,7 @@ public slots:
     void    setData();
 
 private:
+    QString              mDataFileName; // name of the file containing data
     QCheckBox*           mExclVolBut;   // check button to switch on exclusion volume
     QLineEdit*           mExclVolLE;    // Line Editto enter exclusion volume value
     QCheckBox*           mFitHyperons;  // to exclude hyperons from the fit

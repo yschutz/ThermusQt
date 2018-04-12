@@ -17,7 +17,8 @@
 #include <QStandardPaths>
 
 //__________________________________________________________________________
-MacroParaSel::MacroParaSel(QWidget* parent) : QWizardPage(parent)
+MacroParaSel::MacroParaSel(QWidget* parent) : QWizardPage(parent),
+    mDataFileName("")
 {
 //     create an interactive window to set parameters for the macro
     setTitle("Macro parameters setting");
@@ -74,23 +75,24 @@ MacroParaSel::MacroParaSel(QWidget* parent) : QWizardPage(parent)
 
     // choice of data
     QDir thermusDir(QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory) + "/ThermusQt");
-    if (!thermusDir.exists()) {
-        QMessageBox* msg = new QMessageBox(QMessageBox::Critical,"Wrong Installation", QString("ThermusQt installation is expected at %1").arg(thermusDir.path()));
-        msg->exec();
-        exit(1);
-    }
-    QDir datapath(thermusDir.path() + "/data");
-    QStringList filterName("*.txt");
-    QStringList files = datapath.entryList(filterName);
     QVBoxLayout* radFilesLayout = new QVBoxLayout();
-    for (QString filename : files) {
-        QRadioButton* radFile = new QRadioButton(filename);
-        connect(radFile, &QRadioButton::toggled, this, [this] { setData(); });
-        radFilesLayout->addWidget(radFile);
-        mRadFiles.append(radFile);
+    if (thermusDir.exists()) {
+        QDir datapath(thermusDir.path() + "/data/");
+        QStringList filterName("*.txt");
+        QStringList files = datapath.entryList(filterName);
+        for (QString filename : files) {
+            QRadioButton* radFile = new QRadioButton(datapath.absoluteFilePath(filename));
+            connect(radFile, &QRadioButton::toggled, this, [this] { setData(); });
+            radFilesLayout->addWidget(radFile);
+            mRadFiles.append(radFile);
+        }
     }
     QRadioButton* radFile = new QRadioButton("other (enter full path)");
     connect(radFile, &QRadioButton::toggled, this, [this] { setData(); });
+    if (! mDataFileName.isEmpty()) {
+        radFile->setChecked(true);
+        radFile->setText(mDataFileName);
+    }
     radFilesLayout->addWidget(radFile);
     mRadFiles.append(radFile);
 
@@ -126,12 +128,39 @@ QString MacroParaSel::dataFileName() const
 {
     // return the data file name
     QString rv;
-    for (QRadioButton* but : mRadFiles)
-        if (but->isChecked()) {
-            rv = but->text();
-            break;
-        }
+    if (mDataFileName.isEmpty()) {
+        for (QRadioButton* but : mRadFiles)
+            if (but->isChecked()) {
+                rv = but->text();
+                break;
+            }
+    } else {
+        QRadioButton * but = mRadFiles.last();
+        but->setChecked(true);
+        but->setText(mDataFileName);
+        rv = mDataFileName;
+}
     return rv;
+}
+
+//__________________________________________________________________________
+void MacroParaSel::setData(const QString &d)
+{
+    if (!d.isEmpty()) {
+        QRadioButton* rad = mRadFiles.last();
+        mDataFileName = d;
+        rad->setChecked(true);
+        rad->setText(d);
+    }
+}
+
+//__________________________________________________________________________
+void MacroParaSel::setFitParticles(bool hyp, bool pro, bool res, bool nuc) const
+{
+    mFitProton->setChecked(pro);
+    mFitHyperons->setChecked(hyp);
+    mFitResonances->setChecked(res);
+    mFitNuclei->setChecked(nuc);
 }
 
 //__________________________________________________________________________
@@ -181,7 +210,7 @@ void MacroParaSel::setData()
 {
 //    // picks up the data file name
     QRadioButton* rad = mRadFiles.last();
-    if (rad->isChecked()) {
+    if (rad->isChecked() && mDataFileName.isEmpty()) {
         QString dataFileName = QInputDialog::getText(this, "Enter file name (full path)", "name?", QLineEdit::Normal);
         if (!dataFileName.isEmpty())
             rad->setText(dataFileName);

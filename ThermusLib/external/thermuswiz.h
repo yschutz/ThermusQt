@@ -21,6 +21,7 @@ public:
     void    initializePage(int id);
     int     macroparaselId() const { return mMacroParaSelId; }
     int     paraselId() const      { return mParaSelId; }
+    void    startLoop()            { mLoop.exec(); }
 
 public slots:
     void accept();

@@ -40,20 +40,18 @@ ThermusWiz::ThermusWiz(const QString &what, QWidget *parent) : QWizard(parent)
     //    myMacro.setSummary((Summary*)page(mSummaryId));
     //    ((Summary*)page(mSummaryId))->setSubTitle(summaryTitle);
 
-    show();
-
-
     Macro* myMacro = nullptr;
     if (what == "Prediction")
         myMacro = &PredictionMacro::instance();
     else if (what == "Fit")
         myMacro = &FitMacro::instance();
-    else
-        return;
 
-    mLoop.exec();
-    myMacro->setParaSel((ParaSel*)page(mParaSelId));
-    myMacro->setMacroParaSel((MacroParaSel*)page(mMacroParaSelId));
+    if (myMacro) {
+        myMacro->setParaSel((ParaSel*)page(mParaSelId));
+        myMacro->setMacroParaSel((MacroParaSel*)page(mMacroParaSelId));
+        show();
+        mLoop.exec();
+    }
 }
 
 //__________________________________________________________________________
