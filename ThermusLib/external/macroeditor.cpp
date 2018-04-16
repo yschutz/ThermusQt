@@ -358,7 +358,7 @@ void MacroEditor::loadLibrary(const QString& library)
     if (macro) {
         mMacroInterface = qobject_cast<MacroInterface*>(macro);
         if (mMacroInterface) {
-            mMacroInterface->run("Hallo ");
+            mMacroInterface->run();
 
         } else
             QMessageBox::critical(nullptr, Q_FUNC_INFO, QString("Macro library %1 not loaded").arg(library));

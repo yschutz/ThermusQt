@@ -10,8 +10,6 @@
 #include "parasel.h"
 #include "particlesdbmanager.h"
 #include "thermuswiz.h"
-#include "TTMParameterSetBSQ.h"
-#include "TTMThermalFitBSQ.h"
 
 
 //__________________________________________________________________________
@@ -188,6 +186,14 @@ void MacroInterface::setParameters()
 
     listParameters();
     mMacroParaSel->list();
+}
+
+//__________________________________________________________________________
+void MacroInterface::timeout()
+{
+    // refresh mBusy
+    mBusy->setInformativeText(mBusy->informativeText() + '.');
+    mBusytics++;
 }
 
 //__________________________________________________________________________

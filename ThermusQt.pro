@@ -32,8 +32,10 @@ unix:!mac {
     macro.files    = $$OUT_PWD/macrotemplate/* $$OUT_PWD/ThermusLib/external/macrointerface.h
     macro.path     = $$PREFIX/Resources/plugintemplate
 
-    header.files   = $$OUT_PWD/ThermusLib/external/parasel.h $$OUT_PWD/ThermusLib/external/macroparasel.h \
-                     $$OUT_PWD/ThermusLib/main/TTMParameter.h $$OUT_PWD/ThermusLib/main/TTMParameterSet.h $$OUT_PWD/ThermusLib/main/TTMParameterSetBSQ.h
+    header.files   = $$OUT_PWD/ThermusLib/external/parasel.h $$OUT_PWD/ThermusLib/external/macroparasel.h $$OUT_PWD/ThermusLib/external/fittingthread.h\
+                     $$OUT_PWD/ThermusLib/main/TTMParameter.h $$OUT_PWD/ThermusLib/main/TTMParameterSet.h $$OUT_PWD/ThermusLib/main/TTMParameterSetBSQ.h \
+                     $$OUT_PWD/ThermusLib/main/TTMThermalFit.h $$OUT_PWD/ThermusLib/main/TTMThermalFitBSQ.h $$OUT_PWD/ThermusLib/main/TTMYield.h \
+                     $$OUT_PWD/ThermusLib/main/TTMParticleSet.h $$OUT_PWD/ThermusLib/main/TTMParticle.h
     header.path    = $$PREFIX/include
 
     lib.files      = $$OUT_PWD/ThermusLib/lib/libThermusLib.so.1.0.0

@@ -1,7 +1,6 @@
 #ifndef XXXXXXXX_H
 #define XXXXXXXX_H
 
-#include <QObject>
 #include <QtPlugin>
 
 #include "plugin_global.h"
@@ -15,7 +14,7 @@ class PLUGINSHARED_EXPORT XxXxxxxx : public QObject, MacroInterface
 
 public:
     void    localInit() override;
-    void    run(const QString& message) override;
+    void    run() override;
 };
 
 #endif // XXXXXXXX_H

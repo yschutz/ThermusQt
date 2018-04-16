@@ -3,7 +3,7 @@
 #include "xxxxxxxx.h"
 
 //__________________________________________________________________________
-void XxXxxxxx::run(const QString &message)
+void XxXxxxxx::run()
 {
     localInit(); // do not remove
 
@@ -21,6 +21,8 @@ void XxXxxxxx::run(const QString &message)
         mBusy->setText(QString("%1: is fitting").arg(Q_FUNC_INFO));
         mBusy->setStandardButtons(QMessageBox::Abort);
         mBusy->setInformativeText("Busy");
+        mTimer = new QTimer;
+        connect(mTimer, SIGNAL(timeout()), this, SLOT(timeout()));
         mTimer->start(2500);
         mFT->start();
         int ret = mBusy->exec();

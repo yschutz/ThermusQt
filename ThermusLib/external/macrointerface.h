@@ -6,16 +6,18 @@
 #define MACROINTERFACE_H
 
 #include <QMessageBox>
+#include <QObject>
 #include <QString>
+#include <QTimer>
 
+#include "TTMThermalFitBSQ.h"
 #include "TTMParameterSetBSQ.h"
+
+#include "fittingthread.h"
 
 class MacroParaSel;
 class ParaSel;
-class TTMThermalFitBSQ;
 
-class FittingThread;
-class QTimer;
 
 class MacroInterface {
 public:
@@ -26,8 +28,8 @@ public:
             bool isDebug() const           { return mDebug; }
             bool isInitialized() const     { return mInitialized; }
             void listParameters() const    { mParaInfo->list(); }
-    virtual void localInit()                 = 0;
-    virtual void run(const QString& message) = 0;
+    virtual void localInit()               = 0;
+    virtual void run()                     = 0;
             void setConstrain();
             void setDebug(bool val)        { mDebug = val; }
             void setFit();
@@ -35,6 +37,7 @@ public:
             void setParameters();
 
 public slots:
+            void timeout();
             void wrapUp();
 
 protected:
