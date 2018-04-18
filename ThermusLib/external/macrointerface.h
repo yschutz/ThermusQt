@@ -19,9 +19,11 @@ class MacroParaSel;
 class ParaSel;
 
 
-class MacroInterface {
+class MacroInterface : public QObject
+{
+//    Q_OBJECT
 public:
-            bool init(double Tch, double muB, double muS, double muQ, double gammaS, double radius,
+            bool init(bool fit, double Tch, double muB, double muS, double muQ, double gammaS, double radius,
                       double cradius, double mu, double gamma, double muBeauty, double gammaBeauty,
                       bool bsq, bool qstat, bool width, bool exclvol,
                       bool fitHyp, bool fitPro, bool fitRes, bool fitNuc, const QString & data);
@@ -29,7 +31,8 @@ public:
             bool isInitialized() const     { return mInitialized; }
             void listParameters() const    { mParaInfo->list(); }
     virtual void localInit()               = 0;
-    virtual void run()                     = 0;
+//            virtual void run()                     = 0;
+            void run();
             void setConstrain();
             void setDebug(bool val)        { mDebug = val; }
             void setFit();
@@ -42,6 +45,7 @@ public slots:
 
 protected:
     QMessageBox*           mBusy;                // displayed when process going on
+    bool                   mFit;                 // true= do a fit; false = do a prediction
     bool                   mInitialized = false; // flag if initialization done or not
     int                    mBusytics;            // timer ticks
     bool                   mDebug;               // true if debug mode on

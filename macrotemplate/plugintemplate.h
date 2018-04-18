@@ -6,7 +6,7 @@
 #include "plugin_global.h"
 #include "macrointerface.h"
 
-class PLUGINSHARED_EXPORT XxXxxxxx : public QObject, MacroInterface
+class PLUGINSHARED_EXPORT XxXxxxxx : public MacroInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "aaaa.bbbbb.MacroInterface" FILE "xxxxxxxx.json")
@@ -14,7 +14,10 @@ class PLUGINSHARED_EXPORT XxXxxxxx : public QObject, MacroInterface
 
 public:
     void    localInit() override;
-    void    run() override;
+//    void    run() override;
+
+public slots:
+    void timeout();
 };
 
 #endif // XXXXXXXX_H

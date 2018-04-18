@@ -357,10 +357,9 @@ void MacroEditor::loadLibrary(const QString& library)
     QObject* macro = mPluginLoader.instance();
     if (macro) {
         mMacroInterface = qobject_cast<MacroInterface*>(macro);
-        if (mMacroInterface) {
+        if (mMacroInterface)
             mMacroInterface->run();
-
-        } else
+         else
             QMessageBox::critical(nullptr, Q_FUNC_INFO, QString("Macro library %1 not loaded").arg(library));
     }
 }

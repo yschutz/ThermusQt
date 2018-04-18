@@ -3,50 +3,14 @@
 #include "xxxxxxxx.h"
 
 //__________________________________________________________________________
-void XxXxxxxx::run()
-{
-    localInit(); // do not remove
-
-    if (!isInitialized()) {
-        QMessageBox::information(nullptr, Q_FUNC_INFO, "intitialization failed");
-    }
-    else {
-        qInfo() << "******* Fitting:" << mMacroParaSel->getTitle() << "******* ";
-
-        mFitInfo->generateYields();
-
-        mFT = new FittingThread(mFitInfo);
-        connect(mFT, &FittingThread::resultReady, this, [this]{wrapUp();});
-        mBusy = new QMessageBox(QMessageBox::Information, Q_FUNC_INFO, "FIT");
-        mBusy->setText(QString("%1: is fitting").arg(Q_FUNC_INFO));
-        mBusy->setStandardButtons(QMessageBox::Abort);
-        mBusy->setInformativeText("Busy");
-        mTimer = new QTimer;
-        connect(mTimer, SIGNAL(timeout()), this, SLOT(timeout()));
-        mTimer->start(2500);
-        mFT->start();
-        int ret = mBusy->exec();
-        switch (ret) {
-        case QMessageBox::Abort:
-            mFT->blockSignals(true);
-            mFT->terminate();
-            mTimer->stop();
-            break;
-        case QMessageBox::Ok:
-            mBusy->close();
-            break;
-        default:
-            break;
-        }
-    }
-}
-
-
-//__________________________________________________________________________
 void XxXxxxxx::localInit()
 {
     bool rv = false;
     setObjectName("XxXxxxxx");
+
+    // fit or prediction
+
+    bool fit = false;
 
     // set default thermal model parameters; can be modified interactively
     double Tch         = 0.156;  // GeV
@@ -73,17 +37,25 @@ void XxXxxxxx::localInit()
     bool fitRes  = false;   // fit resonances ?
     bool fitNuc  = false;   // fit nuclei ?
 
-    mHyperons.append({3122, -3122, 3312, -3312, 3334, -3334}); // Lambda, Lambda_bar, Ksi-, Ksi+, Omega, Omega_bar
+    mHyperons.append({3122, -3122, 3312, -3312, 3334, -3334});                      // Lambda, Lambda_bar, Ksi-, Ksi+, Omega, Omega_bar
     mNuclei.append({1000010020, -1000010020, 1000020030, 1010010030, -1010010030}); // Deuteron, Deuteron_bar, He3, Hypertriton, Hypertriton_bar
-    mProton.append({2212, -2212}); // proton, proton_bar
-    mResonances.append({313, 333, 3124}); // K*(892), phi(1020), Lambda(1520)
+    mProton.append({2212, -2212});                                                  // proton, proton_bar
+    mResonances.append({313, 333, 3124});                                           // K*(892), phi(1020), Lambda(1520)
 
     QString data = "";      // file of data to be fitted
 
-
     //BEG: do not remove
-    rv = init(Tch, muB, muS, muQ, gammaS, radius, cradius, muC, gammaC, muBeauty, gammaBeauty,
+    rv = init(fit, Tch, muB, muS, muQ, gammaS, radius, cradius, muC, gammaC, muBeauty, gammaBeauty,
               bsq, qstat, width, exclvol, fitHyp, fitPro, fitRes, fitNuc, data);
     mInitialized = rv;
+
     //END: do not remove
+}
+
+//__________________________________________________________________________
+void XxXxxxxx::timeout()
+{
+    // refresh mBusy
+    mBusy->setInformativeText(mBusy->informativeText() + '.');
+    mBusytics++;
 }

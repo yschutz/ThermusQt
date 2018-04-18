@@ -1,5 +1,5 @@
 // Enables to run fiiting procedure in a thread
-// Author: Yves Schutz, November 2018
+// Author: Yves Schutz, November 2017
 
 #include "fittingthread.h"
 #include "TTMThermalFit.h"
