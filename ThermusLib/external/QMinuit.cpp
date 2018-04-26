@@ -192,7 +192,7 @@ int QMinuit::command(const char *command)
 }
 
 //__________________________________________________________________________
-QObject *QMinuit::contour(int npoints, int pa1, int pa2)
+void QMinuit::contour(QVector<double> &xcoor, QVector<double> &ycoor, int npoints, int pa1, int pa2)
 {
     //  Creates a TGraph object describing the n-sigma contour of a
     //  QMinuit fit. The contour of the parameters pa1 and pa2 is calculated
@@ -216,33 +216,24 @@ QObject *QMinuit::contour(int npoints, int pa1, int pa2)
     if (npoints<4) {
        // we need at least 4 points
        mStatus= 2;
-       return (QObject *)0;
+       return;
     }
     int   npfound;
-    double *xcoor = new double[npoints+1];
-    double *ycoor = new double[npoints+1];
-    qmncont(pa1,pa2,npoints,xcoor,ycoor,npfound);
-    if (npfound<4) {
+    qmncont(pa1, pa2, npoints, xcoor, ycoor, npfound);
+    if (npfound < 4) {
        // mncont did go wrong
        qWarning() << Q_FUNC_INFO << "Contour" << "Cannot find more than 4 points, no TGraph returned";
-       mStatus= (npfound==0 ? 1 : npfound);
-       delete [] xcoor;
-       delete [] ycoor;
-       return (QObject *)0;
+       mStatus= (npfound == 0 ? 1 : npfound);
+       return;
     }
-    if (npfound!=npoints) {
+    if (npfound != npoints) {
        // mncont did go wrong
        qWarning() << Q_FUNC_INFO << "Contour" << QString("Returning a TGraph with %1 points only").arg(npfound);
        npoints = npfound;
     }
     mStatus=0;
-    // create graph via the  PluginManager
     xcoor[npoints] = xcoor[0];  // add first pointat end to get closed polyline
     ycoor[npoints] = ycoor[0];
-    qWarning() << Q_FUNC_INFO << "Need to implement the equivalent of TGraph";
-    delete [] xcoor;
-    delete [] ycoor;
-    return nullptr;
 }
 
 //__________________________________________________________________________
@@ -818,7 +809,7 @@ void QMinuit::qmncomd(const char *crdbin, int&icondn)
 }
 
 //__________________________________________________________________________
-void QMinuit::qmncont(int ike1, int ike2, int nptu, double *xptu, double *yptu, int &ierrf)
+void QMinuit::qmncont(int ike1, int ike2, int nptu, QVector<double> &xptu, QVector<double> &yptu, int &ierrf)
 {
     // *-*-*-*-*-*-*Find points along a contour where FCN is minimum*-*-*-*-*-*-*
     // *-*          ================================================
@@ -934,7 +925,7 @@ void QMinuit::qmncont(int ike1, int ike2, int nptu, double *xptu, double *yptu, 
            mYpt[i-1] = yptu[i-2];
         }
         sprintf(mChpt,"%s"," ABCD");
-        qmnplot(mXpt, mYpt, mChpt, nall, mNpagwd, mNpagln);
+//        qmnplot(mXpt, mYpt, mChpt, nall, mNpagwd, mNpagln);
      }
 
   //*-*-              ..................... save some values before fixing
@@ -1034,7 +1025,7 @@ void QMinuit::qmncont(int ike1, int ike2, int nptu, double *xptu, double *yptu, 
         }
         mChpt[nall] = 0;
         Logger::instance().writeMessage(QString(" Y-AXIS: PARAMETER %1 %2 ").arg(ke2).arg(mCpnam[ke2-1]), Logger::instance().isVerbose());
-        qmnplot(mXpt, mYpt, mChpt, nall, mNpagwd, mNpagln);
+//        qmnplot(mXpt, mYpt, mChpt, nall, mNpagwd, mNpagln);
         Logger::instance().writeMessage(QString("                          X-AXIS: PARAMETER %1 %2 ").arg(ke1).arg(mCpnam[ke1-1]), Logger::instance().isVerbose());
      }
   //*-*-                printout the coordinates around the contour
@@ -1552,7 +1543,7 @@ void QMinuit::qmncros(double &aopt, int &iercr)
          if (iercr == 1) {
              Logger::instance().writeMessage("RIGHTMOST POINT IS UP AGAINST LIMIT.", Logger::instance().isVerbose());
          }
-         qmnplot(mXpt, mYpt, mChpt, ipt, mNpagwd, mNpagln);
+//         qmnplot(mXpt, mYpt, mChpt, ipt, mNpagwd, mNpagln);
       }
 
 }
@@ -2166,7 +2157,8 @@ void QMinuit::qmnexcm(const char *command, double *plist, int llist, int &ierflg
       int nntot = 40;
 
       /* Local variables */
-      double step, xptu[101], yptu[101], f, rno;
+      QVector<double> xptu(101), yptu(101);
+      double step, f, rno;
       int icol, kcol, ierr, iint, iext, lnow, nptu, i, iflag, ierrf;
       int ilist, nparx, izero, nf, lk, it, iw, inonde, nsuper;
       int it2, ke1, ke2, nowprt, kll, krl;

@@ -9,6 +9,7 @@
 #include "fitmacro.h"
 #include "fittingthread.h"
 #include "macroparasel.h"
+#include "QMinuit.h"
 #include "TTMThermalFitBSQ.h"
 
 
@@ -131,6 +132,15 @@ void FitMacro::run()
 void FitMacro::wrapUp()
 {
     // todo list when fitting process ended
+    const int knpoints = 50;
+    const int kpa1     = 1, kpa2 = 0;
+    QVector<double> xcoor(knpoints + 1);
+    QVector<double> ycoor(knpoints + 1);
+    QMinuit::instance().setErrorDef(1);
+    QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
+
+    qDebug() << xcoor;
+    qDebug() << ycoor;
     mTimer->stop();
     delete mFT;
     mBusy->setInformativeText(QString("Done in %1 s").arg(mBusytics * mTimer->interval() / 1000.));

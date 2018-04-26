@@ -39,7 +39,7 @@ class QMinuit : public QObject
 public:
     virtual void     buildArrays(int maxpar=15);
     virtual int      command(const char *command);
-    virtual QObject* contour(int npoints=10, int pa1=0, int pa2=1);
+    virtual void         contour(QVector<double> &xcoor, QVector<double> &ycoor, int npoints = 10, int pa1 = 0, int pa2 = 1);
     virtual int      defineParameter( int parNo, const char *name, double initVal, double initErr, double lowerLimit, double upperLimit );
     virtual void     deleteArrays();
     virtual int      eval(int npar, double *grad, double &fval, double *par, int flag);
@@ -60,7 +60,7 @@ public:
     virtual void     qmncler();
     virtual void     qmncntr(int ike1, int ike2, int &ierrf);
     virtual void     qmncomd(const char *crdbin, int &icondn);
-    virtual void     qmncont(int ke1, int ke2, int nptu, double *xptu, double *yptu, int &ierrf);
+    virtual void     qmncont(int ke1, int ke2, int nptu, QVector<double> &xptu, QVector<double> &yptu, int &ierrf);
     virtual void     qmncrck(QString crdbuf, int maxcwd, QString &comand, int &lnc, int mxp, double *plist, int &llist, int &ierr, int isyswr);
     virtual void     qmncros(double &aopt, int &iercr);
     virtual void     qmncuve();
