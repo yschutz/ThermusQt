@@ -1,13 +1,15 @@
 TEMPLATE = subdirs
 
-SUBDIRS = ThermusLib MainApp
+SUBDIRS = PlotLib ThermusLib MainApp \
+
 
 CONFIG += ordered
 
+PlotLib.subdir    = PlotLib
 ThermusLib.subdir = ThermusLib
 MainApp.subdir    = MainApp
 
-MainApp.depends = ThermusLib
+MainApp.depends = PlotLib ThermusLib
 
 unix:!mac {
     isEmpty(PREFIX) {
@@ -38,7 +40,7 @@ unix:!mac {
                      $$OUT_PWD/ThermusLib/main/TTMParticleSet.h $$OUT_PWD/ThermusLib/main/TTMParticle.h
     header.path    = $$PREFIX/include
 
-    lib.files      = $$OUT_PWD/ThermusLib/lib/libThermusLib.so.1.0.0
+    lib.files      = $$OUT_PWD/ThermusLib/lib/libThermusLib.so.1.0.0 $$OUT_PWD/PlotLib/lib/libPlotLib.so.1.0.0
     lib.path       = $$PREFIX/lib
 
     app.files      = $$OUT_PWD/MainApp/ThermusQt

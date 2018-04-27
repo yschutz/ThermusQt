@@ -12,13 +12,13 @@ include("../QFontIcon/QFontIcon.pri")
 
 INCLUDEPATH += ../QFontIcon
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../ThermusLib/release/ -lThermusLib
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../ThermusLib/release/ -L$$OUT_PWD/../PlotLib/release/ -lThermusLib -lPlotLib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../ThermusLib/debug/ -lThermusLib
-else:!mac: LIBS += -L$$OUT_PWD/../ThermusLib/lib/ -L../lib -lThermusLib
+else:!mac: LIBS += -L$$OUT_PWD/../ThermusLib/lib/ -L$$OUT_PWD/../PlotLib/lib -L../lib -lThermusLib -lPlotLib
 
 INCLUDEPATH += $$PWD/ThermusLib $$PWD/../ThermusLib/external $$PWD/../ThermusLib/macros \
-               $$PWD/../ThermusLib/main
-DEPENDPATH += $$PWD/../ThermusLib
+               $$PWD/../ThermusLib/main $$PWD/../PlotLib
+DEPENDPATH  += $$PWD/../ThermusLib $$PWD/../PlotLib
 
 unix:!mac {
     QMAKE_CXXFLAGS += --std=c++11
@@ -27,7 +27,7 @@ unix:!mac {
 ICON = ../images/ThermusQt.icns
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+        mainwindow.cpp
 
 HEADERS  += mainwindow.h \
 
@@ -52,7 +52,7 @@ DISTFILES += \
 TARGET = ThermusQt
 
 mac {
-    LIBS           += -L$$OUT_PWD/../ThermusLib/lib/ -lThermusLib
+    LIBS           += -L$$OUT_PWD/../ThermusLib/lib/ -L$$OUT_PWD/../PlotLib/lib/ -lThermusLib -lPlotLib
     PRE_TARGETDEPS += $$OUT_PWD/../ThermusLib/lib/libThermusLib.1.0.0.dylib
     images/ThermusQt.icns
     APP_PD.files      = ../particles/ThermusParticles.db ../particles/PDGParticles.db
@@ -71,7 +71,7 @@ mac {
                         ../ThermusLib/main/TTMParticleSet.h ../ThermusLib/main/TTMParticle.h
 
     APP_H.path        = Contents/include
-    APP_LIB.files     = ../ThermusLib/lib/libThermusLib.1.0.0.dylib
+    APP_LIB.files     = ../ThermusLib/lib/libThermusLib.1.0.0.dylib ../PlotLib/lib/libPlotLib.1.0.0.dylib
     APP_LIB.path      = Contents/lib
 
     QMAKE_BUNDLE_DATA += APP_PD APP_PY APP_MAC APP_H APP_LIB

@@ -12,6 +12,8 @@
 #include "QMinuit.h"
 #include "TTMThermalFitBSQ.h"
 
+#include "../PlotLib/plot.h"
+
 
 FitMacro FitMacro::mInstance = FitMacro();
 
@@ -136,11 +138,22 @@ void FitMacro::wrapUp()
     const int kpa1     = 1, kpa2 = 0;
     QVector<double> xcoor(knpoints + 1);
     QVector<double> ycoor(knpoints + 1);
+    Plot pl(QString("contour %1, %2").arg(kpa1).arg(kpa2), xcoor.size(), 2, 5, 0.12, 0.25);
+
+    QMinuit::instance().setErrorDef(9);
+    QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
+    pl.addGraph(xcoor, ycoor);
+
+    QMinuit::instance().setErrorDef(4);
+    QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
+    pl.addGraph(xcoor, ycoor);
+
     QMinuit::instance().setErrorDef(1);
     QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
+    pl.addGraph(xcoor, ycoor);
 
-    qDebug() << xcoor;
-    qDebug() << ycoor;
+    pl.draw();
+
     mTimer->stop();
     delete mFT;
     mBusy->setInformativeText(QString("Done in %1 s").arg(mBusytics * mTimer->interval() / 1000.));
