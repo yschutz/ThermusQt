@@ -50,6 +50,7 @@ public:
     virtual int      getNumFreePars() const {return mNPar;}
     virtual int      getNumPars() const {return mNPar + mNPFix;}
     virtual int      getParameter( int parNo, double &currentValue, double &currentError ) const;
+    virtual QString  getParameterName( int parNo) const { return mCpnam[parNo]; }
     virtual QObject* getPlot() const {return mPlot;}
     int              getStatus() const {return mStatus;}
     static QMinuit&  instance();

@@ -14,7 +14,7 @@ public:
     explicit Plot(const QString & title, double sX, double eX, int dX, double sY, double eY, int dY, double min, double max = -99999);
     explicit Plot(const QString & title, int dim, double sX, double eX, double sY, double eY);
     explicit Plot(const QString & title, double sX, double eX, int dX);
-    void addGraph(const QVector<double> &x, const QVector<double> &y);
+    void addGraph(const QString &name, const QVector<double> &x, const QVector<double> &y);
     void draw();
     void fill(double x, double y, double z);
     void fill(double x, double y);
@@ -42,6 +42,7 @@ private:
     double               mBegX;   // x value where plot starts
     double               mBegY;   // y value where plot starts
     QWidget             *mCanvas; // the canvas that contains the customplot object
+    bool                 mCanUsed;// tells if mCanvas is used or not
     QCustomPlot         *mCP;     // the customplot object
     QList<int>           mCurves; // stores the nbr of points for each curve
     QVector<QVector2D *> mData2;  // the 2D data to plot or a graph
@@ -50,9 +51,9 @@ private:
     int                  mDimY;   // number of bins in y
     double               mEndX;   // x value where plot ends
     double               mEndY;   // y value where plot ends
-    bool                 mCanUsed;// tells if mCanvas is used or not
     double               mMax;    // max z value t plot
     double               mMin;    // min z value t plot
+    QList<QString>       mNames;  // name of each graph/curve
     QString              mTitle;  // title of the graph
     QString              mXTitle; // x Axis title
     QString              mYTitle; // x Axis title

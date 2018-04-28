@@ -138,19 +138,21 @@ void FitMacro::wrapUp()
     const int kpa1     = 1, kpa2 = 0;
     QVector<double> xcoor(knpoints + 1);
     QVector<double> ycoor(knpoints + 1);
-    Plot pl(QString("contour %1, %2").arg(kpa1).arg(kpa2), xcoor.size(), 2, 5, 0.12, 0.25);
+
+    Plot pl("n-σ contours", xcoor.size(), 2.5, 3.5, 0.14, 0.17);
+    pl.setAxisTitle(QMinuit::instance().getParameterName(kpa1), "", QMinuit::instance().getParameterName(kpa2));
 
     QMinuit::instance().setErrorDef(9);
     QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
-    pl.addGraph(xcoor, ycoor);
+    pl.addGraph("3-σ", xcoor, ycoor);
 
     QMinuit::instance().setErrorDef(4);
     QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
-    pl.addGraph(xcoor, ycoor);
+    pl.addGraph("2-σ", xcoor, ycoor);
 
     QMinuit::instance().setErrorDef(1);
     QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
-    pl.addGraph(xcoor, ycoor);
+    pl.addGraph("1-σ", xcoor, ycoor);
 
     pl.draw();
 

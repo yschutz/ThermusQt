@@ -52,7 +52,7 @@ Plot::Plot(const QString &title, double sX, double eX, int dX) : QObject(),
 }
 
 //=============================================================
-void Plot::addGraph(const QVector<double> &x, const QVector<double> &y)
+void Plot::addGraph(const QString &name, const QVector<double> &x, const QVector<double> &y)
 {
     // fill data from arrays of double
 
@@ -67,6 +67,7 @@ void Plot::addGraph(const QVector<double> &x, const QVector<double> &y)
         mData2.append(vec);
     }
     mCurves.append(x.size());
+    mNames.append(name);
 }
 
 //=============================================================
@@ -304,17 +305,19 @@ void Plot::drawGraph()
 
     setCosmetics(localCP, mBegY, mEndY);
 
+
     localCanvas->setWindowTitle(mTitle);
 
     for (int j = 0; j < mCurves.size(); j++) {
         bcol[j].setAlpha(20);
         int dim = mCurves.at(j);
         QCPCurve *curv = new QCPCurve(localCP->xAxis, localCP->yAxis);
+        curv->setName(mNames.at(j));
         curv->setPen(QPen(pcol[j]));
         curv->setBrush(QBrush(bcol[j]));
         QVector<QCPCurveData> *data = new QVector<QCPCurveData>;
         for (int i = 0; i < dim; i++) {
-            data->append(QCPCurveData(i, mData2.at(koffset * j + i)->x(), mData2.at(koffset * j + i)->y()));
+            data->append(QCPCurveData(i, mData2.at(koffset + i)->x(), mData2.at(koffset + i)->y()));
         }
         curv->data()->set(*data, true);
         koffset += dim;
@@ -460,4 +463,8 @@ void Plot::setCosmetics(QCustomPlot *localCP, double zmin, double zmax)
     localCP->yAxis->grid()->setVisible(true);
     localCP->xAxis->grid()->setSubGridVisible(false);
     localCP->yAxis->grid()->setSubGridVisible(false);
+
+    localCP->legend->setVisible(true);
+    localCP->legend->setBrush(QBrush(QColor(255,255,255,150)));
+    localCP->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignLeft|Qt::AlignTop); // make legend align in top left corner or axis rect
 }
