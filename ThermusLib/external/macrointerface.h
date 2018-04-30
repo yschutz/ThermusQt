@@ -30,7 +30,8 @@ public:
             bool isDebug() const           { return mDebug; }
             bool isInitialized() const     { return mInitialized; }
             void listParameters() const    { mParaInfo->list(); }
-    virtual void localInit()               = 0;
+            virtual void localInit()               = 0;
+            virtual void localWrapup()             = 0;
 //            virtual void run()                     = 0;
             void run();
             void setConstrain();

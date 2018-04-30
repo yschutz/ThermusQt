@@ -14,6 +14,7 @@ class PLUGINSHARED_EXPORT XxXxxxxx : public MacroInterface
 
 public:
     void    localInit() override;
+    void    localWrapup() override;
 //    void    run() override;
 
 public slots:

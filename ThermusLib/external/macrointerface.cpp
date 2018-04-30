@@ -256,6 +256,7 @@ void MacroInterface::timeout()
 void MacroInterface::wrapUp()
 {
     // todo list when fitting process ended
+    localWrapup();
     mTimer->stop();
     delete mFT;
     mBusy->setInformativeText(QString("Done in %1 s").arg(mBusytics * mTimer->interval() / 1000.));

@@ -1,10 +1,14 @@
 #include "macroparasel.h"
 #include "parasel.h"
+#include "plot.h"
+#include "QMinuit.h"
+
 #include "xxxxxxxx.h"
 
 //__________________________________________________________________________
 void XxXxxxxx::localInit()
 {
+    // set here you initialisations to perform the fit following the template below
     bool rv = false;
     setObjectName("XxXxxxxx");
 
@@ -58,4 +62,33 @@ void XxXxxxxx::timeout()
     // refresh mBusy
     mBusy->setInformativeText(mBusy->informativeText() + '.');
     mBusytics++;
+}
+
+//__________________________________________________________________________
+void XxXxxxxx::localWrapup()
+{
+        // actions to perform when fit is done (contour plot given as exemple below)
+
+    const int knpoints = 50;
+    const int kpa1     = 1, kpa2 = 0;
+    QVector<double> xcoor(knpoints + 1);
+    QVector<double> ycoor(knpoints + 1);
+
+    Plot pl("n-σ contours", xcoor.size(), 2.5, 3.5, 0.14, 0.17);
+    pl.setAxisTitle(QMinuit::instance().getParameterName(kpa1), "", QMinuit::instance().getParameterName(kpa2));
+
+    QMinuit::instance().setErrorDef(9);
+    QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
+    pl.addGraph("3-σ", xcoor, ycoor);
+
+    QMinuit::instance().setErrorDef(4);
+    QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
+    pl.addGraph("2-σ", xcoor, ycoor);
+
+    QMinuit::instance().setErrorDef(1);
+    QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
+    pl.addGraph("1-σ", xcoor, ycoor);
+
+    pl.draw();
+
 }

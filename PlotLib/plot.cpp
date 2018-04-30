@@ -15,7 +15,7 @@ using namespace QtDataVisualization;
 
 //=============================================================
 Plot::Plot(const QString &title, double sX, double eX, int dX, double sY, double eY, int dY, double min, double max) : QObject(),
-    mBegX(sX), mBegY(sY), mDimX(dX), mDimY(dY), mEndX(eX), mEndY(eY), mCanUsed(false),
+    mBegX(sX), mBegY(sY), mCanUsed(false), mDimX(dX), mDimY(dY), mEndX(eX), mEndY(eY),
     mMax(max), mMin(min),
     mTitle(title), mXTitle("X"), mYTitle("Y"), mZTitle("Z")
 {
