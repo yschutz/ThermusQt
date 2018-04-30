@@ -53,7 +53,8 @@ TARGET = ThermusQt
 
 mac {
     LIBS           += -L$$OUT_PWD/../ThermusLib/lib/ -L$$OUT_PWD/../PlotLib/lib/ -lThermusLib -lPlotLib
-    PRE_TARGETDEPS += $$OUT_PWD/../ThermusLib/lib/libThermusLib.1.0.0.dylib
+    PRE_TARGETDEPS += $$OUT_PWD/../ThermusLib/lib/libThermusLib.1.0.0.dylib \
+                      $$OUT_PWD/../PlotLib/lib/libPlotLib.1.0.0.dylib
     images/ThermusQt.icns
     APP_PD.files      = ../particles/ThermusParticles.db ../particles/PDGParticles.db
     APP_PD.files     += ../particles/particles.tar.gz

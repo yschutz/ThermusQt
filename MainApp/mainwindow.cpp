@@ -254,10 +254,6 @@ void MainWindow::run(const QString &what)
         message = mFitAction->statusTip();
     }
 
-    message += ": macro " + myMacro->objectName();
-
-    statusBar()->showMessage(message);
-
     myMacro->start(mDebug);
 
     new ThermusWiz(what, this);
@@ -265,6 +261,9 @@ void MainWindow::run(const QString &what)
     // **************************************************
     // connect to the Thermus DB
     particlesDBManagement(kConnectT);
+
+    message += ": macro " + myMacro->objectName();
+    statusBar()->showMessage(message);
 
     // Choice of starting parameters, select parameters to fit or fix, add constraint
     myMacro->setParameters();

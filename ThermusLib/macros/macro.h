@@ -36,7 +36,7 @@ public:
     void                start(bool debug = false);
 
 public slots:
-    virtual void timeout() = 0;
+    virtual void timeout()   = 0;
 
 protected:
     QMessageBox*           mBusy;             // displayed when process going on

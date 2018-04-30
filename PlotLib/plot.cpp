@@ -212,6 +212,17 @@ void Plot::setAxisTitle(const QChar &type, const QString &title)
 }
 
 //=============================================================
+void Plot::setAxisTitle(const QString &titleX, const QString &titleY, const QString &titleZ)
+{
+        //carefull with axes (y <-> z)
+    mXTitle = titleX;
+    mYTitle = titleY;
+    mZTitle = titleZ;
+    if (objectName() == "Graph")
+        mZTitle = mYTitle;
+}
+
+//=============================================================
 void Plot::draw2D()
 {
     // draw a 2D plot

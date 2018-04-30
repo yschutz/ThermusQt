@@ -19,8 +19,7 @@ public:
     void fill(double x, double y, double z);
     void fill(double x, double y);
     void setAxisTitle(const QChar &type, const QString &title);
-    void setAxisTitle(const QString &titleX, const QString &titleY, const QString &titleZ = "") {
-        mXTitle = titleX; mYTitle = titleY; mZTitle = titleZ; }
+    void setAxisTitle(const QString &titleX, const QString &titleY, const QString &titleZ = "");
     void setTitle(const QString &title) { mTitle = title; }
 
 signals:
