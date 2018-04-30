@@ -49,10 +49,4 @@ unix:!mac {
     app.path       = $$PREFIX/bin
 
     INSTALLS += icons desktop data python macro header lib app
-
-    lib.target     = $$PREFIX/lib/libThermusLib.so.1.0 $$PREFIX/lib/libThermusLib.so.1
-    lib.command    = ln -si  $$PREFIX/lib/libThermusLib.so.1.0.0 $$lib.target
-
-    QMAKE_EXTRA_TARGETS += lib
-    QMAKE_POST_LINK     += lib
 }

@@ -26,6 +26,9 @@ script:
   - ln -s libThermusLib.so.1.0.0 libThermusLib.so
   - ln -s libThermusLib.so.1.0.0 libThermusLib.so.1
   - ln -s libThermusLib.so.1.0.0 libThermusLib.so.1.0  
+  - ln -s libPlotLib.so.1.0.0 libPlotLib.so  
+  - ln -s libPlotLib.so.1.0.0 libPlotLib.so.1  
+  - ln -s libPlotLib.so.1.0.0 libPlotLib.so.1.0  
   - cd - ; find appdir/
   - wget -c -q "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
   - chmod a+x linuxdeployqt*.AppImage
