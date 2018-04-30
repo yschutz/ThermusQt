@@ -134,6 +134,8 @@ void FitMacro::run()
 void FitMacro::wrapUp()
 {
     // todo list when fitting process ended
+    mBusy->setInformativeText(QString("Done in %1 s").arg(mBusytics * mTimer->interval() / 1000.));
+    mBusy->update();
     const int knpoints = 50;
     const int kpa1     = 1, kpa2 = 0;
     QVector<double> xcoor(knpoints + 1);
