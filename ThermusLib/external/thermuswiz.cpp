@@ -20,7 +20,7 @@ ThermusWiz::ThermusWiz(const QString &what, QWidget *parent) : QWizard(parent)
 {
     // ctor
     QRect screenSize = QApplication::desktop()->screenGeometry();
-    setMinimumSize(QSize(screenSize.width() / 2.0, screenSize.height() / 2.0));
+    setMinimumSize(QSize(screenSize.width() / 2.0, screenSize.height() / 4));
     setMaximumSize(QSize(screenSize.width(), screenSize.height()));
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     setFocusPolicy(Qt::StrongFocus);
