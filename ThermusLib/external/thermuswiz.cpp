@@ -11,13 +11,19 @@
 #include "summary.h"
 #include "thermuswiz.h"
 
+#include <QApplication>
 #include <QDesktopServices>
+#include <QDesktopWidget>
 
 //__________________________________________________________________________
 ThermusWiz::ThermusWiz(const QString &what, QWidget *parent) : QWizard(parent)
 {
     // ctor
-    setGeometry(200, 400, 1000, 100);
+    QRect screenSize = QApplication::desktop()->screenGeometry();
+    setMinimumSize(QSize(screenSize.width() / 2.0, screenSize.height() / 2.0));
+    setMaximumSize(QSize(screenSize.width(), screenSize.height()));
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setFocusPolicy(Qt::StrongFocus);
     setWindowTitle("THERMUS setting wizard");
     setWizardStyle(QWizard::ModernStyle);
 

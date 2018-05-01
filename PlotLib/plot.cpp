@@ -415,7 +415,7 @@ void Plot::setCosmetics(QCustomPlot *localCP, double zmin, double zmax)
     localCanvas->setMinimumSize(QSize(screenSize.width() / 2.0, screenSize.height() / 1.6));
     localCanvas->setMaximumSize(QSize(screenSize.width(), screenSize.height()));
     localCanvas->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    localCanvas->setFocusPolicy((Qt::StrongFocus));
+    localCanvas->setFocusPolicy(Qt::StrongFocus);
 
     localCP->setOpenGl(false);
     localCP->setInteractions(QCP::iRangeDrag|QCP::iRangeZoom);
