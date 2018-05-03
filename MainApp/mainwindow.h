@@ -43,6 +43,7 @@ public:
     void        setDebugMode(bool val);
 
 public slots:
+    void nsigmaContours();
     void openCreateMacro();
     void run(const QString& what);
 
@@ -55,6 +56,7 @@ private:
     void createMenus();
 
     QWidget*           mCentralwidget;         // The window so far inactive
+    QAction*           mContourAction;         // calculates and display n-sigma contours following a fit
     QMenu*             mCreateMenu;            // to create the particles db from Root or Thermus Data
     QAction*           mCreatePDG;             // to create the particles db from Root Data
     QAction*           mCreateThermus;         // to create the particles db from Thermus Data
@@ -80,6 +82,7 @@ private:
     QAction*           mPdgSelectAction;       // select particles for the Thermus fit
     QAction*           mPdgUpdateMassAction;   // update particles mass and lifetime
     QAction*           mPredictionAction;      // Action for the Prediction macro
+    QMenu*             mResultsMenu;           // Menu Tab to select functions displaying the results
     QMenu*             mRunMenu;               // Menu Tab to select the macro to run
     QMenu*             mSearchMenu;            // to serach and update one particle from Root or Thermus Data
     QAction*           mSearchPDG;             // to search for a particle Root db

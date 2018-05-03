@@ -26,6 +26,38 @@ FitMacro &FitMacro::instance()
 }
 
 //__________________________________________________________________________
+void FitMacro::makeContour()
+{
+    // calculates and draws a n-sigma contour plot for parameters kpa1 and kpa2
+
+    QMessageBox msg(QMessageBox::Information, "N-sigma contours", Q_FUNC_INFO);
+    msg.setInformativeText("This might take a few minutes.... be patient");
+    msg.exec();
+
+    const int knpoints = 50;
+    const int kpa1     = 1, kpa2 = 0;
+    QVector<double> xcoor(knpoints + 1);
+    QVector<double> ycoor(knpoints + 1);
+
+    Plot pl("n-σ contours", xcoor.size(), 2.5, 3.5, 0.14, 0.17);
+    pl.setAxisTitle(QMinuit::instance().getParameterName(kpa1), QMinuit::instance().getParameterName(kpa2));
+
+    QMinuit::instance().setErrorDef(9);
+    QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
+    pl.addGraph("3-σ", xcoor, ycoor);
+
+    QMinuit::instance().setErrorDef(4);
+    QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
+    pl.addGraph("2-σ", xcoor, ycoor);
+
+    QMinuit::instance().setErrorDef(1);
+    QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
+    pl.addGraph("1-σ", xcoor, ycoor);
+
+    pl.draw();
+}
+
+//__________________________________________________________________________
 void FitMacro::setDefaultParameters()
 {
     // ==== Starting parameters ======= (nucl-ex/0403014)
@@ -134,27 +166,6 @@ void FitMacro::run()
 void FitMacro::wrapUp()
 {
     // todo list when fitting process ended
-    const int knpoints = 50;
-    const int kpa1     = 1, kpa2 = 0;
-    QVector<double> xcoor(knpoints + 1);
-    QVector<double> ycoor(knpoints + 1);
-
-    Plot pl("n-σ contours", xcoor.size(), 2.5, 3.5, 0.14, 0.17);
-    pl.setAxisTitle(QMinuit::instance().getParameterName(kpa1), QMinuit::instance().getParameterName(kpa2));
-
-    QMinuit::instance().setErrorDef(9);
-    QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
-    pl.addGraph("3-σ", xcoor, ycoor);
-
-    QMinuit::instance().setErrorDef(4);
-    QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
-    pl.addGraph("2-σ", xcoor, ycoor);
-
-    QMinuit::instance().setErrorDef(1);
-    QMinuit::instance().contour(xcoor, ycoor, knpoints, kpa1, kpa2);
-    pl.addGraph("1-σ", xcoor, ycoor);
-
-    pl.draw();
 
     mTimer->stop();
     delete mFT;

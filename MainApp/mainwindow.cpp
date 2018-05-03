@@ -26,6 +26,7 @@
 #include "macroeditor.h"
 #include "newparticledialog.h"
 #include "particlesdbmanager.h"
+#include "plot.h"
 #include "QMinuit.h"
 
 #include "TTMThermalFitBSQ.h"
@@ -219,6 +220,15 @@ void MainWindow::setDebugMode(bool val)
 }
 
 //__________________________________________________________________________
+void MainWindow::nsigmaContours()
+{
+    //    calculates and display n-sigma contours following a fit
+
+    Macro* myMacro = &FitMacro::instance();
+    FitMacro::instance().makeContour();
+}
+
+//__________________________________________________________________________
 QString MainWindow::getDBPath(const QString &opt)
 {
     // return the full path to DB
@@ -273,6 +283,10 @@ void MainWindow::run(const QString &what)
 
     // Run the stuff
     myMacro->run();
+
+    if( what == "Fit")
+        mContourAction->setVisible(true);
+    mResultsMenu->menuAction()->setVisible(true);
 }
 
 //__________________________________________________________________________
@@ -410,6 +424,11 @@ void MainWindow::createActions()
     mParametersList = new QAction(QIcon(":/listicon.png"), tr("Parameters list"), this);
     mParametersList->setStatusTip("Makes a list of parameters with properties");
     connect(mParametersList, &QAction::triggered, this, [this]{ listParameters(); });
+
+    // makes n-sigma contour & dispay (following) a fit
+    mContourAction = new QAction(QIcon(":/contouricon.png"), tr("n-sigma contours"), this);
+    mContourAction->setStatusTip(tr("Makes a n-sigma contours plot following a fit"));
+    connect(mContourAction, &QAction::triggered, this, [this]{ nsigmaContours(); });
 }
 
 //__________________________________________________________________________
@@ -448,6 +467,12 @@ void MainWindow::createMenus()
     mRunMenu->addAction(mPredictionAction);
     mRunMenu->addAction(mFitAction);
     mRunMenu->addAction(mMacroAction);
+
+    // provide functions to view the results
+    mResultsMenu = menuBar()->addMenu(tr("Results"));
+    mResultsMenu->addAction(mContourAction);
+    mResultsMenu->menuAction()->setVisible(false);
+    mContourAction->setVisible(false);
 }
 
 //__________________________________________________________________________

@@ -15,6 +15,7 @@ class FitMacro : public Macro
     Q_OBJECT
 public:
     static FitMacro& instance();
+    void             makeContour();
     void             setDefaultParameters();
     void             setMacroDefaultParameters();
     void             run();
