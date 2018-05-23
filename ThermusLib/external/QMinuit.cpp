@@ -346,7 +346,8 @@ int QMinuit::eval(int npar, double *grad, double &fval, double *par, int flag)
     //
     //  Example of Minimisation function:
 
-    if (mFCN) (*mFCN)(npar,grad,fval,par,flag);
+    if (mFCN)
+        (*mFCN)(npar,grad,fval,par,flag);
     return 0;
 }
 
@@ -4564,7 +4565,8 @@ void QMinuit::qmnmigr()
     double toler = 0.05;
 
     if (mNPar <= 0) return;
-    if (mAmin == mUndefi) qmnamin();
+    if (mAmin == mUndefi)
+        qmnamin();
     ldebug  = false; if ( mIdbg[4] >= 1) ldebug = true;
     mCfrom  = "MIGRAD  ";
     mNfcnfr = mNfcn;

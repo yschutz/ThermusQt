@@ -14,12 +14,14 @@
 #include <QApplication>
 #include <QDesktopServices>
 #include <QDesktopWidget>
+#include <QScreen>
 
 //__________________________________________________________________________
 ThermusWiz::ThermusWiz(const QString &what, QWidget *parent) : QWizard(parent)
 {
     // ctor
-    QRect screenSize = QApplication::desktop()->screenGeometry();
+    QRect screenSize = QGuiApplication::screens().at(0)->geometry();
+//            QApplication::desktop()->screenGeometry();
     setMinimumSize(QSize(screenSize.width() / 2.0, screenSize.height() / 1.05));
     setMaximumSize(QSize(screenSize.width(), screenSize.height()));
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

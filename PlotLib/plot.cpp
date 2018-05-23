@@ -411,7 +411,8 @@ void Plot::setCosmetics(QCustomPlot *localCP, double zmin, double zmax)
     QWidget * localCanvas = qobject_cast<QWidget*>(localCP->parent());
 
     //canvas size and properties
-    QRect screenSize = QApplication::desktop()->screenGeometry();
+    QRect screenSize = QGuiApplication::screens().at(0)->geometry();
+//            QApplication::desktop()->screenGeometry();
     localCanvas->setMinimumSize(QSize(screenSize.width() / 2.0, screenSize.height() / 1.6));
     localCanvas->setMaximumSize(QSize(screenSize.width(), screenSize.height()));
     localCanvas->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

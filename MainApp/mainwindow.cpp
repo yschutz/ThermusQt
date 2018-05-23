@@ -224,7 +224,7 @@ void MainWindow::nsigmaContours()
 {
     //    calculates and display n-sigma contours following a fit
 
-    Macro* myMacro = &FitMacro::instance();
+//    Macro* myMacro = &FitMacro::instance();
     FitMacro::instance().makeContour();
 }
 
