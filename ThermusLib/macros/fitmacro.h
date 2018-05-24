@@ -16,6 +16,7 @@ class FitMacro : public Macro
 public:
     static FitMacro& instance();
     void             makeContour();
+    void             makePlot();
     void             setDefaultParameters();
     void             setMacroDefaultParameters();
     void             run();

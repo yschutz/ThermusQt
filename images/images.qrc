@@ -20,5 +20,6 @@
         <file>ThermusQt.png</file>
         <file>plugins-512.png</file>
         <file>contouricon.png</file>
+        <file>ploticon.png</file>
     </qresource>
 </RCC>

@@ -58,6 +58,21 @@ void FitMacro::makeContour()
 }
 
 //__________________________________________________________________________
+void FitMacro::makePlot()
+{
+   // draw the result of the fit
+    for (TTMYield* yield : mFitInfo->getYields()) {
+        QString name    = yield->getTMName();
+        double modval   = yield->getModelValue();
+        double expval   = yield->getExpValue();
+        double experr   = yield->getExpError();
+        double comp1    = (modval - expval) / modval;
+        double errcomp1 = qAbs(experr * comp1 / expval);
+        double comp2    = (modval - expval) / experr;
+    }
+}
+
+//__________________________________________________________________________
 void FitMacro::setDefaultParameters()
 {
     // ==== Starting parameters ======= (nucl-ex/0403014)

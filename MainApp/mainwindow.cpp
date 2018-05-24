@@ -220,11 +220,18 @@ void MainWindow::setDebugMode(bool val)
 }
 
 //__________________________________________________________________________
+void MainWindow::drawResults()
+{
+    // draw the results of the fit
+
+    FitMacro::instance().makePlot();
+}
+
+//__________________________________________________________________________
 void MainWindow::nsigmaContours()
 {
     //    calculates and display n-sigma contours following a fit
 
-//    Macro* myMacro = &FitMacro::instance();
     FitMacro::instance().makeContour();
 }
 
@@ -284,8 +291,10 @@ void MainWindow::run(const QString &what)
     // Run the stuff
     myMacro->run();
 
-    if( what == "Fit")
+    if( what == "Fit") {
         mContourAction->setVisible(true);
+        mPlotAction->setVisible(true);
+    }
     mResultsMenu->menuAction()->setVisible(true);
 }
 
@@ -429,6 +438,11 @@ void MainWindow::createActions()
     mContourAction = new QAction(QIcon(":/contouricon.png"), tr("n-sigma contours"), this);
     mContourAction->setStatusTip(tr("Makes a n-sigma contours plot following a fit"));
     connect(mContourAction, &QAction::triggered, this, [this]{ nsigmaContours(); });
+
+    // makes plot & dispay results following a fit
+    mPlotAction = new QAction(QIcon(":/ploticon.png"), tr("fraw plot"), this);
+    mPlotAction->setStatusTip(tr("Makes a plot of the results of a fit"));
+    connect(mPlotAction, &QAction::triggered, this, [this]{ drawResults(); });
 }
 
 //__________________________________________________________________________
@@ -471,8 +485,10 @@ void MainWindow::createMenus()
     // provide functions to view the results
     mResultsMenu = menuBar()->addMenu(tr("Results"));
     mResultsMenu->addAction(mContourAction);
+    mResultsMenu->addAction(mPlotAction);
     mResultsMenu->menuAction()->setVisible(false);
     mContourAction->setVisible(false);
+    mPlotAction->setVisible(false);
 }
 
 //__________________________________________________________________________

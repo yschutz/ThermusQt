@@ -43,6 +43,7 @@ public:
     void        setDebugMode(bool val);
 
 public slots:
+    void drawResults();
     void nsigmaContours();
     void openCreateMacro();
     void run(const QString& what);
@@ -81,6 +82,7 @@ private:
     QString            mPdgDBPath;             // the full path to PDG DB
     QAction*           mPdgSelectAction;       // select particles for the Thermus fit
     QAction*           mPdgUpdateMassAction;   // update particles mass and lifetime
+    QAction*           mPlotAction;            // display results of a fit in form of a plot
     QAction*           mPredictionAction;      // Action for the Prediction macro
     QMenu*             mResultsMenu;           // Menu Tab to select functions displaying the results
     QMenu*             mRunMenu;               // Menu Tab to select the macro to run
