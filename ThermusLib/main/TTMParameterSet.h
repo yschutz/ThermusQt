@@ -61,7 +61,7 @@ public:
     double           getT() const                           { return mPar[kT]->getValue(); }
     TTMParameter*    getTPar()                              { return mPar[kT]; }
     double           getVolume() const                      { return 4. * M_PI / 3. * qPow(getRadius(), 3); }
-    virtual void     list() const         = 0;
+    virtual void     list() const                           = 0;
     static QString   name(ParameterType type);
     void             set(ParameterType type, double x)      { mPar[type]->setValue(x); }
     void             setB2Q(double x)                       { mB2Q = x; }

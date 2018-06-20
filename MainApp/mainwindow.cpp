@@ -440,7 +440,7 @@ void MainWindow::createActions()
     connect(mContourAction, &QAction::triggered, this, [this]{ nsigmaContours(); });
 
     // makes plot & dispay results following a fit
-    mPlotAction = new QAction(QIcon(":/ploticon.png"), tr("fraw plot"), this);
+    mPlotAction = new QAction(QIcon(":/ploticon.png"), tr("raw plot"), this);
     mPlotAction->setStatusTip(tr("Makes a plot of the results of a fit"));
     connect(mPlotAction, &QAction::triggered, this, [this]{ drawResults(); });
 }

@@ -14,36 +14,36 @@ int main(int argc, char *argv[])
     double stepX = (endX - startX) / double(nDimX - 1.0);
     double stepY = (endY - startY) / double(nDimY - 1.0);
 
-    Plot pl3("This is a test of a 3D Graph", startX, endX, nDimX, startY, endY, nDimY, 0, 2);
+//    Plot pl3("This is a test of a 3D Graph", startX, endX, nDimX, startY, endY, nDimY, 0, 2);
 
-    for (int iy = 0; iy < nDimY; iy++) {
-        double y = qMin(endY, (iy * stepY + startY));
-        for (int ix = 0; ix < nDimX; ix++) {
-            double x = qMin(endX, (ix * stepX + startX));
-            double R = qSqrt(y *y + x * x) + 0.01;
-            double z = (qSin(R) / R + 0.24) * 1.61;
-            pl3.fill(x, y, z);
-        }
-    }
-    pl3.setAxisTitle("testX", "testY", "testZ");
-    pl3.draw();
+//    for (int iy = 0; iy < nDimY; iy++) {
+//        double y = qMin(endY, (iy * stepY + startY));
+//        for (int ix = 0; ix < nDimX; ix++) {
+//            double x = qMin(endX, (ix * stepX + startX));
+//            double R = qSqrt(y *y + x * x) + 0.01;
+//            double z = (qSin(R) / R + 0.24) * 1.61;
+//            pl3.fill(x, y, z);
+//        }
+//    }
+//    pl3.setAxisTitle("testX", "testY", "testZ");
+//    pl3.draw();
 //    pl3.proX();
 //    pl3.proY();
 //    pl3.contour();
 
-    startX = 0.;
-    endX   = 250.;
-    nDimX = 251;
-    stepX = (endX - startX) / double(nDimX - 1.0);
-    Plot pl1("This is a test of a 1D Graph", startX, endX, nDimX);
-    pl1.setAxisTitle("testX", "testY", "testZ");
-    for (int ix = 0; ix < nDimX; ix++) {
-        double x = qMin(endX, (ix * stepX + startX));
-        double y = qExp(-x/150.0)*qCos(x/10.0);
-        pl1.fill(x, y);
-    }
-    pl1.setAxisTitle("testX", "testY", "testZ");
-    pl1.draw();
+//    startX = 0.;
+//    endX   = 250.;
+//    nDimX = 251;
+//    stepX = (endX - startX) / double(nDimX - 1.0);
+//    Plot pl1("This is a test of a 1D Graph", startX, endX, nDimX);
+//    pl1.setAxisTitle("testX", "testY", "testZ");
+//    for (int ix = 0; ix < nDimX; ix++) {
+//        double x = qMin(endX, (ix * stepX + startX));
+//        double y = qExp(-x/150.0)*qCos(x/10.0);
+//        pl1.fill(x, y);
+//    }
+//    pl1.setAxisTitle("testX", "testY", "testZ");
+//    pl1.draw();
 
 //    QVector<double> x( {2.91204, 2.91973, 2.92742, 2.93512, 2.94281, 2.95051, 2.9582, 2.9659,
 //                        2.97359, 2.98129, 2.98898, 2.99668, 3.00437, 3.01207, 3.01977, 3.02746,
@@ -76,6 +76,50 @@ int main(int argc, char *argv[])
 //    pl4.addGraph(x, y);
 //    pl4.addGraph(xx, yy);
 //    pl4.draw();
+
+    Plot plc("Chart example");
+    plc.setAxisTitle("", "", "dN/dy");
+    double the, exp, err, comp1, errcomp1, comp2, errcomp2;
+    the = 100;
+    exp = 97.2;
+    err = 10.;
+    comp1 = (the - exp) / the;
+    errcomp1 = qAbs(err * comp1 / exp);
+    comp2 = (the - exp) / err;
+    plc.addEntry("1H", the, exp, err, comp1, errcomp1, comp2);
+
+    the = 10;
+    exp = 11.3;
+    err = 4.;
+    comp1 = (the - exp) / the;
+    errcomp1 = qAbs(err * comp1 / exp);
+    comp2 = (the - exp) / err;
+    plc.addEntry("2π", the, exp, err, comp1, errcomp1, comp2);
+
+    the = 1;
+    exp = 0.87;
+    err = 0.5;
+    comp1 = (the - exp) / the;
+    errcomp1 = qAbs(err * comp1 / exp);
+    comp2 = (the - exp) / err;
+    plc.addEntry("3K*", the, exp, err, comp1, errcomp1, comp2);
+
+    the = 21;
+    exp = 31.2;
+    err = 6.;
+    comp1 = (the - exp) / the;
+    errcomp1 = qAbs(err * comp1 / exp);
+    comp2 = (the - exp) / err;
+    plc.addEntry("4He", the, exp, err, comp1, errcomp1, comp2);
+
+    plc.setEntryName(1, "Pb+Pb at 5.5 TeV");
+    plc.setEntryName(2, "Thermus: T = 155 MeV");
+    plc.draw();
+
+   QChar aa = QChar('a');
+   qDebug() << " a = " << aa;
+
+//    Plot * pltest = new Plot();
 
     return a.exec();
 }

@@ -61,6 +61,9 @@ void FitMacro::makeContour()
 void FitMacro::makePlot()
 {
    // draw the result of the fit
+
+    Plot pl("Fit result");
+    pl.setAxisTitle("", "", "dN/dy");
     for (TTMYield* yield : mFitInfo->getYields()) {
         QString name    = yield->getTMName();
         double modval   = yield->getModelValue();
@@ -69,7 +72,12 @@ void FitMacro::makePlot()
         double comp1    = (modval - expval) / modval;
         double errcomp1 = qAbs(experr * comp1 / expval);
         double comp2    = (modval - expval) / experr;
+        if (expval != 0.0)
+            pl.addEntry(name, modval, expval, experr, comp1, errcomp1, comp2);
     }
+    pl.setEntryName(1, mMacroParaSel->getTitle());
+    pl.setEntryName(2, QString("Thermus: T = %1 MeV").arg(mParaInfo->getT() * 1000));
+    pl.draw();
 }
 
 //__________________________________________________________________________
