@@ -28,26 +28,27 @@ public:
              int id1, int id2 = 0, bool fit = true);
     TTMYield(const TTMYield& yield);
 
-    void            fit()     {mFit = true;}
-    double          getExpError() const {return mExpError;}
-    double          getExpValue() const {return mExpValue;}
-    bool            getFit() const {return mFit;}
-    int             getID1() const {return mID1;}
-    double          getModelError() const {return mModelError;}
-    double          getModelValue() const {return mModelValue;}
-    int             getID2() const {return mID2;}
-    double          getQuadDev() const {return (mModelValue - mExpValue) / mModelValue;}
-    double          getStdDev() const {return (mModelValue - mExpValue) / mExpError;}
-    QString         getTMName() {return objectName();}
-    bool            isFitted() const {return mFit;}
+    bool            compare(TTMYield* y1, TTMYield* y2);
+    void            fit()                   {mFit = true;}
+    double          getExpError() const     {return mExpError;}
+    double          getExpValue() const     {return mExpValue;}
+    bool            getFit() const          {return mFit;}
+    int             getID1() const          {return mID1;}
+    double          getModelError() const   {return mModelError;}
+    double          getModelValue() const   {return mModelValue;}
+    int             getID2() const          {return mID2;}
+    double          getQuadDev() const      {return (mModelValue - mExpValue) / mModelValue;}
+    double          getStdDev() const       {return (mModelValue - mExpValue) / mExpError;}
+    QString         getTMName()             {return objectName();}
+    bool            isFitted() const        {return mFit;}
     void            list();
-    void            predict() {mFit = false;}
-    void            setExpError(double x) {mExpError = x;}
-    void            setExpValue(double x) {mExpValue = x;}
-    void            setID(int x, int y) {mID1 = x; mID2 = y;}
+    void            predict()               {mFit = false;}
+    void            setExpError(double x)   {mExpError = x;}
+    void            setExpValue(double x)   {mExpValue = x;}
+    void            setID(int x, int y)     {mID1 = x; mID2 = y;}
     void            setModelError(double x) {mModelError = x;}
     void            setModelValue(double x) {mModelValue = x;}
-    void            setTMName(QString x) {setObjectName(x);}
+    void            setTMName(QString x)    {setObjectName(x);}
     TTMYield& operator=(const TTMYield& obj);
 
 private:

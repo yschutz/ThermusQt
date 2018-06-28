@@ -9,8 +9,10 @@
 #include "fitmacro.h"
 #include "fittingthread.h"
 #include "macroparasel.h"
+#include "particlesdbmanager.h"
 #include "QMinuit.h"
 #include "TTMThermalFitBSQ.h"
+
 
 #include "../PlotLib/plot.h"
 
@@ -62,8 +64,13 @@ void FitMacro::makePlot()
 {
    // draw the result of the fit
 
-    Plot pl("Fit result");
-    pl.setAxisTitle("", "", "dN/dy");
+    if (mResultPlot)
+        mResultPlot->clear();
+    else
+        mResultPlot = new Plot("Fit result");
+    mResultPlot->setAxisTitle("", "", "dN/dy");
+    qDebug() << mFitInfo->getYields();
+    mFitInfo->sortYields();
     for (TTMYield* yield : mFitInfo->getYields()) {
         QString name    = yield->getTMName();
         double modval   = yield->getModelValue();
@@ -73,11 +80,11 @@ void FitMacro::makePlot()
         double errcomp1 = qAbs(experr * comp1 / expval);
         double comp2    = (modval - expval) / experr;
         if (expval != 0.0)
-            pl.addEntry(name, modval, expval, experr, comp1, errcomp1, comp2);
+            mResultPlot->addEntry(name, modval, expval, experr, comp1, errcomp1, comp2);
     }
-    pl.setEntryName(1, mMacroParaSel->getTitle());
-    pl.setEntryName(2, QString("Thermus: T = %1 MeV").arg(mParaInfo->getT() * 1000));
-    pl.draw();
+    mResultPlot->setEntryName(1, mMacroParaSel->getTitle());
+    mResultPlot->setEntryName(2, QString("Thermus: T = %1 MeV").arg(mParaInfo->getT() * 1000));
+    mResultPlot->draw();
 }
 
 //__________________________________________________________________________
@@ -207,7 +214,7 @@ void FitMacro::timeout()
 }
 
 //__________________________________________________________________________
-FitMacro::FitMacro(QObject* parent) : Macro(parent), mFT(nullptr)
+FitMacro::FitMacro(QObject* parent) : Macro(parent), mFT(nullptr), mResultPlot(nullptr)
 {
     // ctor
     setObjectName("Fit_Macro_");

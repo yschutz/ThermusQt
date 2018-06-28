@@ -52,6 +52,21 @@ void TTMThermalFit::addYield(TTMYield *yield)
 }
 
 //__________________________________________________________________________
+bool TTMThermalFit::compareYield(TTMYield *y1, TTMYield *y2)
+{
+    // returns true if mass for y1 is smaller than mass for yield2
+
+    if (y1 && y2) {
+        int pdg1 = ParticlesDBManager::instance().getPDG(y1->getTMName());
+        int pdg2 = ParticlesDBManager::instance().getPDG(y2->getTMName());
+        double mass1 = ParticlesDBManager::instance().getMass(pdg1);
+        double mass2 = ParticlesDBManager::instance().getMass(pdg2);
+        return mass1 < mass2;
+    } else
+        return false;
+}
+
+//__________________________________________________________________________
 void TTMThermalFit::fitData(int flag)
 {
     fit_function(this, flag);
@@ -503,4 +518,11 @@ void TTMThermalFit::removeYield(int id1, int id2, const QString &descr)
         msg.setInformativeText(QString("Yield %1 does not exist").arg(name));
         msg.exec();
     }
+}
+
+//__________________________________________________________________________
+void TTMThermalFit::sortYields()
+{
+    // sort yields according ascending mass
+    std::sort(mYields.begin(), mYields.end(), [this] (TTMYield* y1, TTMYield* y2) { return compareYield(y1, y2);});
 }

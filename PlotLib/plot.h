@@ -34,6 +34,7 @@ public:
 
     void addEntry(const QString & key, double the, double exp, double err, double comp1 = 999., double errcomp1 = 0., double comp2 = 999., double errcomp2 = 0.);
     void addGraph(const QString &name, const QVector<double> &x, const QVector<double> &y);
+    void clear();
     void draw();
     void fill(double x, double y, double z);
     void fill(double x, double y);
@@ -82,7 +83,7 @@ private:
     QList<int>             mCurves; // stores the nbr of points for each curve
     QVector<QVector2D *>   mData2;  // the 2D data to plot or a graph
     QVector<QVector3D *>   mData3;  // the 3D data to plot
-    QMap<QString, double> mDataC;  // the data for a graph: X = QString, Y = double
+    QMap<QString, double>  mDataC;  // the data for a graph: X = QString, Y = double
     int                    mDimX;   // number of bins in x
     int                    mDimY;   // number of bins in y
     double                 mEndX;   // x value where plot ends

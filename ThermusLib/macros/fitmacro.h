@@ -10,6 +10,8 @@
 #include <QObject>
 
 class FittingThread;
+class Plot;
+class TTMYield;
 class FitMacro : public Macro
 {
     Q_OBJECT
@@ -32,6 +34,7 @@ private:
 
     FittingThread*  mFT;               // the thread where the fitting process is running
     static FitMacro mInstance;         // unique instance of the object
+    Plot*           mResultPlot;       // the plot of the fit result
 };
 
 #endif // FITMACRO_H

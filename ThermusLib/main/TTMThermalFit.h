@@ -29,6 +29,7 @@ public:
     ~TTMThermalFit();
 
     void                     addYield(TTMYield *yield);
+    bool                     compareYield(TTMYield* y1, TTMYield* y2);
     void                     fitData(int flag = 0);
     virtual TTMThermalModel* generateThermalModel()                                   = 0;
     void                     generateYields();
@@ -43,6 +44,7 @@ public:
     void                     listMinuitInfo() const;
     void                     listYields(bool debug = false);
     void                     removeYield(int id1, int id2, const QString& descr);
+    void                     sortYields();
 
 protected:
     double           mChiSquare;   // chi-squared

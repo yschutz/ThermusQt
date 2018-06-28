@@ -31,11 +31,19 @@
 
 #include "TTMThermalFitBSQ.h"
 
+#include "plot.h"
+
+
 bool MainWindow::mDebug = false;
 //__________________________________________________________________________
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), mFd(nullptr), mMacroEditor(nullptr), mNewDB(false), mNPD(nullptr), mThermus("Thermus")
 {
+
+
+
+    setGeometry(0, 0, 50, 25);
+
     // ctor
     mThermusDir.setPath(qApp->applicationDirPath());
     mThermusDir.cdUp();
@@ -55,8 +63,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mThermusDBPath = thermusDBName.prepend(partDir);
     mPdgDBPath     = pdgDBName.prepend(partDir);
-
-    setGeometry(0, 0, 50, 25);
 
     setWindowTitle("THERMUS");
     //    QPixmap bkgnd(":/2015-Jul-03-Fit_PbPb0010_Reference_final_SQM.png");
@@ -440,7 +446,7 @@ void MainWindow::createActions()
     connect(mContourAction, &QAction::triggered, this, [this]{ nsigmaContours(); });
 
     // makes plot & dispay results following a fit
-    mPlotAction = new QAction(QIcon(":/ploticon.png"), tr("raw plot"), this);
+    mPlotAction = new QAction(QIcon(":/ploticon.png"), tr("plot fit result"), this);
     mPlotAction->setStatusTip(tr("Makes a plot of the results of a fit"));
     connect(mPlotAction, &QAction::triggered, this, [this]{ drawResults(); });
 }

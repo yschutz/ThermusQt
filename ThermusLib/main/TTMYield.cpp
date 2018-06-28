@@ -7,6 +7,9 @@
 #include <QDebug>
 
 #include "TTMYield.h"
+
+#include "particlesdbmanager.h"
+
 //__________________________________________________________________________
 TTMYield::TTMYield(QObject *parent) : QObject(parent),
     mExpError(0.), mExpValue(0.), mID1(0), mID2(0),
@@ -40,6 +43,21 @@ TTMYield::TTMYield(const TTMYield &yield) : QObject(yield.parent())
     mExpError   = yield.getExpError();
     mModelValue = yield.getModelValue();
     mModelError = yield.getModelError();
+}
+
+//__________________________________________________________________________
+bool TTMYield::compare(TTMYield *y1, TTMYield *y2)
+{
+    // returns true if mass for y1 is smaller than mass for yield2
+
+    if (y1 && y2) {
+        int pdg1 = ParticlesDBManager::instance().getPDG(y1->getTMName());
+        int pdg2 = ParticlesDBManager::instance().getPDG(y2->getTMName());
+        double mass1 = ParticlesDBManager::instance().getMass(pdg1);
+        double mass2 = ParticlesDBManager::instance().getMass(pdg2);
+        return mass1 < mass2;
+    } else
+        return false;
 }
 
 //__________________________________________________________________________

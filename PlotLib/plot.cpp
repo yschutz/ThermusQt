@@ -49,7 +49,7 @@ Plot::Plot(const QString &title, double sX, double eX, int dX) : QObject(),
 //=============================================================
 Plot::Plot(const QString &title) : QObject(),
     mBegX(1), mBegY(0.), mDimX(0), mDimY(0.), mEndX(0), mEndY(0.),
-    mMax(0), mMaxArg(3), mMin(0),
+    mMax(0), mMaxArg(0), mMin(0),
     mTitle(title), mXTitle("X"), mYTitle(""), mZTitle("Y")
 {
     // ctor
@@ -168,36 +168,32 @@ Plot::Plot()
 Plot::~Plot()
 {
     // dtor
-
-    qDeleteAll(mData2.begin(), mData2.end());
-    mData2.clear();
-    qDeleteAll(mData3.begin(), mData3.end());
-    mData3.clear();
+    clear();
 }
 
 //=============================================================
 void Plot::addEntry(const QString &key, double the, double exp, double err, double comp1, double errcomp1, double comp2, double errcomp2)
 {
     // adds data to hash table for chart
-    static bool kFirst = true;
     int count = 3;
-    mDataC.insertMulti(key, the);
-    mDataC.insertMulti(key, exp);
-    mDataC.insertMulti(key, err);
+    static int kIndex = 0;
+    QString kkey = QString("%1.%2").arg(kIndex++).arg(key);
+    mDataC.insertMulti(kkey, the);
+    mDataC.insertMulti(kkey, exp);
+    mDataC.insertMulti(kkey, err);
 
-    qDebug() << "new";
     if (comp1 != 999) {
-        mDataC.insertMulti(key, comp1);
+        mDataC.insertMulti(kkey, comp1);
         count++;
-        mDataC.insertMulti(key, errcomp1);
+        mDataC.insertMulti(kkey, errcomp1);
         count++;
         if (comp2 != 999) {
-            mDataC.insertMulti(key, comp2);
+            mDataC.insertMulti(kkey, comp2);
             count++;
-            mDataC.insertMulti(key, errcomp2);
+            mDataC.insertMulti(kkey, errcomp2);
             count++;
         }
-        if (kFirst)
+        if (mMaxArg == 0)
             mMaxArg = count;
         else if (count != mMaxArg) {
             QMessageBox msg(QMessageBox::Warning, Q_FUNC_INFO, Q_FUNC_INFO);
@@ -214,7 +210,6 @@ void Plot::addEntry(const QString &key, double the, double exp, double err, doub
         getCP()->graph(0)->setName("Graph 1");
         getCP()->graph(1)->setName("Graph 2");
     }
-    kFirst = false;
 
     QMapIterator<QString, double> i(mDataC);
     while (i.hasNext()) {
@@ -240,6 +235,18 @@ void Plot::addGraph(const QString &name, const QVector<double> &x, const QVector
     }
     mCurves.append(x.size());
     mNames.append(name);
+}
+
+//=============================================================
+void Plot::clear()
+{
+    qDeleteAll(mData2.begin(), mData2.end());
+    mData2.clear();
+    qDeleteAll(mData3.begin(), mData3.end());
+    mData3.clear();
+    mMaxArg = 0;
+    setLin(getCP()->xAxis, getCP()->xAxis2);
+    setLin(getCP()->yAxis, getCP()->yAxis2);
 }
 
 //=============================================================
@@ -418,7 +425,7 @@ void Plot::mouseMoveSignal(QMouseEvent *event)
 //=============================================================
 void Plot::mousePressSignal(QMouseEvent *event)
 {
-    // do somthing when mouse is clicked
+    // do something when mouse is clicked
     Q_UNUSED(event)
 }
 
@@ -748,7 +755,8 @@ void Plot::drawChart()
         it.next();
         if (it.key() != previous) {
             previous = it.key();
-            labels.append(it.key());
+            QString keyLabel = it.key().section('.', 1);
+            labels.append(keyLabel);
             QList<double> values = mDataC.values(it.key());
             int index = values.size() - 1;
             ythe.append(values.at(index--));
